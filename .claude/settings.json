@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:toticket.replit.app)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\dj_la\\OneDrive\\Рабочий стол\\DRIVEE\\.claude"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"c:/Users/dj_la/OneDrive/Рабочий стол/DRIVEE\" && git add -A && git diff --staged --quiet || git commit -m \"Auto-save: end of session\" && git push origin main 2>/dev/null || true",
+            "timeout": 30,
+            "statusMessage": "Saving to GitHub..."
+          }
+        ]
+      }
+    ]
+  }
+}
