@@ -846,6 +846,55 @@
     }
 
     /* ===================================================
+       COMMUNITY REPORTS — issue type button grid
+    =================================================== */
+    .issue-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .btn-issue {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 8px;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.4;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-issue:active { transform: scale(0.97); }
+
+    .btn-issue.selected {
+      background: rgba(10, 132, 255, 0.15);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    @media (hover: hover) {
+      .btn-issue:hover {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .report-preview-img {
+      width: 100%;
+      border-radius: 12px;
+      max-height: 200px;
+      object-fit: cover;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* ===================================================
        ACCESSIBILITY — reduce motion
     =================================================== */
     @media (prefers-reduced-motion: reduce) {
@@ -1108,12 +1157,46 @@
       <!-- Community Reports -->
       <div class="card">
         <div class="card-title">Community Reports</div>
-        <div class="card-subtitle">Issues reported by drivers in your area</div>
-        <div class="empty-state">
-          <div class="empty-state-icon">📍</div>
-          0 community reports on the map
+        <div class="card-subtitle">Tap an issue to report it — it will appear on the map</div>
+
+        <!-- Report count -->
+        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
+          <span id="report-count-num">0</span> reports on the map
         </div>
-        <button class="btn btn-placeholder">Report an Issue — coming soon</button>
+
+        <!-- 4 issue type buttons in a 2x2 grid -->
+        <div class="issue-grid">
+          <button class="btn-issue" onclick="selectIssue('pothole', this)">🕳️<br>Pothole</button>
+          <button class="btn-issue" onclick="selectIssue('meter', this)">🅿️<br>Broken Meter</button>
+          <button class="btn-issue" onclick="selectIssue('sign', this)">🚧<br>Hidden Sign</button>
+          <button class="btn-issue" onclick="selectIssue('bike', this)">🚲<br>Bike Lane Block</button>
+        </div>
+
+        <!-- Report form — hidden until issue type is selected -->
+        <div id="report-form" style="display: none; margin-top: 16px;">
+          <div id="report-form-title" style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;"></div>
+
+          <div class="input-group">
+            <label for="report-photo">Photo (optional)</label>
+            <input type="file" id="report-photo" accept="image/*" capture="environment" onchange="previewPhoto()" />
+          </div>
+
+          <!-- Photo preview — hidden until file chosen -->
+          <div id="report-photo-preview" style="display: none;">
+            <img id="report-preview-img" class="report-preview-img" alt="Report photo preview" />
+          </div>
+
+          <div class="input-group">
+            <label for="report-desc">Description (optional)</label>
+            <textarea id="report-desc" rows="3" placeholder="Describe the issue briefly…"></textarea>
+          </div>
+
+          <button class="btn btn-primary" onclick="submitReport()">📍 Pin on Map &amp; Email 311</button>
+          <button class="btn btn-secondary" onclick="cancelReport()" style="margin-top: 8px;">Cancel</button>
+        </div>
+
+        <!-- Submitted reports list — rendered by JS -->
+        <div id="reports-list"></div>
       </div>
 
     </section>
@@ -1439,6 +1522,7 @@
     // Only initialises once (mapInitialised flag).
     // ===================================================
     var mapInitialised = false;
+    var driveeMap = null; // shared map instance — needed by dropReportPin()
 
     function initMap() {
       if (mapInitialised) return; // Don't init twice
@@ -1447,19 +1531,20 @@
         // Check Leaflet loaded from CDN
         if (typeof L === 'undefined') throw new Error('Leaflet not loaded');
 
-        var map = L.map('map', {
+        driveeMap = L.map('map', {
           center: [43.6532, -79.3832], // Toronto
           zoom: 13,
           zoomControl: true,
-          attributionControl: false  // Hide attribution in Foundation for cleanliness
+          attributionControl: false
         });
 
         // CartoDB Dark Matter tile layer — matches the app's dark theme
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
           maxZoom: 19
-        }).addTo(map);
+        }).addTo(driveeMap);
 
         mapInitialised = true;
+        loadReportsOnMap(); // draw any saved pins
 
       } catch (err) {
         // Leaflet failed — show fallback message, hide the broken map container
@@ -1467,6 +1552,180 @@
         document.getElementById('map-fallback').style.display = 'flex';
         console.warn('Drivee: Map could not load —', err.message);
       }
+    }
+
+    // ===================================================
+    // FEATURE — COMMUNITY REPORTS
+    // 4 issue types, photo preview, map pin, mailto 311
+    // ===================================================
+
+    var REPORTS_KEY = 'drivee_reports';
+    var selectedIssueType = null;
+
+    var ISSUE_LABELS = {
+      pothole: '🕳️ Pothole',
+      meter:   '🅿️ Broken Parking Meter',
+      sign:    '🚧 Hidden Sign',
+      bike:    '🚲 Bike Lane Block'
+    };
+
+    // Called when user taps one of the 4 issue buttons.
+    // btn = the button element (passed as `this` from onclick).
+    function selectIssue(type, btn) {
+      selectedIssueType = type;
+
+      // Highlight the selected button, clear others
+      document.querySelectorAll('.btn-issue').forEach(function(b) {
+        b.classList.remove('selected');
+      });
+      btn.classList.add('selected');
+
+      // Show the report form
+      document.getElementById('report-form').style.display = 'block';
+      document.getElementById('report-form-title').textContent = 'Reporting: ' + ISSUE_LABELS[type];
+
+      // Clear any previous input
+      document.getElementById('report-photo').value = '';
+      document.getElementById('report-photo-preview').style.display = 'none';
+      document.getElementById('report-desc').value = '';
+    }
+
+    // Called when user taps Cancel.
+    function cancelReport() {
+      selectedIssueType = null;
+      document.getElementById('report-form').style.display = 'none';
+      document.querySelectorAll('.btn-issue').forEach(function(b) {
+        b.classList.remove('selected');
+      });
+    }
+
+    // Called when a photo file is chosen — shows a preview image.
+    function previewPhoto() {
+      var file = document.getElementById('report-photo').files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('report-preview-img').src = e.target.result;
+        document.getElementById('report-photo-preview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Called when user taps "Pin on Map & Email 311".
+    function submitReport() {
+      if (!selectedIssueType) return;
+
+      var desc  = document.getElementById('report-desc').value.trim();
+      var label = ISSUE_LABELS[selectedIssueType];
+      var date  = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local date
+      var id    = Date.now() + '_' + Math.floor(Math.random() * 9999);
+
+      // Build the report object — Toronto centre coords until GPS is added
+      var report = {
+        id:    id,
+        type:  selectedIssueType,
+        label: label,
+        desc:  desc,
+        date:  date,
+        lat:   43.6532,
+        lng:   -79.3832
+      };
+
+      // Persist to localStorage
+      var reports = safeGet(REPORTS_KEY) || [];
+      reports.push(report);
+      safeSet(REPORTS_KEY, reports);
+
+      // Drop pin on the Leaflet map
+      dropReportPin(report);
+
+      // Open mail client to 311 with pre-filled content.
+      // Photo cannot be auto-attached via mailto — user attaches manually.
+      var subject = encodeURIComponent('Community Report: ' + label);
+      var body = encodeURIComponent(
+        'Issue Type: ' + label + '\n' +
+        'Date: ' + date + '\n' +
+        (desc ? 'Description: ' + desc + '\n' : '') +
+        '\nSubmitted via Drivee app.\n' +
+        'Please find my photo attached.'
+      );
+      window.location.href = 'mailto:311@toronto.ca?subject=' + subject + '&body=' + body;
+
+      showToast('Report pinned on map!');
+      cancelReport();
+      renderReportCount();
+      renderReportsList();
+    }
+
+    // Drops a styled emoji marker on the Leaflet map for a report.
+    function dropReportPin(report) {
+      if (!driveeMap) return;
+
+      var emoji = { pothole: '🕳️', meter: '🅿️', sign: '🚧', bike: '🚲' }[report.type] || '📍';
+
+      var icon = L.divIcon({
+        className: '',
+        html: '<div style="background:#0A84FF;border:2px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.5);">' + emoji + '</div>',
+        iconSize:   [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -18]
+      });
+
+      L.marker([report.lat, report.lng], { icon: icon })
+        .bindPopup(
+          '<strong>' + report.label + '</strong><br>' +
+          report.date +
+          (report.desc ? '<br><span style="color:#8E8E93">' + report.desc + '</span>' : '')
+        )
+        .addTo(driveeMap);
+    }
+
+    // Loads all saved reports from localStorage and draws pins on the map.
+    // Called once after the map is ready.
+    function loadReportsOnMap() {
+      var reports = safeGet(REPORTS_KEY) || [];
+      reports.forEach(function(r) { dropReportPin(r); });
+      renderReportCount();
+      renderReportsList();
+    }
+
+    // Updates the "X reports on the map" counter.
+    function renderReportCount() {
+      var el = document.getElementById('report-count-num');
+      if (!el) return;
+      var reports = safeGet(REPORTS_KEY) || [];
+      el.textContent = reports.length;
+    }
+
+    // Renders the list of submitted reports below the form.
+    function renderReportsList() {
+      var list = document.getElementById('reports-list');
+      if (!list) return;
+      var reports = safeGet(REPORTS_KEY) || [];
+      if (!reports.length) { list.innerHTML = ''; return; }
+
+      list.innerHTML =
+        '<div class="divider"></div>' +
+        reports.slice().reverse().map(function(r) {
+          return (
+            '<div class="reminder-card">' +
+              '<div class="reminder-info">' +
+                '<div class="reminder-ref">' + esc(r.label) + '</div>' +
+                '<div class="reminder-due">' + esc(r.date) + (r.desc ? ' · ' + esc(r.desc) : '') + '</div>' +
+              '</div>' +
+              '<button class="reminder-delete" onclick="deleteReport(\'' + r.id + '\')" title="Delete report">&times;</button>' +
+            '</div>'
+          );
+        }).join('');
+    }
+
+    // Deletes a single report from localStorage and re-renders the list.
+    function deleteReport(id) {
+      var reports = safeGet(REPORTS_KEY) || [];
+      safeSet(REPORTS_KEY, reports.filter(function(r) { return r.id !== id; }));
+      renderReportCount();
+      renderReportsList();
+      showToast('Report removed');
     }
 
     // ===================================================
