@@ -22,8 +22,8 @@
     =================================================== */
     :root {
       --bg:           #000000;
-      --surface:      #1C1C1E;
-      --elevated:     #2C2C2E;
+      --surface:      #141416;
+      --elevated:     #1E1E22;
       --text-primary: #FFFFFF;
       --text-secondary: #8E8E93;
       --text-tertiary:  #636366;
@@ -34,9 +34,11 @@
       --amber:  #FFD60A;
       --green:  #30D158;
       --orange: #FF9F0A;
-      --border: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.07);
       --border-focus: rgba(255, 255, 255, 0.18);
-      --nav-height: 90px;
+      --nav-height: 84px;
+      --shadow-card: 0 2px 20px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
+      --shadow-btn:  0 4px 16px rgba(10,132,255,0.4);
     }
 
     /* ===================================================
@@ -157,26 +159,29 @@
       background: var(--surface);
       border-radius: 20px;
       padding: 20px;
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      border: none;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-card);
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
       color: var(--text-primary);
-      margin-bottom: 20px;
+      margin-bottom: 0;
+      line-height: 1.2;
     }
 
     .section-title {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       color: var(--text-secondary);
       margin-bottom: 12px;
+      padding-left: 10px;
+      border-left: 3px solid var(--blue);
     }
 
     .card-title {
@@ -214,14 +219,15 @@
     }
 
     .btn-primary {
-      background: var(--blue);
+      background: linear-gradient(135deg, #1A90FF 0%, #0066DD 100%);
       color: #fff;
-      box-shadow: 0 4px 15px rgba(10, 132, 255, 0.35);
+      box-shadow: var(--shadow-btn);
     }
 
     .btn-secondary {
-      background: var(--elevated);
+      background: rgba(255,255,255,0.08);
       color: var(--text-primary);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     /* Placeholder buttons — not functional yet, styled as inactive */
@@ -258,9 +264,9 @@
     .input-group textarea {
       width: 100%;
       background: var(--elevated);
-      border: 1px solid var(--border);
+      border: 1.5px solid transparent;
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 13px 14px;
       color: var(--text-primary);
       font-size: 15px;
       font-family: inherit;
@@ -303,9 +309,9 @@
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 3px 8px;
-      border-radius: 6px;
+      letter-spacing: 0.6px;
+      padding: 4px 10px;
+      border-radius: 20px;
     }
 
     .badge-blue   { background: rgba(10, 132, 255, 0.18);  color: var(--blue); }
@@ -391,9 +397,9 @@
       padding: 16px;
       background: var(--surface);
       border-radius: 18px;
-      border: 1px solid var(--border);
+      border: none;
       margin-bottom: 10px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-card);
     }
 
     .step-number {
@@ -436,9 +442,9 @@
       padding: 16px;
       background: var(--surface);
       border-radius: 18px;
-      border: 1px solid var(--border);
+      border: none;
       margin-bottom: 10px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-card);
     }
 
     .lawyer-header {
@@ -658,10 +664,11 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px;
+      padding: 14px 16px;
       background: var(--elevated);
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 8px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.25);
     }
     .reminder-info { flex: 1; min-width: 0; }
     .reminder-ref  {
@@ -846,6 +853,156 @@
     }
 
     /* ===================================================
+       TAB HEADERS — full-width gradient header per tab
+       Negative margin breaks out of the 20px section padding
+       so the header goes edge-to-edge.
+    =================================================== */
+    .tab-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: -24px -20px 24px;
+      padding: 28px 20px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-header-blue   { background: linear-gradient(160deg, rgba(10,132,255,0.13) 0%, transparent 65%); }
+    .tab-header-green  { background: linear-gradient(160deg, rgba(48,209,88,0.11)  0%, transparent 65%); }
+    .tab-header-orange { background: linear-gradient(160deg, rgba(255,159,10,0.11) 0%, transparent 65%); }
+    .tab-header-purple { background: linear-gradient(160deg, rgba(191,90,242,0.11) 0%, transparent 65%); }
+    .tab-header-teal   { background: linear-gradient(160deg, rgba(100,210,255,0.11)0%, transparent 65%); }
+
+    .tab-header-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .tab-icon-blue   { background: rgba(10,132,255,0.18); }
+    .tab-icon-green  { background: rgba(48,209,88,0.18);  }
+    .tab-icon-orange { background: rgba(255,159,10,0.18); }
+    .tab-icon-purple { background: rgba(191,90,242,0.18); }
+    .tab-icon-teal   { background: rgba(100,210,255,0.18);}
+
+    .tab-header-text { flex: 1; }
+    .tab-header-sub  { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* ===================================================
+       HERO CARD — gradient welcome card on Dashboard
+    =================================================== */
+    .hero-card {
+      background: linear-gradient(135deg, #1A90FF 0%, #0055CC 100%);
+      border-radius: 22px;
+      padding: 22px 20px 20px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(10,132,255,0.38);
+    }
+    /* Decorative circles — purely visual */
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -40px;
+      width: 170px; height: 170px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      pointer-events: none;
+    }
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      bottom: -55px; right: 20px;
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .hero-greeting {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .hero-tagline {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+    .hero-logo-badge {
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .hero-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+    .hero-stat {
+      flex: 1;
+      text-align: center;
+    }
+    .hero-stat-num {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hero-stat-sep {
+      width: 1px;
+      height: 34px;
+      background: rgba(255,255,255,0.18);
+      flex-shrink: 0;
+    }
+
+    /* ===================================================
+       BOTTOM NAV — pill indicator behind active icon
+    =================================================== */
+    .nav-icon-wrap {
+      width: 48px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      transition: background 0.2s ease;
+      margin-bottom: 2px;
+    }
+    .nav-btn.active .nav-icon-wrap {
+      background: rgba(10,132,255,0.18);
+    }
+
+    /* ===================================================
        GPS GUARDIAN — alert banner + active button state
     =================================================== */
     .gps-alert {
@@ -957,7 +1114,41 @@
     ================================================ -->
     <section class="tab-section" id="tab-dashboard">
 
-      <h1 class="page-title">Dashboard</h1>
+      <div class="tab-header tab-header-blue">
+        <div class="tab-header-icon tab-icon-blue">🚗</div>
+        <div class="tab-header-text">
+          <h1 class="page-title">Dashboard</h1>
+          <div class="tab-header-sub">Manage your tickets and deadlines</div>
+        </div>
+      </div>
+
+      <!-- Hero welcome card -->
+      <div class="hero-card">
+        <div class="hero-top">
+          <div>
+            <div class="hero-greeting">Hello, <span id="hero-name">Driver</span> 👋</div>
+            <div class="hero-tagline">Your Toronto parking shield</div>
+          </div>
+          <div class="hero-logo-badge">🚗</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num" id="hero-reminders">0</div>
+            <div class="hero-stat-label">Reminders</div>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num" id="hero-reports">0</div>
+            <div class="hero-stat-label">Reports</div>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">311</div>
+            <div class="hero-stat-label">Emergency</div>
+          </div>
+        </div>
+      </div>
 
       <!-- Profile Card -->
       <div class="card">
@@ -1085,7 +1276,13 @@
     ================================================ -->
     <section class="tab-section" id="tab-services">
 
-      <h1 class="page-title">Services</h1>
+      <div class="tab-header tab-header-green">
+        <div class="tab-header-icon tab-icon-green">🔗</div>
+        <div class="tab-header-text">
+          <h1 class="page-title">Services</h1>
+          <div class="tab-header-sub">Pay, dispute, and check parking rules</div>
+        </div>
+      </div>
 
       <!-- City Portals -->
       <div class="card">
@@ -1162,7 +1359,13 @@
     ================================================ -->
     <section class="tab-section" id="tab-hotspots">
 
-      <h1 class="page-title">Hotspots</h1>
+      <div class="tab-header tab-header-orange">
+        <div class="tab-header-icon tab-icon-orange">📍</div>
+        <div class="tab-header-text">
+          <h1 class="page-title">Hotspots</h1>
+          <div class="tab-header-sub">Live map, GPS guardian, community reports</div>
+        </div>
+      </div>
 
       <!-- Enforcement Map — full-bleed, no card wrapper -->
       <div id="map"></div>
@@ -1261,7 +1464,13 @@
     ================================================ -->
     <section class="tab-section" id="tab-legal">
 
-      <h1 class="page-title">Legal</h1>
+      <div class="tab-header tab-header-purple">
+        <div class="tab-header-icon tab-icon-purple">⚖️</div>
+        <div class="tab-header-text">
+          <h1 class="page-title">Legal</h1>
+          <div class="tab-header-sub">AI advisor and Toronto defence lawyers</div>
+        </div>
+      </div>
 
       <!-- AI Ticket Advisor -->
       <div class="card">
@@ -1327,7 +1536,13 @@
     ================================================ -->
     <section class="tab-section" id="tab-guide">
 
-      <h1 class="page-title">Guide</h1>
+      <div class="tab-header tab-header-teal">
+        <div class="tab-header-icon tab-icon-teal">📖</div>
+        <div class="tab-header-text">
+          <h1 class="page-title">Guide</h1>
+          <div class="tab-header-sub">How to get the most out of Drivee</div>
+        </div>
+      </div>
 
       <div class="card">
         <div class="card-title">How Drivee Works</div>
@@ -1428,36 +1643,36 @@
     ================================================ -->
     <nav id="bottom-nav">
       <button class="nav-btn active" data-tab="tab-dashboard" onclick="showTab('tab-dashboard')">
-        <span class="nav-icon">
+        <span class="nav-icon-wrap"><span class="nav-icon">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 10L11 3l8 7v9a1 1 0 01-1 1H4a1 1 0 01-1-1V10z"/>
             <path d="M8 21V13h6v8"/>
           </svg>
-        </span>
+        </span></span>
         Dashboard
       </button>
       <button class="nav-btn" data-tab="tab-services" onclick="showTab('tab-services')">
-        <span class="nav-icon">
+        <span class="nav-icon-wrap"><span class="nav-icon">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/>
             <rect x="12" y="3" width="7" height="7" rx="1.5"/>
             <rect x="3" y="12" width="7" height="7" rx="1.5"/>
             <rect x="12" y="12" width="7" height="7" rx="1.5"/>
           </svg>
-        </span>
+        </span></span>
         Services
       </button>
       <button class="nav-btn" data-tab="tab-hotspots" onclick="showTab('tab-hotspots')">
-        <span class="nav-icon">
+        <span class="nav-icon-wrap"><span class="nav-icon">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 2C8.24 2 6 4.24 6 7c0 4.5 5 11 5 11s5-6.5 5-11c0-2.76-2.24-5-5-5z"/>
             <circle cx="11" cy="7" r="2"/>
           </svg>
-        </span>
+        </span></span>
         Hotspots
       </button>
       <button class="nav-btn" data-tab="tab-legal" onclick="showTab('tab-legal')">
-        <span class="nav-icon">
+        <span class="nav-icon-wrap"><span class="nav-icon">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="11" y1="3" x2="11" y2="19"/>
             <line x1="5" y1="19" x2="17" y2="19"/>
@@ -1465,17 +1680,17 @@
             <path d="M17 9l-3 5h6l-3-5z"/>
             <line x1="5" y1="9" x2="17" y2="9"/>
           </svg>
-        </span>
+        </span></span>
         Legal
       </button>
       <button class="nav-btn" data-tab="tab-guide" onclick="showTab('tab-guide')">
-        <span class="nav-icon">
+        <span class="nav-icon-wrap"><span class="nav-icon">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="7" x2="19" y2="7"/>
             <line x1="3" y1="12" x2="19" y2="12"/>
             <line x1="3" y1="17" x2="19" y2="17"/>
           </svg>
-        </span>
+        </span></span>
         Guide
       </button>
     </nav>
@@ -2069,6 +2284,25 @@
       if (!p) return;
       document.getElementById('profile-name').value  = p.name  || '';
       document.getElementById('profile-plate').value = p.plate || '';
+      updateHeroCard();
+    }
+
+    // Updates the hero card stats: first name, reminder count, report count.
+    // Called on load and whenever reminders or reports change.
+    function updateHeroCard() {
+      var p = safeGet(PROFILE_KEY);
+      var heroName = document.getElementById('hero-name');
+      if (heroName && p && p.name) {
+        // Show first name only — cleaner greeting
+        heroName.textContent = p.name.split(' ')[0];
+      }
+      var reminders = safeGet(REMINDERS_KEY) || [];
+      var el = document.getElementById('hero-reminders');
+      if (el) el.textContent = reminders.length;
+
+      var reports = safeGet(REPORTS_KEY) || [];
+      var el2 = document.getElementById('hero-reports');
+      if (el2) el2.textContent = reports.length;
     }
 
     // ===================================================
@@ -2099,6 +2333,7 @@
       });
       safeSet(REMINDERS_KEY, reminders);
       renderReminders();
+      updateHeroCard();
       // Mark only the newest card with .new so only it gets the slide-up animation
       // (prevents all cards re-animating simultaneously on every re-render)
       var cards = document.querySelectorAll('#reminders-list .reminder-card');
@@ -2114,6 +2349,7 @@
       });
       safeSet(REMINDERS_KEY, reminders);
       renderReminders();
+      updateHeroCard();
     }
 
     // getStatus() — compares due date to today using timezone-safe parser.
@@ -2304,6 +2540,7 @@
     showTab('tab-dashboard');
     loadProfile();      // Populate name + plate if previously saved
     renderReminders();  // Render any saved reminders on startup
+    updateHeroCard();   // Sync hero card stats on load
   </script>
 
 </body>
