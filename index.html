@@ -155,10 +155,11 @@
     =================================================== */
     .card {
       background: var(--surface);
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 20px;
       border: 1px solid var(--border);
       margin-bottom: 12px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .page-title {
@@ -197,8 +198,8 @@
     .btn {
       display: block;
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
+      padding: 15px 16px;
+      border-radius: 50px;
       border: none;
       font-size: 15px;
       font-weight: 600;
@@ -215,6 +216,7 @@
     .btn-primary {
       background: var(--blue);
       color: #fff;
+      box-shadow: 0 4px 15px rgba(10, 132, 255, 0.35);
     }
 
     .btn-secondary {
@@ -351,17 +353,23 @@
        LEAFLET MAP OVERRIDES
     =================================================== */
     #map {
-      width: 100%;
-      height: 280px;
-      border-radius: 12px;
+      /* Full-bleed: cancel the tab section's 20px side padding */
+      width: calc(100% + 40px);
+      margin-left: -20px;
+      /* Cancel the top padding so map starts right below the page title */
+      margin-top: -12px;
+      height: 340px;
+      border-radius: 0;
       overflow: hidden;
       background: var(--elevated);
     }
 
     .map-fallback {
-      width: 100%;
-      height: 280px;
-      border-radius: 12px;
+      width: calc(100% + 40px);
+      margin-left: -20px;
+      margin-top: -12px;
+      height: 340px;
+      border-radius: 0;
       background: var(--elevated);
       display: flex;
       flex-direction: column;
@@ -370,7 +378,7 @@
       color: var(--text-tertiary);
       font-size: 14px;
       gap: 8px;
-      border: 1px dashed var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
     /* ===================================================
@@ -382,9 +390,10 @@
       gap: 14px;
       padding: 16px;
       background: var(--surface);
-      border-radius: 14px;
+      border-radius: 18px;
       border: 1px solid var(--border);
       margin-bottom: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .step-number {
@@ -426,9 +435,10 @@
     .lawyer-card {
       padding: 16px;
       background: var(--surface);
-      border-radius: 14px;
+      border-radius: 18px;
       border: 1px solid var(--border);
       margin-bottom: 10px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .lawyer-header {
@@ -541,7 +551,7 @@
     .calc-timeline-fill {
       height: 6px;
       border-radius: 3px;
-      background: linear-gradient(to right, var(--green) 0%, var(--green) 25%, var(--amber) 25%, var(--amber) 35%, var(--red) 35%, var(--red) 100%);
+      background: linear-gradient(to right, var(--green) 0%, var(--green) 25%, var(--blue) 25%, var(--blue) 35%, var(--red) 35%, var(--red) 100%);
       margin-bottom: 6px;
     }
 
@@ -800,8 +810,8 @@
       animation: pulse 2s ease-in-out infinite;
     }
 
-    .badge-amber {
-      box-shadow: 0 0 6px rgba(255, 214, 10, 0.35);
+    .badge-blue-glow {
+      box-shadow: 0 0 6px rgba(10, 132, 255, 0.4);
     }
 
     /* ===================================================
@@ -1072,21 +1082,17 @@
 
       <h1 class="page-title">Hotspots</h1>
 
-      <!-- Enforcement Map -->
-      <div class="card">
+      <!-- Enforcement Map — full-bleed, no card wrapper -->
+      <div id="map"></div>
+      <div id="map-fallback" class="map-fallback" style="display: none;">
+        <div style="font-size: 32px;">🗺️</div>
+        <div>Map unavailable — check your internet connection</div>
+      </div>
+
+      <!-- Map label card sits below the map -->
+      <div class="card" style="margin-top: 12px;">
         <div class="card-title">Enforcement Map</div>
-        <div class="card-subtitle">Toronto parking enforcement — dark tile map</div>
-
-        <!-- Map container — Leaflet renders here. Fallback shown if CDN fails. -->
-        <div id="map"></div>
-        <div id="map-fallback" class="map-fallback" style="display: none;">
-          <div style="font-size: 32px;">🗺️</div>
-          <div>Map unavailable — check your internet connection</div>
-        </div>
-
-        <div style="margin-top: 12px; font-size: 12px; color: var(--text-tertiary);">
-          Heatmap, bike lanes, and hydrant layers coming in Part 2
-        </div>
+        <div class="card-subtitle">Toronto parking enforcement — tap the map to explore</div>
       </div>
 
       <!-- GPS Guardian -->
@@ -1592,7 +1598,7 @@
       var due   = parseLocalDate(dueDateStr);
       var diff  = (due - today) / (1000 * 60 * 60 * 24);
       if (diff < 0)   return { label: 'OVERDUE',  cls: 'badge-red'   };
-      if (diff === 0) return { label: 'TODAY',    cls: 'badge-amber' };
+      if (diff === 0) return { label: 'TODAY',    cls: 'badge-blue' };
       return             { label: 'UPCOMING', cls: 'badge-green'  };
     }
 
