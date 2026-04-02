@@ -93,6 +93,7 @@
       max-width: 460px;
       margin: 0 auto;
       position: relative;
+      z-index: 1;
     }
 
     /* ===================================================
@@ -1349,6 +1350,54 @@
     .chat-send:active { transform: scale(0.93); }
 
     /* ===================================================
+       BACKGROUND AURORA ANIMATION — floating colour orbs
+    =================================================== */
+    #bg-animation {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; overflow: hidden;
+    }
+    .bg-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.12;
+      will-change: transform;
+    }
+    .bg-orb-1 {
+      width: 480px; height: 480px;
+      background: #0A84FF;
+      top: -140px; left: -120px;
+      animation: orbFloat1 20s ease-in-out infinite;
+    }
+    .bg-orb-2 {
+      width: 360px; height: 360px;
+      background: #7C3AED;
+      bottom: 15%; right: -100px;
+      animation: orbFloat2 25s ease-in-out infinite;
+    }
+    .bg-orb-3 {
+      width: 280px; height: 280px;
+      background: #0EA5E9;
+      top: 45%; left: 25%;
+      animation: orbFloat3 17s ease-in-out infinite;
+    }
+    @keyframes orbFloat1 {
+      0%,100% { transform: translate(0, 0); }
+      33%     { transform: translate(70px, 50px); }
+      66%     { transform: translate(30px, 100px); }
+    }
+    @keyframes orbFloat2 {
+      0%,100% { transform: translate(0, 0); }
+      33%     { transform: translate(-60px, -80px); }
+      66%     { transform: translate(-30px, -40px); }
+    }
+    @keyframes orbFloat3 {
+      0%,100% { transform: translate(0, 0); }
+      50%     { transform: translate(50px, -70px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bg-orb { animation: none; }
+    }
+
+    /* ===================================================
        KEYFRAME ANIMATIONS
     =================================================== */
 
@@ -1849,6 +1898,15 @@
 </head>
 
 <body>
+
+  <!-- ===============================================
+       BACKGROUND AURORA — behind all content
+  ================================================ -->
+  <div id="bg-animation" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+  </div>
 
   <!-- ===============================================
        SPLASH SCREEN — shows for 2.2s on first load
