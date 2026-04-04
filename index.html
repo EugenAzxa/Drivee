@@ -1290,7 +1290,7 @@
       pointer-events: none;
     }
     #bottom-nav-inner {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center;
       padding: 10px 16px 14px;
       max-width: 460px; margin: 0 auto;
       pointer-events: none;
@@ -1302,6 +1302,8 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.13), 0 1px 6px rgba(0,0,0,0.07);
       padding: 6px 8px;
       pointer-events: all;
+      /* leave 68px gap on the right for the fixed FAB */
+      margin-right: 68px;
     }
     .pill-btn {
       display: flex; flex-direction: row;
@@ -1323,16 +1325,19 @@
     .pill-label { display: none; }
     .pill-btn.active .pill-label { display: inline; }
     .nav-fab {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      right: 16px;
       width: 52px; height: 52px; border-radius: 50%;
       background: var(--blue); color: #fff; border: none;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 20px;
-      box-shadow: 0 4px 16px rgba(10,132,255,0.45);
+      box-shadow: 0 4px 16px rgba(37,99,235,0.45);
       transition: transform 0.18s ease, box-shadow 0.18s ease;
-      flex-shrink: 0; pointer-events: all;
+      z-index: 101; pointer-events: all;
       -webkit-tap-highlight-color: transparent;
     }
-    .nav-fab:active { transform: scale(0.93); box-shadow: 0 2px 8px rgba(10,132,255,0.35); }
+    .nav-fab:active { transform: scale(0.93); box-shadow: 0 2px 8px rgba(37,99,235,0.35); }
 
     /* ===================================================
        FLOATING AI CHAT PANEL
