@@ -811,6 +811,83 @@
        SUPPORT BANNER
     =================================================== */
     /* ===================================================
+       PROFILE SHEET — slide-up panel from top-bar profile button
+    =================================================== */
+    .profile-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.35);
+    }
+    .profile-overlay.open { display: block; }
+    .profile-sheet {
+      position: fixed; bottom: 0; left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%; max-width: 460px;
+      background: var(--surface);
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
+      z-index: 201;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .profile-sheet.open { transform: translateX(-50%) translateY(0); }
+    .profile-sheet-handle {
+      width: 40px; height: 4px; border-radius: 2px;
+      background: var(--border); margin: 0 auto 20px;
+    }
+    .profile-sheet-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 26px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .profile-sheet-email {
+      text-align: center; font-size: 14px; color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .profile-sheet-name {
+      text-align: center; font-size: 17px; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 20px;
+    }
+    .profile-sheet-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text-primary);
+    }
+    .profile-sheet-row i { width: 20px; color: var(--blue); }
+    .profile-sheet-signout {
+      width: 100%; margin-top: 20px; padding: 14px;
+      background: #FEE2E2; color: #DC2626;
+      border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .profile-sheet-signin-wrap {
+      text-align: center;
+    }
+    .profile-sheet-signin-title {
+      font-size: 16px; font-weight: 600; margin-bottom: 6px;
+    }
+    .profile-sheet-signin-sub {
+      font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;
+    }
+    .profile-sheet-email-input {
+      width: 100%; padding: 12px 14px; border-radius: 10px;
+      border: 1px solid var(--border); font-size: 14px;
+      font-family: inherit; margin-bottom: 10px;
+      background: var(--elevated);
+    }
+    .profile-sheet-send-btn {
+      width: 100%; padding: 13px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .profile-sheet-sent {
+      font-size: 13px; color: var(--green);
+      margin-top: 10px; text-align: center;
+      display: none;
+    }
+
+    /* ===================================================
        AUTH CARD — sign in / signed in state
     =================================================== */
     .auth-card {
@@ -2235,7 +2312,7 @@
         <i class="fa-solid fa-bell"></i>
         <span class="bell-badge" id="bell-badge" style="display:none">0</span>
       </button>
-      <button class="top-bar-profile" onclick="showTab('tab-dashboard')" title="Profile">
+      <button class="top-bar-profile" onclick="openProfileSheet()" title="Profile">
         <i class="fa-solid fa-user"></i>
       </button>
     </div>
@@ -2248,6 +2325,29 @@
     <i class="fa-solid fa-comments"></i>
     <div class="chat-fab-dot"></div>
   </button>
+
+  <!-- Profile Sheet -->
+  <div class="profile-overlay" id="profile-overlay" onclick="closeProfileSheet()"></div>
+  <div class="profile-sheet" id="profile-sheet">
+    <div class="profile-sheet-handle"></div>
+    <!-- Signed IN view -->
+    <div id="ps-signed-in" style="display:none">
+      <div class="profile-sheet-avatar" id="ps-avatar">U</div>
+      <div class="profile-sheet-name" id="ps-name">Driver</div>
+      <div class="profile-sheet-email" id="ps-email"></div>
+      <div class="profile-sheet-row"><i class="fa-solid fa-car"></i><span id="ps-plate">No plate saved</span></div>
+      <div class="profile-sheet-row"><i class="fa-solid fa-bell"></i><span id="ps-reminders">0 reminders</span></div>
+      <button class="profile-sheet-signout" onclick="signOutUser(); closeProfileSheet()">Sign Out</button>
+    </div>
+    <!-- Signed OUT view -->
+    <div id="ps-signed-out" class="profile-sheet-signin-wrap">
+      <div class="profile-sheet-signin-title">☁️ Sign in to sync</div>
+      <div class="profile-sheet-signin-sub">No password needed — we'll email you a magic link.</div>
+      <input type="email" class="profile-sheet-email-input" id="ps-email-input" placeholder="your@email.com" />
+      <button class="profile-sheet-send-btn" onclick="sendMagicLinkFromSheet()">Send Magic Link</button>
+      <div class="profile-sheet-sent" id="ps-sent">✅ Check your email and tap the link</div>
+    </div>
+  </div>
 
   <div class="chat-overlay" id="chat-overlay" onclick="closeChat()"></div>
 
@@ -4464,6 +4564,9 @@
       var initials = email ? email[0].toUpperCase() : 'U';
       document.getElementById('auth-avatar').textContent    = initials;
       document.getElementById('auth-user-email').textContent = email;
+      // Update profile button to show user initial
+      var topBtn = document.querySelector('.top-bar-profile');
+      if (topBtn) topBtn.innerHTML = '<span style="font-size:15px;font-weight:700">' + initials + '</span>';
       // Load cloud data and overwrite local cache
       loadProfileFromSupabase();
       loadRemindersFromSupabase();
@@ -4478,6 +4581,61 @@
       var btn = document.querySelector('.auth-send-btn');
       if (btn) { btn.textContent = 'Send Link'; btn.disabled = false; }
       document.getElementById('auth-sent-msg').style.display = 'none';
+      // Update profile sheet to show signed-out view
+      document.getElementById('ps-signed-in').style.display  = 'none';
+      document.getElementById('ps-signed-out').style.display = 'block';
+    }
+
+    // ── Profile Sheet ─────────────────────────────────────
+    function openProfileSheet() {
+      var sheet   = document.getElementById('profile-sheet');
+      var overlay = document.getElementById('profile-overlay');
+      // Populate sheet with current data
+      if (currentUser) {
+        var email = currentUser.email || '';
+        var p     = safeGet(PROFILE_KEY) || {};
+        var name  = p.name || 'Driver';
+        var plate = p.plate || 'No plate saved';
+        var reminders = (safeGet(REMINDERS_KEY) || []).length;
+        document.getElementById('ps-signed-in').style.display  = 'block';
+        document.getElementById('ps-signed-out').style.display = 'none';
+        document.getElementById('ps-avatar').textContent    = email[0].toUpperCase();
+        document.getElementById('ps-name').textContent      = name;
+        document.getElementById('ps-email').textContent     = email;
+        document.getElementById('ps-plate').textContent     = plate || 'No plate saved';
+        document.getElementById('ps-reminders').textContent = reminders + ' reminder' + (reminders === 1 ? '' : 's');
+      } else {
+        document.getElementById('ps-signed-in').style.display  = 'none';
+        document.getElementById('ps-signed-out').style.display = 'block';
+      }
+      overlay.classList.add('open');
+      sheet.classList.add('open');
+    }
+
+    function closeProfileSheet() {
+      document.getElementById('profile-sheet').classList.remove('open');
+      document.getElementById('profile-overlay').classList.remove('open');
+    }
+
+    function sendMagicLinkFromSheet() {
+      if (!db) { showToast('Not connected — try refreshing'); return; }
+      var email = document.getElementById('ps-email-input').value.trim();
+      if (!email || !email.includes('@')) {
+        showToast('Enter a valid email address');
+        return;
+      }
+      var btn = document.querySelector('.profile-sheet-send-btn');
+      if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
+        .then(function(res) {
+          if (res.error) {
+            showToast('Error: ' + res.error.message);
+            if (btn) { btn.textContent = 'Send Magic Link'; btn.disabled = false; }
+          } else {
+            document.getElementById('ps-sent').style.display = 'block';
+            if (btn) { btn.textContent = 'Sent ✓'; }
+          }
+        });
     }
 
     // ── Profile sync ─────────────────────────────────────
