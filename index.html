@@ -4567,6 +4567,14 @@
       var initials = email ? email[0].toUpperCase() : 'U';
       document.getElementById('auth-avatar').textContent    = initials;
       document.getElementById('auth-user-email').textContent = email;
+      // Remember email so it pre-fills next time (helps if user forgets it)
+      if (email) {
+        localStorage.setItem('drivee_last_email', email);
+        var authInput = document.getElementById('auth-email-input');
+        var psInput   = document.getElementById('ps-email-input');
+        if (authInput) authInput.value = email;
+        if (psInput)   psInput.value   = email;
+      }
       // Update profile button to show user initial
       var topBtn = document.querySelector('.top-bar-profile');
       if (topBtn) topBtn.innerHTML = '<span style="font-size:15px;font-weight:700">' + initials + '</span>';
@@ -4722,6 +4730,14 @@
     initSupabase();     // Start Supabase auth listener (non-blocking)
     // Auto-restart GPS if user left it on last session
     if (localStorage.getItem(GPS_KEY)) { startGPS(); }
+    // Pre-fill email inputs with last known email (so user never has to remember it)
+    var savedEmail = localStorage.getItem('drivee_last_email');
+    if (savedEmail) {
+      var authInput = document.getElementById('auth-email-input');
+      var psInput   = document.getElementById('ps-email-input');
+      if (authInput) authInput.value = savedEmail;
+      if (psInput)   psInput.value   = savedEmail;
+    }
     // bell badge updated after splash hides, in updateBellBadge() below
 
     // ===================================================
