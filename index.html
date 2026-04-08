@@ -5049,7 +5049,7 @@
           '<div style="display:flex;flex-direction:column;gap:6px;margin:10px 0">' +
           matches.slice(0, 6).map(function(s) {
             return '<button class="btn btn-secondary" style="text-align:left;font-size:13px;padding:10px 12px" ' +
-              'onclick="selectStreet(' + JSON.stringify(s.name) + ')">' + s.name + '</button>';
+              "onclick=\"selectStreet('" + s.name.replace(/'/g, "\\'") + "')\">" + s.name + '</button>';
           }).join('') +
           '</div>';
         output.innerHTML = '';
