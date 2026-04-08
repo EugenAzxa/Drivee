@@ -2472,65 +2472,14 @@
     ================================================ -->
     <section class="tab-section" id="tab-dashboard">
 
-      <!-- Auth Card — sign in / signed in state -->
-      <div class="auth-card" id="auth-card">
-        <!-- Signed OUT state -->
-        <div id="auth-signout-state">
-          <div class="auth-prompt-title">☁️ Sync across devices</div>
-          <div class="auth-prompt-sub">Sign in to save your data on all your devices — free, no password needed.</div>
-          <div class="auth-input-row">
-            <input type="email" class="auth-email-input" id="auth-email-input" placeholder="your@email.com" />
-            <button class="auth-send-btn" onclick="sendMagicLink()">Send Link</button>
-          </div>
-          <div class="auth-sent-msg" id="auth-sent-msg" style="display:none">
-            ✅ Check your email — click the link to sign in
-          </div>
-        </div>
-        <!-- Signed IN state (hidden until auth) -->
-        <div id="auth-signin-state" style="display:none" class="auth-signed-in">
-          <div class="auth-avatar" id="auth-avatar">U</div>
-          <div class="auth-user-info">
-            <div class="auth-user-name" id="auth-user-name">User</div>
-            <div class="auth-user-email" id="auth-user-email"></div>
-          </div>
-          <button class="auth-signout" onclick="signOutUser()">Sign out</button>
-        </div>
-      </div>
-
-      <!-- Quick Stat Bento Cards -->
-      <div class="bento-row">
-        <div class="bento-card">
-          <div class="bento-value muted" id="stat-fines">0</div>
-          <div class="bento-label">Active Fines</div>
-        </div>
-        <div class="bento-card">
-          <div class="bento-value blue" id="stat-deadlines">0</div>
-          <div class="bento-label">Deadlines</div>
-        </div>
-        <div class="bento-card">
-          <div class="bento-value green" id="stat-saved">$0</div>
-          <div class="bento-label">Total Saved</div>
-        </div>
-      </div>
-
-      <!-- AI Ticket Scanner — dark hero card -->
-      <div class="scanner-hero" onclick="document.getElementById('ticket-photo').click()">
-        <div class="scanner-hero-icon">📸</div>
-        <div class="scanner-hero-text">
-          <div class="scanner-hero-title">AI Ticket Scanner</div>
-          <div class="scanner-hero-sub">Scan your ticket to extract details.</div>
-        </div>
-        <i class="fa-solid fa-chevron-right scanner-hero-arrow"></i>
-      </div>
-
-      <!-- Hero welcome card -->
+      <!-- HERO CARD — greeting + stats + auth -->
       <div class="hero-card">
         <div class="hero-top">
           <div>
             <div class="hero-greeting">Hello, <span id="hero-name">Driver</span> 👋</div>
-            <div class="hero-tagline">Your Toronto Ticket Shield</div>
+            <div class="hero-tagline">Your Canadian Ticket Shield</div>
           </div>
-          <div class="hero-logo-badge">🚗</div>
+          <div class="hero-logo-badge" id="hero-vehicle-badge">🚗</div>
         </div>
         <div class="hero-divider"></div>
         <div class="hero-stats">
@@ -2549,9 +2498,108 @@
             <div class="hero-stat-label">Emergency</div>
           </div>
         </div>
+        <div class="hero-divider" style="margin-top:14px"></div>
+        <!-- Auth embedded in hero -->
+        <div id="auth-signout-state" style="margin-top:12px">
+          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password needed</div>
+          <div class="auth-input-row">
+            <input type="email" class="auth-email-input" id="auth-email-input" placeholder="your@email.com" />
+            <button class="auth-send-btn" onclick="sendMagicLink()">Send Link</button>
+          </div>
+          <div class="auth-sent-msg" id="auth-sent-msg" style="display:none">✅ Check your email — click the link to sign in</div>
+        </div>
+        <div id="auth-signin-state" style="display:none;margin-top:12px" class="auth-signed-in">
+          <div class="auth-avatar" id="auth-avatar">U</div>
+          <div class="auth-user-info">
+            <div class="auth-user-name" id="auth-user-name">User</div>
+            <div class="auth-user-email" id="auth-user-email"></div>
+          </div>
+          <button class="auth-signout" onclick="signOutUser()">Sign out</button>
+        </div>
       </div>
 
-      <!-- My Vehicles Card -->
+      <!-- BENTO STATS -->
+      <div class="bento-row">
+        <div class="bento-card">
+          <div class="bento-value muted" id="stat-fines">0</div>
+          <div class="bento-label">Active Fines</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-value blue" id="stat-deadlines">0</div>
+          <div class="bento-label">Deadlines</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-value green" id="stat-saved">$0</div>
+          <div class="bento-label">Total Saved</div>
+        </div>
+      </div>
+
+      <!-- AI SCANNER + ANALYSER — combined card -->
+      <div class="card">
+        <div class="card-title">📸 AI Ticket Scanner</div>
+        <div class="card-subtitle">Scan any ticket or fine — get verdict, payment link &amp; auto-reminder</div>
+
+        <input type="file" id="ticket-photo" accept="image/*" capture="environment" style="display:none" onchange="scanTicketPhoto()" />
+        <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="document.getElementById('ticket-photo').click()">
+          <i class="fa-solid fa-camera"></i> Scan Ticket Photo with AI
+        </button>
+
+        <div id="scan-status" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.2);border-radius:12px;font-size:13px;color:var(--blue);text-align:center">
+          🤖 Claude is reading your ticket…
+        </div>
+
+        <!-- Post-scan actions — shown after successful scan -->
+        <div id="scan-actions" style="display:none;margin-bottom:12px">
+          <a id="scan-pay-btn" href="#" target="_blank" rel="noopener"
+             style="display:block;width:100%;text-align:center;text-decoration:none;margin-bottom:8px"
+             class="btn btn-primary">
+            💳 Pay Now →
+          </a>
+          <div id="scan-reminder-confirm" style="font-size:13px;color:var(--green);text-align:center;padding:4px 0;display:none">
+            ✅ Reminder auto-set for due date
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Or enter details manually to get a verdict:</div>
+
+        <div class="calc-input-wrap" style="margin-bottom:12px">
+          <span class="calc-dollar">$</span>
+          <input type="number" id="ticket-amount" class="calc-input" placeholder="Fine amount" min="0" max="9999" />
+        </div>
+
+        <div class="input-group">
+          <label for="ticket-type">Violation Type</label>
+          <select id="ticket-type">
+            <option value="">Select violation type…</option>
+            <option value="parking">Parking Violation</option>
+            <option value="speeding">Speeding</option>
+            <option value="redlight">Red Light Camera</option>
+            <option value="stopsign">Stop Sign</option>
+            <option value="toll">Toll (407 ETR / Highway)</option>
+            <option value="hov">HOV Lane Violation</option>
+            <option value="distracted">Distracted Driving</option>
+            <option value="seatbelt">Seatbelt</option>
+            <option value="careless">Careless Driving</option>
+            <option value="stunt">Stunt Driving</option>
+            <option value="dui">DUI / Impaired Driving</option>
+            <option value="insurance">No Insurance</option>
+            <option value="registration">Registration / Plate</option>
+            <option value="camera">Camera Enforcement</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="verdict-ref">Reference / Ticket Number</label>
+          <input type="text" id="verdict-ref" placeholder="e.g. PK151776" />
+        </div>
+
+        <button class="btn btn-primary" onclick="analyseTicket()">Get Instant Verdict</button>
+        <div id="verdict-output"></div>
+      </div>
+
+      <!-- MY VEHICLES -->
       <div class="card">
         <div class="card-title">🚘 My Vehicles</div>
         <div class="card-subtitle">Track tickets per car</div>
@@ -2600,48 +2648,6 @@
         <div id="scan-history-list"></div>
       </div>
 
-      <!-- Ticket Analyser Card -->
-      <div class="card">
-        <div class="card-title">⚡ Ticket Analyser</div>
-        <div class="card-subtitle">Enter your ticket details — get an instant verdict and action plan</div>
-
-        <!-- Photo — triggers OCR scan automatically on selection -->
-        <div class="input-group">
-          <label for="ticket-photo">Ticket Photo — AI will read it automatically</label>
-          <input type="file" id="ticket-photo" accept="image/*" capture="environment" onchange="scanTicketPhoto()" />
-        </div>
-
-        <!-- OCR status — shown while scanning -->
-        <div id="scan-status" style="display:none; margin-bottom:12px; padding:12px 14px; background:rgba(10,132,255,0.07); border:1px solid rgba(10,132,255,0.2); border-radius:12px; font-size:13px; color:var(--blue); text-align:center; animation:pulse 1.5s ease-in-out infinite;">
-          📷 Reading your ticket…
-        </div>
-
-        <!-- Fine amount -->
-        <div class="calc-input-wrap" style="margin-bottom: 12px;">
-          <span class="calc-dollar">$</span>
-          <input type="number" id="ticket-amount" class="calc-input" placeholder="Fine amount" min="0" max="9999" />
-        </div>
-
-        <!-- Violation type -->
-        <div class="input-group">
-          <label for="ticket-type">Violation Type</label>
-          <select id="ticket-type">
-            <option value="">Select violation type…</option>
-            <option value="parking">Parking Violation</option>
-            <option value="speeding">Speeding</option>
-            <option value="redlight">Red Light Camera</option>
-            <option value="careless">Careless Driving</option>
-            <option value="stunt">Stunt Driving</option>
-            <option value="dui">DUI / Impaired Driving</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <button class="btn btn-primary" onclick="analyseTicket()">Get Instant Verdict</button>
-
-        <!-- Verdict output — injected by JS -->
-        <div id="verdict-output"></div>
-      </div>
 
       <!-- Support Banner -->
       <a class="support-banner" href="https://www.gofundme.com/manage/drivee-the-allinone-solution-for-torontos-road-drivers" target="_blank" rel="noopener">
@@ -3476,52 +3482,85 @@
     // All processing is 100% on-device — photo never leaves the browser.
     // ===================================================
 
+    function getPaymentUrl(type, province) {
+      if (type === 'toll') return 'https://www.407etr.com/en/pay-your-bill';
+      if (province === 'QC') return 'https://www.ville.quebec.qc.ca/services/constatinfraction/index.aspx';
+      if (province === 'BC') return 'https://www.icbc.com/driver-licensing/tickets/Pages/pay-a-ticket.aspx';
+      if (province === 'AB') return 'https://www.alberta.ca/traffic-fines.aspx';
+      if (province === 'MB') return 'https://www.mpi.mb.ca/Pages/driver-records.aspx';
+      // Ontario defaults
+      if (type === 'parking') return 'https://secure.toronto.ca/eConnectionFacade/faces/AnonymousPaymentFlow.jsp';
+      return 'https://www.ontario.ca/page/pay-traffic-ticket';
+    }
+
     function scanTicketPhoto() {
       var file = document.getElementById('ticket-photo').files[0];
       if (!file) return;
 
-      var statusEl = document.getElementById('scan-status');
-      statusEl.style.display = 'block';
-      statusEl.textContent   = '🤖 Claude Vision reading your ticket…';
-      statusEl.style.animation = 'pulse 1.5s ease-in-out infinite';
-      statusEl.style.background = 'rgba(37,99,235,0.07)';
-      statusEl.style.borderColor = 'rgba(37,99,235,0.2)';
-      statusEl.style.color = 'var(--blue)';
+      var statusEl  = document.getElementById('scan-status');
+      var actionsEl = document.getElementById('scan-actions');
+      if (actionsEl) actionsEl.style.display = 'none';
 
-      // Try Claude Vision first — much more accurate than OCR
+      statusEl.style.display    = 'block';
+      statusEl.textContent      = '🤖 Claude Vision reading your ticket…';
+      statusEl.style.animation  = 'pulse 1.5s ease-in-out infinite';
+      statusEl.style.background = 'rgba(37,99,235,0.07)';
+      statusEl.style.borderColor= 'rgba(37,99,235,0.2)';
+      statusEl.style.color      = 'var(--blue)';
+
       scanTicketWithVision(file,
-          function(text) {
-            var p = parseVisionReply(text);
-            // Fill analyser fields
-            if (p.amount) document.getElementById('ticket-amount').value = parseFloat(p.amount);
-            if (p.type) {
-              var sel = document.getElementById('ticket-type');
-              if (sel && ['parking','speeding','redlight','careless','stunt','dui','other'].indexOf(p.type) !== -1) sel.value = p.type;
-            }
-            if (p.ref) {
-              var rf = document.getElementById('verdict-ref');
-              if (rf) rf.value = p.ref;
-            }
-            // Auto-fill cross-app data
-            autoFillPlate(p.plate);
-            autoAddReminder(p.ref, p.due);
-            // Save to scan history with thumbnail
-            makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
-            var found = [];
-            if (p.amount) found.push('$' + p.amount);
-            if (p.ref)    found.push(p.ref);
-            if (p.plate && p.plate !== 'unknown') found.push(p.plate);
-            statusEl.style.animation = 'none';
-            statusEl.style.background = 'rgba(34,197,94,0.08)';
-            statusEl.style.borderColor = 'rgba(34,197,94,0.25)';
-            statusEl.style.color = 'var(--green)';
-            statusEl.textContent = '✅ Claude found: ' + (found.join(' · ') || 'details extracted') + ' — tap Get Verdict';
-          },
-          function() {
-            // Vision failed — fall back to Tesseract
-            runTesseractFallback(file, statusEl);
+        function(text) {
+          var p = parseVisionReply(text);
+
+          // Fill analyser fields
+          if (p.amount) document.getElementById('ticket-amount').value = parseFloat(p.amount);
+          if (p.type) {
+            var sel = document.getElementById('ticket-type');
+            if (sel) sel.value = p.type;
           }
-        );
+          if (p.ref) {
+            var rf = document.getElementById('verdict-ref');
+            if (rf) rf.value = p.ref;
+          }
+
+          // Auto-fill cross-app data
+          autoFillPlate(p.plate);
+          var reminderAdded = false;
+          if (p.ref && p.due && p.due !== 'unknown') {
+            var before = (safeGet(REMINDERS_KEY) || []).length;
+            autoAddReminder(p.ref, p.due);
+            reminderAdded = (safeGet(REMINDERS_KEY) || []).length > before;
+          }
+
+          // Save to scan history
+          makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
+
+          // Show Pay Now button with correct URL
+          var payBtn = document.getElementById('scan-pay-btn');
+          var reminderConfirm = document.getElementById('scan-reminder-confirm');
+          if (payBtn) {
+            payBtn.href = getPaymentUrl(p.type, p.province);
+            payBtn.textContent = '💳 Pay Now →';
+            if (p.amount) payBtn.textContent = '💳 Pay $' + p.amount + ' Now →';
+          }
+          if (reminderConfirm) reminderConfirm.style.display = reminderAdded ? 'block' : 'none';
+          if (actionsEl) actionsEl.style.display = 'block';
+
+          // Update status
+          var found = [];
+          if (p.amount) found.push('$' + p.amount);
+          if (p.ref)    found.push(p.ref);
+          if (p.plate && p.plate !== 'unknown') found.push(p.plate);
+          statusEl.style.animation  = 'none';
+          statusEl.style.background = 'rgba(34,197,94,0.08)';
+          statusEl.style.borderColor= 'rgba(34,197,94,0.25)';
+          statusEl.style.color      = 'var(--green)';
+          statusEl.textContent = '✅ ' + (found.join(' · ') || 'Details extracted') + ' — scroll down for verdict';
+        },
+        function() {
+          runTesseractFallback(file, statusEl);
+        }
+      );
     }
 
     function runTesseractFallback(file, statusEl) {
