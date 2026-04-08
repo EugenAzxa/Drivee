@@ -3347,10 +3347,12 @@
           attributionControl: false
         });
 
-        // CartoDB Voyager — full colour streets, matches the live app at quiteworld.com
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-          maxZoom: 19,
-          attribution: '© <a href="https://carto.com/">CARTO</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        // MapTiler Streets — crisp, full colour, better than CartoDB
+        L.tileLayer('https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=7uvlITe12AqEXDHHvGy5', {
+          maxZoom: 20,
+          tileSize: 512,
+          zoomOffset: -1,
+          attribution: '© <a href="https://www.maptiler.com/">MapTiler</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(driveeMap);
 
         mapInitialised = true;
@@ -3791,46 +3793,100 @@
     function submitReport() {
       if (!selectedIssueType) return;
 
-      var desc  = document.getElementById('report-desc').value.trim();
-      var label = ISSUE_LABELS[selectedIssueType];
-      var date  = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local date
-      var id    = Date.now() + '_' + Math.floor(Math.random() * 9999);
+      var desc      = document.getElementById('report-desc').value.trim();
+      var label     = ISSUE_LABELS[selectedIssueType];
+      var date      = new Date().toLocaleDateString('en-CA');
+      var id        = Date.now() + '_' + Math.floor(Math.random() * 9999);
+      var photoFile = document.getElementById('report-photo').files[0];
 
-      // Build the report object — Toronto centre coords until GPS is added
-      var report = {
-        id:    id,
-        type:  selectedIssueType,
-        label: label,
-        desc:  desc,
-        date:  date,
-        lat:   43.6532,
-        lng:   -79.3832
-      };
+      var submitBtn = document.querySelector('#report-form .btn-primary');
+      if (submitBtn) { submitBtn.textContent = '📍 Getting your location…'; submitBtn.disabled = true; }
 
-      // Persist to localStorage
-      var reports = safeGet(REPORTS_KEY) || [];
-      reports.push(report);
-      safeSet(REPORTS_KEY, reports);
+      // Helper — finalises and saves the report once we have coords + optional photo
+      function finaliseReport(lat, lng, photoDataUrl) {
+        var report = {
+          id:    id,
+          type:  selectedIssueType,
+          label: label,
+          desc:  desc,
+          date:  date,
+          lat:   lat,
+          lng:   lng,
+          photo: photoDataUrl || null
+        };
 
-      // Drop pin on the Leaflet map
-      dropReportPin(report);
+        var reports = safeGet(REPORTS_KEY) || [];
+        reports.push(report);
+        safeSet(REPORTS_KEY, reports);
 
-      // Open mail client to 311 with pre-filled content.
-      // Photo cannot be auto-attached via mailto — user attaches manually.
-      var subject = encodeURIComponent('Community Report: ' + label);
-      var body = encodeURIComponent(
-        'Issue Type: ' + label + '\n' +
-        'Date: ' + date + '\n' +
-        (desc ? 'Description: ' + desc + '\n' : '') +
-        '\nSubmitted via Drivee app.\n' +
-        'Please find my photo attached.'
-      );
-      window.location.href = 'mailto:311@toronto.ca?subject=' + subject + '&body=' + body;
+        // Switch to Map tab and drop the pin
+        showTab('tab-hotspots');
+        setTimeout(function() {
+          dropReportPin(report);
+          if (driveeMap) driveeMap.setView([lat, lng], 17);
+        }, 300);
 
-      showToast('Report pinned on map!');
-      cancelReport();
-      renderReportCount();
-      renderReportsList();
+        var subject = encodeURIComponent('Community Report: ' + label);
+        var body = encodeURIComponent(
+          'Issue Type: ' + label + '\n' +
+          'Date: ' + date + '\n' +
+          'Location: ' + lat.toFixed(6) + ', ' + lng.toFixed(6) + '\n' +
+          (desc ? 'Description: ' + desc + '\n' : '') +
+          '\nSubmitted via Drivee app.\nPlease find my photo attached.'
+        );
+        window.location.href = 'mailto:311@toronto.ca?subject=' + subject + '&body=' + body;
+
+        showToast('📍 Report pinned on map!');
+        cancelReport();
+        renderReportCount();
+        renderReportsList();
+        if (submitBtn) { submitBtn.textContent = '📍 Pin on Map & Email 311'; submitBtn.disabled = false; }
+      }
+
+      // Resize photo to thumbnail (max 300px) to fit in localStorage
+      function processPhoto(file, callback) {
+        if (!file) { callback(null); return; }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var maxW = 300, scale = Math.min(1, maxW / img.width);
+            var canvas = document.createElement('canvas');
+            canvas.width  = Math.round(img.width  * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            callback(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Get GPS location, then process photo, then save
+      function getLocationThenSave() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            function(pos) {
+              processPhoto(photoFile, function(photoDataUrl) {
+                finaliseReport(pos.coords.latitude, pos.coords.longitude, photoDataUrl);
+              });
+            },
+            function() {
+              // GPS denied — fall back to Toronto centre
+              processPhoto(photoFile, function(photoDataUrl) {
+                finaliseReport(43.6532, -79.3832, photoDataUrl);
+              });
+            },
+            { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+          );
+        } else {
+          processPhoto(photoFile, function(photoDataUrl) {
+            finaliseReport(43.6532, -79.3832, photoDataUrl);
+          });
+        }
+      }
+
+      getLocationThenSave();
     }
 
     // Drops a styled emoji marker on the Leaflet map for a report.
@@ -3847,11 +3903,15 @@
         popupAnchor: [0, -18]
       });
 
+      var photoHtml = report.photo
+        ? '<br><img src="' + report.photo + '" style="width:160px;border-radius:8px;margin-top:6px;display:block">'
+        : '';
       L.marker([report.lat, report.lng], { icon: icon })
         .bindPopup(
           '<strong>' + report.label + '</strong><br>' +
           report.date +
-          (report.desc ? '<br><span style="color:#8E8E93">' + report.desc + '</span>' : '')
+          (report.desc ? '<br><span style="color:#666">' + report.desc + '</span>' : '') +
+          photoHtml
         )
         .addTo(driveeMap);
     }
