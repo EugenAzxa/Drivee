@@ -2826,16 +2826,11 @@
         <div class="card-title">Street Parking Checker</div>
         <div class="card-subtitle">Rates, enforcement hours, and tow warnings</div>
         <div class="input-group">
-          <label for="street-select">Select a Street</label>
-          <select id="street-select" onchange="checkStreet()">
-            <option value="">Choose a street…</option>
-            <option value="queen-w">Queen St W (Spadina to Bathurst)</option>
-            <option value="bloor-w">Bloor St W (Yorkville Area)</option>
-            <option value="kensington">Kensington Market</option>
-            <option value="front-st">Front St (Near Scotiabank Arena)</option>
-            <option value="king-w">King St W</option>
-          </select>
+          <label for="street-search">Search a street</label>
+          <input type="text" id="street-search" placeholder="e.g. Yonge, Dundas, College…" oninput="checkStreet()" autocomplete="off" />
         </div>
+        <!-- Matching suggestions -->
+        <div id="street-suggestions"></div>
         <div id="street-output"></div>
       </div>
 
@@ -4977,8 +4972,50 @@
     // Hardcoded Toronto data per PRD section 3.7.
     // V2: replace with Toronto Open Data API (CKAN).
     // ===================================================
-    var STREETS = {
-      'queen-w': {
+    var STREETS = [
+      { name: 'Queen St W — Spadina to Bathurst',       rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 3:30–6:30pm' },
+      { name: 'Queen St W — Bathurst to Ossington',     rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Queen St E — Parliament to Broadview',   rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Bloor St W — Spadina to Bathurst',       rate: '$4.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Bloor St W — Ossington to Dufferin',     rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Bloor St E — Yonge to Sherbourne',       rate: '$4.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 4–6pm' },
+      { name: 'Yonge St — Bloor to Wellesley',          rate: '$4.00/hr', hours: 'Mon–Sun 8am–midnight', free: 'Daily after midnight',          tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Yonge St — Wellesley to College',        rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 4–6pm' },
+      { name: 'Yonge St — Eglinton to Lawrence',        rate: '$3.00/hr', hours: 'Mon–Sat 8am–8pm',      free: 'Sun · Daily after 8pm',         tow: null },
+      { name: 'King St W — Spadina to Bathurst',        rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 3–7pm' },
+      { name: 'King St E — Yonge to Parliament',        rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Dundas St W — Spadina to Bathurst',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Dundas St W — Bathurst to Dufferin',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Dundas St E — Yonge to Parliament',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'College St — Spadina to Bathurst',       rate: '$2.50/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'College St — Bathurst to Dufferin',      rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Spadina Ave — Queen to College',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Spadina Ave — College to Bloor',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Bay St — Front to Bloor',                rate: '$4.00/hr', hours: 'Mon–Fri 7am–10pm',     free: 'Sat–Sun · Daily after 10pm',    tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Front St — Yonge to Jarvis',             rate: '$5.00/hr', hours: 'Mon–Sun 7am–midnight', free: 'After midnight only',           tow: 'Tow-away: Event days — check signage' },
+      { name: 'Front St W — Spadina to Bathurst',       rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Queens Quay W — Harbourfront',           rate: '$3.50/hr', hours: 'Mon–Sun 9am–9pm',      free: 'Daily after 9pm',               tow: null },
+      { name: 'Kensington Market — Augusta Ave',        rate: '$2.50/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Church St — Bloor to Wellesley',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Danforth Ave — Broadview to Pape',       rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Danforth Ave — Pape to Donlands',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'St Clair Ave W — Yonge to Avenue',       rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'St Clair Ave W — Bathurst to Dufferin',  rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Eglinton Ave W — Avenue to Bathurst',    rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Eglinton Ave E — Yonge to Mt Pleasant',  rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Lawrence Ave W — Dufferin to Allen',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Avenue Rd — Bloor to Davenport',         rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 4–6pm' },
+      { name: 'Ossington Ave — Dundas to Queen',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Roncesvalles Ave — Queen to Howard Park',rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Parliament St — Dundas to Bloor',        rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Bathurst St — Bloor to Dupont',          rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Dufferin St — Bloor to Dupont',          rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Wellington St W — Bay to Spadina',       rate: '$4.00/hr', hours: 'Mon–Fri 7am–9pm',      free: 'Sat–Sun · Daily after 9pm',     tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Adelaide St W — Bay to Spadina',         rate: '$4.00/hr', hours: 'Mon–Fri 7am–9pm',      free: 'Sat–Sun · Daily after 9pm',     tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
+      { name: 'Gerrard St E — Broadview to Greenwood',  rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+    ];
+    // KEEP old object for backwards compat (not used by new checkStreet)
+    var _OLD_STREETS = { 'queen-w': {
         name:  'Queen St W (Spadina to Bathurst)',
         rate:  '$3.00 / hour',
         hours: 'Mon–Sat 8am–9pm',
@@ -5016,29 +5053,60 @@
     };
 
     function checkStreet() {
-      var key    = document.getElementById('street-select').value;
+      var query  = (document.getElementById('street-search').value || '').trim().toLowerCase();
+      var sugBox = document.getElementById('street-suggestions');
       var output = document.getElementById('street-output');
-      if (!key) { output.innerHTML = ''; return; }
 
-      var s = STREETS[key];
+      if (!query || query.length < 2) { sugBox.innerHTML = ''; output.innerHTML = ''; return; }
+
+      var matches = STREETS.filter(function(s) {
+        return s.name.toLowerCase().indexOf(query) !== -1;
+      });
+
+      if (matches.length === 0) {
+        sugBox.innerHTML = '';
+        output.innerHTML =
+          '<div class="empty-state" style="margin-top:12px">' +
+            '<div class="empty-state-icon">🚧</div>' +
+            '<strong>Coming Soon</strong><br>' +
+            '<span style="font-size:13px;color:var(--text-secondary)">We\'re adding more streets. Check back soon.</span>' +
+          '</div>';
+        return;
+      }
+
+      if (matches.length > 1) {
+        sugBox.innerHTML =
+          '<div style="display:flex;flex-direction:column;gap:6px;margin:10px 0">' +
+          matches.slice(0, 6).map(function(s) {
+            return '<button class="btn btn-secondary" style="text-align:left;font-size:13px;padding:10px 12px" ' +
+              'onclick="selectStreet(' + JSON.stringify(s.name) + ')">' + s.name + '</button>';
+          }).join('') +
+          '</div>';
+        output.innerHTML = '';
+      } else {
+        sugBox.innerHTML = '';
+        showStreetResult(matches[0]);
+      }
+    }
+
+    function selectStreet(name) {
+      document.getElementById('street-search').value = name;
+      document.getElementById('street-suggestions').innerHTML = '';
+      var s = STREETS.find(function(s) { return s.name === name; });
+      if (s) showStreetResult(s);
+    }
+
+    function showStreetResult(s) {
+      var output = document.getElementById('street-output');
       output.innerHTML =
-        '<div style="margin-top: 12px;">' +
-          '<div class="street-info-row">' +
-            '<span class="street-info-label">Hourly Rate</span>' +
-            '<span class="street-info-value">' + s.rate + '</span>' +
-          '</div>' +
-          '<div class="street-info-row">' +
-            '<span class="street-info-label">Enforcement Hours</span>' +
-            '<span class="street-info-value">' + s.hours + '</span>' +
-          '</div>' +
-          '<div class="street-info-row">' +
-            '<span class="street-info-label">Free Parking</span>' +
-            '<span class="street-info-value">' + s.free + '</span>' +
-          '</div>' +
+        '<div style="margin-top:12px">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">' + esc(s.name) + '</div>' +
+          '<div class="street-info-row"><span class="street-info-label">Hourly Rate</span><span class="street-info-value">' + s.rate + '</span></div>' +
+          '<div class="street-info-row"><span class="street-info-label">Enforcement Hours</span><span class="street-info-value">' + s.hours + '</span></div>' +
+          '<div class="street-info-row"><span class="street-info-label">Free Parking</span><span class="street-info-value">' + s.free + '</span></div>' +
         '</div>' +
         (s.tow ? '<div class="street-tow-warning">⚠️ ' + s.tow + '</div>' : '') +
-        '<button class="btn btn-secondary" style="margin-top: 12px;" ' +
-          'onclick="window.open(\'https://parking.greenp.com\', \'_blank\')">Open Green P →</button>';
+        '<button class="btn btn-secondary" style="margin-top:12px" onclick="window.open(\'https://parking.greenp.com\',\'_blank\')">Open Green P →</button>';
     }
 
     // ===================================================
