@@ -811,6 +811,30 @@
        SUPPORT BANNER
     =================================================== */
     /* ===================================================
+       SCAN HISTORY — ticket scan cards in Dashboard
+    =================================================== */
+    .scan-history-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .scan-history-card:last-child { border-bottom: none; padding-bottom: 0; }
+    .scan-thumb {
+      width: 52px; height: 52px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0; border: 1px solid var(--border);
+    }
+    .scan-thumb-placeholder {
+      width: 52px; height: 52px; border-radius: 8px; flex-shrink: 0;
+      background: var(--elevated); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-tertiary); font-size: 20px;
+    }
+    .scan-info { flex: 1; min-width: 0; }
+    .scan-ref    { font-size: 13px; font-weight: 600; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; }
+    .scan-amount { font-size: 14px; font-weight: 700; color: var(--danger); margin-top: 2px; }
+    .scan-delete { background: none; border: none; color: var(--text-tertiary); font-size: 18px; cursor: pointer; padding: 4px 6px; flex-shrink: 0; }
+    @media (hover: hover) { .scan-delete:hover { color: var(--red); } }
+
+    /* ===================================================
        MY VEHICLES — car list, emoji picker, filter chips
     =================================================== */
     .car-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
@@ -2566,6 +2590,16 @@
         <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
       </div>
 
+      <!-- Scan History Card -->
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="card-title" style="margin-bottom:0">🎫 Scanned Tickets</div>
+          <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px" onclick="safeSet('drivee_scans',[]);renderScanHistory()">Clear</button>
+        </div>
+        <div class="card-subtitle" style="margin-bottom:12px">Photos and extracted data from your scans</div>
+        <div id="scan-history-list"></div>
+      </div>
+
       <!-- Ticket Analyser Card -->
       <div class="card">
         <div class="card-title">⚡ Ticket Analyser</div>
@@ -3461,6 +3495,7 @@
         scanTicketWithVision(file,
           function(text) {
             var p = parseVisionReply(text);
+            // Fill analyser fields
             if (p.amount) document.getElementById('ticket-amount').value = parseFloat(p.amount);
             if (p.type) {
               var sel = document.getElementById('ticket-type');
@@ -3469,17 +3504,16 @@
             if (p.ref) {
               var rf = document.getElementById('verdict-ref');
               if (rf) rf.value = p.ref;
-              var rr = document.getElementById('reminder-ref');
-              if (rr && !rr.value) rr.value = p.ref;
             }
-            if (p.due && p.due !== 'unknown') {
-              var rd = document.getElementById('reminder-date');
-              if (rd && !rd.value) rd.value = p.due;
-            }
+            // Auto-fill cross-app data
+            autoFillPlate(p.plate);
+            autoAddReminder(p.ref, p.due);
+            // Save to scan history with thumbnail
+            makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
             var found = [];
             if (p.amount) found.push('$' + p.amount);
             if (p.ref)    found.push(p.ref);
-            if (p.type)   found.push(p.type);
+            if (p.plate && p.plate !== 'unknown') found.push(p.plate);
             statusEl.style.animation = 'none';
             statusEl.style.background = 'rgba(34,197,94,0.08)';
             statusEl.style.borderColor = 'rgba(34,197,94,0.25)';
@@ -3619,7 +3653,7 @@
               role: 'user',
               content: [
                 { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-                { type: 'text', text: 'This is a parking or traffic ticket image. Extract details and reply in this EXACT format (no extra text):\nAMOUNT: [fine amount, number only]\nREF: [ticket or reference number]\nTYPE: [one of: parking, speeding, redlight, careless, stunt, dui, other]\nDATE: [violation date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear sentence: dispute chances and recommendation]\n\nIf this is NOT a ticket image, reply exactly: NOT_A_TICKET' }
+                { type: 'text', text: 'This is a parking or traffic ticket image. Extract details and reply in this EXACT format (no extra text):\nAMOUNT: [fine amount, number only]\nREF: [ticket or reference number]\nPLATE: [vehicle license plate number, or unknown]\nTYPE: [one of: parking, speeding, redlight, careless, stunt, dui, other]\nDATE: [violation date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear sentence: dispute chances and recommendation]\n\nIf this is NOT a ticket image, reply exactly: NOT_A_TICKET' }
               ]
             }]
           })
@@ -3641,14 +3675,116 @@
 
     // Parse the structured Claude Vision reply into fields
     function parseVisionReply(text) {
+      function grab(rx) { var m = text.match(rx); return m ? m[1].trim() : null; }
       return {
-        amount:  (text.match(/AMOUNT:\s*([\d.]+)/i)  || [])[1] || null,
-        ref:     (text.match(/REF:\s*([^\n]+)/i)      || [])[1] ? (text.match(/REF:\s*([^\n]+)/i)[1].trim()) : null,
-        type:    (text.match(/TYPE:\s*(\w+)/i)         || [])[1] ? (text.match(/TYPE:\s*(\w+)/i)[1].toLowerCase()) : null,
-        date:    (text.match(/DATE:\s*([^\n]+)/i)      || [])[1] ? (text.match(/DATE:\s*([^\n]+)/i)[1].trim()) : null,
-        due:     (text.match(/DUE:\s*([^\n]+)/i)       || [])[1] ? (text.match(/DUE:\s*([^\n]+)/i)[1].trim()) : null,
-        advice:  (text.match(/ADVICE:\s*([^\n]+)/i)    || [])[1] ? (text.match(/ADVICE:\s*([^\n]+)/i)[1].trim()) : null
+        amount: grab(/AMOUNT:\s*([\d.]+)/i),
+        ref:    grab(/REF:\s*([^\n]+)/i),
+        plate:  grab(/PLATE:\s*([^\n]+)/i),
+        type:   (grab(/TYPE:\s*(\w+)/i) || '').toLowerCase() || null,
+        date:   grab(/DATE:\s*([^\n]+)/i),
+        due:    grab(/DUE:\s*([^\n]+)/i),
+        advice: grab(/ADVICE:\s*([^\n]+)/i)
       };
+    }
+
+    // ── Scan history — save every scan with thumbnail ─────
+    var SCANS_KEY = 'drivee_scans';
+
+    function makeThumbnail(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var maxW = 120, scale = Math.min(1, maxW / img.width);
+          var c = document.createElement('canvas');
+          c.width  = Math.round(img.width  * scale);
+          c.height = Math.round(img.height * scale);
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          callback(c.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveScanToHistory(parsed, thumbDataUrl) {
+      var scans = safeGet(SCANS_KEY) || [];
+      scans.unshift({
+        id:     Date.now() + '_' + Math.floor(Math.random()*9999),
+        scannedAt: new Date().toLocaleDateString('en-CA'),
+        amount: parsed.amount,
+        ref:    parsed.ref,
+        plate:  parsed.plate,
+        type:   parsed.type,
+        due:    parsed.due,
+        advice: parsed.advice,
+        thumb:  thumbDataUrl || null
+      });
+      // Keep last 20 scans only
+      if (scans.length > 20) scans = scans.slice(0, 20);
+      safeSet(SCANS_KEY, scans);
+      renderScanHistory();
+    }
+
+    // Auto-fill profile plate if plate found and profile plate is empty
+    function autoFillPlate(plate) {
+      if (!plate || plate === 'unknown') return;
+      var p = safeGet(PROFILE_KEY) || {};
+      if (!p.plate) {
+        p.plate = plate.toUpperCase();
+        safeSet(PROFILE_KEY, p);
+        var el = document.getElementById('profile-plate');
+        if (el) el.value = p.plate;
+        saveProfileToSupabase(p.name || '', p.plate);
+        showToast('🚗 Plate ' + p.plate + ' saved to your profile');
+      }
+    }
+
+    // Auto-add reminder if ref + due date found
+    function autoAddReminder(ref, due) {
+      if (!ref || !due || due === 'unknown') return;
+      // Check if reminder for this ref already exists
+      var existing = (safeGet(REMINDERS_KEY) || []).find(function(r) { return r.ref === ref; });
+      if (existing) return;
+      var reminder = { id: Date.now() + '_' + Math.floor(Math.random()*9999), ref: ref, dueDate: due, carId: null };
+      var reminders = safeGet(REMINDERS_KEY) || [];
+      reminders.push(reminder);
+      safeSet(REMINDERS_KEY, reminders);
+      addReminderToSupabase(ref, due, reminder.id);
+      renderReminders();
+      updateHeroCard();
+      showToast('🔔 Reminder added: ' + ref + ' due ' + formatDate(due));
+    }
+
+    // Render scan history cards in the Dashboard
+    function renderScanHistory() {
+      var el = document.getElementById('scan-history-list');
+      if (!el) return;
+      var scans = safeGet(SCANS_KEY) || [];
+      if (scans.length === 0) {
+        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎫</div>No scans yet — scan a ticket photo to get started</div>';
+        return;
+      }
+      el.innerHTML = scans.map(function(s) {
+        var dueLabel = s.due && s.due !== 'unknown' ? '<span style="color:var(--danger);font-size:11px">Due ' + formatDate(s.due) + '</span>' : '';
+        return '<div class="scan-history-card">' +
+          (s.thumb ? '<img class="scan-thumb" src="' + s.thumb + '" alt="Ticket">' : '<div class="scan-thumb-placeholder"><i class="fa-solid fa-ticket"></i></div>') +
+          '<div class="scan-info">' +
+            '<div class="scan-ref">' + esc(s.ref || 'Unknown ref') + '</div>' +
+            (s.amount ? '<div class="scan-amount">$' + s.amount + '</div>' : '') +
+            (s.plate && s.plate !== 'unknown' ? '<div style="font-size:11px;color:var(--text-secondary);font-family:\'JetBrains Mono\',monospace">' + esc(s.plate) + '</div>' : '') +
+            dueLabel +
+            '<div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">' + s.scannedAt + '</div>' +
+          '</div>' +
+          '<button class="scan-delete" onclick="deleteScan(\'' + s.id + '\')" title="Remove">&times;</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    function deleteScan(id) {
+      var scans = (safeGet(SCANS_KEY) || []).filter(function(s) { return s.id !== id; });
+      safeSet(SCANS_KEY, scans);
+      renderScanHistory();
     }
 
     // ── Legal tab photo scan ──────────────────────────────
@@ -3673,24 +3809,18 @@
           var lines = [];
           if (p.amount) lines.push('Fine: $' + p.amount);
           if (p.ref)    lines.push('Ref: ' + p.ref);
+          if (p.plate && p.plate !== 'unknown') lines.push('Plate: ' + p.plate);
           if (p.type)   lines.push('Type: ' + p.type);
           if (p.date && p.date !== 'unknown') lines.push('Date: ' + p.date);
           if (p.due  && p.due  !== 'unknown') lines.push('Due: ' + p.due);
           if (p.advice) lines.push('\n' + p.advice);
           document.getElementById('legal-textarea').value = lines.join('\n');
-
-          // Also pre-fill Dashboard reminder ref
-          if (p.ref) {
-            var rr = document.getElementById('reminder-ref');
-            if (rr && !rr.value) rr.value = p.ref;
-          }
-          if (p.due && p.due !== 'unknown') {
-            var rd = document.getElementById('reminder-date');
-            if (rd && !rd.value) rd.value = p.due;
-          }
-
+          // Auto-fill cross-app data
+          autoFillPlate(p.plate);
+          autoAddReminder(p.ref, p.due);
+          makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
           status.className = 'vision-scan-status done';
-          status.textContent = '✅ Ticket scanned — review details and tap Analyze';
+          status.textContent = '✅ Ticket scanned — reminder & profile updated. Tap Analyze.';
         },
         function(err) {
           status.className = 'vision-scan-status error';
@@ -3716,14 +3846,18 @@
         function(text) {
           showChatTyping(false);
           var p = parseVisionReply(text);
-          var msg = '📋 **Ticket scanned:**\n';
-          if (p.amount) msg += '• Fine: **$' + p.amount + '**\n';
+          var msg = '📋 Ticket scanned:\n';
+          if (p.amount) msg += '• Fine: $' + p.amount + '\n';
           if (p.ref)    msg += '• Ref: ' + p.ref + '\n';
+          if (p.plate && p.plate !== 'unknown') msg += '• Plate: ' + p.plate + '\n';
           if (p.type)   msg += '• Type: ' + p.type + '\n';
-          if (p.due && p.due !== 'unknown') msg += '• Due: ' + p.due + '\n';
+          if (p.due && p.due !== 'unknown') msg += '• Due: ' + formatDate(p.due) + '\n';
           if (p.advice) msg += '\n' + p.advice;
           appendChatMessage('bot', msg);
-          // Reset input
+          // Auto-fill cross-app data silently
+          autoFillPlate(p.plate);
+          autoAddReminder(p.ref, p.due);
+          makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
           document.getElementById('chat-photo-input').value = '';
         },
         function(err) {
@@ -5273,10 +5407,11 @@
     // ON LOAD — show Dashboard tab by default
     // ===================================================
     showTab('tab-dashboard');
-    loadProfile();      // Populate name + plate if previously saved
-    renderCars();       // Render saved vehicles on startup
-    renderReminders();  // Render any saved reminders on startup
-    updateHeroCard();   // Sync hero card stats on load
+    loadProfile();        // Populate name + plate if previously saved
+    renderCars();         // Render saved vehicles on startup
+    renderReminders();    // Render any saved reminders on startup
+    renderScanHistory();  // Render ticket scan history on startup
+    updateHeroCard();     // Sync hero card stats on load
     initSupabase();     // Start Supabase auth listener (non-blocking)
     // Auto-restart GPS if user left it on last session
     if (localStorage.getItem(GPS_KEY)) { startGPS(); }
