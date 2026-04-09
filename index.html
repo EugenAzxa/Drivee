@@ -3023,8 +3023,9 @@
         </div>
 
         <!-- Shown if user denies location permission -->
-        <div id="gps-denied" style="display: none; margin-top: 12px; padding: 12px 14px; background: rgba(255,69,58,0.1); border: 1px solid rgba(255,69,58,0.25); border-radius: 12px; color: var(--red); font-size: 13px;">
-          Location access denied. Go to your browser settings and allow location for this page, then tap Start again.
+        <div id="gps-denied" style="display: none; margin-top: 12px; padding: 12px 14px; background: rgba(255,69,58,0.1); border: 1px solid rgba(255,69,58,0.25); border-radius: 12px; font-size: 13px;">
+          <div style="color:var(--red);margin-bottom:8px">Location access denied. Allow location in your browser or phone settings, then retry.</div>
+          <button class="btn btn-secondary" style="width:100%;font-size:13px;padding:10px" onclick="document.getElementById('gps-denied').style.display='none';startGPS()">🔄 Retry Location Access</button>
         </div>
 
         <!-- Zone legend -->
