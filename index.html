@@ -5323,10 +5323,22 @@
         else if (status === 'soon') freeSoon.push(s);
       });
 
-      badge.textContent = freeNow.length + ' free';
+      if (freeNow.length > 0) {
+        badge.textContent = freeNow.length + ' free';
+        badge.style.background = '';
+      } else if (freeSoon.length > 0) {
+        badge.textContent = 'Soon';
+        badge.style.background = 'var(--warning)';
+      } else {
+        badge.textContent = 'Paid hours';
+        badge.style.background = 'var(--text-tertiary)';
+      }
 
       if (freeNow.length === 0) {
-        freeList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;font-size:13px;color:var(--text-tertiary)">No free streets right now. Check back after enforcement hours end.</div>';
+        var msg = freeSoon.length > 0
+          ? 'All streets are metered right now. Free parking starts soon — see below.'
+          : 'All streets are in paid enforcement hours. Free parking usually starts after 6–9pm or on Sundays.';
+        freeList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;font-size:13px;color:var(--text-tertiary)">' + msg + '</div>';
       } else {
         freeList.innerHTML = freeNow.slice(0, 8).map(function(s) {
           return '<div class="parking-spot-card">' +
