@@ -2869,6 +2869,12 @@
             <option value="error">Officer wrote wrong plate/date</option>
             <option value="meter">Parking meter was broken</option>
             <option value="permit">I had a valid residential permit</option>
+            <option value="notdriver">I wasn't the driver</option>
+            <option value="hours">Ticket issued outside enforcement hours</option>
+            <option value="disability">Disability permit holder</option>
+            <option value="sold">Vehicle was sold before ticket date</option>
+            <option value="emergency">Emergency situation</option>
+            <option value="loading">Active loading/unloading</option>
           </select>
         </div>
         <button class="btn btn-primary" onclick="generateScript()">Generate Script</button>
@@ -4959,6 +4965,52 @@
         'Re: Dispute of Parking Violation\n\n' +
         'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I held a valid residential parking permit for this area. My permit was clearly displayed in my vehicle as required.\n\n' +
         'I respectfully request that this ticket be dismissed as I was parked in compliance with my permit entitlement.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      notdriver:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. I was not the operator of the vehicle at the time the ticket was issued. The vehicle was being operated by another individual, and I should not be held responsible for this infraction.\n\n' +
+        'I am prepared to provide supporting documentation upon request, including a statutory declaration if necessary.\n\n' +
+        'I respectfully request that this ticket be transferred to the actual operator or dismissed.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      hours:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. The ticket was issued outside of the posted enforcement hours for this location. According to the signage at the time, parking restrictions were not in effect when my vehicle was parked.\n\n' +
+        'I respectfully request that this ticket be dismissed as no violation occurred during the applicable enforcement period.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      disability:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I held a valid Accessible Parking Permit (APP) issued by the Province of Ontario. The permit was displayed in my vehicle as required by regulation.\n\n' +
+        'Under Ontario Regulation 581, holders of a valid APP are entitled to park in designated accessible spaces and are exempt from certain time-limit restrictions.\n\n' +
+        'I respectfully request that this ticket be dismissed in recognition of my valid permit.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      sold:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. The vehicle associated with this ticket was sold and transferred to a new owner prior to the date of the alleged offence. I was no longer the registered owner or operator of this vehicle at the time the ticket was issued.\n\n' +
+        'I am prepared to provide proof of sale, including the bill of sale and/or UVIP transfer documentation.\n\n' +
+        'I respectfully request that this ticket be dismissed or redirected to the current owner.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      emergency:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I was dealing with a genuine emergency situation that required me to park my vehicle immediately. The circumstances left me with no reasonable alternative.\n\n' +
+        'I am prepared to provide supporting documentation of the emergency upon request.\n\n' +
+        'I respectfully request that this ticket be dismissed given the extenuating circumstances.\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]',
+
+      loading:
+        'To: Toronto Parking Authority\n\n' +
+        'Re: Dispute of Parking Violation\n\n' +
+        'I am writing to dispute the above-noted parking violation. At the time the ticket was issued, I was actively loading or unloading goods from my vehicle. I was present at the vehicle and the stop was temporary and necessary for the purpose of loading/unloading as permitted under the City of Toronto Municipal Code.\n\n' +
+        'I respectfully request that this ticket be dismissed as my vehicle was stopped for a permitted purpose.\n\n' +
         'Sincerely,\n[Your Name]\n[License Plate]'
     };
 
