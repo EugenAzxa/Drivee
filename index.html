@@ -3428,6 +3428,7 @@
 
         mapInitialised = true;
         loadReportsOnMap(); // draw any saved community report pins
+        loadCommunityReports(); // load shared reports from Supabase
         drawZoneMarkers();  // draw hydrant / bike lane / tow zone markers
 
       } catch (err) {
@@ -4201,6 +4202,7 @@
         var reports = safeGet(REPORTS_KEY) || [];
         reports.push(report);
         safeSet(REPORTS_KEY, reports);
+        saveReportToSupabase(report);
 
         // Switch to Map tab and drop the pin
         showTab('tab-hotspots');
@@ -5457,6 +5459,74 @@
             if (res.error) console.warn('Drivee: car delete error', res.error.message);
           });
       }
+    }
+
+    // ── Community Reports sync ─────────────────────────
+    function uploadReportPhoto(reportId, photoDataUrl) {
+      if (!db || !photoDataUrl) return Promise.resolve(null);
+      // Convert base64 data URL to Blob
+      var parts = photoDataUrl.split(',');
+      var mime = parts[0].match(/:(.*?);/)[1];
+      var raw = atob(parts[1]);
+      var arr = new Uint8Array(raw.length);
+      for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      var blob = new Blob([arr], { type: mime });
+      var path = 'reports/' + reportId + '.jpg';
+      return db.storage.from('report-photos').upload(path, blob, { upsert: true, contentType: 'image/jpeg' })
+        .then(function(res) {
+          if (res.error) { console.warn('Photo upload error:', res.error.message); return null; }
+          var urlRes = db.storage.from('report-photos').getPublicUrl(path);
+          return urlRes.data ? urlRes.data.publicUrl : null;
+        });
+    }
+
+    function saveReportToSupabase(report) {
+      if (!db) return;
+      // Upload photo first if present, then save report with photo URL
+      var photoPromise = report.photo ? uploadReportPhoto(report.id, report.photo) : Promise.resolve(null);
+      photoPromise.then(function(photoUrl) {
+        var row = {
+          id:          report.id,
+          type:        report.type,
+          label:       report.label,
+          description: report.desc || null,
+          lat:         report.lat,
+          lng:         report.lng,
+          photo_url:   photoUrl,
+          user_id:     currentUser ? currentUser.id : null
+        };
+        return db.from('reports').upsert(row);
+      }).then(function(res) {
+        if (res && res.error) console.warn('Drivee: report save error', res.error.message);
+      });
+    }
+
+    function loadCommunityReports() {
+      if (!db) return;
+      db.from('reports').select('*').order('created_at', { ascending: false }).limit(100)
+        .then(function(res) {
+          if (res.data && res.data.length > 0) {
+            // Merge cloud reports into local (avoid duplicates)
+            var local = safeGet(REPORTS_KEY) || [];
+            var localIds = {};
+            local.forEach(function(r) { localIds[r.id] = true; });
+            var merged = local.slice();
+            res.data.forEach(function(r) {
+              if (!localIds[r.id]) {
+                merged.push({
+                  id: r.id, type: r.type, label: r.label,
+                  desc: r.description, date: r.created_at ? r.created_at.substring(0, 10) : '',
+                  lat: r.lat, lng: r.lng, photo: r.photo_url || null
+                });
+              }
+            });
+            safeSet(REPORTS_KEY, merged);
+            // Redraw all pins
+            merged.forEach(function(r) { dropReportPin(r); });
+            renderReportCount();
+            renderReportsList();
+          }
+        });
     }
 
     // ===================================================
