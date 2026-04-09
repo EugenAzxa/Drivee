@@ -4309,9 +4309,39 @@
       if (report._justCreated) marker.openPopup();
     }
 
+    // Removes reports older than 30 days from localStorage and Supabase
+    function purgeOldReports() {
+      var reports = safeGet(REPORTS_KEY) || [];
+      var thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      var cutoff = thirtyDaysAgo.toISOString().substring(0, 10); // YYYY-MM-DD
+
+      var kept = [];
+      reports.forEach(function(r) {
+        var date = r.date || r.id.substring(0, 10); // fallback to id timestamp
+        if (date >= cutoff) {
+          kept.push(r);
+        }
+      });
+
+      if (kept.length < reports.length) {
+        safeSet(REPORTS_KEY, kept);
+        console.log('Drivee: purged ' + (reports.length - kept.length) + ' reports older than 30 days');
+      }
+
+      // Also clean Supabase
+      if (db) {
+        db.from('reports').delete().lt('created_at', thirtyDaysAgo.toISOString())
+          .then(function(res) {
+            if (res.error) console.warn('Drivee: purge error', res.error.message);
+          });
+      }
+    }
+
     // Loads all saved reports from localStorage and draws pins on the map.
     // Called once after the map is ready.
     function loadReportsOnMap() {
+      purgeOldReports(); // clean up old reports first
       var reports = safeGet(REPORTS_KEY) || [];
       reports.forEach(function(r) { dropReportPin(r); });
       renderReportCount();
