@@ -2924,33 +2924,17 @@
         <div>Map unavailable — check your internet connection</div>
       </div>
 
-      <!-- Free Parking Nearby panel -->
+      <!-- Free Parking — live from STREETS data + current time -->
       <div class="card" style="margin-top: 12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-          <div class="card-title" style="margin-bottom:0">Free Parking Nearby</div>
+          <div class="card-title" style="margin-bottom:0">Free Parking Now</div>
+          <span class="badge badge-blue" id="free-count-badge">0</span>
         </div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:12px">Estimated hours — not live data. Always check signage.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div class="parking-spot-card">
-            <div class="parking-spot-name">King St W</div>
-            <div class="parking-spot-dist">Spadina–Bathurst</div>
-            <div class="parking-spot-status">Free: Sun &amp; after 9pm</div>
-          </div>
-          <div class="parking-spot-card">
-            <div class="parking-spot-name">Queen St E</div>
-            <div class="parking-spot-dist">Parliament–Broadview</div>
-            <div class="parking-spot-status">Free: Sun &amp; after 6pm</div>
-          </div>
-          <div class="parking-spot-card">
-            <div class="parking-spot-name">Spadina Ave</div>
-            <div class="parking-spot-dist">Queen–College</div>
-            <div class="parking-spot-status">Free: Sun &amp; after 9pm</div>
-          </div>
-          <div class="parking-spot-card">
-            <div class="parking-spot-name">College St</div>
-            <div class="parking-spot-dist">Spadina–Bathurst</div>
-            <div class="parking-spot-status">Free: Sun &amp; after 6pm</div>
-          </div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:12px">Based on posted hours &amp; current time. Always verify signage.</div>
+        <div id="free-parking-list" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+        <div id="free-soon-section" style="display:none;margin-top:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px">Free Soon</div>
+          <div id="free-soon-list" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
         </div>
       </div>
 
@@ -3407,6 +3391,7 @@
       // Init map if switching to Hotspots (only runs once)
       if (tabId === 'tab-hotspots') {
         initMap();
+        renderFreeParkingNow();
       }
     }
 
@@ -5033,6 +5018,114 @@
       { name: 'Adelaide St W — Bay to Spadina',         rate: '$4.00/hr', hours: 'Mon–Fri 7am–9pm',      free: 'Sat–Sun · Daily after 9pm',     tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
       { name: 'Gerrard St E — Broadview to Greenwood',  rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
     ];
+
+    // ── Free Parking Now — live calculation from STREETS + current time ──
+    function parseEnforcementHours(street) {
+      // Parse "Mon–Sat 8am–9pm" or "Mon–Sun 7am–midnight" or "Mon–Fri 7am–10pm"
+      var h = street.hours;
+      var dayMap = { 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6, 'Sun': 0 };
+      var dayMatch = h.match(/(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[–-](Mon|Tue|Wed|Thu|Fri|Sat|Sun)/);
+      var startDay = 1, endDay = 6;
+      if (dayMatch) {
+        startDay = dayMap[dayMatch[1]];
+        endDay   = dayMap[dayMatch[2]];
+      }
+
+      function parseHour(s) {
+        if (s === 'midnight') return 24;
+        var m = s.match(/(\d+)(am|pm)/);
+        if (!m) return 0;
+        var hr = parseInt(m[1]);
+        if (m[2] === 'pm' && hr !== 12) hr += 12;
+        if (m[2] === 'am' && hr === 12) hr = 0;
+        return hr;
+      }
+      var timeMatch = h.match(/(\d+(?:am|pm)|midnight)[–-](\d+(?:am|pm)|midnight)/);
+      var startHour = 8, endHour = 18;
+      if (timeMatch) {
+        startHour = parseHour(timeMatch[1]);
+        endHour   = parseHour(timeMatch[2]);
+      }
+      return { startDay: startDay, endDay: endDay, startHour: startHour, endHour: endHour };
+    }
+
+    function isDayInRange(day, startDay, endDay) {
+      if (startDay <= endDay) return day >= startDay && day <= endDay;
+      return day >= startDay || day <= endDay; // wraps around (e.g. Sat–Sun)
+    }
+
+    function getStreetStatus(street) {
+      var now = new Date();
+      var day = now.getDay(); // 0=Sun
+      var hour = now.getHours();
+      var e = parseEnforcementHours(street);
+      var inDay = isDayInRange(day, e.startDay, e.endDay);
+
+      if (!inDay) return 'free';
+      if (hour < e.startHour) return 'free';
+      if (hour >= e.endHour) return 'free';
+      if (hour >= e.endHour - 1) return 'soon'; // within 1 hour of free
+      return 'paid';
+    }
+
+    function getStreetShortName(name) {
+      var dash = name.indexOf('—');
+      return dash !== -1 ? name.substring(0, dash).trim() : name;
+    }
+
+    function getStreetSegment(name) {
+      var dash = name.indexOf('—');
+      return dash !== -1 ? name.substring(dash + 1).trim() : '';
+    }
+
+    function renderFreeParkingNow() {
+      var freeList = document.getElementById('free-parking-list');
+      var soonSection = document.getElementById('free-soon-section');
+      var soonList = document.getElementById('free-soon-list');
+      var badge = document.getElementById('free-count-badge');
+      if (!freeList || !STREETS) return;
+
+      var freeNow = [];
+      var freeSoon = [];
+
+      STREETS.forEach(function(s) {
+        var status = getStreetStatus(s);
+        if (status === 'free') freeNow.push(s);
+        else if (status === 'soon') freeSoon.push(s);
+      });
+
+      badge.textContent = freeNow.length + ' free';
+
+      if (freeNow.length === 0) {
+        freeList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;font-size:13px;color:var(--text-tertiary)">No free streets right now. Check back after enforcement hours end.</div>';
+      } else {
+        freeList.innerHTML = freeNow.slice(0, 8).map(function(s) {
+          return '<div class="parking-spot-card">' +
+            '<div class="parking-spot-name">' + esc(getStreetShortName(s.name)) + '</div>' +
+            '<div class="parking-spot-dist">' + esc(getStreetSegment(s.name)) + '</div>' +
+            '<div class="parking-spot-status"><span style="color:var(--green)">●</span> Free now</div>' +
+          '</div>';
+        }).join('');
+        if (freeNow.length > 8) {
+          freeList.innerHTML += '<div style="grid-column:1/-1;text-align:center;font-size:12px;color:var(--blue);cursor:pointer" onclick="showTab(\'tab-services\');document.getElementById(\'street-search\').focus()">+ ' + (freeNow.length - 8) + ' more — check Street Checker →</div>';
+        }
+      }
+
+      if (freeSoon.length > 0) {
+        soonSection.style.display = 'block';
+        soonList.innerHTML = freeSoon.slice(0, 4).map(function(s) {
+          var e = parseEnforcementHours(s);
+          var freeAt = e.endHour > 12 ? (e.endHour - 12) + 'pm' : e.endHour + 'am';
+          return '<div class="parking-spot-card">' +
+            '<div class="parking-spot-name">' + esc(getStreetShortName(s.name)) + '</div>' +
+            '<div class="parking-spot-dist">' + esc(getStreetSegment(s.name)) + '</div>' +
+            '<div class="parking-spot-status"><span style="color:var(--warning)">●</span> Free at ' + freeAt + '</div>' +
+          '</div>';
+        }).join('');
+      } else {
+        soonSection.style.display = 'none';
+      }
+    }
 
     function filterServices() {
       var q = (document.getElementById('services-search').value || '').trim().toLowerCase();
