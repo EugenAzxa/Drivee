@@ -3431,6 +3431,7 @@
     // This avoids breaking flex/grid layouts when re-showing tabs.
     // ===================================================
     function showTab(tabId) {
+      if (typeof trackEvent === 'function') trackEvent('tab_click', tabId);
       // Hide all sections by removing .active
       document.querySelectorAll('.tab-section').forEach(function(section) {
         section.classList.remove('active');
@@ -3558,6 +3559,7 @@
     function scanTicketPhoto() {
       var file = document.getElementById('ticket-photo').files[0];
       if (!file) return;
+      trackEvent('scan_ticket');
 
       var statusEl  = document.getElementById('scan-status');
       var actionsEl = document.getElementById('scan-actions');
@@ -3576,6 +3578,7 @@
           var p = parseVisionReply(text);
 
           window._lastScan = p;
+          trackEvent('scan_success', '$' + (p.amount||'?') + ' ' + (p.type||'') + ' ' + (p.ref||''));
 
           // Fill analyser fields
           if (p.amount) document.getElementById('ticket-amount').value = parseFloat(p.amount);
@@ -3840,6 +3843,7 @@
       addReminderToSupabase(ref, due, reminder.id);
       renderReminders();
       updateHeroCard();
+      trackEvent('reminder_added', ref + ' due ' + due);
       showToast('🔔 Reminder added: ' + ref + ' due ' + formatDate(due));
       // Auto-prompt to save to phone calendar for push notifications
       setTimeout(function() { promptCalendarSave(ref, due); }, 1500);
@@ -4299,6 +4303,7 @@
         reports.push(report);
         safeSet(REPORTS_KEY, reports);
         saveReportToSupabase(report);
+        trackEvent('report_created', label);
 
         // Switch to Map tab and drop the pin
         showTab('tab-hotspots');
@@ -4557,6 +4562,7 @@
           // First successful fix — update button to Stop state
           if (!gpsActive) {
             gpsActive = true;
+            trackEvent('gps_started');
             localStorage.setItem(GPS_KEY, '1'); // remember GPS is on
             btn.textContent = '■ Stop GPS Guardian';
             btn.disabled    = false;
@@ -4742,6 +4748,7 @@
       }
       safeSet(PROFILE_KEY, { name: name, plate: plate });
       saveProfileToSupabase(name, plate); // sync to cloud if signed in
+      trackEvent('profile_saved', name + ' | ' + plate);
       // Update greeting with first name
       if (name) {
         var firstName = name.split(' ')[0];
@@ -5133,6 +5140,7 @@
       var reason = document.getElementById('dispute-reason').value;
       if (!reason) { showToast('Select a dispute reason first'); return; }
 
+      trackEvent('dispute_generated', reason);
       var letter = DISPUTE_TEMPLATES[reason];
 
       // Auto-fill name and plate from saved profile if available
@@ -5190,6 +5198,7 @@
     function shareTicketDetails() {
       var text = buildTicketText();
       if (!text) { showToast('No scan data to share'); return; }
+      trackEvent('share_ticket');
       if (navigator.share) {
         navigator.share({
           title: 'Ticket Details — Drivee',
@@ -5387,6 +5396,17 @@
       }
     }
 
+    // ── Analytics tracking ──────────────────────────────
+    function trackEvent(event, meta) {
+      try {
+        fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: event, meta: meta || '' })
+        }).catch(function() {});
+      } catch (e) {}
+    }
+
     function filterServices() {
       var q = (document.getElementById('services-search').value || '').trim().toLowerCase();
       var cards = document.querySelectorAll('.svc-card');
@@ -5498,6 +5518,7 @@
       }
       var btn = document.querySelector('.auth-send-btn');
       if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      trackEvent('magic_link_sent', email);
 
       db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
         .then(function(res) {
@@ -5996,6 +6017,7 @@
     // ON LOAD — show Dashboard tab by default
     // ===================================================
     showTab('tab-dashboard');
+    trackEvent('app_open');
     loadProfile();        // Populate name + plate if previously saved
     renderCars();         // Render saved vehicles on startup
     renderReminders();    // Render any saved reminders on startup
