@@ -2477,6 +2477,40 @@
       <div class="profile-sheet-row"><i class="fa-solid fa-bell"></i><span id="ps-reminders">0 reminders</span></div>
       <button class="profile-sheet-signout" onclick="signOutUser(); closeProfileSheet()">Sign Out</button>
     </div>
+
+    <!-- Profile & Vehicles (always visible in sheet) -->
+    <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px" id="ps-profile-section">
+      <div style="font-weight:700;font-size:14px;margin-bottom:10px">Your Profile</div>
+      <div class="input-group" style="margin-bottom:8px">
+        <label for="profile-name">Full Name</label>
+        <input type="text" id="profile-name" placeholder="e.g. Alex Smith" />
+      </div>
+      <div class="input-group" style="margin-bottom:10px">
+        <label for="profile-plate">License Plate</label>
+        <input type="text" id="profile-plate" placeholder="e.g. ABCD 123" />
+      </div>
+      <button class="btn btn-primary" id="save-profile-btn" style="width:100%;margin-bottom:16px" onclick="saveProfile()">Save Profile</button>
+
+      <div style="font-weight:700;font-size:14px;margin-bottom:10px">🚘 My Vehicles</div>
+      <div class="car-list" id="car-list"></div>
+      <button class="btn btn-secondary" id="add-car-toggle" style="width:100%" onclick="toggleAddCarForm()">+ Add Vehicle</button>
+      <div class="add-car-form" id="add-car-form">
+        <div class="add-car-label">Pick an emoji</div>
+        <div class="emoji-picker" id="emoji-picker"></div>
+        <div class="input-group" style="margin-bottom:10px">
+          <label>Nickname</label>
+          <input type="text" id="car-nickname" placeholder="e.g. My Honda" />
+        </div>
+        <div class="input-group" style="margin-bottom:12px">
+          <label>License Plate</label>
+          <input type="text" id="car-plate" placeholder="e.g. ABCD 123" />
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" style="flex:1" onclick="addCar()">Save Vehicle</button>
+          <button class="btn btn-secondary" onclick="toggleAddCarForm()">Cancel</button>
+        </div>
+      </div>
+    </div>
     <!-- Signed OUT view -->
     <div id="ps-signed-out" class="profile-sheet-signin-wrap">
       <div class="profile-sheet-signin-title">☁️ Sign in to sync</div>
@@ -2610,7 +2644,7 @@
           </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-primary" style="flex:1;font-size:13px;padding:12px" onclick="document.getElementById('profile-card').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){document.getElementById('profile-name').focus()},400)">Set Up Now</button>
+          <button class="btn btn-primary" style="flex:1;font-size:13px;padding:12px" onclick="openProfileSheet();setTimeout(function(){document.getElementById('profile-name').focus()},400)">Set Up Now</button>
           <button class="btn btn-secondary" style="flex:1;font-size:13px;padding:12px" onclick="this.parentElement.parentElement.style.display='none';safeSet('drivee_profile_dismissed',true)">Later</button>
         </div>
       </div>
@@ -2688,44 +2722,6 @@
         <div id="verdict-output"></div>
       </div>
 
-      <!-- MY VEHICLES -->
-      <div class="card">
-        <div class="card-title">🚘 My Vehicles</div>
-        <div class="card-subtitle">Track tickets per car</div>
-        <div class="car-list" id="car-list"></div>
-        <button class="btn btn-secondary" id="add-car-toggle" onclick="toggleAddCarForm()">+ Add Vehicle</button>
-        <div class="add-car-form" id="add-car-form">
-          <div class="add-car-label">Pick an emoji</div>
-          <div class="emoji-picker" id="emoji-picker"></div>
-          <div class="input-group" style="margin-bottom:10px">
-            <label>Nickname</label>
-            <input type="text" id="car-nickname" placeholder="e.g. My Honda" />
-          </div>
-          <div class="input-group" style="margin-bottom:12px">
-            <label>License Plate</label>
-            <input type="text" id="car-plate" placeholder="e.g. ABCD 123" />
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-primary" style="flex:1" onclick="addCar()">Save Vehicle</button>
-            <button class="btn btn-secondary" onclick="toggleAddCarForm()">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile Card -->
-      <div class="card" id="profile-card">
-        <div class="card-title">Your Profile</div>
-        <div class="card-subtitle">Saved locally on your device</div>
-        <div class="input-group">
-          <label for="profile-name">Full Name</label>
-          <input type="text" id="profile-name" placeholder="e.g. Alex Smith" />
-        </div>
-        <div class="input-group">
-          <label for="profile-plate">License Plate</label>
-          <input type="text" id="profile-plate" placeholder="e.g. ABCD 123" />
-        </div>
-        <button class="btn btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Profile</button>
-      </div>
 
       <!-- Scan History Card -->
       <div class="card">
@@ -2768,136 +2764,6 @@
         <div id="reminders-list"></div>
       </div>
 
-      <!-- TRUE COST CALCULATOR + EXPERT HELP -->
-      <div class="true-cost-card">
-        <div class="card-title">🧮 True Cost Calculator</div>
-        <div class="card-subtitle">See what a ticket REALLY costs including insurance — not just the fine</div>
-
-        <select id="tcc-violation" class="tcc-select">
-          <option value="">Select violation type…</option>
-          <option value="parking">🅿️ Parking Violation</option>
-          <option value="speeding_low">🚗 Speeding 1–15 km/h over</option>
-          <option value="speeding_mid">🚗 Speeding 16–29 km/h over</option>
-          <option value="speeding_high">🚗 Speeding 30–49 km/h over</option>
-          <option value="speeding_stunt">🚨 Speeding 50+ km/h over (Stunt)</option>
-          <option value="redlight_camera">📷 Red Light Camera</option>
-          <option value="redlight_officer">🚦 Running Red Light (Officer)</option>
-          <option value="distracted">📱 Distracted Driving</option>
-          <option value="careless">⚠️ Careless Driving</option>
-          <option value="seatbelt">🪢 Seatbelt Violation</option>
-          <option value="stop_sign">🛑 Fail to Stop (Stop Sign)</option>
-          <option value="school_bus">🚌 Fail to Stop (School Bus)</option>
-          <option value="hov">🛣️ HOV Lane Violation</option>
-          <option value="no_insurance">🚫 No Insurance</option>
-        </select>
-
-        <div class="tcc-amount-wrap">
-          <span class="tcc-dollar-sign">$</span>
-          <input type="number" id="tcc-amount" class="tcc-amount-input" placeholder="Fine amount on ticket" min="0" max="99999" />
-        </div>
-
-        <button class="tcc-calc-btn" onclick="calcTrueCost()">Calculate True Cost</button>
-
-        <div class="tcc-result" id="tcc-result">
-          <div class="tcc-result-title">📊 True Cost Breakdown</div>
-          <div id="tcc-lines"></div>
-          <div class="tcc-total-row">
-            <div class="tcc-total-label">TRUE TOTAL COST</div>
-            <div class="tcc-total-value" id="tcc-total">$0</div>
-          </div>
-          <div class="tcc-verdict-box" id="tcc-verdict"></div>
-          <button class="tcc-share-btn" onclick="shareTrueCost()">📤 Share This Result</button>
-
-          <div class="tcc-expert-card">
-            <div class="tcc-expert-header">
-              <div class="tcc-expert-avatar">👨‍💼</div>
-              <div>
-                <div class="tcc-expert-name">Evgen — Drivee Expert</div>
-                <div class="tcc-expert-role">Toronto Ticket &amp; Fine Specialist</div>
-              </div>
-            </div>
-            <div class="tcc-expert-desc">Not sure what to do next? Describe your situation below and I'll personally review it and tell you the best course of action — free of charge.</div>
-            <div class="tcc-situation-label">Describe your situation</div>
-            <textarea id="tcc-situation" class="tcc-situation-textarea" placeholder="e.g. I was pulled over on the 401 doing 130 in a 100 zone. First offence, clean record. What should I do?"></textarea>
-            <div class="tcc-contact-btns">
-              <button class="tcc-contact-btn tcc-btn-sms" onclick="tccContactSMS()">📱 Send as Text Message</button>
-              <button class="tcc-contact-btn tcc-btn-email" onclick="tccContactEmail()">📧 Send by Email</button>
-            </div>
-            <div class="tcc-expert-note">📞 Or call / text directly: <strong>+1 (647) 608-2988</strong><br>Evgen typically responds within a few hours · Free first consultation</div>
-          </div>
-        </div>
-
-        <div class="tcc-disclaimer">ⓘ Insurance estimates are Ontario averages. Actual impact varies by insurer, driving history &amp; conviction. Not legal advice.</div>
-      </div>
-
-      <!-- Fee Escalation Calculator Card -->
-      <div class="card">
-        <div class="card-title">🧮 Deadline ROI Calculator</div>
-        <div class="card-subtitle">See how much extra you'll pay by missing parking ticket deadlines</div>
-
-        <!-- Dollar-prefixed input -->
-        <div class="calc-input-wrap">
-          <span class="calc-dollar">$</span>
-          <input
-            type="number"
-            id="fine-amount"
-            class="calc-input"
-            placeholder="0"
-            min="0"
-            max="9999"
-            oninput="calcFees()"
-          />
-        </div>
-
-        <!-- Output — hidden until a value is entered -->
-        <div id="calc-output" style="display: none;">
-
-          <!-- Timeline bar -->
-          <div class="calc-timeline">
-            <div class="calc-timeline-fill"></div>
-            <div class="calc-timeline-labels">
-              <span>Day 1</span>
-              <span style="color: var(--red);">Day 16 ⚠</span>
-              <span style="color: var(--red);">Day 31</span>
-              <span style="color: var(--red);">Day 60</span>
-            </div>
-          </div>
-
-          <!-- Fee breakdown rows -->
-          <div class="calc-rows">
-            <div class="calc-row">
-              <span class="calc-row-label">Day 1–15 (Standard Fine)</span>
-              <span class="calc-row-value mono" id="calc-base">$0.00</span>
-            </div>
-            <div class="calc-row calc-row-penalty">
-              <span class="calc-row-label">Day 16 (Address Search Fee)</span>
-              <span class="calc-row-value mono" style="color: var(--red);">+$15.39</span>
-            </div>
-            <div class="calc-row calc-row-penalty">
-              <span class="calc-row-label">Day 31 (Late Payment Fee)</span>
-              <span class="calc-row-value mono" style="color: var(--red);">+$32.10</span>
-            </div>
-            <div class="calc-row calc-row-penalty">
-              <span class="calc-row-label">Day 60 (Plate Denial Fee)</span>
-              <span class="calc-row-value mono" style="color: var(--red);">+$32.10</span>
-            </div>
-          </div>
-
-          <div class="calc-divider"></div>
-
-          <!-- Total -->
-          <div class="calc-total-row">
-            <span class="calc-total-label">Total if paid after 60 days</span>
-            <span class="calc-total-value mono" id="calc-total">$0.00</span>
-          </div>
-
-          <!-- Savings callout -->
-          <div class="calc-savings" id="calc-savings">
-            You save <strong id="calc-savings-amount">$0.00</strong> by paying today.
-          </div>
-
-        </div>
-      </div>
 
       <!-- Support Banner -->
       <a class="support-banner" href="https://www.gofundme.com/manage/drivee-the-allinone-solution-for-torontos-road-drivers" target="_blank" rel="noopener">
@@ -3075,6 +2941,68 @@
           style="display:none; margin-top:8px;">
           Copy Script
         </button>
+      </div>
+
+      <!-- TRUE COST CALCULATOR + EXPERT HELP -->
+      <div class="true-cost-card svc-card" data-search="true cost calculator insurance demerit points fine penalty">
+        <div class="card-title">🧮 True Cost Calculator</div>
+        <div class="card-subtitle">See what a ticket REALLY costs including insurance — not just the fine</div>
+
+        <select id="tcc-violation" class="tcc-select">
+          <option value="">Select violation type…</option>
+          <option value="parking">🅿️ Parking Violation</option>
+          <option value="speeding_low">🚗 Speeding 1–15 km/h over</option>
+          <option value="speeding_mid">🚗 Speeding 16–29 km/h over</option>
+          <option value="speeding_high">🚗 Speeding 30–49 km/h over</option>
+          <option value="speeding_stunt">🚨 Speeding 50+ km/h over (Stunt)</option>
+          <option value="redlight_camera">📷 Red Light Camera</option>
+          <option value="redlight_officer">🚦 Running Red Light (Officer)</option>
+          <option value="distracted">📱 Distracted Driving</option>
+          <option value="careless">⚠️ Careless Driving</option>
+          <option value="seatbelt">🪢 Seatbelt Violation</option>
+          <option value="stop_sign">🛑 Fail to Stop (Stop Sign)</option>
+          <option value="school_bus">🚌 Fail to Stop (School Bus)</option>
+          <option value="hov">🛣️ HOV Lane Violation</option>
+          <option value="no_insurance">🚫 No Insurance</option>
+        </select>
+
+        <div class="tcc-amount-wrap">
+          <span class="tcc-dollar-sign">$</span>
+          <input type="number" id="tcc-amount" class="tcc-amount-input" placeholder="Fine amount on ticket" min="0" max="99999" />
+        </div>
+
+        <button class="tcc-calc-btn" onclick="calcTrueCost()">Calculate True Cost</button>
+
+        <div class="tcc-result" id="tcc-result">
+          <div class="tcc-result-title">📊 True Cost Breakdown</div>
+          <div id="tcc-lines"></div>
+          <div class="tcc-total-row">
+            <div class="tcc-total-label">TRUE TOTAL COST</div>
+            <div class="tcc-total-value" id="tcc-total">$0</div>
+          </div>
+          <div class="tcc-verdict-box" id="tcc-verdict"></div>
+          <button class="tcc-share-btn" onclick="shareTrueCost()">📤 Share This Result</button>
+
+          <div class="tcc-expert-card">
+            <div class="tcc-expert-header">
+              <div class="tcc-expert-avatar">👨‍💼</div>
+              <div>
+                <div class="tcc-expert-name">Evgen — Drivee Expert</div>
+                <div class="tcc-expert-role">Toronto Ticket &amp; Fine Specialist</div>
+              </div>
+            </div>
+            <div class="tcc-expert-desc">Not sure what to do next? Describe your situation below and I'll personally review it and tell you the best course of action — free of charge.</div>
+            <div class="tcc-situation-label">Describe your situation</div>
+            <textarea id="tcc-situation" class="tcc-situation-textarea" placeholder="e.g. I was pulled over on the 401 doing 130 in a 100 zone. First offence, clean record. What should I do?"></textarea>
+            <div class="tcc-contact-btns">
+              <button class="tcc-contact-btn tcc-btn-sms" onclick="tccContactSMS()">📱 Send as Text Message</button>
+              <button class="tcc-contact-btn tcc-btn-email" onclick="tccContactEmail()">📧 Send by Email</button>
+            </div>
+            <div class="tcc-expert-note">📞 Or call / text directly: <strong>+1 (647) 608-2988</strong><br>Evgen typically responds within a few hours · Free first consultation</div>
+          </div>
+        </div>
+
+        <div class="tcc-disclaimer">ⓘ Insurance estimates are Ontario averages. Actual impact varies by insurer, driving history &amp; conviction. Not legal advice.</div>
       </div>
 
       <!-- USA Links -->
@@ -3987,6 +3915,7 @@
     }
 
     // Render scan history cards in the Dashboard
+    var _showAllScans = false;
     function renderScanHistory() {
       var el = document.getElementById('scan-history-list');
       if (!el) return;
@@ -3995,7 +3924,8 @@
         el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎫</div>No scans yet — scan a ticket photo to get started</div>';
         return;
       }
-      el.innerHTML = scans.map(function(s) {
+      var visible = _showAllScans ? scans : scans.slice(0, 2);
+      el.innerHTML = visible.map(function(s) {
         var dueLabel = s.due && s.due !== 'unknown' ? '<span style="color:var(--danger);font-size:11px">Due ' + formatDate(s.due) + '</span>' : '';
         return '<div class="scan-history-card">' +
           (s.thumb ? '<img class="scan-thumb" src="' + s.thumb + '" alt="Ticket">' : '<div class="scan-thumb-placeholder"><i class="fa-solid fa-ticket"></i></div>') +
@@ -4009,6 +3939,11 @@
           '<button class="scan-delete" onclick="deleteScan(\'' + s.id + '\')" title="Remove">&times;</button>' +
         '</div>';
       }).join('');
+      if (scans.length > 2 && !_showAllScans) {
+        el.innerHTML += '<button class="btn btn-secondary" style="width:100%;font-size:12px;padding:8px;margin-top:8px" onclick="_showAllScans=true;renderScanHistory()">Show all ' + scans.length + ' scans</button>';
+      } else if (scans.length > 2 && _showAllScans) {
+        el.innerHTML += '<button class="btn btn-secondary" style="width:100%;font-size:12px;padding:8px;margin-top:8px" onclick="_showAllScans=false;renderScanHistory()">Show less</button>';
+      }
     }
 
     function deleteScan(id) {
