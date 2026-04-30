@@ -5479,19 +5479,28 @@
 
     function copyPayRef() {
       var refEl = document.getElementById('pay-ref-display');
-      var ref = refEl ? refEl.textContent.trim() : '';
+      var ref   = refEl ? refEl.textContent.trim() : '';
       if (!ref || ref === '—') { showToast('No ticket number found'); return; }
-      var btn = document.getElementById('copy-ref-btn');
+      var btn  = document.getElementById('copy-ref-btn');
+      var card = btn ? btn.closest('div[style]') : null;
+      var doAnim = function() {
+        _animateCopyBtn(btn);
+        if (card) {
+          card.style.transition = 'background .25s ease';
+          card.style.background = 'rgba(34,197,94,0.15)';
+          setTimeout(function() { card.style.background = ''; }, 700);
+        }
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(ref).then(function() {
           showToast('Ticket number copied — paste it on the payment page');
-          if (btn) { var orig = btn.textContent; btn.textContent = '✅ Copied!'; btn.style.background = 'var(--green)'; setTimeout(function() { btn.textContent = orig; btn.style.background = ''; }, 2000); }
+          doAnim();
         }).catch(function() { showToast('Copy failed — select and copy manually'); });
       } else {
         var ta = document.createElement('textarea');
         ta.value = ref; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
         showToast('Ticket number copied — paste it on the payment page');
-        if (btn) { var orig2 = btn.textContent; btn.textContent = '✅ Copied!'; btn.style.background = 'var(--green)'; setTimeout(function() { btn.textContent = orig2; btn.style.background = ''; }, 2000); }
+        doAnim();
       }
     }
 
@@ -7018,22 +7027,49 @@
 
     function _payField(label, value) {
       var uid = 'pgf_' + Math.random().toString(36).slice(2, 9);
-      return '<div style="background:rgba(0,0,0,0.04);border-radius:12px;padding:12px 14px;margin-bottom:10px">' +
+      return '<div id="' + uid + '_wrap" style="background:rgba(0,0,0,0.04);border-radius:12px;padding:12px 14px;margin-bottom:10px;transition:background .25s ease">' +
         '<div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px">' + esc(label) + '</div>' +
         '<div style="display:flex;align-items:center;gap:8px">' +
           '<div id="' + uid + '" style="flex:1;font-family:\'JetBrains Mono\',monospace;font-size:16px;font-weight:700;color:var(--text-primary)">' + esc(value) + '</div>' +
-          '<button onclick="_copyPayField(\'' + uid + '\')" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0">Copy</button>' +
+          '<button id="' + uid + '_btn" onclick="_copyPayField(\'' + uid + '\',this)" ' +
+            'style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;transition:background .2s ease,transform .15s ease">Copy</button>' +
         '</div>' +
       '</div>';
     }
 
-    function _copyPayField(uid) {
-      var el = document.getElementById(uid);
+    function _copyPayField(uid, btn) {
+      var el   = document.getElementById(uid);
+      var wrap = document.getElementById(uid + '_wrap');
       if (!el) return;
       var val = el.textContent.trim();
+      var doAnim = function() {
+        _animateCopyBtn(btn);
+        if (wrap) {
+          wrap.style.background = 'rgba(34,197,94,0.15)';
+          setTimeout(function() { wrap.style.background = ''; }, 700);
+        }
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(val).then(function() { showToast('Copied: ' + val); }).catch(function(){});
+        navigator.clipboard.writeText(val).then(doAnim).catch(function(){});
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = val; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        doAnim();
       }
+    }
+
+    function _animateCopyBtn(btn) {
+      if (!btn) return;
+      var origText = btn.textContent;
+      var origBg   = btn.style.background || '';
+      btn.textContent = '✓ Copied!';
+      btn.style.background = '#22c55e';
+      btn.style.transform  = 'scale(1.1)';
+      setTimeout(function() { btn.style.transform = 'scale(1)'; }, 140);
+      setTimeout(function() {
+        btn.style.background = origBg;
+        setTimeout(function() { btn.textContent = origText; }, 220);
+      }, 2000);
     }
 
     function closePayGuide() {
