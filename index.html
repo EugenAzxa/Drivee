@@ -2821,17 +2821,42 @@
 
         <!-- Post-scan actions — shown after successful scan -->
         <div id="scan-actions" style="display:none;margin-bottom:12px">
-          <a id="scan-pay-btn" href="#" target="_blank" rel="noopener"
-             style="display:block;width:100%;text-align:center;text-decoration:none;margin-bottom:8px"
-             class="btn btn-primary">
-            💳 Pay Now →
-          </a>
+
+          <!-- Payment helper card -->
+          <div style="background:#f0f7ff;border:1.5px solid #c7d7f8;border-radius:14px;padding:14px;margin-bottom:10px">
+            <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">💳 Payment Details</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">Ticket / Infraction #</div>
+                <div id="pay-ref-display" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+              </div>
+              <button onclick="copyPayRef()" id="copy-ref-btn" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;transition:opacity .15s">
+                📋 Copy #
+              </button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">Amount Due</div>
+                <div id="pay-amount-display" style="font-size:20px;font-weight:800;color:var(--danger);font-family:'JetBrains Mono',monospace">—</div>
+              </div>
+              <div id="pay-portal-badge" style="font-size:11px;color:var(--text-secondary);text-align:right;max-width:130px;line-height:1.4;white-space:pre-line">—</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-tertiary);background:rgba(0,0,0,0.03);border-radius:8px;padding:7px 9px;margin-bottom:10px">
+              💡 Copy your ticket number above, then paste it on the payment page.
+            </div>
+            <a id="scan-pay-btn" href="#" target="_blank" rel="noopener"
+               style="display:block;width:100%;text-align:center;text-decoration:none"
+               class="btn btn-primary">
+              💳 Pay Now →
+            </a>
+          </div>
+
           <div style="display:flex;gap:8px;margin-bottom:8px">
             <button class="btn btn-secondary" style="flex:1;font-size:13px" onclick="shareTicketDetails()">
               <i class="fa-solid fa-share-nodes"></i> Share
             </button>
             <button class="btn btn-secondary" style="flex:1;font-size:13px" onclick="copyTicketDetails()">
-              <i class="fa-regular fa-copy"></i> Copy
+              <i class="fa-regular fa-copy"></i> Copy All
             </button>
           </div>
           <div id="scan-reminder-confirm" style="font-size:13px;color:var(--green);text-align:center;padding:4px 0;display:none">
@@ -3748,15 +3773,44 @@
     // All processing is 100% on-device — photo never leaves the browser.
     // ===================================================
 
-    function getPaymentUrl(type, province) {
+    function getPaymentUrl(type, province, municipality) {
+      var muni = (municipality || '').toLowerCase();
       if (type === 'toll') return 'https://www.407etr.com/en/pay-your-bill';
       if (province === 'QC') return 'https://www.ville.quebec.qc.ca/services/constatinfraction/index.aspx';
       if (province === 'BC') return 'https://www.icbc.com/driver-licensing/tickets/Pages/pay-a-ticket.aspx';
       if (province === 'AB') return 'https://www.alberta.ca/traffic-fines.aspx';
       if (province === 'MB') return 'https://www.mpi.mb.ca/Pages/driver-records.aspx';
-      // Ontario defaults
-      if (type === 'parking') return 'https://secure.toronto.ca/eConnectionFacade/faces/AnonymousPaymentFlow.jsp';
+      // Ontario parking tickets — city-specific portals
+      if (type === 'parking') {
+        if (muni.indexOf('mississauga') !== -1) return 'https://www.mississauga.ca/services-and-programs/parking/parking-tickets/';
+        if (muni.indexOf('brampton') !== -1) return 'https://www.brampton.ca/EN/residents/parking/Pages/Pay-a-Ticket.aspx';
+        if (muni.indexOf('hamilton') !== -1) return 'https://www.hamilton.ca/streets-transportation/parking/parking-tickets';
+        if (muni.indexOf('ottawa') !== -1) return 'https://ottawa.ca/en/parking-roads-and-travel/parking/parking-tickets';
+        if (muni.indexOf('london') !== -1) return 'https://london.ca/city-government/city-hall/licences-permits-applications/parking-tickets';
+        // Toronto default for parking
+        return 'https://secure.toronto.ca/eConnectionFacade/faces/AnonymousPaymentFlow.jsp';
+      }
+      // Ontario court / HTA / Provincial Offences tickets
+      if (muni.indexOf('toronto') !== -1) return 'https://www.toronto.ca/courtlookup';
       return 'https://www.ontario.ca/page/pay-traffic-ticket';
+    }
+
+    function getPortalName(type, province, municipality) {
+      var muni = (municipality || '').toLowerCase();
+      if (type === 'toll') return '407 ETR Portal';
+      if (province === 'BC') return 'ICBC';
+      if (province === 'QC') return 'Ville de Québec';
+      if (province === 'AB') return 'Alberta.ca';
+      if (province === 'MB') return 'MPI';
+      if (type === 'parking') {
+        if (muni.indexOf('mississauga') !== -1) return 'Mississauga\nParking Portal';
+        if (muni.indexOf('brampton')    !== -1) return 'Brampton\nParking Portal';
+        if (muni.indexOf('hamilton')    !== -1) return 'Hamilton\nParking Portal';
+        if (muni.indexOf('ottawa')      !== -1) return 'Ottawa\nParking Portal';
+        return 'Toronto\nParking Portal';
+      }
+      if (muni.indexOf('toronto') !== -1) return 'Toronto Court\nLookup (POA)';
+      return 'Ontario.ca\nCourt Portal';
     }
 
     function scanTicketPhoto() {
@@ -3807,13 +3861,18 @@
           makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
 
           // Show Pay Now button with correct URL
-          var payBtn = document.getElementById('scan-pay-btn');
+          var payBtn         = document.getElementById('scan-pay-btn');
+          var payRefDisplay  = document.getElementById('pay-ref-display');
+          var payAmtDisplay  = document.getElementById('pay-amount-display');
+          var payPortalBadge = document.getElementById('pay-portal-badge');
           var reminderConfirm = document.getElementById('scan-reminder-confirm');
           if (payBtn) {
-            payBtn.href = getPaymentUrl(p.type, p.province);
-            payBtn.textContent = '💳 Pay Now →';
-            if (p.amount) payBtn.textContent = '💳 Pay $' + p.amount + ' Now →';
+            payBtn.href = getPaymentUrl(p.type, p.province, p.municipality);
+            payBtn.textContent = p.amount ? '💳 Pay $' + p.amount + ' Now →' : '💳 Pay Now →';
           }
+          if (payRefDisplay)  payRefDisplay.textContent  = p.ref || '—';
+          if (payAmtDisplay)  payAmtDisplay.textContent  = p.amount ? '$' + p.amount : '—';
+          if (payPortalBadge) payPortalBadge.textContent = getPortalName(p.type, p.province, p.municipality);
           if (reminderConfirm) reminderConfirm.style.display = reminderAdded ? 'block' : 'none';
           if (actionsEl) actionsEl.style.display = 'block';
 
@@ -3945,7 +4004,7 @@
               role: 'user',
               content: [
                 { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-                { type: 'text', text: 'You are scanning a document that may be any Canadian vehicle-related fine, ticket, or bill. This includes: parking tickets, speeding tickets, red light camera fines, stop sign fines, stunt driving charges, careless driving charges, DUI/impaired driving charges, toll bills (407 ETR, 412, 418), HOV lane violations, distracted driving fines, seatbelt fines, insurance fines, registration fines, camera enforcement notices, or any other traffic or parking violation from any Canadian province or territory (ON, BC, QC, AB, MB, SK, NS, NB, PE, NL, YT, NT, NU).\n\nExtract all available details and reply in this EXACT format (no extra text):\nAMOUNT: [total amount owing, number only, no $ sign]\nREF: [ticket number, infraction number, reference number, or account number]\nPLATE: [vehicle license plate number, or unknown]\nTYPE: [one of: parking, speeding, redlight, stopsign, toll, hov, distracted, seatbelt, stunt, careless, dui, insurance, registration, camera, other]\nPROVINCE: [2-letter province code where violation occurred, e.g. ON, BC, QC, or unknown]\nDATE: [violation or bill date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear practical sentence: dispute chances and what to do next]\n\nIf the image contains NO fine, ticket, or bill of any kind, reply exactly: NOT_A_TICKET' }
+                { type: 'text', text: 'You are scanning a document that may be any Canadian vehicle-related fine, ticket, or bill. This includes: parking tickets, speeding tickets, red light camera fines, stop sign fines, stunt driving charges, careless driving charges, DUI/impaired driving charges, toll bills (407 ETR, 412, 418), HOV lane violations, distracted driving fines, seatbelt fines, insurance fines, registration fines, camera enforcement notices, or any other traffic or parking violation from any Canadian province or territory (ON, BC, QC, AB, MB, SK, NS, NB, PE, NL, YT, NT, NU).\n\nExtract all available details and reply in this EXACT format (no extra text):\nAMOUNT: [total amount owing, number only, no $ sign]\nREF: [ticket number, infraction number, reference number, or account number]\nPLATE: [vehicle license plate number, or unknown]\nTYPE: [one of: parking, speeding, redlight, stopsign, toll, hov, distracted, seatbelt, stunt, careless, dui, insurance, registration, camera, other]\nPROVINCE: [2-letter province code where violation occurred, e.g. ON, BC, QC, or unknown]\nMUNICIPALITY: [city or municipality where violation occurred, e.g. Toronto, Mississauga, Ottawa, Vancouver, Montreal, or unknown]\nDATE: [violation or bill date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear practical sentence: dispute chances and what to do next]\n\nIf the image contains NO fine, ticket, or bill of any kind, reply exactly: NOT_A_TICKET' }
               ]
             }]
           })
@@ -3969,14 +4028,15 @@
     function parseVisionReply(text) {
       function grab(rx) { var m = text.match(rx); return m ? m[1].trim() : null; }
       return {
-        amount:   grab(/AMOUNT:\s*([\d.]+)/i),
-        ref:      grab(/REF:\s*([^\n]+)/i),
-        plate:    grab(/PLATE:\s*([^\n]+)/i),
-        type:     (grab(/TYPE:\s*(\w+)/i) || '').toLowerCase() || null,
-        province: (grab(/PROVINCE:\s*([^\n]+)/i) || '').toUpperCase() || null,
-        date:     grab(/DATE:\s*([^\n]+)/i),
-        due:      grab(/DUE:\s*([^\n]+)/i),
-        advice:   grab(/ADVICE:\s*([^\n]+)/i)
+        amount:       grab(/AMOUNT:\s*([\d.]+)/i),
+        ref:          grab(/REF:\s*([^\n]+)/i),
+        plate:        grab(/PLATE:\s*([^\n]+)/i),
+        type:         (grab(/TYPE:\s*(\w+)/i) || '').toLowerCase() || null,
+        province:     (grab(/PROVINCE:\s*([^\n]+)/i) || '').toUpperCase() || null,
+        municipality: grab(/MUNICIPALITY:\s*([^\n]+)/i),
+        date:         grab(/DATE:\s*([^\n]+)/i),
+        due:          grab(/DUE:\s*([^\n]+)/i),
+        advice:       grab(/ADVICE:\s*([^\n]+)/i)
       };
     }
 
@@ -5416,6 +5476,24 @@
       if (p.advice) lines.push('\nAdvice: ' + p.advice);
       lines.push('\nScanned with Drivee — drivee.ca');
       return lines.join('\n');
+    }
+
+    function copyPayRef() {
+      var refEl = document.getElementById('pay-ref-display');
+      var ref = refEl ? refEl.textContent.trim() : '';
+      if (!ref || ref === '—') { showToast('No ticket number found'); return; }
+      var btn = document.getElementById('copy-ref-btn');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ref).then(function() {
+          showToast('Ticket number copied — paste it on the payment page');
+          if (btn) { var orig = btn.textContent; btn.textContent = '✅ Copied!'; btn.style.background = 'var(--green)'; setTimeout(function() { btn.textContent = orig; btn.style.background = ''; }, 2000); }
+        }).catch(function() { showToast('Copy failed — select and copy manually'); });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = ref; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('Ticket number copied — paste it on the payment page');
+        if (btn) { var orig2 = btn.textContent; btn.textContent = '✅ Copied!'; btn.style.background = 'var(--green)'; setTimeout(function() { btn.textContent = orig2; btn.style.background = ''; }, 2000); }
+      }
     }
 
     function shareTicketDetails() {
