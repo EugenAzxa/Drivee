@@ -2966,6 +2966,14 @@
       </div>
 
 
+      <!-- Renewal Reminders -->
+      <div class="card" data-search="renewal reminder licence plate sticker insurance expiry service ontario">
+        <div class="card-title">🗓️ Renewal Reminders</div>
+        <div class="card-subtitle">Driver's licence, plate sticker, insurance — never miss a date</div>
+        <div id="renewal-card-body"></div>
+      </div>
+
+
       <!-- Scan History Card -->
       <div class="card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
@@ -6472,6 +6480,7 @@
     renderReminders();    // Render any saved reminders on startup
     renderScanHistory();  // Render ticket scan history on startup
     renderDemerits();     // Render demerit points tracker on startup
+    renderRenewals();     // Render renewal reminders on startup
     updateHeroCard();     // Sync hero card stats on load
     checkFreeParkingDay(); // Show free parking banner if applicable
     showWeeklyTip();       // Rotate weekly Did You Know tip
@@ -7045,6 +7054,240 @@
       window.open('mailto:' + DRIVEE_EMAIL + '?subject=' + sub + '&body=' + encodeURIComponent(_expertMsg()), '_blank');
     }
 
+    // ── Renewal Reminders ─────────────────────────────────────────
+    var RENEWALS_KEY = 'drivee_renewals';
+
+    var RENEWAL_PRESETS = {
+      drivers_licence: {
+        label:      "Driver's Licence",
+        icon:       '📄',
+        recurMonths: 60,
+        renewUrl:   'https://www.ontario.ca/page/renew-drivers-licence',
+        renewName:  'Service Ontario'
+      },
+      plate_sticker: {
+        label:      'Plate Sticker',
+        icon:       '🏷️',
+        recurMonths: 12,
+        renewUrl:   'https://www.ontario.ca/page/renew-vehicle-permit-and-licence-plate-sticker',
+        renewName:  'Service Ontario'
+      },
+      insurance: {
+        label:      'Auto Insurance',
+        icon:       '🛡️',
+        recurMonths: 12,
+        renewUrl:   null,
+        renewName:  'Your provider'
+      }
+    };
+
+    function _daysUntil(dateStr) {
+      var now = new Date(); now.setHours(0, 0, 0, 0);
+      var d   = new Date(dateStr); d.setHours(0, 0, 0, 0);
+      return Math.round((d - now) / (1000 * 60 * 60 * 24));
+    }
+
+    function _renewalUrgency(days) {
+      if (days < 0)   return { name: 'EXPIRED',   color: '#ef4444' };
+      if (days === 0) return { name: 'Today!',    color: '#ef4444' };
+      if (days <= 7)  return { name: 'Urgent',    color: '#f97316' };
+      if (days <= 30) return { name: 'Soon',      color: '#eab308' };
+      if (days <= 90) return { name: 'Coming up', color: '#3b82f6' };
+      return                { name: 'On track',   color: '#22c55e' };
+    }
+
+    function _formatRenewalTime(days) {
+      if (days < 0) {
+        var ago = Math.abs(days);
+        if (ago === 1)   return 'expired yesterday';
+        if (ago < 30)    return 'expired ' + ago + ' days ago';
+        if (ago < 365)   return 'expired ' + Math.round(ago / 30) + ' months ago';
+        return 'expired ' + Math.round(ago / 365) + 'y ago';
+      }
+      if (days === 0)  return 'expires today';
+      if (days === 1)  return 'in 1 day';
+      if (days <= 30)  return 'in ' + days + ' days';
+      if (days <= 90)  return 'in ' + Math.round(days / 7) + ' weeks';
+      if (days <= 365) return 'in ' + Math.round(days / 30) + ' months';
+      var years = Math.round((days / 365) * 10) / 10;
+      return 'in ' + years + ' year' + (years === 1 ? '' : 's');
+    }
+
+    function renderRenewals() {
+      var card = document.getElementById('renewal-card-body');
+      if (!card) return;
+
+      var entries = (safeGet(RENEWALS_KEY) || []).slice();
+      entries.sort(function(a, b) { return new Date(a.expiryDate) - new Date(b.expiryDate); });
+
+      var html = '';
+
+      if (entries.length === 0) {
+        html += '<div style="text-align:center;padding:18px 0 6px;color:var(--text-secondary);font-size:13px">No renewals tracked yet</div>';
+        html += '<div style="font-size:11px;color:var(--text-tertiary);margin:4px 0 12px;line-height:1.5;text-align:center">Add your driver\'s licence, plate sticker, and insurance dates to never miss a renewal.</div>';
+      } else {
+        entries.forEach(function(e) {
+          var preset    = RENEWAL_PRESETS[e.type];
+          var icon      = e.icon  || (preset && preset.icon)  || '📌';
+          var label     = e.label || (preset && preset.label) || e.customName || 'Renewal';
+          var days      = _daysUntil(e.expiryDate);
+          var u         = _renewalUrgency(days);
+          var timeText  = _formatRenewalTime(days);
+          var urgent    = days < 60;
+
+          html += '<div style="padding:10px 0;border-bottom:1px solid var(--border)">';
+          html +=   '<div style="display:flex;align-items:center;gap:12px">';
+          html +=     '<div style="width:38px;height:38px;border-radius:10px;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">' + icon + '</div>';
+          html +=     '<div style="flex:1;min-width:0">';
+          html +=       '<div style="font-size:14px;font-weight:600;color:var(--text-primary)">' + esc(label) + '</div>';
+          html +=       '<div style="font-size:11px;color:var(--text-secondary);font-family:\'JetBrains Mono\',monospace">Expires ' + formatDate(e.expiryDate) + '</div>';
+          html +=     '</div>';
+          html +=     '<div style="text-align:right;flex-shrink:0">';
+          html +=       '<div style="font-size:11px;font-weight:800;color:' + u.color + ';text-transform:uppercase;letter-spacing:.4px">' + u.name + '</div>';
+          html +=       '<div style="font-size:10.5px;color:var(--text-tertiary);margin-top:1px">' + timeText + '</div>';
+          html +=     '</div>';
+          html +=   '</div>';
+
+          if (urgent) {
+            html += '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">';
+            if (preset && preset.renewUrl) {
+              html += '<a href="' + preset.renewUrl + '" target="_blank" rel="noopener" class="btn btn-secondary" style="flex:1;font-size:12px;padding:8px;text-decoration:none;text-align:center;min-width:120px">🔗 ' + esc(preset.renewName) + '</a>';
+            }
+            html += '<button onclick="markRenewed(\'' + e.id + '\')" class="btn btn-secondary" style="flex:1;font-size:12px;padding:8px;min-width:110px">✓ Mark Renewed</button>';
+            html += '<button onclick="deleteRenewal(\'' + e.id + '\')" class="btn btn-secondary" style="font-size:14px;padding:8px 11px;color:var(--danger)" title="Remove">×</button>';
+            html += '</div>';
+          } else {
+            html += '<div style="text-align:right;margin-top:4px">';
+            html +=   '<button onclick="markRenewed(\'' + e.id + '\')" style="background:none;border:none;color:var(--blue);font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px">✓ Mark Renewed</button>';
+            html +=   '<button onclick="deleteRenewal(\'' + e.id + '\')" style="background:none;border:none;color:var(--text-tertiary);font-size:14px;cursor:pointer;padding:4px 6px" title="Remove">×</button>';
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+      }
+
+      html += '<button onclick="openAddRenewalSheet()" class="btn btn-primary" style="width:100%;margin-top:14px">+ Add Renewal</button>';
+
+      html += '<div style="font-size:11px;color:var(--text-tertiary);margin-top:12px;line-height:1.5">💡 Plate stickers are <strong>free</strong> in Ontario since 2022 — but you still must renew them yearly. Driving with an expired sticker can get you ticketed.</div>';
+
+      card.innerHTML = html;
+    }
+
+    function openAddRenewalSheet() {
+      var minDate = new Date().toISOString().split('T')[0];
+      var html = '';
+
+      html += '<div style="font-size:20px;font-weight:800;margin-bottom:4px">Add a Renewal</div>';
+      html += '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px">Track your driver\'s licence, plate sticker, or insurance</div>';
+
+      html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">What is renewing?</label>';
+      html += '<select id="renewal-type" onchange="onRenewalTypeChange()" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html +=   '<option value="">— Select —</option>';
+      html +=   '<option value="drivers_licence">📄 Driver\'s Licence (every 5 years)</option>';
+      html +=   '<option value="plate_sticker">🏷️ Plate Sticker (yearly)</option>';
+      html +=   '<option value="insurance">🛡️ Auto Insurance (yearly)</option>';
+      html +=   '<option value="custom">📌 Other (custom)</option>';
+      html += '</select>';
+
+      html += '<div id="renewal-custom-wrap" style="display:none">';
+      html +=   '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Renewal Name</label>';
+      html +=   '<input type="text" id="renewal-custom-name" placeholder="e.g. Health card, Disability permit" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html += '</div>';
+
+      html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Expiry Date</label>';
+      html += '<input type="date" id="renewal-date" min="' + minDate + '" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:8px;box-sizing:border-box">';
+      html += '<div style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">📌 Find this on your licence, sticker, or insurance card</div>';
+
+      html += '<button onclick="saveRenewal()" class="btn btn-primary" style="width:100%;margin-top:6px;margin-bottom:8px;padding:14px">Add Renewal</button>';
+      html += '<button onclick="closeAddRenewal()" class="btn btn-secondary" style="width:100%">Cancel</button>';
+
+      document.getElementById('renewal-sheet-content').innerHTML = html;
+      var overlay = document.getElementById('renewal-sheet-overlay');
+      var sheet   = document.getElementById('renewal-sheet');
+      overlay.style.display = 'block';
+      sheet.style.display   = 'block';
+      requestAnimationFrame(function() { sheet.style.transform = 'translateY(0)'; });
+    }
+
+    function onRenewalTypeChange() {
+      var sel  = document.getElementById('renewal-type');
+      var wrap = document.getElementById('renewal-custom-wrap');
+      wrap.style.display = (sel.value === 'custom') ? 'block' : 'none';
+    }
+
+    function saveRenewal() {
+      var type = document.getElementById('renewal-type').value;
+      var date = document.getElementById('renewal-date').value;
+
+      if (!type) { showToast('Choose a renewal type'); return; }
+      if (!date) { showToast('Pick the expiry date'); return; }
+
+      var entry = {
+        id: Date.now() + '_' + Math.floor(Math.random() * 9999),
+        type: type,
+        expiryDate: date,
+        addedAt: new Date().toISOString().split('T')[0]
+      };
+
+      if (type === 'custom') {
+        var name = (document.getElementById('renewal-custom-name').value || '').trim();
+        if (!name) { showToast('Name this renewal'); return; }
+        entry.customName       = name;
+        entry.label            = name;
+        entry.icon             = '📌';
+        entry.recurEveryMonths = 12;
+      } else {
+        var preset = RENEWAL_PRESETS[type];
+        entry.label            = preset.label;
+        entry.icon             = preset.icon;
+        entry.recurEveryMonths = preset.recurMonths;
+      }
+
+      var entries = safeGet(RENEWALS_KEY) || [];
+      entries.push(entry);
+      safeSet(RENEWALS_KEY, entries);
+
+      closeAddRenewal();
+      renderRenewals();
+      showToast('✅ ' + entry.label + ' renewal saved');
+    }
+
+    function closeAddRenewal() {
+      var sheet = document.getElementById('renewal-sheet');
+      sheet.style.transform = 'translateY(100%)';
+      setTimeout(function() {
+        sheet.style.display = 'none';
+        document.getElementById('renewal-sheet-overlay').style.display = 'none';
+      }, 340);
+    }
+
+    function markRenewed(id) {
+      var entries = safeGet(RENEWALS_KEY) || [];
+      var idx = -1;
+      for (var i = 0; i < entries.length; i++) { if (entries[i].id === id) { idx = i; break; } }
+      if (idx === -1) return;
+      var e = entries[idx];
+      var months = e.recurEveryMonths || 12;
+
+      // If already expired, count from today; otherwise extend from current expiry
+      var oldExpiry = new Date(e.expiryDate); oldExpiry.setHours(0,0,0,0);
+      var today = new Date(); today.setHours(0,0,0,0);
+      var base = (oldExpiry < today) ? today : oldExpiry;
+      var next = new Date(base);
+      next.setMonth(next.getMonth() + months);
+      e.expiryDate = next.toISOString().split('T')[0];
+
+      safeSet(RENEWALS_KEY, entries);
+      renderRenewals();
+      showToast('Renewed — next expiry ' + formatDate(e.expiryDate));
+    }
+
+    function deleteRenewal(id) {
+      var entries = (safeGet(RENEWALS_KEY) || []).filter(function(e) { return e.id !== id; });
+      safeSet(RENEWALS_KEY, entries);
+      renderRenewals();
+    }
+
     // ── Demerit Points Tracker ────────────────────────────────────
     var DEMERIT_KEY = 'drivee_demerits';
 
@@ -7519,6 +7762,20 @@
     }
 
   </script>
+
+  <!-- ── Add Renewal Sheet ────────────────────────────────────── -->
+  <div id="renewal-sheet-overlay" onclick="closeAddRenewal()"
+       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
+
+  <div id="renewal-sheet"
+       style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;
+              background:var(--surface);border-radius:22px 22px 0 0;
+              padding:12px 20px 44px;max-height:88vh;overflow-y:auto;
+              box-shadow:0 -8px 48px rgba(0,0,0,0.22);
+              transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)">
+    <div style="width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px"></div>
+    <div id="renewal-sheet-content"></div>
+  </div>
 
   <!-- ── Add Demerit Sheet ────────────────────────────────────── -->
   <div id="demerit-sheet-overlay" onclick="closeAddDemerit()"
