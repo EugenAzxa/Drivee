@@ -2080,6 +2080,8 @@
       white-space: nowrap;
       will-change: transform, left;
     }
+    /* Inner span flips emojis that face the wrong way (car & dust face left by default) */
+    .chase-actor .flip { display: inline-block; transform: scaleX(-1); }
     .chase-beetle  { animation: chaseRun 11s linear infinite; }
     .chase-officer { animation: chaseRun 11s linear infinite; animation-delay: -10.4s; font-size: 20px; top: 4px; }
     .chase-ticket  { animation: chaseRun 11s linear infinite; animation-delay: -10.2s; font-size: 14px; top: 0; }
@@ -2758,8 +2760,8 @@
 
       <!-- Playful chase animation — officer running after a Beetle -->
       <div class="ticket-chase" aria-hidden="true">
-        <span class="chase-actor chase-beetle">🚗</span>
-        <span class="chase-actor chase-dust">💨</span>
+        <span class="chase-actor chase-beetle"><span class="flip">🚗</span></span>
+        <span class="chase-actor chase-dust"><span class="flip">💨</span></span>
         <span class="chase-actor chase-officer">👮‍♂️</span>
         <span class="chase-actor chase-ticket">🎫</span>
       </div>
