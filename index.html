@@ -474,6 +474,56 @@
       border-bottom: 1px solid var(--border);
     }
 
+    /* ── Zone markers ─────────────────────────────────────── */
+    .zone-marker {
+      width: 12px; height: 12px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      opacity: 0.9;
+      transition: transform .3s ease;
+    }
+    .zone-marker-tow { width: 14px; height: 14px; }
+
+    /* Tow zone pulse — only when an active rush-hour tow window is happening */
+    @keyframes towMarkerPulse {
+      0%, 100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+      50%      { transform: scale(1.35); box-shadow: 0 0 0 7px rgba(245, 158, 11, 0.25); }
+    }
+    body.tow-window-active .zone-marker-tow {
+      animation: towMarkerPulse 1.6s ease-in-out infinite;
+    }
+
+    /* Ripple pulse for new community reports */
+    @keyframes ripplePulse {
+      0%   { transform: scale(0.3); opacity: 0.95; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+    .ripple-pulse {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(10, 132, 255, 0.55);
+      animation: ripplePulse 1.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    /* Map theme toggle button */
+    .leaflet-control.map-theme-control {
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background .15s, transform .15s;
+      user-select: none;
+    }
+    .leaflet-control.map-theme-control:active { transform: scale(0.92); }
+    .leaflet-control.map-theme-control:hover  { background: #f5f5f7; }
+
     /* ===================================================
        STEP CARDS (Guide tab)
     =================================================== */
@@ -3780,6 +3830,9 @@
     var driveeMap = null; // shared map instance — needed by dropReportPin()
     var dangerCluster = null;  // marker cluster for hydrants / bike lanes / tow zones
     var reportCluster = null;  // marker cluster for community reports
+    var lightTileLayer = null; // CARTO Voyager (default day)
+    var darkTileLayer  = null; // CARTO Dark Matter (night)
+    var MAP_THEME_KEY  = 'drivee_map_theme';
 
     function initMap() {
       if (mapInitialised) return; // Don't init twice
@@ -3795,12 +3848,29 @@
           attributionControl: false
         });
 
-        // CARTO Voyager — colorful, premium look, free for commercial use up to 75K/mo
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-          subdomains: 'abcd',
-          maxZoom: 20,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        }).addTo(driveeMap);
+        // Two CARTO tile themes — Voyager (day) + Dark Matter (night). Toggle via control.
+        var tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+        lightTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd', maxZoom: 20, attribution: tileAttribution
+        });
+        darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd', maxZoom: 20, attribution: tileAttribution
+        });
+        var savedTheme = safeGet(MAP_THEME_KEY) || 'light';
+        (savedTheme === 'dark' ? darkTileLayer : lightTileLayer).addTo(driveeMap);
+
+        // Theme toggle control — top-right of map
+        var themeControl = L.control({ position: 'topright' });
+        themeControl.onAdd = function() {
+          var div = L.DomUtil.create('div', 'leaflet-control map-theme-control');
+          div.id = 'map-theme-btn';
+          div.title = 'Toggle dark / light';
+          div.textContent = (savedTheme === 'dark') ? '☀️' : '🌙';
+          L.DomEvent.disableClickPropagation(div);
+          L.DomEvent.on(div, 'click', toggleMapTheme);
+          return div;
+        };
+        themeControl.addTo(driveeMap);
 
         // Marker clusters — separate groups so hydrant pins don't merge with reports
         if (typeof L.markerClusterGroup === 'function') {
@@ -3846,10 +3916,10 @@
         var colour = colours[zone.type];
         var icon = L.divIcon({
           className: '',
-          html: '<div style="width:10px;height:10px;background:' + colour + ';border:2px solid #fff;border-radius:50%;opacity:0.85;"></div>',
-          iconSize:   [10, 10],
-          iconAnchor: [5, 5],
-          popupAnchor: [0, -8]
+          html: '<div class="zone-marker zone-marker-' + zone.type + '" style="background:' + colour + '"></div>',
+          iconSize:   [22, 22],
+          iconAnchor: [11, 11],
+          popupAnchor: [0, -10]
         });
         var marker = L.marker([zone.lat, zone.lng], { icon: icon })
           .bindPopup('<strong>' + labels[zone.type] + '</strong>');
@@ -3859,6 +3929,62 @@
           marker.addTo(driveeMap);
         }
       });
+    }
+
+    // ── Tow-window detection — Mon-Fri 7-9am or 4-6pm = pulse the tow markers ──
+    function isInTowWindow() {
+      var now  = new Date();
+      var day  = now.getDay();        // 0=Sun, 6=Sat
+      if (day === 0 || day === 6) return false;
+      var mins = now.getHours() * 60 + now.getMinutes();
+      if (mins >= 7  * 60 && mins < 9  * 60) return true;
+      if (mins >= 16 * 60 && mins < 18 * 60) return true;
+      return false;
+    }
+    function updateTowWindowState() {
+      document.body.classList.toggle('tow-window-active', isInTowWindow());
+    }
+
+    // ── Map theme toggle (light Voyager / dark Dark Matter) ──
+    function toggleMapTheme() {
+      var current = safeGet(MAP_THEME_KEY) || 'light';
+      var next    = (current === 'light') ? 'dark' : 'light';
+      safeSet(MAP_THEME_KEY, next);
+      applyMapTheme(next);
+    }
+    function applyMapTheme(theme) {
+      if (!driveeMap || !lightTileLayer || !darkTileLayer) return;
+      if (theme === 'dark') {
+        if (driveeMap.hasLayer(lightTileLayer)) driveeMap.removeLayer(lightTileLayer);
+        if (!driveeMap.hasLayer(darkTileLayer)) driveeMap.addLayer(darkTileLayer);
+      } else {
+        if (driveeMap.hasLayer(darkTileLayer))  driveeMap.removeLayer(darkTileLayer);
+        if (!driveeMap.hasLayer(lightTileLayer)) driveeMap.addLayer(lightTileLayer);
+      }
+      var btn = document.getElementById('map-theme-btn');
+      if (btn) btn.textContent = (theme === 'dark') ? '☀️' : '🌙';
+    }
+
+    // ── Ripple pulse for new community reports ──
+    function addRipplePulse(lat, lng) {
+      if (!driveeMap) return;
+      var fire = function(delay) {
+        setTimeout(function() {
+          var icon = L.divIcon({
+            className: '',
+            html: '<div class="ripple-pulse"></div>',
+            iconSize:   [40, 40],
+            iconAnchor: [20, 20]
+          });
+          var p = L.marker([lat, lng], { icon: icon, interactive: false }).addTo(driveeMap);
+          setTimeout(function() {
+            if (driveeMap.hasLayer(p)) driveeMap.removeLayer(p);
+          }, 1700);
+        }, delay);
+      };
+      fire(0);
+      fire(420);
+      fire(840);
     }
 
     // ===================================================
@@ -4779,7 +4905,10 @@
       } else {
         marker.addTo(driveeMap);
       }
-      if (report._justCreated) marker.openPopup();
+      if (report._justCreated) {
+        marker.openPopup();
+        addRipplePulse(report.lat, report.lng);
+      }
     }
 
     // Removes reports older than 30 days from localStorage and Supabase
@@ -6511,6 +6640,8 @@
     renderScanHistory();  // Render ticket scan history on startup
     renderDemerits();     // Render demerit points tracker on startup
     renderRenewals();     // Render renewal reminders on startup
+    updateTowWindowState();                       // Initial tow-window pulse check
+    setInterval(updateTowWindowState, 60 * 1000); // Re-check each minute so pulse turns on/off as time passes
     updateHeroCard();     // Sync hero card stats on load
     checkFreeParkingDay(); // Show free parking banner if applicable
     showWeeklyTip();       // Rotate weekly Did You Know tip
