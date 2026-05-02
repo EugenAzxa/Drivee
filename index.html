@@ -21,6 +21,8 @@
 
   <!-- Leaflet CSS (map styles) — loaded before the JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
   <style>
     /* ===================================================
@@ -3679,6 +3681,7 @@
 
   <!-- Leaflet JS — loaded after HTML so the #map element exists when JS runs -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <!-- Tesseract.js — client-side OCR. Ticket photos never leave the device. -->
   <script src="https://unpkg.com/tesseract.js@4/dist/tesseract.min.js"></script>
@@ -3775,6 +3778,8 @@
     // ===================================================
     var mapInitialised = false;
     var driveeMap = null; // shared map instance — needed by dropReportPin()
+    var dangerCluster = null;  // marker cluster for hydrants / bike lanes / tow zones
+    var reportCluster = null;  // marker cluster for community reports
 
     function initMap() {
       if (mapInitialised) return; // Don't init twice
@@ -3790,13 +3795,30 @@
           attributionControl: false
         });
 
-        // MapTiler Streets — crisp, full colour, better than CartoDB
-        L.tileLayer('https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=7uvlITe12AqEXDHHvGy5', {
+        // CARTO Voyager — colorful, premium look, free for commercial use up to 75K/mo
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+          subdomains: 'abcd',
           maxZoom: 20,
-          tileSize: 512,
-          zoomOffset: -1,
-          attribution: '© <a href="https://www.maptiler.com/">MapTiler</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
         }).addTo(driveeMap);
+
+        // Marker clusters — separate groups so hydrant pins don't merge with reports
+        if (typeof L.markerClusterGroup === 'function') {
+          dangerCluster = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 45,
+            spiderfyOnMaxZoom: true,
+            disableClusteringAtZoom: 17
+          });
+          reportCluster = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 35,
+            spiderfyOnMaxZoom: true,
+            disableClusteringAtZoom: 17
+          });
+          driveeMap.addLayer(dangerCluster);
+          driveeMap.addLayer(reportCluster);
+        }
 
         mapInitialised = true;
         loadReportsOnMap(); // draw any saved community report pins
@@ -3829,9 +3851,13 @@
           iconAnchor: [5, 5],
           popupAnchor: [0, -8]
         });
-        L.marker([zone.lat, zone.lng], { icon: icon })
-          .bindPopup('<strong>' + labels[zone.type] + '</strong>')
-          .addTo(driveeMap);
+        var marker = L.marker([zone.lat, zone.lng], { icon: icon })
+          .bindPopup('<strong>' + labels[zone.type] + '</strong>');
+        if (dangerCluster) {
+          dangerCluster.addLayer(marker);
+        } else {
+          marker.addTo(driveeMap);
+        }
       });
     }
 
@@ -4747,8 +4773,12 @@
           (report.desc ? '<br><span style="color:#666">' + report.desc + '</span>' : '') +
           photoHtml,
           { maxWidth: 220, minWidth: 120 }
-        )
-        .addTo(driveeMap);
+        );
+      if (reportCluster) {
+        reportCluster.addLayer(marker);
+      } else {
+        marker.addTo(driveeMap);
+      }
       if (report._justCreated) marker.openPopup();
     }
 
