@@ -480,6 +480,115 @@
   }
   @keyframes glowPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
 
+  /* ─────────── Intro video ─────────── */
+  .video-frame {
+    position: relative;
+    margin: 0 auto;
+    max-width: 980px;
+    aspect-ratio: 16 / 9;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -30px rgba(11,20,48,0.40),
+                0 0 0 1px rgba(11,20,48,0.06);
+  }
+  .video-frame .intro-video {
+    width: 100%; height: 100%;
+    display: block;
+    background: #0B1430;
+  }
+  .video-placeholder {
+    position: relative;
+    width: 100%; height: 100%;
+    border: 0; padding: 0; cursor: pointer;
+    overflow: hidden;
+    background: #0B1430;
+    display: block;
+  }
+  .video-placeholder .vp-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(46,100,255,0.45), transparent 55%),
+      radial-gradient(circle at 70% 70%, rgba(122,92,240,0.35), transparent 55%),
+      linear-gradient(135deg, #1A3FB8 0%, #0B1430 100%);
+  }
+  .video-placeholder::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at center, black, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at center, black, transparent 75%);
+    pointer-events: none;
+  }
+  .video-placeholder .vp-content {
+    position: relative; z-index: 2;
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    color: white;
+    padding: 40px;
+  }
+  .vp-meta {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 2px; font-weight: 800;
+    color: rgba(255,255,255,0.7);
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 24px;
+  }
+  .vp-dot {
+    width: 8px; height: 8px; border-radius: 999px;
+    background: #1FAB6B;
+    box-shadow: 0 0 12px #1FAB6B;
+    animation: vpDotPulse 1.6s infinite;
+  }
+  @keyframes vpDotPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .vp-play {
+    width: 92px; height: 92px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid rgba(255,255,255,0.30);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .vp-play::before {
+    content: "";
+    position: absolute; inset: -10px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.20);
+    animation: vpPlayRing 2.4s infinite;
+  }
+  @keyframes vpPlayRing {
+    0%   { transform: scale(0.95); opacity: 1; }
+    100% { transform: scale(1.4);  opacity: 0; }
+  }
+  .video-placeholder:hover .vp-play {
+    background: rgba(255,255,255,0.20);
+    transform: scale(1.06);
+  }
+  .vp-play svg { margin-left: 6px; }
+  .vp-title {
+    font-size: 32px; font-weight: 800; letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .vp-sub {
+    font-size: 16px; color: rgba(255,255,255,0.75);
+    max-width: 540px; line-height: 1.45;
+  }
+
+  @media (max-width: 700px) {
+    .video-frame { border-radius: 16px; }
+    .vp-title { font-size: 22px; }
+    .vp-sub { font-size: 13px; }
+    .vp-play { width: 70px; height: 70px; }
+  }
+
   /* ─────────── Logo strip ─────────── */
   .strip {
     border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -1093,10 +1202,10 @@
           Get Drivee free
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
-        <button class="btn-ghost">
+        <a class="btn-ghost" href="#video" style="text-decoration:none">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           Watch 60-sec demo
-        </button>
+        </a>
       </div>
       <div class="hero-meta anim a5">
         <div><b>$142</b> SAVED YTD</div>
@@ -1111,7 +1220,7 @@
       <div class="receipt">
         <div class="receipt-head">
           <div class="meta">DRIVEE · NO. 0481 · APR 30</div>
-          <h2>Hi, Eugen.</h2>
+          <h2>Hi, Sarah.</h2>
           <div class="dotline"></div>
         </div>
         <div class="receipt-row">
@@ -1187,7 +1296,7 @@
         </div>
         <div>
           <div class="lbl">DISPUTE WON</div>
-          <div class="val">+$65</div>
+          <div class="val">+$60</div>
         </div>
       </div>
 
@@ -1203,13 +1312,56 @@
 
       <div class="float-card float-3">
         <div class="ic">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-12a8 8 0 0 1 16 0c0 7.5-8 12-8 12Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </div>
         <div>
-          <div class="lbl">BIKE LANE</div>
-          <div class="val" style="color: var(--amber);">22m away</div>
+          <div class="lbl">USA TICKETS</div>
+          <div class="val" style="color: var(--blue);">Supported</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- INTRO VIDEO -->
+  <section class="block reveal" id="video">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">02</span>SEE IT IN ACTION</div>
+        <h2 class="section-title">60 seconds.<br/>One ticket. Sorted.</h2>
+      </div>
+      <div>
+        <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight — before you can finish reading this paragraph.</p>
+      </div>
+    </div>
+
+    <div class="video-frame" id="introVideoFrame">
+      <!-- Drop your hosted MP4 / Vimeo / YouTube embed URL into the src below.
+           Until you do, this shows a styled placeholder with a play button. -->
+      <video
+        class="intro-video"
+        controls
+        preload="none"
+        playsinline
+        poster="/video-poster.jpg"
+        style="display:none">
+        <source src="/intro-60s.mp4" type="video/mp4"/>
+        Your browser does not support video.
+      </video>
+      <button class="video-placeholder" type="button" aria-label="Play introduction video"
+        onclick="(function(b){var v=document.querySelector('#introVideoFrame .intro-video');if(v){b.style.display='none';v.style.display='block';try{v.play();}catch(e){}}})(this)">
+        <div class="vp-bg"></div>
+        <div class="vp-content">
+          <div class="vp-meta">
+            <span class="vp-dot"></span>
+            DEMO · 1:00 · TORONTO
+          </div>
+          <div class="vp-play">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg>
+          </div>
+          <div class="vp-title">Park, scan, dispute — in seconds.</div>
+          <div class="vp-sub">Sarah catches a $65 King St ticket. We show what she does next.</div>
+        </div>
+      </button>
     </div>
   </section>
 
@@ -1251,9 +1403,9 @@
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-12a8 8 0 0 1 16 0c0 7.5-8 12-8 12Z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <h3>Hotspot guardian</h3>
-        <p>Live GPS warnings before you cross into a bike lane, fire route, or red-zone street. Backed by 14k+ community-reported pins.</p>
-        <div class="feature-tag">LIVE · ±4M ACCURACY</div>
+        <h3>Live officer radar</h3>
+        <p>See parking-enforcement zones light up in real time from 8am–8pm. Live officer count for downtown Toronto, plus 14k+ community-reported pins.</p>
+        <div class="feature-tag">LIVE · 8AM–8PM · DOWNTOWN</div>
       </div>
 
       <div class="feature">
@@ -1294,6 +1446,16 @@
         <h3>3-min onboarding</h3>
         <p>Plate in, photo in, you're done. We pull your existing City of Toronto fines and import them automatically.</p>
         <div class="feature-tag">8 STEPS · 3 MINUTES</div>
+      </div>
+
+      <div class="feature">
+        <div class="num">07</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3>USA ticket assistance</h3>
+        <p>Cross-border parking and toll tickets — NYC, Buffalo, Detroit. We surface the right portal, the right deadline, and the right pay flow so you don't miss a US-side fine while on the road.</p>
+        <div class="feature-tag">USA · TOLL · PARKING</div>
       </div>
     </div>
   </section>
@@ -1563,7 +1725,7 @@
             <div class="mp-bar"><span>9:41</span><span>● ● ●</span></div>
             <div class="mp-content">
               <div class="brand">Drivee<span class="dot">.</span></div>
-              <div class="greet">Good morning, Eugen</div>
+              <div class="greet">Good morning, Sarah</div>
               <div class="mp-tile">
                 <div class="label">BALANCE OWED</div>
                 <div class="num">$255.00</div>
@@ -1603,7 +1765,7 @@
             <div class="mp-bar"><span>9:41</span><span>▮▮▮ ◐</span></div>
             <div class="mp-content">
               <div class="brand">Drivee<span class="dot">.</span></div>
-              <div class="greet">Good morning, Eugen</div>
+              <div class="greet">Good morning, Sarah</div>
               <div class="mp-tile">
                 <div class="label">BALANCE OWED</div>
                 <div class="num">$255.00</div>

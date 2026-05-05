@@ -29,16 +29,14 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════
-       DESIGN V2 TOGGLE (Receipt × Premium look)
-       Visit /?design=v2 to enable. Sticks for the session via sessionStorage.
-       To REVERSE: delete this <script> block and search for `.design-v2`.
+       DESIGN V2 — now the DEFAULT for drivee.ca
+       To roll back to the old visual: visit /?design=v1  (opt-out)
+       To REVERSE entirely: delete this <script> block and search for `.design-v2`.
   ═══════════════════════════════════════════════════════════════ -->
   <script>
     (function() {
-      var enabled = new URLSearchParams(location.search).has('design')
-                 || sessionStorage.getItem('drivee_design') === 'v2';
-      if (enabled) {
-        sessionStorage.setItem('drivee_design', 'v2');
+      var optOut = location.search.indexOf('design=v1') !== -1;
+      if (!optOut) {
         document.documentElement.classList.add('design-v2');
       }
     })();
