@@ -495,7 +495,9 @@
     width: 100%; height: 100%;
     display: block;
     background: #0B1430;
+    border: 0;
   }
+  .video-frame iframe.intro-video { background: #000; }
   .video-placeholder {
     position: relative;
     width: 100%; height: 100%;
@@ -1334,31 +1336,29 @@
     </div>
 
     <div class="video-frame" id="introVideoFrame">
-      <!-- Drop your hosted MP4 / Vimeo / YouTube embed URL into the src below.
-           Until you do, this shows a styled placeholder with a play button. -->
-      <video
+      <!-- Drivee animated trailer (React-based HTML page).
+           Loaded into an iframe on demand so it doesn't slow page load. -->
+      <iframe
         class="intro-video"
-        controls
-        preload="none"
-        playsinline
-        poster="/video-poster.jpg"
-        style="display:none">
-        <source src="/intro-60s.mp4" type="video/mp4"/>
-        Your browser does not support video.
-      </video>
-      <button class="video-placeholder" type="button" aria-label="Play introduction video"
-        onclick="(function(b){var v=document.querySelector('#introVideoFrame .intro-video');if(v){b.style.display='none';v.style.display='block';try{v.play();}catch(e){}}})(this)">
+        id="introVideoIframe"
+        title="Drivee animated trailer"
+        loading="lazy"
+        allow="autoplay"
+        style="display:none; border:0;"
+        src=""></iframe>
+      <button class="video-placeholder" type="button" aria-label="Play Drivee trailer"
+        onclick="(function(b){var f=document.getElementById('introVideoIframe');if(f){f.src='/trailer.html';b.style.display='none';f.style.display='block';}})(this)">
         <div class="vp-bg"></div>
         <div class="vp-content">
           <div class="vp-meta">
             <span class="vp-dot"></span>
-            DEMO · 1:00 · TORONTO
+            DEMO · 30s · TORONTO
           </div>
           <div class="vp-play">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg>
           </div>
           <div class="vp-title">Park, scan, dispute — in seconds.</div>
-          <div class="vp-sub">Sarah catches a $65 King St ticket. We show what she does next.</div>
+          <div class="vp-sub">A real Toronto driver, a real King St ticket. Watch what Drivee does next.</div>
         </div>
       </button>
     </div>
