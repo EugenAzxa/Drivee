@@ -3025,6 +3025,11 @@
     .design-v2 #tab-services .svc-card {
       display: none !important;
     }
+    /* EXCEPT True Cost — keep it always-visible in grid mode (below the tiles).
+       It's hidden only when a detail panel is active. */
+    .design-v2 #tab-services:not([data-svc-active]) #svc-cost {
+      display: block !important;
+    }
 
     /* The grid */
     .dv2-svc-grid {
@@ -3098,7 +3103,6 @@
     .design-v2 #tab-services[data-svc-active="pay"]     #svc-pay,
     .design-v2 #tab-services[data-svc-active="tow"]     #svc-tow,
     .design-v2 #tab-services[data-svc-active="dispute"] #svc-dispute,
-    .design-v2 #tab-services[data-svc-active="cost"]    #svc-cost,
     .design-v2 #tab-services[data-svc-active="streets"] #svc-streets,
     .design-v2 #tab-services[data-svc-active="usa"]     #svc-usa {
       display: block !important;
@@ -3815,13 +3819,6 @@
           </div>
           <div class="dv2-svc-tile-name">Dispute</div>
           <div class="dv2-svc-tile-desc">Build a letter</div>
-        </button>
-        <button class="dv2-svc-tile" onclick="dv2SvcShow('cost')">
-          <div class="dv2-svc-tile-icon" style="background: rgba(232,155,34,0.12); color: var(--dv2-amber);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>
-          </div>
-          <div class="dv2-svc-tile-name">True Cost</div>
-          <div class="dv2-svc-tile-desc">Insurance impact</div>
         </button>
         <button class="dv2-svc-tile" onclick="dv2SvcShow('streets')">
           <div class="dv2-svc-tile-icon" style="background: var(--dv2-blue-50); color: var(--dv2-blue-d);">
