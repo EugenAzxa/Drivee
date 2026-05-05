@@ -3016,6 +3016,101 @@
       overflow: hidden;
       box-shadow: 0 8px 24px -16px rgba(14,27,61,0.12);
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       V2 SERVICES — 6-tile grid → detail panel architecture
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* Hide all v1 service cards by default in v2 (replaced by grid) */
+    .design-v2 #tab-services .svc-card {
+      display: none !important;
+    }
+
+    /* The grid */
+    .dv2-svc-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 0 0 16px 0;
+    }
+    .dv2-svc-tile {
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line-soft);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      font-family: var(--dv2-font);
+      color: var(--dv2-ink);
+      box-shadow: 0 4px 12px -8px rgba(14,27,61,0.08);
+    }
+    .dv2-svc-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -12px rgba(14,27,61,0.18);
+      border-color: var(--dv2-blue-50);
+    }
+    .dv2-svc-tile:active {
+      transform: translateY(0);
+    }
+    .dv2-svc-tile-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .dv2-svc-tile-name {
+      font-family: var(--dv2-serif);
+      font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+      color: var(--dv2-ink);
+    }
+    .dv2-svc-tile-desc {
+      font-family: var(--dv2-font);
+      font-size: 12px;
+      color: var(--dv2-ink2);
+      font-weight: 500;
+    }
+
+    /* Back button — hidden by default, visible only in detail mode */
+    .dv2-svc-back {
+      display: none !important;
+      align-items: center; gap: 8px;
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
+      color: var(--dv2-blue-d);
+      cursor: pointer;
+      margin: 0 0 14px 0;
+      transition: background 0.15s;
+    }
+    .dv2-svc-back:hover {
+      background: var(--dv2-blue-50);
+    }
+
+    /* When a service is active: hide grid, show only that card + back button */
+    .design-v2 #tab-services[data-svc-active] .dv2-svc-grid { display: none !important; }
+    .design-v2 #tab-services[data-svc-active] .dv2-svc-back { display: inline-flex !important; }
+    .design-v2 #tab-services[data-svc-active="lookup"]  #svc-lookup,
+    .design-v2 #tab-services[data-svc-active="pay"]     #svc-pay,
+    .design-v2 #tab-services[data-svc-active="tow"]     #svc-tow,
+    .design-v2 #tab-services[data-svc-active="dispute"] #svc-dispute,
+    .design-v2 #tab-services[data-svc-active="cost"]    #svc-cost,
+    .design-v2 #tab-services[data-svc-active="streets"] #svc-streets {
+      display: block !important;
+    }
+
+    /* In detail mode, the simple hero shrinks (we already showed the title — show context-only) */
+    .design-v2 #tab-services[data-svc-active] .dv2-tab-hero.dv2-hero-simple {
+      padding-bottom: 16px;
+    }
+    .design-v2 #tab-services[data-svc-active] .dv2-tab-hero.dv2-hero-simple .dv2-hsimple-tag,
+    .design-v2 #tab-services[data-svc-active] .dv2-tab-hero.dv2-hero-simple .dv2-hsimple-meta {
+      display: none;
+    }
   </style>
 </head>
 
@@ -3648,13 +3743,62 @@
       <div class="dv2-tab-hero dv2-hero-simple">
         <div class="dv2-hsimple-row">
           <h1 class="dv2-hsimple-title">Services</h1>
-          <button class="dv2-icon-btn" aria-label="Scan ticket" onclick="if(typeof openScanner==='function') openScanner();">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>
-          </button>
         </div>
         <div class="dv2-hsimple-tag">Find help, fast.</div>
-        <div class="dv2-hsimple-meta">CITY PORTALS · TOOLS · LOOKUPS</div>
+        <div class="dv2-hsimple-meta">PICK A SERVICE BELOW</div>
       </div>
+
+      <!-- V2 6-tile grid — only visible when ?design=v2 is active -->
+      <div class="dv2-tab-hero dv2-svc-grid">
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('lookup')">
+          <div class="dv2-svc-tile-icon" style="background: var(--dv2-blue-50); color: var(--dv2-blue-d);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Check Ticket</div>
+          <div class="dv2-svc-tile-desc">Lookup by plate</div>
+        </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('pay')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(31,171,107,0.12); color: var(--dv2-green);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h2"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Pay Ticket</div>
+          <div class="dv2-svc-tile-desc">City portals</div>
+        </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('tow')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(225,71,61,0.12); color: var(--dv2-red);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1L2.5 10a2 2 0 0 0-.5 1.3V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Tow Finder</div>
+          <div class="dv2-svc-tile-desc">Find your car</div>
+        </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('dispute')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(122,92,240,0.12); color: #6B4EE0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Dispute</div>
+          <div class="dv2-svc-tile-desc">Build a letter</div>
+        </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('cost')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(232,155,34,0.12); color: var(--dv2-amber);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="12" y2="15"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">True Cost</div>
+          <div class="dv2-svc-tile-desc">Insurance impact</div>
+        </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('streets')">
+          <div class="dv2-svc-tile-icon" style="background: var(--dv2-blue-50); color: var(--dv2-blue-d);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Street Rates</div>
+          <div class="dv2-svc-tile-desc">Hours + tow zones</div>
+        </button>
+      </div>
+
+      <!-- V2 back button (visible only inside a service detail) -->
+      <button class="dv2-svc-back dv2-tab-hero" onclick="dv2SvcGrid()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        All services
+      </button>
 
       <h1 class="page-title" style="margin-bottom:14px">Services</h1>
 
@@ -3665,7 +3809,7 @@
       </div>
 
       <!-- Check If You Have a Ticket -->
-      <div class="card svc-card" data-search="check lookup ticket parking speed camera red light court provincial HTA plate number">
+      <div class="card svc-card" id="svc-lookup" data-search="check lookup ticket parking speed camera red light court provincial HTA plate number">
         <div class="card-title">🔍 Check If You Have a Ticket</div>
         <div class="card-subtitle">Look up fines using your plate number or ticket reference</div>
 
@@ -3700,7 +3844,7 @@
       </div>
 
       <!-- City Portals -->
-      <div class="card svc-card" data-search="city payment portals parking ticket pay dispute ontario toronto">
+      <div class="card svc-card" id="svc-pay" data-search="city payment portals parking ticket pay dispute ontario toronto">
         <div class="card-title">City Payment Portals</div>
         <div class="card-subtitle">Official Toronto &amp; Ontario links — opens in your browser</div>
 
@@ -3754,7 +3898,7 @@
       </div>
 
       <!-- Street Parking Checker -->
-      <div class="card svc-card" data-search="street parking checker rates hours tow enforcement free">
+      <div class="card svc-card" id="svc-streets" data-search="street parking checker rates hours tow enforcement free">
         <div class="card-title">Street Parking Checker</div>
         <div class="card-subtitle">Rates, enforcement hours, and tow warnings</div>
         <div class="input-group">
@@ -3767,7 +3911,7 @@
       </div>
 
       <!-- Vehicle Towed -->
-      <div class="card svc-card" data-search="vehicle towed impound tow storage police">
+      <div class="card svc-card" id="svc-tow" data-search="vehicle towed impound tow storage police">
         <div class="card-title">Vehicle Towed?</div>
         <div class="card-subtitle" style="color: var(--warning);">⚠️ Storage fees start at $75/day. Act fast.</div>
         <a class="btn-gov" href="https://www.tps.ca/services/towing/" target="_blank" rel="noopener">
@@ -3781,7 +3925,7 @@
       </div>
 
       <!-- Dispute Script Builder -->
-      <div class="card svc-card" data-search="dispute script builder letter fight ticket appeal">
+      <div class="card svc-card" id="svc-dispute" data-search="dispute script builder letter fight ticket appeal">
         <div class="card-title">Dispute Script Builder</div>
         <div class="card-subtitle">Select a reason and generate your dispute letter</div>
         <div class="input-group">
@@ -3812,7 +3956,7 @@
       </div>
 
       <!-- TRUE COST CALCULATOR + EXPERT HELP -->
-      <div class="true-cost-card svc-card" data-search="true cost calculator insurance demerit points fine penalty">
+      <div class="true-cost-card svc-card" id="svc-cost" data-search="true cost calculator insurance demerit points fine penalty">
         <div class="card-title">🧮 True Cost Calculator</div>
         <div class="card-subtitle">See what a ticket REALLY costs including insurance — not just the fine</div>
 
@@ -4373,8 +4517,30 @@
     // Uses CSS classes — never touches style.display directly.
     // This avoids breaking flex/grid layouts when re-showing tabs.
     // ===================================================
+    // ─── v2 Services panel switcher (no-op when v2 is off) ───
+    function dv2SvcShow(key) {
+      var svc = document.getElementById('tab-services');
+      if (!svc) return;
+      svc.dataset.svcActive = key;
+      // Smooth scroll the tab content to top so the panel header is visible
+      try { svc.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function dv2SvcGrid() {
+      var svc = document.getElementById('tab-services');
+      if (!svc) return;
+      delete svc.dataset.svcActive;
+      try { svc.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function showTab(tabId) {
       if (typeof trackEvent === 'function') trackEvent('tab_click', tabId);
+      // Reset Services to the grid when switching tabs (so user lands on grid, not a panel)
+      if (tabId === 'tab-services') {
+        var svc = document.getElementById('tab-services');
+        if (svc) delete svc.dataset.svcActive;
+      }
       // Hide all sections by removing .active
       document.querySelectorAll('.tab-section').forEach(function(section) {
         section.classList.remove('active');
