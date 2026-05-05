@@ -2583,28 +2583,71 @@
 
     /* ─── v2 Hero (deep blue, rounded bottom corners) ─── */
     .dv2-hero {
-      background: var(--dv2-blue-d);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(122,92,240,0.35), transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(46,100,255,0.30), transparent 55%),
+        linear-gradient(180deg, #2647BD 0%, var(--dv2-blue-d) 60%, #15348F 100%);
       color: white;
       padding: 28px 20px 36px;
       border-radius: 0 0 28px 28px;
       margin: 0 -20px 18px;     /* bleed past dashboard side padding */
       position: relative;
       overflow: hidden;
+      box-shadow: 0 18px 36px -18px rgba(14,27,61,0.45);
     }
+    /* Decorative blurred circle top-right (premium polish) */
+    .dv2-hero::before {
+      content: "";
+      position: absolute;
+      top: -60px; right: -40px;
+      width: 200px; height: 200px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0) 70%);
+      filter: blur(8px);
+      pointer-events: none;
+    }
+    /* Faint grid texture for tech feel */
+    .dv2-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 30% 50%, black, transparent 70%);
+      -webkit-mask-image: radial-gradient(circle at 30% 50%, black, transparent 70%);
+      pointer-events: none;
+    }
+    .dv2-hero > * { position: relative; z-index: 1; }
+
     .dv2-hero-row {
       display: flex; align-items: center; gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .dv2-hero-greet { flex: 1; min-width: 0; }
     .dv2-hero-meta {
       font-family: var(--dv2-mono);
-      font-size: 10px; letter-spacing: 1.5px; font-weight: 800;
-      color: rgba(255,255,255,0.6);
+      font-size: 10px; letter-spacing: 1.6px; font-weight: 800;
+      color: rgba(255,255,255,0.65);
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .dv2-hero-meta::before {
+      content: "";
+      width: 6px; height: 6px; border-radius: 999px;
+      background: #1FAB6B;
+      box-shadow: 0 0 10px #1FAB6B;
+      animation: dv2DotPulse 1.6s infinite;
+    }
+    @keyframes dv2DotPulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
     }
     .dv2-greeting {
       font-family: var(--dv2-serif);
-      font-size: 30px; font-weight: 700; letter-spacing: -0.7px;
-      color: white; margin: 4px 0 0;
+      font-size: 32px; font-weight: 700; letter-spacing: -0.8px;
+      color: white; margin: 6px 0 0;
+      line-height: 1;
     }
     .dv2-icon-btn {
       width: 36px; height: 36px; border-radius: 999px;
@@ -2626,27 +2669,53 @@
 
     /* Glass balance card inside hero */
     .dv2-balance {
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.15);
-      padding: 16px; border-radius: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 18px; border-radius: 16px;
       display: flex; justify-content: space-between; align-items: flex-start;
       gap: 12px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        0 6px 18px -10px rgba(0,0,0,0.30);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Subtle shimmer line on top edge */
+    .dv2-balance::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     }
     .dv2-bal-lbl {
       font-family: var(--dv2-mono); font-size: 10px; font-weight: 800;
-      letter-spacing: 1.4px; color: rgba(255,255,255,0.7);
+      letter-spacing: 1.5px; color: rgba(255,255,255,0.72);
     }
     .dv2-bal-amt {
-      font-family: var(--dv2-mono); font-size: 36px; font-weight: 800;
-      letter-spacing: -1.2px; margin-top: 6px; color: white;
+      font-family: var(--dv2-mono); font-size: 40px; font-weight: 800;
+      letter-spacing: -1.6px; margin-top: 6px; color: white;
       line-height: 1;
+      text-shadow: 0 2px 14px rgba(255,255,255,0.18);
     }
     .dv2-bal-sub {
       font-family: var(--dv2-mono); font-size: 10px;
-      color: rgba(255,255,255,0.7);
-      margin-top: 6px; letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.72);
+      margin-top: 8px; letter-spacing: 0.6px;
+      font-weight: 600;
+    }
+    /* Tappable hint when sub line says "NO PLATE" — make it look like an action */
+    .dv2-bal-sub.dv2-bal-sub-action {
+      cursor: pointer;
+      color: #B6C9FF;
+      transition: color 0.15s;
+    }
+    .dv2-bal-sub.dv2-bal-sub-action:hover { color: white; }
+    .dv2-bal-sub.dv2-bal-sub-action::after {
+      content: " →";
+      opacity: 0.7;
     }
     .dv2-pill {
       display: inline-flex; align-items: center; gap: 4px;
@@ -6160,8 +6229,18 @@
         dv2Amt.textContent = '$' + totalDue + '.00';
       }
       if (dv2Sub) {
-        var plateStr = (p && p.plate) ? p.plate : 'NO PLATE';
-        dv2Sub.textContent = reminders.length + ' ACTIVE · PLATE ' + plateStr;
+        var hasPlate = !!(p && p.plate);
+        if (hasPlate) {
+          dv2Sub.textContent = reminders.length + ' ACTIVE · PLATE ' + p.plate;
+          dv2Sub.classList.remove('dv2-bal-sub-action');
+          dv2Sub.onclick = null;
+        } else {
+          dv2Sub.textContent = reminders.length + ' ACTIVE · ADD YOUR PLATE';
+          dv2Sub.classList.add('dv2-bal-sub-action');
+          dv2Sub.onclick = function() {
+            if (typeof openProfileSheet === 'function') openProfileSheet();
+          };
+        }
       }
       if (dv2Pill) {
         if (overdue > 0) {
