@@ -3119,6 +3119,40 @@
       display: none !important;
     }
 
+    /* ═══ Back-to-landing button — desktop/tablet only ═══ */
+    .dv2-back-to-landing {
+      display: none; /* shown via JS on non-phone devices */
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + 12px);
+      left: 16px;
+      z-index: 100;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(14,27,61,0.10);
+      border-radius: 999px;
+      padding: 8px 14px 8px 12px;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #1A3FB8;
+      cursor: pointer;
+      box-shadow: 0 8px 20px -8px rgba(14,27,61,0.20);
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      text-decoration: none;
+      letter-spacing: -0.1px;
+    }
+    .dv2-back-to-landing:hover {
+      background: white;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -8px rgba(14,27,61,0.25);
+    }
+    .dv2-back-to-landing svg { flex-shrink: 0; }
+    /* Show only when JS detects a non-phone device */
+    body.dv2-desktop-app .dv2-back-to-landing { display: inline-flex; }
+
     /* Tab section: no top padding (hero bleeds to top), side padding for cards, room for nav */
     .design-v2 .tab-section {
       padding: 0 16px 100px !important;
@@ -3679,6 +3713,23 @@
 </head>
 
 <body>
+
+  <!-- Back to landing — only visible on desktop/tablet (added by JS below) -->
+  <a class="dv2-back-to-landing" href="/desktop.html"
+     onclick="try{sessionStorage.removeItem('drivee_app');}catch(e){}"
+     title="Back to drivee.ca landing page">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to drivee.ca
+  </a>
+  <script>
+    // Show the back-to-landing button only when this looks like desktop/tablet
+    (function() {
+      var ua = navigator.userAgent || "";
+      var isPhone = /iPhone|Android.*Mobile|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      if (!isPhone) document.body.classList.add('dv2-desktop-app');
+    })();
+  </script>
+
 
   <!-- ===============================================
        BACKGROUND AURORA — behind all content
