@@ -6902,7 +6902,9 @@
       dv2RenderFreeParking();
     }
 
-    // ─── v2 Free parking / holidays banner ───
+    // ─── v2 Free Parking Now banner ───
+    // Wired to the real STREETS database — counts streets free right now.
+    // Honest: no holiday claims (Toronto enforces year-round per official rules).
     function dv2RenderFreeParking() {
       var section = document.getElementById('dv2-fp-section');
       var titleEl = document.getElementById('dv2-fp-title');
@@ -6911,73 +6913,56 @@
       var metaEl  = document.getElementById('dv2-fp-meta');
       if (!section || !titleEl || !subEl) return;
 
-      // Self-contained Toronto holidays (matches v1 list exactly)
-      function nthWeekday(y, month, weekday, n) {
-        var d = new Date(y, month, 1), c = 0;
-        while (c < n) {
-          if (d.getDay() === weekday) c++;
-          if (c < n) d.setDate(d.getDate() + 1);
-        }
-        return d;
-      }
-      function easter(y) {
-        var a=y%19, b=Math.floor(y/100), c=y%100, d=Math.floor(b/4), e=b%4;
-        var f=Math.floor((b+8)/25), g=Math.floor((b-f+1)/3), h=(19*a+b-d-g+15)%30;
-        var i=Math.floor(c/4), k=c%4, l=(32+2*e+2*i-h-k)%7;
-        var m=Math.floor((a+11*h+22*l)/451), month=Math.floor((h+l-7*m+114)/31)-1;
-        var day=((h+l-7*m+114)%31)+1;
-        return new Date(y, month, day);
-      }
-      function torontoHolidays(year) {
-        var ed = easter(year);
-        var gf = new Date(ed); gf.setDate(ed.getDate() - 2);
-        return [
-          { date: new Date(year, 0, 1),  name: "New Year's Day" },
-          { date: nthWeekday(year, 1, 1, 3), name: 'Family Day' },
-          { date: gf, name: 'Good Friday' },
-          { date: nthWeekday(year, 4, 1, 3), name: 'Victoria Day' },
-          { date: new Date(year, 6, 1),  name: 'Canada Day' },
-          { date: nthWeekday(year, 7, 1, 1), name: 'Civic Holiday' },
-          { date: nthWeekday(year, 8, 1, 1), name: 'Labour Day' },
-          { date: nthWeekday(year, 9, 1, 2), name: 'Thanksgiving' },
-          { date: new Date(year, 11, 25), name: 'Christmas Day' },
-          { date: new Date(year, 11, 26), name: 'Boxing Day' }
-        ];
+      // Need the live STREETS data + status function from the Map tab logic
+      if (typeof STREETS === 'undefined' || typeof getStreetStatus !== 'function') {
+        section.className = 'dv2-tab-hero dv2-section dv2-section-sky';
+        if (iconEl) iconEl.textContent = '🅿️';
+        if (metaEl) metaEl.textContent = 'FREE PARKING · LIVE';
+        titleEl.textContent = 'Tap to find free spots';
+        subEl.textContent = 'Live data on the Map tab — 40+ Toronto streets tracked.';
+        return;
       }
 
-      var today = new Date(); today.setHours(0,0,0,0);
-      var year = today.getFullYear();
-      var holidays = torontoHolidays(year).concat(torontoHolidays(year + 1));
-      holidays.forEach(function(h) { h.date.setHours(0,0,0,0); });
+      var freeNow = 0, freeSoon = 0;
+      STREETS.forEach(function(s) {
+        var st = getStreetStatus(s);
+        if (st === 'free') freeNow++;
+        else if (st === 'soon') freeSoon++;
+      });
 
-      var todayHoliday = null;
-      for (var i = 0; i < holidays.length; i++) {
-        if (holidays[i].date.getTime() === today.getTime()) {
-          todayHoliday = holidays[i]; break;
-        }
-      }
+      var hour = new Date().getHours();
+      var enforceActive = hour >= 8 && hour < 20;
 
-      if (todayHoliday) {
+      if (freeNow > 0) {
+        // Lots of free streets right now
         section.className = 'dv2-tab-hero dv2-section dv2-section-mint';
-        if (iconEl)  iconEl.textContent = '🎉';
-        if (metaEl)  metaEl.textContent = 'FREE TODAY · TORONTO';
-        titleEl.textContent = 'Free street parking today!';
-        subEl.textContent = todayHoliday.name + ' — all metered streets are free. Always check signs.';
+        if (iconEl) iconEl.textContent = '🅿️';
+        if (metaEl) metaEl.textContent = 'FREE PARKING · LIVE';
+        titleEl.textContent = freeNow + ' street' + (freeNow === 1 ? '' : 's') + ' free right now';
+        subEl.textContent = freeSoon > 0
+          ? freeSoon + ' more becoming free soon. Tap to see the list.'
+          : 'Tap to see exactly which Toronto streets are free this minute.';
+      } else if (freeSoon > 0) {
+        // Nothing free right now but streets opening up soon
+        section.className = 'dv2-tab-hero dv2-section dv2-section-sand dv2-fp-countdown';
+        if (iconEl) iconEl.textContent = '🕐';
+        if (metaEl) metaEl.textContent = 'COMING SOON';
+        titleEl.textContent = freeSoon + ' street' + (freeSoon === 1 ? '' : 's') + ' free within 1 hour';
+        subEl.textContent = 'Tap to see which spots are about to open up.';
+      } else if (enforceActive) {
+        // Peak enforcement — nothing free
+        section.className = 'dv2-tab-hero dv2-section dv2-section-peach';
+        if (iconEl) iconEl.textContent = '⚠️';
+        if (metaEl) metaEl.textContent = 'ENFORCEMENT ACTIVE';
+        titleEl.textContent = 'Pay your meter — feed it';
+        subEl.textContent = 'Toronto enforces year-round on stat holidays too. Tap for nearby Green P lots.';
       } else {
-        var nextHoliday = null;
-        for (var j = 0; j < holidays.length; j++) {
-          if (holidays[j].date > today) { nextHoliday = holidays[j]; break; }
-        }
-        if (nextHoliday) {
-          var diff = Math.ceil((nextHoliday.date - today) / 86400000);
-          var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          var dateStr = months[nextHoliday.date.getMonth()] + ' ' + nextHoliday.date.getDate();
-          section.className = 'dv2-tab-hero dv2-section dv2-section-sand dv2-fp-countdown';
-          if (iconEl)  iconEl.textContent = '🅿️';
-          if (metaEl)  metaEl.textContent = 'NEXT FREE DAY';
-          titleEl.textContent = nextHoliday.name;
-          subEl.textContent = dateStr + ' · ' + diff + ' day' + (diff !== 1 ? 's' : '') + ' away';
-        }
+        // Off-hours
+        section.className = 'dv2-tab-hero dv2-section dv2-section-mint';
+        if (iconEl) iconEl.textContent = '🌙';
+        if (metaEl) metaEl.textContent = 'OFF-HOURS';
+        titleEl.textContent = 'Most streets free overnight';
+        subEl.textContent = 'Always read the meter — some streets enforce 24/7.';
       }
     }
 
