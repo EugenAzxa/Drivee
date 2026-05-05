@@ -13,11 +13,33 @@
     (function() {
       var ua = navigator.userAgent || "";
       var isPhone = /iPhone|Android.*Mobile|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-      var forceApp = new URLSearchParams(location.search).has('app')
-                  || sessionStorage.getItem('drivee_app') === '1';
-      if (forceApp) sessionStorage.setItem('drivee_app', '1');
+      var params = new URLSearchParams(location.search);
+      // ?app=1 OR ?design=… both bypass the landing page so demos work on PC.
+      var forceApp = params.has('app')
+                  || params.has('design')
+                  || sessionStorage.getItem('drivee_app') === '1'
+                  || sessionStorage.getItem('drivee_design') === 'v2';
+      if (params.has('app') || sessionStorage.getItem('drivee_app') === '1') {
+        sessionStorage.setItem('drivee_app', '1');
+      }
       if (!isPhone && !forceApp) {
         location.replace('/desktop.html');
+      }
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DESIGN V2 TOGGLE (Receipt × Premium look)
+       Visit /?design=v2 to enable. Sticks for the session via sessionStorage.
+       To REVERSE: delete this <script> block and search for `.design-v2`.
+  ═══════════════════════════════════════════════════════════════ -->
+  <script>
+    (function() {
+      var enabled = new URLSearchParams(location.search).has('design')
+                 || sessionStorage.getItem('drivee_design') === 'v2';
+      if (enabled) {
+        sessionStorage.setItem('drivee_design', 'v2');
+        document.documentElement.classList.add('design-v2');
       }
     })();
   </script>
@@ -32,9 +54,10 @@
   <title>Drivee</title>
 
   <!-- JetBrains Mono — used for ticket numbers and fine amounts -->
+  <!-- Plus Jakarta Sans + IBM Plex Serif — used by ?design=v2 only -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Font Awesome 6 — icons throughout the app -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -2514,6 +2537,120 @@
     }
 
   </style>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DESIGN V2 — Receipt × Premium (scoped under .design-v2 only)
+       Activated via /?design=v2. v1 is completely untouched when v2 is off.
+       To REVERSE: delete this entire <style> block + its companion HTML
+       (search for `dv2-` to find all v2 markup).
+  ═══════════════════════════════════════════════════════════════ -->
+  <style id="design-v2-styles">
+    .design-v2 {
+      --dv2-bg: #FAFBFD;
+      --dv2-bg2: #F2F5FA;
+      --dv2-paper: #FFFFFF;
+      --dv2-ink: #0B1430;
+      --dv2-ink2: #4A5267;
+      --dv2-ink3: #8C95A7;
+      --dv2-line: rgba(11,20,48,0.08);
+      --dv2-blue: #2E64FF;
+      --dv2-blue-d: #1A3FB8;
+      --dv2-blue-50: #F2F6FF;
+      --dv2-green: #1FAB6B;
+      --dv2-amber: #E89B22;
+      --dv2-red: #E1473D;
+      --dv2-font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --dv2-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --dv2-serif: 'IBM Plex Serif', Georgia, serif;
+    }
+
+    /* Show/hide v1 vs v2 hero */
+    .design-v2 .hero-card { display: none !important; }
+    .dv2-hero { display: none; }
+    .design-v2 .dv2-hero { display: block; }
+
+    /* When v2 is on, give the dashboard a paper-receipt feel */
+    .design-v2 #tab-dashboard {
+      background: var(--dv2-paper);
+      font-family: var(--dv2-font);
+      color: var(--dv2-ink);
+    }
+
+    /* ─── v2 Hero ─── */
+    .dv2-hero {
+      background: var(--dv2-paper);
+      padding: 18px 20px 14px;
+      border-bottom: 1px dashed var(--dv2-line);
+      margin: 0 -20px 16px; /* bleed past dashboard's side padding */
+    }
+    .dv2-hero-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px;
+    }
+    .dv2-hero-meta {
+      font-family: var(--dv2-mono); font-size: 10px; letter-spacing: 1.5px;
+      font-weight: 700; color: var(--dv2-ink2);
+    }
+    .dv2-hero-icons { display: flex; gap: 6px; }
+    .dv2-icon-btn {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--dv2-bg2); border: 1px solid var(--dv2-line);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dv2-ink); position: relative; cursor: pointer;
+      padding: 0;
+    }
+    .dv2-icon-btn .dv2-badge {
+      position: absolute; top: -2px; right: -2px;
+      min-width: 14px; height: 14px; padding: 0 3px; border-radius: 999px;
+      background: var(--dv2-red); color: white;
+      font-family: var(--dv2-mono); font-size: 8px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--dv2-paper);
+    }
+    .dv2-greeting {
+      font-family: var(--dv2-serif); font-size: 30px; font-weight: 700;
+      letter-spacing: -0.7px; color: var(--dv2-ink);
+      margin: 0;
+    }
+    .dv2-dotline {
+      margin-top: 10px; height: 5px;
+      background: repeating-linear-gradient(90deg, var(--dv2-ink) 0 5px, transparent 5px 9px);
+      opacity: 0.85;
+    }
+
+    /* Balance panel */
+    .dv2-balance {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--dv2-bg);
+      border-radius: 12px;
+      border: 1px solid var(--dv2-line);
+      margin: 14px 0 0;
+    }
+    .dv2-balance-lbl {
+      font-family: var(--dv2-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 1.4px; color: var(--dv2-ink2);
+    }
+    .dv2-balance-amt {
+      font-family: var(--dv2-mono); font-size: 32px; font-weight: 800;
+      letter-spacing: -1.2px; margin-top: 4px; color: var(--dv2-ink);
+    }
+    .dv2-balance-sub {
+      font-family: var(--dv2-mono); font-size: 10px; color: var(--dv2-ink2);
+      margin-top: 4px; letter-spacing: 0.6px;
+    }
+    .dv2-stamp {
+      display: inline-block; padding: 4px 8px;
+      border: 1.5px solid currentColor; border-radius: 4px;
+      font-family: var(--dv2-mono); font-size: 9px; font-weight: 800;
+      letter-spacing: 1.2px; transform: rotate(-3deg);
+      color: var(--dv2-amber);
+      white-space: nowrap;
+    }
+    .dv2-stamp.green { color: var(--dv2-green); }
+    .dv2-stamp.red   { color: var(--dv2-red); }
+    .dv2-stamp.blue  { color: var(--dv2-blue); }
+  </style>
 </head>
 
 <body>
@@ -2838,6 +2975,37 @@
         <span class="chase-actor chase-ticket">🎫</span>
       </div>
       <div class="chase-caption">Snap your ticket faster than they can write it</div>
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           V2 HERO — Receipt × Premium look
+           Hidden by default. Shown only when <html> has .design-v2 class
+           (set by /?design=v2). v1 hero below is hidden when v2 is on.
+           To REVERSE: delete this block (markers: dv2-hero).
+      ═══════════════════════════════════════════════════════════════ -->
+      <div class="dv2-hero">
+        <div class="dv2-hero-row">
+          <span class="dv2-hero-meta" id="dv2-meta">DRIVEE · TORONTO</span>
+          <div class="dv2-hero-icons">
+            <button class="dv2-icon-btn" aria-label="Reminders" onclick="switchTab('dashboard'); var e=document.getElementById('reminders-card'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              <span class="dv2-badge" id="dv2-bell-badge" style="display:none">0</span>
+            </button>
+            <button class="dv2-icon-btn" aria-label="Profile" onclick="if(typeof openProfileSheet==='function') openProfileSheet();">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            </button>
+          </div>
+        </div>
+        <h1 class="dv2-greeting">Hi, <span id="dv2-name">Driver</span>.</h1>
+        <div class="dv2-dotline"></div>
+        <div class="dv2-balance">
+          <div>
+            <div class="dv2-balance-lbl" id="dv2-balance-lbl">ACTIVE REMINDERS</div>
+            <div class="dv2-balance-amt" id="dv2-balance-amt">0</div>
+            <div class="dv2-balance-sub" id="dv2-balance-sub">DRIVEE MEMBER</div>
+          </div>
+          <span class="dv2-stamp green" id="dv2-stamp">ALL CLEAR</span>
+        </div>
+      </div>
 
       <!-- HERO CARD — greeting + stats + auth -->
       <div class="hero-card">
@@ -5360,6 +5528,47 @@
       var sd = document.getElementById('stat-deadlines');
       if (sf) sf.textContent = overdue;
       if (sd) sd.textContent = upcoming;
+
+      // ─── v2 hero (Receipt × Premium) sync — only updates if v2 markup exists ───
+      var dv2Name  = document.getElementById('dv2-name');
+      var dv2Meta  = document.getElementById('dv2-meta');
+      var dv2Amt   = document.getElementById('dv2-balance-amt');
+      var dv2Sub   = document.getElementById('dv2-balance-sub');
+      var dv2Stamp = document.getElementById('dv2-stamp');
+      var dv2Bell  = document.getElementById('dv2-bell-badge');
+      if (dv2Name) dv2Name.textContent = firstName;
+      if (dv2Meta) {
+        var monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        var d = new Date();
+        dv2Meta.textContent = 'DRIVEE · ' + monthNames[d.getMonth()] + ' ' + d.getDate();
+      }
+      if (dv2Amt) dv2Amt.textContent = reminders.length;
+      if (dv2Sub) {
+        var plateStr = (p && p.plate) ? p.plate : '';
+        dv2Sub.textContent = plateStr
+          ? plateStr + ' · DRIVEE MEMBER'
+          : 'DRIVEE MEMBER';
+      }
+      if (dv2Stamp) {
+        if (overdue > 0) {
+          dv2Stamp.textContent = 'OVERDUE';
+          dv2Stamp.className = 'dv2-stamp red';
+        } else if (upcoming > 0) {
+          dv2Stamp.textContent = 'UPCOMING';
+          dv2Stamp.className = 'dv2-stamp';
+        } else {
+          dv2Stamp.textContent = 'ALL CLEAR';
+          dv2Stamp.className = 'dv2-stamp green';
+        }
+      }
+      if (dv2Bell) {
+        if (overdue > 0) {
+          dv2Bell.textContent = overdue;
+          dv2Bell.style.display = 'flex';
+        } else {
+          dv2Bell.style.display = 'none';
+        }
+      }
     }
 
     // ===================================================
