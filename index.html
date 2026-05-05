@@ -3099,8 +3099,46 @@
     .design-v2 #tab-services[data-svc-active="tow"]     #svc-tow,
     .design-v2 #tab-services[data-svc-active="dispute"] #svc-dispute,
     .design-v2 #tab-services[data-svc-active="cost"]    #svc-cost,
-    .design-v2 #tab-services[data-svc-active="streets"] #svc-streets {
+    .design-v2 #tab-services[data-svc-active="streets"] #svc-streets,
+    .design-v2 #tab-services[data-svc-active="usa"]     #svc-usa {
       display: block !important;
+    }
+
+    /* ─── Restore True Cost Calculator to its original v1 look ─── */
+    /* Don't apply the v2 paper-card flat treatment to this card */
+    .design-v2 #svc-cost {
+      background: #fff !important;
+      border: none !important;
+      border-radius: 16px !important;
+      padding: 20px !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+    }
+    .design-v2 #svc-cost .card-title {
+      font-family: var(--dv2-font) !important;
+      font-size: 18px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0 !important;
+    }
+    /* Let TCC's own input/select/button rules win — undo v2 input overrides */
+    .design-v2 #svc-cost .tcc-amount-input,
+    .design-v2 #svc-cost .tcc-select {
+      border-radius: 10px !important;
+      border-width: 1.5px !important;
+      background: #f9fafb !important;
+      padding: 12px 14px !important;
+      font-family: inherit !important;
+      box-shadow: none !important;
+    }
+    .design-v2 #svc-cost .tcc-amount-input { padding-left: 26px !important; }
+    .design-v2 #svc-cost .tcc-amount-input:focus,
+    .design-v2 #svc-cost .tcc-select:focus {
+      background: #fff !important;
+      box-shadow: none !important;
+    }
+    .design-v2 #svc-cost .tcc-calc-btn {
+      border-radius: 12px !important;
+      box-shadow: none !important;
+      font-weight: 700 !important;
     }
 
     /* In detail mode, the simple hero shrinks (we already showed the title — show context-only) */
@@ -3792,6 +3830,13 @@
           <div class="dv2-svc-tile-name">Street Rates</div>
           <div class="dv2-svc-tile-desc">Hours + tow zones</div>
         </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('usa')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(46,100,255,0.12); color: var(--dv2-blue);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">USA Links</div>
+          <div class="dv2-svc-tile-desc">Toll + parking</div>
+        </button>
       </div>
 
       <!-- V2 back button (visible only inside a service detail) -->
@@ -4018,7 +4063,7 @@
       </div>
 
       <!-- USA Links -->
-      <div class="card svc-card" data-search="usa united states parking toll ezpass new york nyc buffalo">
+      <div class="card svc-card" id="svc-usa" data-search="usa united states parking toll ezpass new york nyc buffalo">
         <div class="card-title">USA Parking &amp; Toll Links</div>
         <div class="card-subtitle">Canadian plates are tracked on US systems</div>
         <div class="portal-category portal-category-green">🇺🇸 USA Parking &amp; Tolls</div>
