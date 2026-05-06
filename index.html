@@ -3666,10 +3666,12 @@
       padding: 13px 18px;
       background: white;
       color: #1A3FB8;
+      border: 0;
       border-radius: 11px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 14px; font-weight: 800;
       text-decoration: none;
+      cursor: pointer;
       box-shadow: 0 6px 14px -6px rgba(0,0,0,0.20);
       transition: transform 0.15s, box-shadow 0.15s;
     }
@@ -4828,14 +4830,11 @@
                 <div class="dv2-er-inline-sub">AI drafts the prosecutor request from this scan. Often turns demerit-point tickets into no-points reduced fines. <strong>$0.99 one-time</strong> · no subscription.</div>
               </div>
             </div>
-            <a class="dv2-er-inline-cta" href="https://buy.stripe.com/6oU28tey34q14I6gCUes000"
-               target="_blank" rel="noopener"
-               data-stripe-link="https://buy.stripe.com/6oU28tey34q14I6gCUes000"
-               onclick="return dv2EarlyResolutionPay(event);">
-              Get AI Eugen's draft — $0.99
+            <button class="dv2-er-inline-cta" type="button" onclick="dv2OpenEarlyResolution()">
+              See how it works — then decide
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </a>
-            <div class="dv2-er-inline-trust">🔒 Stripe · One-time payment · Refund if unused</div>
+            </button>
+            <div class="dv2-er-inline-trust">🔒 Stripe · $0.99 one-time · Refund if unused</div>
           </div>
         </div>
 
@@ -5844,6 +5843,30 @@
     // Uses CSS classes — never touches style.display directly.
     // This avoids breaking flex/grid layouts when re-showing tabs.
     // ===================================================
+    // ─── Verdict button → Early Resolution decision page ───
+    // Take the user to the Services tab's Early Resolution detail panel so
+    // they can READ the explanation, see why it fits their kind of ticket,
+    // tap the Court Case Lookup link, and only THEN decide whether to pay
+    // the $0.99 for AI Eugen's draft. Don't jump straight to Stripe — the
+    // user needs to understand what they're paying for.
+    function dv2OpenEarlyResolution() {
+      if (typeof showTab === 'function') showTab('tab-services');
+      // Open the ER detail panel inside Services (same architecture as the
+      // tile grid → detail flow we already built).
+      if (typeof dv2SvcShow === 'function') {
+        dv2SvcShow('early');
+      } else {
+        var svc = document.getElementById('tab-services');
+        if (svc) svc.dataset.svcActive = 'early';
+      }
+      // Scroll to top so the educational content is the first thing they see
+      setTimeout(function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        var svc = document.getElementById('tab-services');
+        if (svc) try { svc.scrollTop = 0; } catch (e) {}
+      }, 100);
+    }
+
     // ─── Early Resolution: handoff to Stripe Payment Link ───
     // Drop your real Stripe Payment Link URL into the data-stripe-link attribute
     // on #dv2-er-pay-btn (or replace REPLACE_ME below). Stripe creates these
@@ -7015,22 +7038,20 @@
         ? '<div class="dv2-verdict-ticket"><span class="dv2-vt-lbl">TICKET #</span><span class="dv2-vt-val">' + ticketRef + '</span></div>'
         : '';
 
-      // Build the Early-Resolution Stripe button — always present, just sized
-      // differently depending on how appropriate ER is for this verdict class.
-      // Urgent (DUI/stunt) → ER is SECONDARY (find a lawyer first, but ER is still
-      // useful for related minor charges).
-      // Contest / Serious → ER is PRIMARY (this is the case it was made for).
-      // Minor (parking <$65) → ER is SECONDARY (just paying is usually right, but
-      // some users want to plead it down).
+      // Build the Early-Resolution button — takes the user to the dedicated
+      // ER decision page on the Services tab, NOT straight to Stripe. There
+      // they read what ER is, why it works for their kind of ticket, see the
+      // Court Case Lookup link, then decide if they want to pay $0.99.
+      // Always visible in every verdict; just sized differently:
+      // Contest / Serious → ER is PRIMARY (gradient pulsing button)
+      // Urgent / Minor → ER is SECONDARY (under "OR PLEAD IT DOWN" divider)
       var erButton =
-        '<a class="dv2-verdict-er-btn" href="https://buy.stripe.com/6oU28tey34q14I6gCUes000" ' +
-          'target="_blank" rel="noopener" ' +
-          'data-stripe-link="https://buy.stripe.com/6oU28tey34q14I6gCUes000" ' +
-          'onclick="return dv2EarlyResolutionPay(event);">' +
+        '<button class="dv2-verdict-er-btn" type="button" onclick="dv2OpenEarlyResolution()">' +
           '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>' +
-          '⚖️ Plead Early Resolution — $0.99' +
-        '</a>' +
-        '<div class="dv2-verdict-er-sub">AI Eugen drafts the prosecutor request from this ticket. One-time $0.99, refund if unused. Most demerit-point cases plead down to no-points reduced fines.</div>';
+          '⚖️ See Early Resolution option' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' +
+        '</button>' +
+        '<div class="dv2-verdict-er-sub">Most demerit-point cases plead down to no-points reduced fines. Tap to read how it works and decide for yourself — pay only if you want AI Eugen to draft the form ($0.99).</div>';
 
       var erIsPrimary = (verdict.cls === 'contest' || verdict.cls === 'serious');
       var primaryAction = erIsPrimary
