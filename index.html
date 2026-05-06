@@ -3423,14 +3423,39 @@
        V2 DASHBOARD — Scanner CTA, Open reminders, Quick actions
     ═══════════════════════════════════════════════════════════════ */
 
-    /* Keep v1 dashboard cards visible in v2 — they hold the working
-       functionality (scan-result UI, Demerit Points tracker, Renewal
-       Reminders, Scanned Tickets, the Add-Reminder form). They get
-       the v2 paper-card paint automatically via the global .card rule.
-       Only hide the things that v2 actually replaces or that look noisy. */
-    .design-v2 #tab-dashboard #profile-prompt {
-      /* Keep visible but stripped down — we'll style it via the existing
-         #profile-prompt rule above. */
+    /* Hide the AI Ticket Scanner card on the dashboard by default in v2 — it
+       opens as a dedicated full-tab view when the user taps the v2 scanner
+       CTA. The card still lives in the DOM (so its scan-flow result UI keeps
+       working), it's just hidden until needed. */
+    .design-v2 #tab-dashboard #card-ai-scanner { display: none !important; }
+
+    /* When dashboard is in "scan mode" (data-scan-active), hide every section
+       on dashboard EXCEPT the scanner card + back button. Gives the scanner
+       a dedicated, focused page. */
+    .design-v2 #tab-dashboard[data-scan-active] > *:not(.dv2-scan-back):not(#card-ai-scanner) {
+      display: none !important;
+    }
+    .design-v2 #tab-dashboard[data-scan-active] #card-ai-scanner { display: block !important; }
+
+    /* Back button (Scan view) */
+    .dv2-scan-back {
+      display: none !important;
+    }
+    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back {
+      display: inline-flex !important;
+      align-items: center; gap: 8px;
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
+      color: var(--dv2-blue-d);
+      cursor: pointer;
+      margin: calc(env(safe-area-inset-top, 0px) + 14px) 0 14px 0;
+      transition: background 0.15s;
+    }
+    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back:hover {
+      background: var(--dv2-blue-50);
     }
 
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
@@ -4148,6 +4173,12 @@
     ================================================ -->
     <section class="tab-section" id="tab-dashboard">
 
+      <!-- Scan-view back button (only visible in dedicated scan mode in v2) -->
+      <button class="dv2-scan-back" type="button" onclick="dv2CloseScan()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to dashboard
+      </button>
+
       <!-- Playful chase animation — officer running after a Beetle -->
       <div class="ticket-chase" aria-hidden="true">
         <span class="chase-actor chase-beetle"><span class="flip">🚗</span></span>
@@ -4193,7 +4224,7 @@
 
       <!-- Scanner CTA wrapped in a paper section so it aligns with the other sections -->
       <div class="dv2-tab-hero dv2-section dv2-section-paper">
-        <button class="dv2-scanner-cta" type="button" id="dv2-scanner-cta" onclick="var i=document.getElementById('ticket-photo'); if(i) i.click();">
+        <button class="dv2-scanner-cta" type="button" id="dv2-scanner-cta" onclick="dv2OpenScan()">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
             <span class="dv2-scanner-meta">OCR + AI VISION</span>
@@ -4361,7 +4392,7 @@
       </div>
 
       <!-- AI SCANNER + ANALYSER — combined card -->
-      <div class="card">
+      <div class="card" id="card-ai-scanner">
         <div class="card-title">📸 AI Ticket Scanner</div>
         <div class="card-subtitle">Scan any ticket or fine — get verdict, payment link &amp; auto-reminder</div>
 
@@ -5385,10 +5416,18 @@
 
     function showTab(tabId) {
       if (typeof trackEvent === 'function') trackEvent('tab_click', tabId);
-      // Reset Services to the grid when switching tabs (so user lands on grid, not a panel)
+      // Reset Services grid + Dashboard scan-view when navigating away/towards
       if (tabId === 'tab-services') {
         var svc = document.getElementById('tab-services');
         if (svc) delete svc.dataset.svcActive;
+      }
+      if (tabId === 'tab-dashboard') {
+        var dash = document.getElementById('tab-dashboard');
+        if (dash) delete dash.dataset.scanActive;
+      } else {
+        // Leaving the dashboard? Clear scan-view too.
+        var dashEl = document.getElementById('tab-dashboard');
+        if (dashEl) delete dashEl.dataset.scanActive;
       }
       // Hide all sections by removing .active
       document.querySelectorAll('.tab-section').forEach(function(section) {
@@ -7271,6 +7310,33 @@
         titleEl.textContent = 'Most streets free overnight';
         subEl.textContent = 'Always read the meter — some streets enforce 24/7.';
       }
+    }
+
+    // ─── v2 dedicated Scan view: hides the rest of the dashboard, shows ONLY
+    //      the AI Scanner card + back button, and pops the file picker so users
+    //      go straight to picking a photo. After the scan finishes, the result
+    //      panels (#scan-actions, #scan-status, scan history) live inside the
+    //      same card and update as normal — once user taps Back, the dashboard
+    //      reappears clean and the new ticket is in the Scanned Tickets list. ───
+    function dv2OpenScan() {
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      dash.dataset.scanActive = 'true';
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // After the layout swap settles, fire the file picker so users go right
+      // to choosing a photo without an extra tap.
+      setTimeout(function() {
+        var i = document.getElementById('ticket-photo');
+        if (i) i.click();
+      }, 200);
+    }
+    function dv2CloseScan() {
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      delete dash.dataset.scanActive;
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // ─── v2 bell tap → smooth-scroll to the visible reminders section + flash it ───
