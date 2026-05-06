@@ -3204,9 +3204,11 @@
     /* Show only when JS detects a non-phone device */
     body.dv2-desktop-app .dv2-back-to-landing { display: inline-flex; }
 
-    /* Tab section: no top padding (hero bleeds to top), side padding for cards, room for nav */
+    /* Tab section: no top padding (hero bleeds to top), side padding for cards,
+       generous bottom padding so the last card clears both the bottom nav AND
+       the iPhone home-indicator safe-area inset (otherwise content gets cut). */
     .design-v2 .tab-section {
-      padding: 0 16px 100px !important;
+      padding: 0 16px calc(env(safe-area-inset-bottom, 0px) + 160px) !important;
     }
     /* Heroes bleed past the tab-section side padding so they hit the screen edges */
     .design-v2 .tab-section > .dv2-hero,
