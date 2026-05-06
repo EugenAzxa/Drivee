@@ -2850,7 +2850,7 @@
       color: var(--dv2-blue-d);
     }
 
-    /* ─── v2 FAB — clean Drivee AI avatar ─── */
+    /* ─── v2 FAB — Drivee parking-officer mascot (clean version) ─── */
     .design-v2 .nav-fab {
       width: 68px !important;
       height: 68px !important;
@@ -2860,12 +2860,14 @@
         0 24px 48px -10px rgba(46,100,255,0.55),
         0 10px 20px -6px rgba(14,27,61,0.30) !important;
       border: 3px solid white !important;
-      position: relative;
+      position: fixed !important;
       animation: dv2FabBob 3.2s ease-in-out infinite;
       padding: 0 !important;
       overflow: visible;
-      bottom: 110px !important;
+      /* Sit clearly ABOVE the bottom nav (which is ~96px tall + safe area) */
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 110px) !important;
       right: 18px !important;
+      left: auto !important;
       z-index: 50 !important;
     }
     .design-v2 .nav-fab:hover {
@@ -5269,26 +5271,36 @@
 
   <!-- FAB — outside #app so nothing can clip it. Friendly parking-officer mascot in v2. -->
   <button class="nav-fab" onclick="openChat()" title="Hi! I'm Drivee — ask me anything">
-    <!-- Drivee AI chat avatar — clean, modern, premium feel (no cheeks, no drool) -->
+    <!-- Drivee parking-officer mascot — clean, modern, premium (cap + simple smile, no drool, no cheeks) -->
     <svg class="dv2-fab-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <defs>
         <linearGradient id="dv2AiBg" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#3D6BFF"/>
           <stop offset="100%" stop-color="#6B4EE0"/>
         </linearGradient>
+        <linearGradient id="dv2Cap" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0E1B3D"/>
+          <stop offset="100%" stop-color="#1A3FB8"/>
+        </linearGradient>
       </defs>
-      <!-- Solid blue→purple disc fills the FAB -->
+      <!-- Background disc (gradient blue→purple) -->
       <circle cx="32" cy="32" r="30" fill="url(#dv2AiBg)"/>
-      <!-- Soft top highlight gives it dimension -->
-      <ellipse cx="32" cy="18" rx="20" ry="8" fill="rgba(255,255,255,0.20)"/>
-      <!-- Two eye dots -->
-      <circle cx="24" cy="30" r="2.6" fill="white"/>
-      <circle cx="40" cy="30" r="2.6" fill="white"/>
-      <!-- Simple smile -->
-      <path d="M22 39 Q 32 46 42 39" stroke="white" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-      <!-- AI sparkle (top-left) -->
-      <path d="M14 16 L 14 22 M 11 19 L 17 19" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
-      <circle cx="14" cy="19" r="0.8" fill="white"/>
+      <!-- Soft top highlight for dimension -->
+      <ellipse cx="32" cy="18" rx="22" ry="8" fill="rgba(255,255,255,0.16)"/>
+
+      <!-- Officer cap (rounded top with brim) — clean, no excessive shine -->
+      <path d="M16 24 Q 16 14 32 14 Q 48 14 48 24 Z" fill="url(#dv2Cap)"/>
+      <!-- Cap brim (thin dark line under the cap) -->
+      <rect x="14" y="23.5" width="36" height="2.5" rx="1.25" fill="#0A1226"/>
+      <!-- Tiny gold badge in the centre of the cap -->
+      <circle cx="32" cy="19" r="2.2" fill="#FFD24A"/>
+
+      <!-- Eyes (two clean dots) -->
+      <circle cx="25" cy="33" r="2.2" fill="white"/>
+      <circle cx="39" cy="33" r="2.2" fill="white"/>
+
+      <!-- Friendly simple smile -->
+      <path d="M24 41 Q 32 47 40 41" stroke="white" stroke-width="2.6" fill="none" stroke-linecap="round"/>
     </svg>
     <i class="fa-solid fa-robot dv2-fab-fa"></i>
     <span class="dv2-fab-bubble">👋 Hi! Ask me anything</span>
