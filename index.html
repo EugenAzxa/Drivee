@@ -2601,14 +2601,11 @@
       color: var(--dv2-ink);
     }
 
-    /* ─── v2 Hero (deep blue, rounded bottom corners) ─── */
+    /* ─── v2 Hero (clean deep blue, rounded bottom corners) ─── */
     .dv2-hero {
-      /* Top of the gradient is EXACTLY var(--dv2-blue-d) (#1A3FB8) so it
-         blends seamlessly with the iPhone status bar (theme-color) above. */
-      background:
-        radial-gradient(circle at 100% 0%, rgba(122,92,240,0.30), transparent 55%),
-        radial-gradient(circle at 0% 100%, rgba(46,100,255,0.30), transparent 55%),
-        linear-gradient(180deg, var(--dv2-blue-d) 0%, var(--dv2-blue-d) 30%, #15348F 100%);
+      /* Pure deep blue — matches the iPhone status bar (theme-color) above.
+         No purple tint, no radial gradients pulling it off-color. */
+      background: var(--dv2-blue-d);
       color: white;
       padding: 28px 20px 36px;
       border-radius: 0 0 28px 28px;
