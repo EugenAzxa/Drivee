@@ -3574,6 +3574,42 @@
        MAP — enforcement zones + live officer counter
     ═══════════════════════════════════════════════════════════════ */
 
+    /* Density heatmap legend (bottom-left of map) */
+    .dv2-density-legend {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(14,27,61,0.10);
+      border-radius: 12px !important;
+      padding: 10px 12px !important;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 8px 24px -10px rgba(14,27,61,0.20);
+      margin: 12px !important;
+      min-width: 160px;
+    }
+    .dv2-density-legend .dv2-dl-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; font-weight: 800;
+      color: #4F5A7A; letter-spacing: 1.4px;
+      margin-bottom: 6px;
+    }
+    .dv2-density-legend .dv2-dl-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg,
+        #2E64FF 0%, #16C3D2 18%, #7DE82F 36%,
+        #FFD23F 56%, #FF8C42 74%, #FF45D9 88%, #FF1FA8 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.30);
+    }
+    .dv2-density-legend .dv2-dl-row {
+      display: flex; justify-content: space-between;
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; color: #4F5A7A;
+      font-weight: 700; letter-spacing: 0.8px;
+    }
+    .dv2-density-legend .dv2-dl-hot { color: #E1473D; }
+
     /* Pulsing red ring around enforcement zones */
     .dv2-enforce-ring {
       animation: dv2EnforcePulse 2.4s ease-in-out infinite;
@@ -5356,6 +5392,8 @@
     var enforcementLayer = null; // pulsing red circles — parking officer zones (8am-8pm)
     var officerCounterControl = null; // floating live officer count
     var officerRefreshInterval = null;
+    var ticketDensityLayer = null; // colorful heatmap of ticket density across downtown
+    var densityLegendControl = null; // legend for the heatmap colors
     var streetsLayer   = null;  // LayerGroup of street polylines (populated in Phase A2)
     var eventLayer     = null;  // LayerGroup for Match Day overlays (populated in Phase C)
     var heatLayer      = null;  // LayerGroup for predictive heatmap (populated in Phase D)
@@ -5420,14 +5458,16 @@
         eventLayer   = L.layerGroup();                    // Phase C — added to match days
         heatLayer    = L.layerGroup();                    // Phase D — added when heat data loads
         enforcementLayer = L.layerGroup().addTo(driveeMap); // Parking-officer red zones, time-gated 8am-8pm
+        ticketDensityLayer = L.layerGroup().addTo(driveeMap); // Colorful ticket-density heatmap
 
         // Layer toggle control (top-right, below the theme button)
         if (hydrantCluster && bikeCluster && towCluster && reportCluster) {
           var overlays = {
-            '🚒 Hydrants':   hydrantCluster,
-            '🚲 Bike Lanes': bikeCluster,
-            '⚠️ Tow Zones':  towCluster,
-            '📍 Reports':    reportCluster
+            '🔥 Ticket density': ticketDensityLayer,
+            '🚒 Hydrants':       hydrantCluster,
+            '🚲 Bike Lanes':     bikeCluster,
+            '⚠️ Tow Zones':      towCluster,
+            '📍 Reports':        reportCluster
           };
           L.control.layers(null, overlays, { position: 'topright', collapsed: true }).addTo(driveeMap);
         }
@@ -5437,6 +5477,8 @@
         loadCommunityReports(); // load shared reports from Supabase
         drawZoneMarkers();  // draw hydrant / bike lane / tow zone markers
         drawEnforcementZones(); // pulsing red zones, only during 8am-8pm
+        drawTicketDensityHeatmap(); // colorful parcel-style heatmap of downtown ticket density
+        installDensityLegend(); // bottom-left legend for the heatmap colors
         installOfficerCounter(); // live officer count floating top-left
         // Refresh every 60s so the counter feels live and zones come/go at 8am/8pm
         if (officerRefreshInterval) clearInterval(officerRefreshInterval);
@@ -5456,6 +5498,89 @@
     // Draws small coloured markers on the map for every danger zone.
     // Called once after the map initialises.
     // Zones are defined in DANGER_ZONES (GPS Guardian section below).
+    // ─────────────────────────────────────────────
+    // Ticket density heatmap — colorful parcel-style overlay across downtown
+    // Inspired by Anthony Smith's Floor Space Index visualization of Toronto.
+    // Synthetic intensity: distance-falloff from known enforcement hotspots.
+    // ─────────────────────────────────────────────
+    var DENSITY_HOTSPOTS = [
+      { lat: 43.6447, lng: -79.4012, w: 5.0 }, // King & Bathurst
+      { lat: 43.6562, lng: -79.3805, w: 5.0 }, // Yonge & Dundas
+      { lat: 43.6700, lng: -79.3886, w: 4.0 }, // Bay & Bloor
+      { lat: 43.6471, lng: -79.3771, w: 4.5 }, // Front & Yonge (Union)
+      { lat: 43.6515, lng: -79.3729, w: 3.5 }, // Adelaide & Yonge
+      { lat: 43.6488, lng: -79.3960, w: 3.0 }, // Queen W & Spadina
+      { lat: 43.6595, lng: -79.3717, w: 3.0 }, // Dundas E & Sherbourne
+      { lat: 43.6585, lng: -79.4006, w: 2.5 }  // College & Spadina
+    ];
+
+    function densityIntensityAt(lat, lng) {
+      var sum = 0;
+      for (var i = 0; i < DENSITY_HOTSPOTS.length; i++) {
+        var h = DENSITY_HOTSPOTS[i];
+        var dlat = (h.lat - lat) * 111;     // ~km/deg lat
+        var dlng = (h.lng - lng) * 81;      // ~km/deg lng at Toronto's latitude
+        var d2 = dlat*dlat + dlng*dlng;     // squared km
+        sum += h.w / Math.max(d2, 0.04);    // inverse-square with floor so center isn't infinite
+      }
+      // A bit of pseudo-random "neighborhood" jitter so it feels organic, not perfect rings
+      var seed = Math.sin(lat * 1234.5 + lng * 678.9) * 43758.5;
+      var noise = (seed - Math.floor(seed)) * 0.4 - 0.2;
+      return sum * (1 + noise);
+    }
+
+    function densityColor(i) {
+      // Floor Space Index-inspired palette: deep blue -> cyan -> green -> yellow -> magenta
+      if (i > 60) return '#FF1FA8'; // hottest — magenta
+      if (i > 35) return '#FF45D9';
+      if (i > 22) return '#FF8C42'; // hot — orange
+      if (i > 14) return '#FFD23F'; // warm — yellow
+      if (i > 8)  return '#7DE82F'; // green-yellow
+      if (i > 4)  return '#16C3D2'; // cyan
+      if (i > 2)  return '#2E64FF'; // blue
+      return null;                  // skip very low — keeps map breathable
+    }
+
+    function drawTicketDensityHeatmap() {
+      if (!driveeMap || !ticketDensityLayer) return;
+      ticketDensityLayer.clearLayers();
+      // Downtown bounds
+      var SOUTH = 43.633, NORTH = 43.690;
+      var WEST  = -79.428, EAST = -79.348;
+      var STEP  = 0.0035; // ~390m cells — fine enough to look like parcels, coarse enough to render fast
+      for (var lat = SOUTH; lat < NORTH; lat += STEP) {
+        for (var lng = WEST; lng < EAST; lng += STEP) {
+          var intensity = densityIntensityAt(lat + STEP/2, lng + STEP/2);
+          var color = densityColor(intensity);
+          if (!color) continue;
+          var bounds = [[lat, lng], [lat + STEP, lng + STEP]];
+          var rect = L.rectangle(bounds, {
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.55,
+            weight: 0,
+            interactive: false  // don't intercept clicks — tow markers etc. should still be clickable
+          });
+          ticketDensityLayer.addLayer(rect);
+        }
+      }
+    }
+
+    function installDensityLegend() {
+      if (!driveeMap || densityLegendControl) return;
+      densityLegendControl = L.control({ position: 'bottomleft' });
+      densityLegendControl.onAdd = function() {
+        var div = L.DomUtil.create('div', 'leaflet-control dv2-density-legend');
+        div.innerHTML =
+          '<div class="dv2-dl-title">TICKET DENSITY</div>' +
+          '<div class="dv2-dl-bar"></div>' +
+          '<div class="dv2-dl-row"><span>Low</span><span>Medium</span><span class="dv2-dl-hot">Hot</span></div>';
+        L.DomEvent.disableClickPropagation(div);
+        return div;
+      };
+      densityLegendControl.addTo(driveeMap);
+    }
+
     // ─────────────────────────────────────────────
     // Enforcement zones — pulsing red circles where parking officers patrol
     // Only active 8:00 — 20:00 Toronto local time
