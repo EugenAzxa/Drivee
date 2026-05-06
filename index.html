@@ -42,8 +42,11 @@
     })();
   </script>
 
-  <!-- viewport-fit=cover is required for iPhone safe area (notch/home bar) to work -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- viewport-fit=cover for iPhone safe area; user-scalable=no + maximum-scale=1
+       to prevent the iOS double-tap zoom that was leaving the app stuck zoomed-in
+       after backgrounding and reopening. Inputs use 16px+ font-size below to
+       avoid the auto-zoom-on-focus behaviour. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#2563EB" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -2819,18 +2822,16 @@
       color: var(--dv2-blue-d);
     }
 
-    /* ─── v2 FAB — Drivee parking-officer mascot (BIG + chat bubble) ─── */
+    /* ─── v2 FAB — clean Drivee AI avatar ─── */
     .design-v2 .nav-fab {
-      width: 76px !important;
-      height: 76px !important;
-      background:
-        radial-gradient(circle at 30% 30%, #FFFFFF 0%, #DCE6FB 60%, #B6C9FF 100%) !important;
-      color: var(--dv2-ink) !important;
+      width: 68px !important;
+      height: 68px !important;
+      background: transparent !important;
+      color: white !important;
       box-shadow:
         0 24px 48px -10px rgba(46,100,255,0.55),
-        0 10px 20px -6px rgba(14,27,61,0.25),
-        inset 0 -3px 0 rgba(0,0,0,0.06) !important;
-      border: 3px solid rgba(255,255,255,0.95) !important;
+        0 10px 20px -6px rgba(14,27,61,0.30) !important;
+      border: 3px solid white !important;
       position: relative;
       animation: dv2FabBob 3.2s ease-in-out infinite;
       padding: 0 !important;
@@ -3028,6 +3029,26 @@
        Universal polish across every card, button, input, list, badge.
        Goal: cohesive, premium, not-overloaded look.
     ═══════════════════════════════════════════════════════════════ */
+
+    /* Kill the 300ms double-tap-to-zoom delay on every interactive element.
+       Combined with the viewport meta this stops the "app stuck zoomed in
+       after backgrounding" bug on iOS. */
+    .design-v2 button,
+    .design-v2 a,
+    .design-v2 .pill-btn,
+    .design-v2 .dv2-svc-tile,
+    .design-v2 .dv2-quick,
+    .design-v2 .dv2-rem,
+    .design-v2 .dv2-fp-card,
+    .design-v2 .dv2-icon-btn,
+    .design-v2 .nav-fab,
+    .design-v2 .dv2-scanner-cta,
+    .design-v2 input,
+    .design-v2 select,
+    .design-v2 textarea {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     /* Page background + body type */
     .design-v2 body,
@@ -5204,55 +5225,26 @@
 
   <!-- FAB — outside #app so nothing can clip it. Friendly parking-officer mascot in v2. -->
   <button class="nav-fab" onclick="openChat()" title="Hi! I'm Drivee — ask me anything">
-    <!-- Parking-officer mascot (used in v2; v1 falls back to the robot icon) -->
+    <!-- Drivee AI chat avatar — clean, modern, premium feel (no cheeks, no drool) -->
     <svg class="dv2-fab-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <defs>
-        <linearGradient id="dv2OffSkin" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#FFE4C9"/>
-          <stop offset="100%" stop-color="#F8C896"/>
-        </linearGradient>
-        <linearGradient id="dv2OffCap" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#3556C7"/>
-          <stop offset="100%" stop-color="#1A3FB8"/>
+        <linearGradient id="dv2AiBg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3D6BFF"/>
+          <stop offset="100%" stop-color="#6B4EE0"/>
         </linearGradient>
       </defs>
-      <!-- Soft halo behind the head -->
-      <circle cx="32" cy="34" r="22" fill="white" opacity="0.10"/>
-
-      <!-- Face (slightly oval) -->
-      <ellipse cx="32" cy="36" rx="14" ry="14.5" fill="url(#dv2OffSkin)"/>
-
-      <!-- Cap brim (dark stripe under the cap) -->
-      <ellipse cx="32" cy="22.5" rx="16" ry="2.5" fill="#0E1B3D"/>
-
-      <!-- Cap top (rounded shape) -->
-      <path d="M16 22 Q 16 10 32 10 Q 48 10 48 22 Z" fill="url(#dv2OffCap)"/>
-
-      <!-- Cap shine highlight -->
-      <path d="M19 18 Q 22 12 32 12" stroke="rgba(255,255,255,0.35)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-
-      <!-- Cap badge (gold star ring) -->
-      <circle cx="32" cy="17" r="3" fill="#FFD24A" stroke="#B8860B" stroke-width="0.6"/>
-      <text x="32" y="18.7" font-size="3.6" font-weight="900" text-anchor="middle" fill="#1A3FB8" font-family="JetBrains Mono, monospace">D</text>
-
-      <!-- Cheeks (subtle blush) -->
-      <circle cx="22.5" cy="40" r="2.2" fill="#FF9D8A" opacity="0.45"/>
-      <circle cx="41.5" cy="40" r="2.2" fill="#FF9D8A" opacity="0.45"/>
-
-      <!-- Eyes (with sparkle) -->
-      <circle cx="26" cy="35" r="1.8" fill="#0E1B3D"/>
-      <circle cx="38" cy="35" r="1.8" fill="#0E1B3D"/>
-      <circle cx="26.6" cy="34.4" r="0.55" fill="white"/>
-      <circle cx="38.6" cy="34.4" r="0.55" fill="white"/>
-
-      <!-- Eyebrows (friendly arches) -->
-      <path d="M22.5 31.5 Q 26 30 29.5 31.5" stroke="#0E1B3D" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-      <path d="M34.5 31.5 Q 38 30 41.5 31.5" stroke="#0E1B3D" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-
-      <!-- Big friendly smile -->
-      <path d="M25 42 Q 32 48 39 42" stroke="#0E1B3D" stroke-width="1.7" fill="none" stroke-linecap="round"/>
-      <!-- Smile inner highlight (for warmth) -->
-      <path d="M27 43.2 Q 32 46.5 37 43.2" stroke="#FF9D8A" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.7"/>
+      <!-- Solid blue→purple disc fills the FAB -->
+      <circle cx="32" cy="32" r="30" fill="url(#dv2AiBg)"/>
+      <!-- Soft top highlight gives it dimension -->
+      <ellipse cx="32" cy="18" rx="20" ry="8" fill="rgba(255,255,255,0.20)"/>
+      <!-- Two eye dots -->
+      <circle cx="24" cy="30" r="2.6" fill="white"/>
+      <circle cx="40" cy="30" r="2.6" fill="white"/>
+      <!-- Simple smile -->
+      <path d="M22 39 Q 32 46 42 39" stroke="white" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <!-- AI sparkle (top-left) -->
+      <path d="M14 16 L 14 22 M 11 19 L 17 19" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.85"/>
+      <circle cx="14" cy="19" r="0.8" fill="white"/>
     </svg>
     <i class="fa-solid fa-robot dv2-fab-fa"></i>
     <span class="dv2-fab-bubble">👋 Hi! Ask me anything</span>
