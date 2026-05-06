@@ -990,6 +990,24 @@
       width: 40px; height: 4px; border-radius: 2px;
       background: var(--border); margin: 0 auto 20px;
     }
+    .profile-sheet-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 36px; height: 36px;
+      border-radius: 999px;
+      background: rgba(11,20,48,0.06);
+      color: #0E1B3D;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+      z-index: 2;
+      padding: 0;
+    }
+    .profile-sheet-close:hover {
+      background: rgba(11,20,48,0.12);
+      transform: scale(1.06);
+    }
     .profile-sheet-avatar {
       width: 64px; height: 64px; border-radius: 50%;
       background: var(--blue); color: #fff;
@@ -3522,6 +3540,16 @@
       padding: 4px 0;
     }
 
+    /* Brief flash when the bell scrolls you to the reminders section */
+    .dv2-section.dv2-flash {
+      animation: dv2FlashPulse 1.4s ease-out;
+    }
+    @keyframes dv2FlashPulse {
+      0%   { box-shadow: inset 0 0 0 0 rgba(46,100,255,0); }
+      30%  { box-shadow: inset 0 0 0 4px rgba(46,100,255,0.40); }
+      100% { box-shadow: inset 0 0 0 0 rgba(46,100,255,0); }
+    }
+
     /* Reminders list (inline) */
     .dv2-reminders-list {
       display: flex; flex-direction: column; gap: 10px;
@@ -3920,6 +3948,9 @@
   <div class="profile-overlay" id="profile-overlay" onclick="closeProfileSheet()"></div>
   <div class="profile-sheet" id="profile-sheet">
     <div class="profile-sheet-handle"></div>
+    <button class="profile-sheet-close" type="button" aria-label="Close profile" onclick="closeProfileSheet()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
     <!-- Signed IN view -->
     <div id="ps-signed-in" style="display:none">
       <div class="profile-sheet-avatar" id="ps-avatar">U</div>
@@ -4121,7 +4152,7 @@
             <div class="dv2-hero-meta" id="dv2-meta">GOOD AFTERNOON · TORONTO</div>
             <h1 class="dv2-greeting">Hi, <span id="dv2-name">Driver</span>.</h1>
           </div>
-          <button class="dv2-icon-btn" aria-label="Reminders" onclick="var e=document.getElementById('reminders-card'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'});">
+          <button class="dv2-icon-btn" aria-label="Open reminders" title="Your reminders" onclick="dv2OpenReminders()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
             <span class="dv2-badge" id="dv2-bell-badge" style="display:none">0</span>
           </button>
@@ -4173,7 +4204,7 @@
       </div>
 
       <!-- Open reminders (sand) -->
-      <div class="dv2-tab-hero dv2-section dv2-section-sand">
+      <div class="dv2-tab-hero dv2-section dv2-section-sand" id="dv2-reminders-section">
         <div class="dv2-section-head">
           <span class="dv2-section-h">Open reminders</span>
           <button class="dv2-section-more" id="dv2-rem-see-all" onclick="if(typeof showTab==='function') showTab('tab-services')">SEE ALL · 0</button>
@@ -7132,9 +7163,14 @@
         }
       }
       if (dv2Bell) {
-        if (overdue > 0) {
-          dv2Bell.textContent = overdue;
+        // Show count of ALL active reminders (overdue + upcoming) so the bell
+        // is informative whenever there's something to look at, not only emergencies.
+        var activeCount = reminders.length;
+        if (activeCount > 0) {
+          dv2Bell.textContent = activeCount > 9 ? '9+' : activeCount;
           dv2Bell.style.display = 'flex';
+          // If there's anything overdue, paint the badge red so it stands out
+          dv2Bell.style.background = overdue > 0 ? 'var(--dv2-red)' : '#FF8C42';
         } else {
           dv2Bell.style.display = 'none';
         }
@@ -7208,6 +7244,23 @@
         titleEl.textContent = 'Most streets free overnight';
         subEl.textContent = 'Always read the meter — some streets enforce 24/7.';
       }
+    }
+
+    // ─── v2 bell tap → smooth-scroll to the visible reminders section + flash it ───
+    function dv2OpenReminders() {
+      // Make sure we're on the dashboard tab first
+      if (typeof showTab === 'function') showTab('tab-dashboard');
+      // Find the reminders section (v2 sand block) — fall back to v1 reminders-card if not present
+      var target = document.getElementById('dv2-reminders-section')
+                || document.getElementById('reminders-card');
+      if (!target) return;
+      // Wait for tab switch to settle, then scroll
+      setTimeout(function() {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Brief highlight pulse so user clearly sees what the bell did
+        target.classList.add('dv2-flash');
+        setTimeout(function() { target.classList.remove('dv2-flash'); }, 1400);
+      }, 80);
     }
 
     // ─── v2 inline reminders (Open reminders section on dashboard) ───
