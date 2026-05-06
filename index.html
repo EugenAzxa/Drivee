@@ -3688,6 +3688,52 @@
       padding: 4px 0;
     }
 
+    /* ─── AI thinking animation on #scan-status (visible while a scan is in flight) ─── */
+    .design-v2 #scan-status {
+      position: relative !important;
+      overflow: hidden !important;
+      background: linear-gradient(135deg, #EAF0FF 0%, #F0EBFF 100%) !important;
+      border: 1.5px solid rgba(46,100,255,0.30) !important;
+      padding: 18px 18px 18px 22px !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      color: var(--dv2-blue-d) !important;
+      border-radius: 14px !important;
+      letter-spacing: -0.1px !important;
+    }
+    /* Diagonal "scanning" gradient sweep, left to right, infinite */
+    .design-v2 #scan-status::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg,
+        transparent 30%,
+        rgba(46,100,255,0.30) 50%,
+        rgba(122,92,240,0.20) 60%,
+        transparent 75%);
+      transform: translateX(-110%);
+      animation: dv2ScanSweep 1.6s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes dv2ScanSweep {
+      0%   { transform: translateX(-110%); }
+      100% { transform: translateX(110%); }
+    }
+    /* Soft pulsing outer glow so the card breathes */
+    .design-v2 #scan-status::after {
+      content: "";
+      position: absolute;
+      inset: -1.5px;
+      border-radius: 14px;
+      border: 2px solid rgba(46,100,255,0.45);
+      animation: dv2ScanGlow 1.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes dv2ScanGlow {
+      0%, 100% { opacity: 0.30; box-shadow: 0 0 0 0 rgba(46,100,255,0); }
+      50%      { opacity: 0.85; box-shadow: 0 0 16px 2px rgba(46,100,255,0.35); }
+    }
+
     /* Brief flash when the bell scrolls you to the reminders section */
     .dv2-section.dv2-flash {
       animation: dv2FlashPulse 1.4s ease-out;
@@ -5177,7 +5223,7 @@
 
       <!-- V2 Legal AI Scanner — gradient CTA, photo upload triggers existing scan flow -->
       <div class="dv2-tab-hero dv2-section dv2-section-paper">
-        <button class="dv2-scanner-cta" type="button" onclick="var i=document.getElementById('ticket-photo'); if(i) i.click();">
+        <button class="dv2-scanner-cta" type="button" onclick="dv2OpenScan()">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
             <span class="dv2-scanner-meta">AI VERDICT · 480K CASES</span>
@@ -7514,6 +7560,9 @@
     //      same card and update as normal — once user taps Back, the dashboard
     //      reappears clean and the new ticket is in the Scanned Tickets list. ───
     function dv2OpenScan() {
+      // Make sure we're on the dashboard tab — works whether the call came
+      // from the dashboard scanner CTA or from "Scan for verdict" on Legal.
+      if (typeof showTab === 'function') showTab('tab-dashboard');
       var dash = document.getElementById('tab-dashboard');
       if (!dash) return;
       dash.dataset.scanActive = 'true';
@@ -7524,7 +7573,7 @@
       setTimeout(function() {
         var i = document.getElementById('ticket-photo');
         if (i) i.click();
-      }, 200);
+      }, 250);
     }
     function dv2CloseScan() {
       var dash = document.getElementById('tab-dashboard');
