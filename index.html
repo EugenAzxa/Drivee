@@ -4732,7 +4732,7 @@
       <div class="chat-header-icon"><i class="fa-solid fa-sparkles"></i></div>
       <div class="chat-header-text">
         <div class="chat-header-title">Drivee AI Assistant</div>
-        <div class="chat-header-sub">Powered by Eugen · AI assistance, not legal advice</div>
+        <div class="chat-header-sub">Powered by Drivee · AI assistance, not legal advice</div>
       </div>
       <button class="chat-close" onclick="closeChat()"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -5080,7 +5080,7 @@
         </button>
 
         <div id="scan-status" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.2);border-radius:12px;font-size:13px;color:var(--blue);text-align:center">
-          🤖 AI Eugen is reading your ticket…
+          🤖 Drivee is reading your ticket…
         </div>
 
         <!-- Post-scan actions — shown after successful scan -->
@@ -5579,7 +5579,7 @@
       <div class="card svc-card dv2-er-card" id="svc-early"
            data-search="early resolution form ai eugen prosecutor reduce fine plea ticket fight">
         <div class="card-title">⚖️ Early Resolution — AI form helper</div>
-        <div class="card-subtitle">For tickets that are too small to fight in court but worth pleading down. AI Eugen drafts the form for you.</div>
+        <div class="card-subtitle">For tickets that are too small to fight in court but worth pleading down. Drivee drafts the form for you.</div>
 
         <!-- Why it can help — explainer -->
         <div class="dv2-er-explainer">
@@ -5612,7 +5612,7 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
           <div class="dv2-er-trust">
-            <span>✦ Powered by AI Eugen</span>
+            <span>✦ Powered by Drivee</span>
             <span>·</span>
             <span>📝 ~3 minutes</span>
             <span>·</span>
@@ -5636,7 +5636,7 @@
           <div class="dv2-er-step" data-step="1">
             <div class="dv2-er-step-icon">📋</div>
             <h4>Your ticket details</h4>
-            <p>We use what AI Eugen already pulled from your scan. Double-check it's right — fix anything wrong.</p>
+            <p>We use what Drivee already pulled from your scan. Double-check it's right — fix anything wrong.</p>
             <label class="dv2-er-field"><span class="dv2-er-fl">TICKET / INFRACTION #</span>
               <input type="text" id="dv2-er-ticket" placeholder="e.g. 8718027Z" autocomplete="off"/></label>
             <label class="dv2-er-field"><span class="dv2-er-fl">LICENCE PLATE</span>
@@ -6463,7 +6463,7 @@
     // Take the user to the Services tab's Early Resolution detail panel so
     // they can READ the explanation, see why it fits their kind of ticket,
     // tap the Court Case Lookup link, and only THEN decide whether to pay
-    // the $0.99 for AI Eugen's draft. Don't jump straight to Stripe — the
+    // the $0.99 for Drivee's draft. Don't jump straight to Stripe — the
     // user needs to understand what they're paying for.
     function dv2OpenEarlyResolution() {
       if (typeof showTab === 'function') showTab('tab-services');
@@ -6508,7 +6508,7 @@
           'This button takes the user to Stripe Checkout for $0.99.\n' +
           'To activate it: create a Payment Link in your Stripe Dashboard, ' +
           'then paste the URL into the data-stripe-link attribute on the ' +
-          '"Get AI Eugen\'s draft" button.'
+          '"Get Drivee\'s draft" button.'
         );
       }
       return false;
@@ -7028,7 +7028,7 @@
       if (actionsEl) actionsEl.style.display = 'none';
 
       statusEl.style.display    = 'block';
-      statusEl.textContent      = '🤖 AI Eugen is reading your ticket…';
+      statusEl.textContent      = '🤖 Drivee is reading your ticket…';
       statusEl.style.animation  = 'pulse 1.5s ease-in-out infinite';
       statusEl.style.background = 'rgba(37,99,235,0.07)';
       statusEl.style.borderColor= 'rgba(37,99,235,0.2)';
@@ -7168,7 +7168,7 @@
 
         // Send OCR text to Claude for smarter extraction
         if (text.trim().length > 20) {
-          statusEl.textContent = '🤖 AI Eugen is reading your ticket…';
+          statusEl.textContent = '🤖 Drivee is reading your ticket…';
           scanWithClaude(text, statusEl);
         } else {
           // Fallback: show regex results
@@ -7564,7 +7564,7 @@
         statusEl.style.background = 'rgba(34,197,94,0.08)';
         statusEl.style.borderColor = 'rgba(34,197,94,0.25)';
         statusEl.style.color = 'var(--green)';
-        statusEl.textContent = '✅ AI Eugen found: ' + (found.length ? found.join(' · ') : 'details extracted') + ' — verdict below';
+        statusEl.textContent = '✅ Drivee found: ' + (found.length ? found.join(' · ') : 'details extracted') + ' — verdict below';
       })
       .catch(function() {
         statusEl.style.color = 'var(--warning)';
@@ -7667,7 +7667,7 @@
           '⚖️ See Early Resolution option' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>' +
         '</button>' +
-        '<div class="dv2-verdict-er-sub">Most demerit-point cases plead down to no-points reduced fines. Tap to read how it works and decide for yourself — pay only if you want AI Eugen to draft the form ($0.99).</div>';
+        '<div class="dv2-verdict-er-sub">Most demerit-point cases plead down to no-points reduced fines. Tap to see how it works and use the free guided form to draft your request.</div>';
 
       var erIsPrimary = (verdict.cls === 'contest' || verdict.cls === 'serious');
       var primaryAction = erIsPrimary
