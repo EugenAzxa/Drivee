@@ -1,0 +1,91 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A3FB8"/>
+      <stop offset="50%" stop-color="#2E64FF"/>
+      <stop offset="100%" stop-color="#6B4EE0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.7" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- decorative blur circles -->
+  <circle cx="1050" cy="120" r="180" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="1050" cy="120" r="80" fill="rgba(255,255,255,0.05)"/>
+
+  <!-- Live dot + badge -->
+  <g transform="translate(80, 110)">
+    <circle cx="10" cy="10" r="6" fill="#1FAB6B"/>
+    <text x="32" y="16" font-family="JetBrains Mono, monospace" font-size="16" font-weight="800" fill="rgba(255,255,255,0.85)" letter-spacing="3">
+      LIVE IN TORONTO
+    </text>
+  </g>
+
+  <!-- DRIVEE wordmark -->
+  <text x="80" y="280" font-family="Plus Jakarta Sans, sans-serif" font-size="120" font-weight="800" fill="white" letter-spacing="-5">
+    Drivee<tspan fill="#7AE8B0">.</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="80" y="360" font-family="IBM Plex Serif, Georgia, serif" font-size="46" font-weight="600" fill="white" letter-spacing="-1">
+    The driver's app for Toronto.
+  </text>
+
+  <!-- Sub-line -->
+  <text x="80" y="420" font-family="Plus Jakarta Sans, sans-serif" font-size="22" font-weight="500" fill="rgba(255,255,255,0.85)">
+    Snap a ticket. See if you should pay or fight. Get the verdict in 8 seconds.
+  </text>
+
+  <!-- Feature pills -->
+  <g transform="translate(80, 480)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="200" height="44" rx="22" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.20)"/>
+    <text x="100" y="29" font-family="Plus Jakarta Sans, sans-serif" font-size="15" font-weight="700" fill="white" text-anchor="middle">
+      AI Ticket Scanner
+    </text>
+    <!-- Pill 2 -->
+    <rect x="216" y="0" width="180" height="44" rx="22" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.20)"/>
+    <text x="306" y="29" font-family="Plus Jakarta Sans, sans-serif" font-size="15" font-weight="700" fill="white" text-anchor="middle">
+      Live Hotspots
+    </text>
+    <!-- Pill 3 -->
+    <rect x="412" y="0" width="200" height="44" rx="22" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.20)"/>
+    <text x="512" y="29" font-family="Plus Jakarta Sans, sans-serif" font-size="15" font-weight="700" fill="white" text-anchor="middle">
+      Free Legal Verdict
+    </text>
+  </g>
+
+  <!-- URL -->
+  <text x="80" y="580" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" fill="rgba(255,255,255,0.7)" letter-spacing="2">
+    DRIVEE.CA
+  </text>
+
+  <!-- Officer mascot SVG (top right) -->
+  <g transform="translate(900, 280)">
+    <!-- glow halo -->
+    <circle cx="120" cy="120" r="160" fill="rgba(255,255,255,0.06)"/>
+    <circle cx="120" cy="120" r="120" fill="white" opacity="0.95"/>
+    <!-- cap -->
+    <ellipse cx="120" cy="78" rx="78" ry="10" fill="#0E1B3D"/>
+    <path d="M50 78 Q 50 28 120 28 Q 190 28 190 78 Z" fill="#1A3FB8"/>
+    <circle cx="120" cy="50" r="9" fill="#FFD24A"/>
+    <text x="120" y="55" font-family="JetBrains Mono, monospace" font-size="10" font-weight="900" fill="#1A3FB8" text-anchor="middle">D</text>
+    <!-- face -->
+    <ellipse cx="120" cy="135" rx="52" ry="55" fill="#FFE4C9"/>
+    <!-- eyes -->
+    <circle cx="100" cy="125" r="6" fill="#0E1B3D"/>
+    <circle cx="140" cy="125" r="6" fill="#0E1B3D"/>
+    <!-- smile -->
+    <path d="M95 155 Q 120 178 145 155" stroke="#0E1B3D" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>
