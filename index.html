@@ -4341,6 +4341,123 @@
       max-width: 280px; margin-inline: auto;
     }
 
+    /* Share section — bottom of install view, share Drivee with friends */
+    .dv2-install-share {
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .dv2-install-share-title {
+      font-family: var(--dv2-serif);
+      font-weight: 700; font-size: 18px;
+      letter-spacing: -0.3px;
+      color: var(--dv2-ink);
+    }
+    .dv2-install-share-sub {
+      font-size: 13px; color: var(--dv2-ink2);
+      line-height: 1.45;
+    }
+    .dv2-install-share-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; margin-top: 4px;
+    }
+    .dv2-install-share-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px;
+      background: var(--dv2-blue); color: white;
+      border: 0; border-radius: 12px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .dv2-install-share-btn.secondary {
+      background: var(--dv2-paper);
+      color: var(--dv2-blue-d);
+      border: 1px solid var(--dv2-line);
+    }
+    .dv2-install-share-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(26,63,184,0.25);
+    }
+    .dv2-install-share-btn svg { width: 16px; height: 16px; }
+    .dv2-install-share-link {
+      display: flex; align-items: center; gap: 8px;
+      background: #f4f1ea; border: 1px dashed var(--dv2-line);
+      border-radius: 10px; padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 700;
+      color: var(--dv2-blue-d);
+      letter-spacing: 0.5px;
+    }
+    .dv2-install-share-link span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ESSENTIAL CARDS — clickable Guide cards with visible examples
+    ═══════════════════════════════════════════════════════════════ */
+    .dv2-essential {
+      display: flex; flex-direction: column; gap: 12px;
+      width: 100%;
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--dv2-font);
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      margin-bottom: 12px;
+    }
+    .dv2-essential:hover, .dv2-essential:active {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -10px rgba(26,63,184,0.20);
+      border-color: var(--dv2-blue-50);
+    }
+    .dv2-essential-illust {
+      background: linear-gradient(135deg, var(--dv2-blue-50), #e9efff);
+      border-radius: 12px;
+      padding: 14px;
+      display: grid; place-items: center;
+      min-height: 130px;
+    }
+    .dv2-essential-illust svg {
+      width: 100%; height: auto; max-width: 240px;
+      display: block;
+    }
+    .dv2-essential-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .dv2-essential-num {
+      width: 30px; height: 30px;
+      background: var(--dv2-blue); color: white;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .dv2-essential-text { flex: 1; min-width: 0; }
+    .dv2-essential-title {
+      font-weight: 700; font-size: 16px;
+      color: var(--dv2-ink);
+      letter-spacing: -0.2px; line-height: 1.25;
+    }
+    .dv2-essential-tab {
+      font-size: 12px; font-weight: 700;
+      color: var(--dv2-blue-d);
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .dv2-essential-arrow {
+      font-size: 20px; font-weight: 800;
+      color: var(--dv2-blue-d);
+      flex-shrink: 0;
+      transition: transform 0.18s;
+    }
+    .dv2-essential:hover .dv2-essential-arrow { transform: translateX(4px); }
+
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
     .dv2-scanner-cta {
       width: 100%;
@@ -6607,6 +6724,26 @@
           <div class="dv2-install-done-title">You're set.</div>
           <div class="dv2-install-done-sub">Drivee opens from your home screen — works offline, fast as a native app, no app store required.</div>
         </div>
+
+        <!-- Share Drivee section -->
+        <div class="dv2-install-share">
+          <div class="dv2-install-share-title">Share Drivee with a friend</div>
+          <div class="dv2-install-share-sub">Know someone who got a ticket? Send them the link — they can install it the same way in 30 seconds.</div>
+          <div class="dv2-install-share-link" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span>https://drivee.ca</span>
+          </div>
+          <div class="dv2-install-share-row">
+            <button class="dv2-install-share-btn" type="button" onclick="dv2ShareDrivee()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share link
+            </button>
+            <button class="dv2-install-share-btn secondary" type="button" onclick="dv2CopyDriveeLink()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy link
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- v1 tab-header (hidden in v2) -->
@@ -6634,38 +6771,143 @@
         <div class="card-subtitle">4 essentials — one tap each</div>
       </div>
 
-      <!-- 4 essentials (down from 8) -->
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <div class="step-info">
-          <div class="step-title">Set up your profile</div>
-          <div class="step-tab">Dashboard tab</div>
-        </div>
-      </div>
+      <!-- 4 essentials — each tap-able + visible example illustration -->
 
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <div class="step-info">
-          <div class="step-title">Scan a ticket → AI verdict</div>
-          <div class="step-tab">Dashboard tab</div>
+      <!-- 1. Profile -->
+      <button class="dv2-essential" type="button" onclick="showTab('tab-dashboard'); setTimeout(function(){ var p=document.getElementById('profile-card')||document.querySelector('.dv2-profile-card'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); },120)">
+        <div class="dv2-essential-illust" aria-hidden="true">
+          <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- card frame -->
+            <rect x="20" y="14" width="200" height="102" rx="14" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+            <!-- avatar -->
+            <circle cx="56" cy="48" r="20" fill="#1A3FB8"/>
+            <text x="56" y="55" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="18" font-weight="800" fill="#fff">E</text>
+            <!-- name + email -->
+            <rect x="86" y="36" width="100" height="9" rx="3" fill="#0e1b3d"/>
+            <rect x="86" y="50" width="80" height="6" rx="2" fill="#0e1b3d" opacity="0.3"/>
+            <!-- plate row -->
+            <rect x="32" y="80" width="80" height="22" rx="5" fill="#FFD24A" stroke="#0e1b3d" stroke-width="1.5"/>
+            <text x="72" y="95" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="900" fill="#0e1b3d" letter-spacing="2">CAVZ 824</text>
+            <!-- check -->
+            <circle cx="190" cy="91" r="14" fill="#1FAB6B"/>
+            <path d="M 184 91 l 4 4 l 8 -8" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-      </div>
+        <div class="dv2-essential-row">
+          <div class="dv2-essential-num">1</div>
+          <div class="dv2-essential-text">
+            <div class="dv2-essential-title">Set up your profile</div>
+            <div class="dv2-essential-tab">Dashboard tab</div>
+          </div>
+          <div class="dv2-essential-arrow">→</div>
+        </div>
+      </button>
 
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <div class="step-info">
-          <div class="step-title">See live enforcement hotspots</div>
-          <div class="step-tab">Hotspots tab</div>
+      <!-- 2. Scan ticket -->
+      <button class="dv2-essential" type="button" onclick="showTab('tab-dashboard'); setTimeout(function(){ var s=document.getElementById('dv2-scan-card')||document.querySelector('.scanner-cta'); if(s) s.scrollIntoView({behavior:'smooth',block:'center'}); },120)">
+        <div class="dv2-essential-illust" aria-hidden="true">
+          <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- ticket -->
+            <rect x="40" y="22" width="100" height="86" rx="6" fill="#fff" stroke="#d6d2c4" stroke-width="1.5" transform="rotate(-6 90 65)"/>
+            <g transform="rotate(-6 90 65)">
+              <rect x="50" y="32" width="60" height="6" rx="2" fill="#0e1b3d"/>
+              <rect x="50" y="44" width="80" height="3" rx="1" fill="#0e1b3d" opacity="0.3"/>
+              <rect x="50" y="52" width="70" height="3" rx="1" fill="#0e1b3d" opacity="0.3"/>
+              <rect x="50" y="60" width="50" height="3" rx="1" fill="#0e1b3d" opacity="0.3"/>
+              <rect x="50" y="76" width="44" height="14" rx="3" fill="#FF6B6B"/>
+              <text x="72" y="86" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="8" font-weight="800" fill="#fff">$135</text>
+            </g>
+            <!-- camera viewfinder corners -->
+            <path d="M 150 28 v 14 M 150 28 h 14" stroke="#1A3FB8" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 220 28 v 14 M 220 28 h -14" stroke="#1A3FB8" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 150 102 v -14 M 150 102 h 14" stroke="#1A3FB8" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M 220 102 v -14 M 220 102 h -14" stroke="#1A3FB8" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- AI bubble -->
+            <rect x="158" y="52" width="56" height="26" rx="13" fill="#1A3FB8"/>
+            <text x="186" y="69" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#fff">AI VERDICT</text>
+            <!-- scan line -->
+            <line x1="148" y1="65" x2="222" y2="65" stroke="#7AE8B0" stroke-width="1.5" opacity="0.7"/>
+          </svg>
         </div>
-      </div>
+        <div class="dv2-essential-row">
+          <div class="dv2-essential-num">2</div>
+          <div class="dv2-essential-text">
+            <div class="dv2-essential-title">Scan a ticket → AI verdict</div>
+            <div class="dv2-essential-tab">Dashboard tab</div>
+          </div>
+          <div class="dv2-essential-arrow">→</div>
+        </div>
+      </button>
 
-      <div class="step-card">
-        <div class="step-number">4</div>
-        <div class="step-info">
-          <div class="step-title">Pay or fight your fine</div>
-          <div class="step-tab">Services tab</div>
+      <!-- 3. Hotspots -->
+      <button class="dv2-essential" type="button" onclick="showTab('tab-hotspots')">
+        <div class="dv2-essential-illust" aria-hidden="true">
+          <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- map background -->
+            <rect x="20" y="14" width="200" height="102" rx="12" fill="#e9efff"/>
+            <!-- streets -->
+            <path d="M 20 50 H 220" stroke="#fff" stroke-width="6"/>
+            <path d="M 20 84 H 220" stroke="#fff" stroke-width="6"/>
+            <path d="M 70 14 V 116" stroke="#fff" stroke-width="6"/>
+            <path d="M 130 14 V 116" stroke="#fff" stroke-width="6"/>
+            <path d="M 180 14 V 116" stroke="#fff" stroke-width="6"/>
+            <!-- hot zones -->
+            <circle cx="70" cy="50" r="22" fill="#FF6B6B" opacity="0.25"/>
+            <circle cx="70" cy="50" r="10" fill="#FF6B6B"/>
+            <circle cx="130" cy="84" r="26" fill="#FF6B6B" opacity="0.25"/>
+            <circle cx="130" cy="84" r="12" fill="#FF6B6B"/>
+            <circle cx="180" cy="50" r="18" fill="#FFC857" opacity="0.30"/>
+            <circle cx="180" cy="50" r="8" fill="#FFC857"/>
+            <!-- live badge -->
+            <rect x="28" y="22" width="62" height="18" rx="9" fill="#0e1b3d"/>
+            <circle cx="38" cy="31" r="3" fill="#7AE8B0"/>
+            <text x="48" y="34" font-family="JetBrains Mono, monospace" font-size="8" font-weight="800" fill="#fff" letter-spacing="1">LIVE</text>
+          </svg>
         </div>
-      </div>
+        <div class="dv2-essential-row">
+          <div class="dv2-essential-num">3</div>
+          <div class="dv2-essential-text">
+            <div class="dv2-essential-title">See live enforcement hotspots</div>
+            <div class="dv2-essential-tab">Hotspots tab</div>
+          </div>
+          <div class="dv2-essential-arrow">→</div>
+        </div>
+      </button>
+
+      <!-- 4. Pay / fight -->
+      <button class="dv2-essential" type="button" onclick="showTab('tab-services')">
+        <div class="dv2-essential-illust" aria-hidden="true">
+          <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- two-path split -->
+            <!-- PAY card -->
+            <rect x="20" y="22" width="92" height="86" rx="12" fill="#fff" stroke="#7AE8B0" stroke-width="2"/>
+            <text x="66" y="46" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="11" font-weight="800" fill="#0e1b3d">PAY</text>
+            <text x="66" y="62" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="20" font-weight="800" fill="#1FAB6B">$135</text>
+            <rect x="34" y="74" width="64" height="22" rx="6" fill="#1FAB6B"/>
+            <text x="66" y="88" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#fff">PAY NOW</text>
+            <!-- VS -->
+            <text x="120" y="69" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="11" font-weight="800" fill="#0e1b3d" opacity="0.5">VS</text>
+            <!-- FIGHT card -->
+            <rect x="128" y="22" width="92" height="86" rx="12" fill="#fff" stroke="#1A3FB8" stroke-width="2"/>
+            <text x="174" y="46" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="11" font-weight="800" fill="#0e1b3d">FIGHT</text>
+            <!-- scale icon -->
+            <path d="M 174 54 v 14" stroke="#1A3FB8" stroke-width="2" stroke-linecap="round"/>
+            <line x1="160" y1="58" x2="188" y2="58" stroke="#1A3FB8" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="160" cy="64" r="3" fill="#1A3FB8"/>
+            <circle cx="188" cy="64" r="3" fill="#1A3FB8"/>
+            <rect x="142" y="74" width="64" height="22" rx="6" fill="#1A3FB8"/>
+            <text x="174" y="88" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#fff">DISPUTE</text>
+          </svg>
+        </div>
+        <div class="dv2-essential-row">
+          <div class="dv2-essential-num">4</div>
+          <div class="dv2-essential-text">
+            <div class="dv2-essential-title">Pay or fight your fine</div>
+            <div class="dv2-essential-tab">Services tab</div>
+          </div>
+          <div class="dv2-essential-arrow">→</div>
+        </div>
+      </button>
 
       <!-- Get Started CTA -->
       <button class="btn btn-primary" onclick="showTab('tab-dashboard')" style="margin-top: 8px; font-size: 17px; padding: 18px;">
@@ -9172,6 +9414,31 @@
       panes.forEach(function(p){
         p.hidden = (p.getAttribute('data-platform') !== platform);
       });
+    }
+
+    // Share Drivee link — Web Share on mobile, clipboard fallback on desktop
+    function dv2ShareDrivee() {
+      var url   = 'https://drivee.ca';
+      var title = 'Drivee — driver\'s app for Toronto';
+      var text  = 'Got a parking ticket? Scan it with Drivee — free AI verdict in 8 seconds. ' + url;
+      if (navigator.share) {
+        navigator.share({ title: title, text: text, url: url })
+          .catch(function() { /* user cancelled — silent */ });
+      } else {
+        dv2CopyDriveeLink();
+      }
+    }
+    function dv2CopyDriveeLink() {
+      var url = 'https://drivee.ca';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          if (typeof showToast === 'function') showToast('Link copied — paste anywhere to share');
+        }).catch(function() {
+          if (typeof showToast === 'function') showToast('Couldn\'t copy — long-press the link instead');
+        });
+      } else if (typeof showToast === 'function') {
+        showToast('Long-press the link above to copy');
+      }
     }
 
     // ─── v2 bell tap → smooth-scroll to the visible reminders section + flash it ───
