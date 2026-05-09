@@ -4092,10 +4092,12 @@
     .design-v2 #tab-dashboard[data-scan-active] #card-ai-scanner { display: block !important; }
 
     /* Back button (Scan view) */
-    .dv2-scan-back {
+    .dv2-scan-back,
+    .dv2-rem-back {
       display: none !important;
     }
-    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back {
+    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back,
+    .design-v2 #tab-dashboard[data-reminders-active] .dv2-rem-back {
       display: inline-flex !important;
       align-items: center; gap: 8px;
       background: var(--dv2-paper);
@@ -4108,8 +4110,38 @@
       margin: calc(env(safe-area-inset-top, 0px) + 14px) 0 14px 0;
       transition: background 0.15s;
     }
-    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back:hover {
+    .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back:hover,
+    .design-v2 #tab-dashboard[data-reminders-active] .dv2-rem-back:hover {
       background: var(--dv2-blue-50);
+    }
+
+    /* Dedicated "All your reminders" view */
+    .dv2-rem-heading { display: none; }
+    .design-v2 #tab-dashboard[data-reminders-active] .dv2-rem-heading {
+      display: block;
+      padding: 4px 0 18px;
+    }
+    .dv2-rem-heading .dv2-rem-h-title {
+      font-family: var(--dv2-serif) !important;
+      font-size: 30px !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.7px !important;
+      color: var(--dv2-ink) !important;
+      margin: 0 !important;
+      line-height: 1.1;
+    }
+    .dv2-rem-heading .dv2-rem-h-sub {
+      font-size: 14px;
+      color: var(--dv2-ink2);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+    /* When reminders-active, hide everything except the back button, heading, and #reminders-card */
+    .design-v2 #tab-dashboard[data-reminders-active] > *:not(.dv2-rem-back):not(.dv2-rem-heading):not(#reminders-card) {
+      display: none !important;
+    }
+    .design-v2 #tab-dashboard[data-reminders-active] #reminders-card {
+      display: block !important;
     }
 
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
@@ -4876,6 +4908,18 @@
         Back to dashboard
       </button>
 
+      <!-- All-Reminders back button (only visible in dedicated reminders mode in v2) -->
+      <button class="dv2-rem-back" type="button" onclick="dv2CloseAllReminders()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to dashboard
+      </button>
+
+      <!-- All-Reminders heading (only in reminders mode) -->
+      <div class="dv2-rem-heading">
+        <h2 class="dv2-rem-h-title">All your reminders</h2>
+        <div class="dv2-rem-h-sub">Track every fine, deadline, and overdue notice in one place.</div>
+      </div>
+
       <!-- Playful chase animation — officer running after a Beetle -->
       <div class="ticket-chase" aria-hidden="true">
         <span class="chase-actor chase-beetle"><span class="flip">🚗</span></span>
@@ -4952,7 +4996,7 @@
       <div class="dv2-tab-hero dv2-section dv2-section-sand" id="dv2-reminders-section">
         <div class="dv2-section-head">
           <span class="dv2-section-h">Open reminders</span>
-          <button class="dv2-section-more" id="dv2-rem-see-all" onclick="if(typeof showTab==='function') showTab('tab-services')">SEE ALL · 0</button>
+          <button class="dv2-section-more" id="dv2-rem-see-all" onclick="dv2OpenAllReminders()">SEE ALL · 0</button>
         </div>
         <div id="dv2-reminders-list" class="dv2-reminders-list">
           <div class="dv2-rem-empty">You're all clear. No outstanding tickets — nice driving.</div>
@@ -6562,11 +6606,17 @@
       }
       if (tabId === 'tab-dashboard') {
         var dash = document.getElementById('tab-dashboard');
-        if (dash) delete dash.dataset.scanActive;
+        if (dash) {
+          delete dash.dataset.scanActive;
+          delete dash.dataset.remindersActive;
+        }
       } else {
-        // Leaving the dashboard? Clear scan-view too.
+        // Leaving the dashboard? Clear focused-view modes too.
         var dashEl = document.getElementById('tab-dashboard');
-        if (dashEl) delete dashEl.dataset.scanActive;
+        if (dashEl) {
+          delete dashEl.dataset.scanActive;
+          delete dashEl.dataset.remindersActive;
+        }
       }
       // Hide all sections by removing .active
       document.querySelectorAll('.tab-section').forEach(function(section) {
@@ -8585,6 +8635,28 @@
       var dash = document.getElementById('tab-dashboard');
       if (!dash) return;
       delete dash.dataset.scanActive;
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── v2 dedicated "All Reminders" view (SEE ALL ·  N from the dashboard) ───
+    function dv2OpenAllReminders() {
+      if (typeof showTab === 'function') showTab('tab-dashboard');
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      dash.dataset.remindersActive = 'true';
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll the reminders card into view after the layout swap
+      setTimeout(function() {
+        var card = document.getElementById('reminders-card');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+    function dv2CloseAllReminders() {
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      delete dash.dataset.remindersActive;
       try { dash.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
