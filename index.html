@@ -9959,47 +9959,65 @@
 
     // ON LOAD — show Dashboard tab by default
     // ===================================================
-    showTab('tab-dashboard');
-    trackEvent('app_open');
-    loadProfile();        // Populate name + plate if previously saved
-    renderCars();         // Render saved vehicles on startup
-    renderReminders();    // Render any saved reminders on startup
-    renderScanHistory();  // Render ticket scan history on startup
-    renderDemerits();     // Render demerit points tracker on startup
-    renderRenewals();     // Render renewal reminders on startup
-    updateTowWindowState();                       // Initial tow-window pulse check
-    setInterval(updateTowWindowState, 60 * 1000); // Re-check each minute so pulse turns on/off as time passes
-    updateHeroCard();     // Sync hero card stats on load
-    checkFreeParkingDay(); // Show free parking banner if applicable
-    showWeeklyTip();       // Rotate weekly Did You Know tip
-    initSupabase();     // Start Supabase auth listener (non-blocking)
-    // Auto-restart GPS if user left it on last session
-    if (localStorage.getItem(GPS_KEY)) { startGPS(); }
-    // Pre-fill email inputs with last known email (so user never has to remember it)
-    var savedEmail = localStorage.getItem('drivee_last_email');
-    if (savedEmail) {
-      var authInput = document.getElementById('auth-email-input');
-      var psInput   = document.getElementById('ps-email-input');
-      if (authInput) authInput.value = savedEmail;
-      if (psInput)   psInput.value   = savedEmail;
-    }
-    // Show profile completion prompt if name or plate is missing
-    (function() {
-      if (safeGet('drivee_profile_dismissed')) return;
-      var p = safeGet(PROFILE_KEY) || {};
-      var prompt = document.getElementById('profile-prompt');
-      if (!prompt) return;
-      if (!p.name && !p.plate) {
-        document.getElementById('profile-prompt-text').textContent = 'Add your name and plate number so scanned tickets auto-fill your details.';
-        prompt.style.display = '';
-      } else if (!p.plate) {
-        document.getElementById('profile-prompt-text').textContent = 'Add your plate number to auto-match scanned tickets.';
-        prompt.style.display = '';
-      } else if (!p.name) {
-        document.getElementById('profile-prompt-text').textContent = 'Add your name for dispute letters and reminders.';
-        prompt.style.display = '';
+    // Defer the init block until AFTER the entire script has finished
+    // executing. This is critical: renderDemerits() reads DEMERIT_THRESHOLDS,
+    // and renderRenewals/etc. read other vars that are declared LATER in this
+    // same <script> tag. Running them inline here halted the script with
+    // "Cannot read properties of undefined (reading 'G')" — and that halt
+    // prevented later vars (TCC_DATA among them) from ever being assigned,
+    // which is why the True Cost Calculator silently broke. setTimeout(fn, 0)
+    // queues the init to fire after the current script finishes parsing.
+    function dv2RunInit() {
+      try {
+        showTab('tab-dashboard');
+        trackEvent('app_open');
+        loadProfile();        // Populate name + plate if previously saved
+        renderCars();         // Render saved vehicles on startup
+        renderReminders();    // Render any saved reminders on startup
+        renderScanHistory();  // Render ticket scan history on startup
+        renderDemerits();     // Render demerit points tracker on startup
+        renderRenewals();     // Render renewal reminders on startup
+        updateTowWindowState();                       // Initial tow-window pulse check
+        setInterval(updateTowWindowState, 60 * 1000); // Re-check each minute
+        updateHeroCard();     // Sync hero card stats on load
+        checkFreeParkingDay(); // Show free parking banner if applicable
+        showWeeklyTip();       // Rotate weekly Did You Know tip
+        initSupabase();     // Start Supabase auth listener (non-blocking)
+        // Auto-restart GPS if user left it on last session
+        if (localStorage.getItem(GPS_KEY)) { startGPS(); }
+        // Pre-fill email inputs with last known email
+        var savedEmail = localStorage.getItem('drivee_last_email');
+        if (savedEmail) {
+          var authInput = document.getElementById('auth-email-input');
+          var psInput   = document.getElementById('ps-email-input');
+          if (authInput) authInput.value = savedEmail;
+          if (psInput)   psInput.value   = savedEmail;
+        }
+        // Show profile completion prompt if name or plate is missing
+        if (!safeGet('drivee_profile_dismissed')) {
+          var p = safeGet(PROFILE_KEY) || {};
+          var prompt = document.getElementById('profile-prompt');
+          if (prompt) {
+            if (!p.name && !p.plate) {
+              document.getElementById('profile-prompt-text').textContent = 'Add your name and plate number so scanned tickets auto-fill your details.';
+              prompt.style.display = '';
+            } else if (!p.plate) {
+              document.getElementById('profile-prompt-text').textContent = 'Add your plate number to auto-match scanned tickets.';
+              prompt.style.display = '';
+            } else if (!p.name) {
+              document.getElementById('profile-prompt-text').textContent = 'Add your name for dispute letters and reminders.';
+              prompt.style.display = '';
+            }
+          }
+        }
+      } catch (err) {
+        // Surface any init error in the console rather than swallowing the
+        // rest of the script. (TCC_DATA / DEMERIT_THRESHOLDS / etc. live BELOW
+        // this block — if init throws synchronously we'd kill the calculator.)
+        console.error('Drivee init error:', err);
       }
-    })();
+    }
+    setTimeout(dv2RunInit, 0);
     // bell badge updated after splash hides, in updateBellBadge() below
 
     // ===================================================
