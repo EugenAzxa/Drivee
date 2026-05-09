@@ -9044,16 +9044,21 @@
     function buildTicketText() {
       var p = window._lastScan;
       if (!p) return null;
-      var lines = ['🚗 Ticket Details — via Drivee (drivee.ca)'];
-      if (p.amount) lines.push('Amount: $' + p.amount);
-      if (p.ref)    lines.push('Reference: ' + p.ref);
-      if (p.plate && p.plate !== 'unknown') lines.push('Plate: ' + p.plate);
-      if (p.type)   lines.push('Type: ' + p.type);
-      if (p.province && p.province !== 'unknown') lines.push('Province: ' + p.province);
-      if (p.date && p.date !== 'unknown') lines.push('Date: ' + p.date);
-      if (p.due && p.due !== 'unknown')   lines.push('Due: ' + p.due);
-      if (p.advice) lines.push('\nAdvice: ' + p.advice);
-      lines.push('\nScanned with Drivee — drivee.ca');
+      var lines = ['🚗 Drivee · Ticket details (AI-scanned)'];
+      lines.push('');
+      if (p.amount) lines.push('💰 Amount:    $' + p.amount);
+      if (p.ref)    lines.push('📋 Ticket #:  ' + p.ref);
+      if (p.plate && p.plate !== 'unknown') lines.push('🚙 Plate:     ' + p.plate);
+      if (p.type)   lines.push('⚠️  Violation: ' + p.type);
+      if (p.province && p.province !== 'unknown') lines.push('🏛️  Province:  ' + p.province);
+      if (p.date && p.date !== 'unknown') lines.push('📅 Date:      ' + p.date);
+      if (p.due && p.due !== 'unknown')   lines.push('⏰ Due:       ' + p.due);
+      if (p.advice) {
+        lines.push('');
+        lines.push('💡 Advice: ' + p.advice);
+      }
+      lines.push('');
+      lines.push('👉 Scanned with Drivee — https://drivee.ca');
       return lines.join('\n');
     }
 
@@ -9089,11 +9094,14 @@
       if (!text) { showToast('No scan data to share'); return; }
       trackEvent('share_ticket');
       if (navigator.share) {
+        // URL is in the text body — don't pass `url` separately, Telegram and
+        // many other apps drop the text and send only the link otherwise.
         navigator.share({
-          title: 'Ticket Details — Drivee',
-          text: text,
-          url: 'https://drivee.ca'
-        }).catch(function() {});
+          title: 'Drivee · Ticket details',
+          text: text
+        }).catch(function() {
+          copyTicketDetails();
+        });
       } else {
         copyTicketDetails();
       }
@@ -9970,9 +9978,13 @@
     function shareWeeklyTip() {
       var el = document.getElementById('weekly-tip-text');
       if (!el) return;
-      var text = 'Did you know? ' + el.textContent + '\n\nMore tips at drivee.ca';
+      // URL inside text so the message body survives Telegram / WhatsApp / etc.
+      var text = '💡 Did you know?\n\n' + el.textContent + '\n\n👉 More driver tips at https://drivee.ca';
       if (navigator.share) {
-        navigator.share({ title: 'Drivee Tip', text: text, url: 'https://drivee.ca' }).catch(function() {});
+        navigator.share({ title: 'Drivee · Driver tip', text: text })
+          .catch(function() {
+            navigator.clipboard.writeText(text).then(function() { showToast('Tip copied!'); });
+          });
       } else {
         navigator.clipboard.writeText(text).then(function() { showToast('Tip copied!'); });
       }
@@ -10563,18 +10575,28 @@
     function shareTrueCost() {
       if (!_lastTcc) return;
       var r = _lastTcc;
+      // Bake URL into the text so Telegram / WhatsApp / iMessage that prefer
+      // the `url` field over `text` still send the full message body.
       var text =
-        'My ' + r.violation + ' ticket TRUE cost:\n\n' +
+        '🚗 Drivee · True Ticket Cost\n\n' +
+        'Violation: ' + r.violation + '\n' +
         'Fine:                 $' + r.fine.toFixed(2) + '\n' +
         'Est. insurance cost: +$' + r.insureTotal.toLocaleString() + '\n' +
         'Demerit points:       ' + r.points + '\n' +
-        '-------------------------\n' +
+        '——————————————\n' +
         'TRUE TOTAL COST: $' + r.trueTotal.toLocaleString() + '\n\n' +
         r.tip + '\n\n' +
-        'Calculate yours at drivee.ca';
+        '👉 Calculate yours at https://drivee.ca';
 
       if (navigator.share) {
-        navigator.share({ title: 'Drivee - True Ticket Cost', text: text, url: 'https://drivee.ca' }).catch(function() {});
+        // Pass title + text only. Don't pass `url` — many apps (Telegram in
+        // particular) read ONLY the url field and drop everything else, so
+        // the recipient ends up with just a bare link. URL is now inside text.
+        navigator.share({ title: 'Drivee · True Ticket Cost', text: text })
+          .catch(function() {
+            // user cancelled or share failed — fall back to copy
+            navigator.clipboard.writeText(text).then(function() { showToast('Copied! Paste to share.'); });
+          });
       } else {
         navigator.clipboard.writeText(text).then(function() { showToast('Copied! Paste to share.'); });
       }
