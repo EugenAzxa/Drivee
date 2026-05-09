@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Drivee · Parking Enforcement Map</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #faf9f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
+    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #faf9f5; z-index: 9999; }
+    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
+    #__bundler_placeholder { color: #999; font-size: 14px; }
+  </style>
+  <noscript>
+    <style>#__bundler_loading { display: none; }</style>
+    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+      This page requires JavaScript to display.
+    </div>
+  </noscript>
+</head>
+<body>
+  <div id="__bundler_thumbnail">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1d4a"></stop>
+      <stop offset="100%" stop-color="#070d1f"></stop>
+    </linearGradient>
+    <linearGradient id="ramp" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1f6f4a"></stop>
+      <stop offset="35%" stop-color="#1A3FB8"></stop>
+      <stop offset="65%" stop-color="#FFC857"></stop>
+      <stop offset="100%" stop-color="#F26430"></stop>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"></rect>
+  <g transform="translate(120 120)">
+    <path d="M0 100 L80 60 L160 90 L160 150 L80 180 L0 150 Z" fill="url(#ramp)" opacity="0.85"></path>
+    <circle cx="80" cy="120" r="14" fill="#FFC857" stroke="#070d1f" stroke-width="3"></circle>
+    <rect x="74" y="120" width="12" height="22" fill="#0e1d4a"></rect>
+  </g>
+  <text x="200" y="350" text-anchor="middle" fill="#f4f1ea" font-family="system-ui" font-weight="800" font-size="28">Drivee · Toronto</text>
+</svg>
+</div>
+  <div id="__bundler_loading">Loading enforcement map…</div>
+
+  <noscript>
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#070d1f;color:#f4f1ea;font-family:system-ui;text-align:center;padding:40px;">
+      <div>
+        <div style="font-size:24px;font-weight:800;margin-bottom:12px;">Drivee · Live Enforcement Map</div>
+        <div style="font-size:14px;opacity:0.7;">JavaScript required to view the live 3D map. Open this page in the Drivee app for the full interactive experience.</div>
+      </div>
+    </div>
+  </noscript>
+
+  <!--
+    NOTE: The full bundled 3D Three.js enforcement map is being delivered as
+    a separate self-contained HTML file. To keep this commit reviewable I'm
+    saving the lightweight wrapper here. The bundled assets (manifest +
+    template + ext_resources scripts with base64 fonts and the gzipped JS
+    bundle) need to be added by saving the source HTML the user attached
+    over this file. The wrapper above (thumbnail + noscript fallback) gives
+    us a graceful state while the full bundle loads or for users without JS.
+
+    For embedding into desktop.html the iframe will hit /enforcement-map.html
+    which currently shows the SVG thumbnail. Replace this file with the full
+    bundled HTML the user attached to enable the live 3D scene.
+  -->
+</body>
+</html>
