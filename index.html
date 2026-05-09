@@ -5329,7 +5329,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
           </div>
           <div class="dv2-svc-tile-name">Early Resolution</div>
-          <div class="dv2-svc-tile-desc">AI form $0.99</div>
+          <div class="dv2-svc-tile-desc">Free guided form</div>
         </button>
       </div>
 
@@ -5522,7 +5522,8 @@
           <input type="number" id="tcc-amount" class="tcc-amount-input" placeholder="Fine amount on ticket" min="0" max="99999" />
         </div>
 
-        <button class="tcc-calc-btn" onclick="calcTrueCost()">Calculate True Cost</button>
+        <button class="tcc-calc-btn" id="tcc-calc-btn" onclick="calcTrueCost()">Calculate True Cost</button>
+        <div id="tcc-error" style="display:none"></div>
 
         <div class="tcc-result" id="tcc-result">
           <div class="tcc-result-title">📊 True Cost Breakdown</div>
@@ -10458,12 +10459,35 @@
     var _lastTcc = null;
 
     function calcTrueCost() {
-      var type = document.getElementById('tcc-violation').value;
-      var fine = parseFloat(document.getElementById('tcc-amount').value) || 0;
-      if (!type) { showToast('Select a violation type first'); return; }
-      if (fine <= 0) { showToast('Enter your fine amount'); return; }
+      var typeEl  = document.getElementById('tcc-violation');
+      var fineEl  = document.getElementById('tcc-amount');
+      var errEl   = document.getElementById('tcc-error');
+      function clearErr() { if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; } }
+      function showErr(msg) {
+        if (errEl) {
+          errEl.textContent = '⚠ ' + msg;
+          errEl.style.display = 'block';
+          errEl.style.background = '#FEE2E2';
+          errEl.style.color = '#991B1B';
+          errEl.style.border = '1px solid #FCA5A5';
+          errEl.style.padding = '10px 14px';
+          errEl.style.borderRadius = '10px';
+          errEl.style.marginTop = '8px';
+          errEl.style.fontSize = '13px';
+          errEl.style.fontWeight = '600';
+          errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        if (typeof showToast === 'function') showToast(msg);
+      }
+      clearErr();
+      if (!typeEl || !fineEl) { showErr('Calculator inputs missing — refresh the page'); return; }
+      var type = (typeEl.value || '').trim();
+      var fine = parseFloat(fineEl.value) || 0;
+      if (!type) { showErr('Select a violation type first'); return; }
+      if (fine <= 0) { showErr('Enter your fine amount'); return; }
 
       var d = TCC_DATA[type];
+      if (!d) { showErr('Unknown violation type — pick another'); return; }
       var insureTotal = d.insurancePerYear * d.insuranceYears;
       var trueTotal = fine + insureTotal;
 
@@ -11247,6 +11271,41 @@
         'Pay with credit or debit card and save your confirmation'
       ];
     }
+
+    // ─── Defensive fallback wiring for the True Cost Calculator button.
+    //     The button has onclick="calcTrueCost()" already, but on some PWAs an
+    //     installed home-screen shortcut serves a stale cached HTML where the
+    //     onclick attribute fires the OLD function. Attaching an explicit
+    //     listener here at the end of the script guarantees the freshest
+    //     calcTrueCost is what runs on tap. ───
+    (function() {
+      function wireTcc() {
+        var btn = document.getElementById('tcc-calc-btn');
+        if (btn && !btn._tccBound) {
+          btn._tccBound = true;
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            try { calcTrueCost(); } catch (err) {
+              var errEl = document.getElementById('tcc-error');
+              if (errEl) {
+                errEl.style.display = 'block';
+                errEl.style.background = '#FEE2E2';
+                errEl.style.color = '#991B1B';
+                errEl.style.padding = '10px 14px';
+                errEl.style.borderRadius = '10px';
+                errEl.style.marginTop = '8px';
+                errEl.textContent = '⚠ Calculator error: ' + (err.message || err);
+              }
+            }
+          });
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireTcc);
+      } else {
+        wireTcc();
+      }
+    })();
 
   </script>
 
