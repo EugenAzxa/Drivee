@@ -4144,6 +4144,203 @@
       display: block !important;
     }
 
+    /* ═══════════════════════════════════════════════════════════════
+       INSTALL — Add Drivee to home screen (Guide tab focused view)
+       Same focused-view pattern as scan / reminders: a data attribute
+       on #tab-guide reveals the install instructions and hides the rest.
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* The install CTA card at the top of the Guide tab (hidden when install-active) */
+    .dv2-install-card {
+      width: 100%;
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 20px;
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      color: white;
+      border: 0; border-radius: 18px;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 14px 32px -8px rgba(26,63,184,0.45);
+      transition: transform 0.18s, box-shadow 0.18s;
+      font-family: var(--dv2-font);
+      margin-bottom: 16px;
+    }
+    .dv2-install-card:hover, .dv2-install-card:active {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 44px -10px rgba(26,63,184,0.55);
+    }
+    .dv2-install-card-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.18);
+      display: grid; place-items: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .dv2-install-card-body { flex: 1; min-width: 0; }
+    .dv2-install-card-title {
+      font-size: 17px; font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .dv2-install-card-sub {
+      font-size: 13px; font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+    .dv2-install-card-arrow {
+      font-size: 22px; font-weight: 800;
+      flex-shrink: 0; margin-left: 4px;
+      transition: transform 0.18s;
+    }
+    .dv2-install-card:hover .dv2-install-card-arrow { transform: translateX(4px); }
+    .design-v2 #tab-guide[data-install-active] .dv2-install-card { display: none; }
+
+    /* Back button (Install view) — matches dv2-rem-back / dv2-scan-back style */
+    .dv2-install-back { display: none !important; }
+    .design-v2 #tab-guide[data-install-active] .dv2-install-back {
+      display: inline-flex !important;
+      align-items: center; gap: 8px;
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
+      color: var(--dv2-blue-d);
+      cursor: pointer;
+      margin: calc(env(safe-area-inset-top, 0px) + 14px) 0 14px 0;
+      transition: background 0.15s;
+    }
+    .design-v2 #tab-guide[data-install-active] .dv2-install-back:hover {
+      background: var(--dv2-blue-50);
+    }
+
+    /* Install heading (only in install-active mode) */
+    .dv2-install-heading { display: none; }
+    .design-v2 #tab-guide[data-install-active] .dv2-install-heading {
+      display: block;
+      padding: 4px 0 18px;
+    }
+    .dv2-install-heading h2 {
+      font-family: var(--dv2-serif) !important;
+      font-size: 30px !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.7px !important;
+      color: var(--dv2-ink) !important;
+      margin: 0 !important;
+      line-height: 1.1;
+    }
+    .dv2-install-heading p {
+      font-size: 14px; color: var(--dv2-ink2);
+      margin: 6px 0 0 !important;
+      line-height: 1.45;
+    }
+
+    /* Install view container (the whole instruction column) */
+    .dv2-install-view { display: none; }
+    .design-v2 #tab-guide[data-install-active] .dv2-install-view { display: block; }
+
+    /* When install-active, hide everything except back button, heading, view */
+    .design-v2 #tab-guide[data-install-active] > *:not(.dv2-install-back):not(.dv2-install-heading):not(.dv2-install-view) {
+      display: none !important;
+    }
+
+    /* Platform toggle: iPhone | Android */
+    .dv2-install-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px; padding: 5px;
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+    .dv2-install-tab {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 8px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 14px;
+      color: var(--dv2-ink2);
+      background: transparent;
+      border: 0; border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .dv2-install-tab.active {
+      background: var(--dv2-blue);
+      color: white;
+      box-shadow: 0 4px 12px rgba(26,63,184,0.30);
+    }
+    .dv2-install-tab svg { width: 16px; height: 16px; }
+
+    /* Platform pane (one shows, others hidden) */
+    .dv2-install-pane {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .dv2-install-pane[hidden] { display: none; }
+
+    /* Each step card — visual + numbered title */
+    .dv2-install-step {
+      background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .dv2-install-step-illust {
+      background: linear-gradient(135deg, var(--dv2-blue-50), #e9efff);
+      border-radius: 12px;
+      padding: 18px 14px;
+      display: grid; place-items: center;
+      min-height: 140px;
+    }
+    .dv2-install-step-illust svg {
+      width: 100%; height: auto; max-width: 220px;
+      display: block;
+    }
+    .dv2-install-step-header {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .dv2-install-step-num {
+      width: 30px; height: 30px;
+      background: var(--dv2-blue);
+      color: white;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: var(--dv2-font); font-weight: 800; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .dv2-install-step-text { flex: 1; min-width: 0; }
+    .dv2-install-step-title {
+      font-family: var(--dv2-font); font-weight: 700; font-size: 16px;
+      color: var(--dv2-ink);
+      letter-spacing: -0.2px; line-height: 1.25;
+    }
+    .dv2-install-step-desc {
+      font-size: 13px; color: var(--dv2-ink2);
+      margin-top: 4px; line-height: 1.45;
+    }
+
+    /* "You're done" celebration card at the bottom */
+    .dv2-install-done {
+      background: linear-gradient(135deg, var(--dv2-blue-d), var(--dv2-blue));
+      color: white;
+      border-radius: 18px;
+      padding: 22px;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .dv2-install-done-emoji { font-size: 36px; margin-bottom: 8px; }
+    .dv2-install-done-title {
+      font-family: var(--dv2-serif);
+      font-weight: 700; font-size: 22px;
+      letter-spacing: -0.4px;
+    }
+    .dv2-install-done-sub {
+      font-size: 13px; opacity: 0.88;
+      margin-top: 6px; line-height: 1.45;
+      max-width: 280px; margin-inline: auto;
+    }
+
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
     .dv2-scanner-cta {
       width: 100%;
@@ -6092,9 +6289,327 @@
           <h1 class="dv2-hsimple-title">Guide</h1>
         </div>
         <div class="dv2-hsimple-tag">Drive smarter.</div>
-        <div class="dv2-hsimple-meta">8 STEPS · TIPS · GET STARTED</div>
+        <div class="dv2-hsimple-meta">INSTALL · 4 ESSENTIALS · GET STARTED</div>
       </div>
 
+      <!-- Back button (only visible when data-install-active is set) -->
+      <button class="dv2-install-back" type="button" onclick="dv2CloseInstall()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to guide
+      </button>
+
+      <!-- Install heading (only in install mode) -->
+      <div class="dv2-install-heading">
+        <h2>Install Drivee on your phone</h2>
+        <p>Add it to your home screen — tap once to open, just like a native app.</p>
+      </div>
+
+      <!-- Install view (visible only when data-install-active is set) -->
+      <div class="dv2-install-view">
+        <!-- Platform toggle -->
+        <div class="dv2-install-tabs" role="tablist">
+          <button class="dv2-install-tab active" type="button" data-platform="ios" onclick="dv2InstallShowPlatform('ios')">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            iPhone / iPad
+          </button>
+          <button class="dv2-install-tab" type="button" data-platform="android" onclick="dv2InstallShowPlatform('android')">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48 19.44 6.3a.4.4 0 0 0-.14-.55.4.4 0 0 0-.55.15l-1.86 3.22a11.42 11.42 0 0 0-9.78 0L5.25 5.9a.4.4 0 0 0-.55-.15.4.4 0 0 0-.14.55L6.4 9.48A10.81 10.81 0 0 0 1 18h22a10.81 10.81 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+            Android
+          </button>
+        </div>
+
+        <!-- iOS PANE -->
+        <div class="dv2-install-pane" data-platform="ios">
+
+          <!-- Step 1: Open in Safari -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Browser top with URL bar -->
+                <rect x="20" y="20" width="200" height="100" rx="14" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- traffic lights -->
+                <circle cx="34" cy="34" r="3.5" fill="#FF6B6B"/>
+                <circle cx="46" cy="34" r="3.5" fill="#FFC857"/>
+                <circle cx="58" cy="34" r="3.5" fill="#7AE8B0"/>
+                <!-- URL bar -->
+                <rect x="74" y="28" width="132" height="14" rx="7" fill="#f4f1ea"/>
+                <text x="140" y="38" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="600" fill="#0e1b3d">🔒 drivee.ca</text>
+                <!-- Highlight ring -->
+                <rect x="71" y="25" width="138" height="20" rx="10" fill="none" stroke="#1A3FB8" stroke-width="2" stroke-dasharray="4 3"/>
+                <!-- Page content placeholder -->
+                <rect x="36" y="60" width="80" height="10" rx="2" fill="#0e1b3d"/>
+                <rect x="36" y="76" width="120" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <rect x="36" y="86" width="100" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <rect x="36" y="100" width="168" height="14" rx="6" fill="#1A3FB8"/>
+                <text x="120" y="110" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="8" font-weight="800" fill="#fff" letter-spacing="1">DRIVEE</text>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">1</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Open drivee.ca in Safari</div>
+                <div class="dv2-install-step-desc">Must be Safari — not Chrome or another browser. Add to Home Screen only works in Apple's browser.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Tap Share -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Phone screen bottom region -->
+                <rect x="40" y="20" width="160" height="100" rx="16" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- Page hint (top half) -->
+                <rect x="56" y="36" width="60" height="6" rx="2" fill="#0e1b3d" opacity="0.4"/>
+                <rect x="56" y="48" width="100" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <rect x="56" y="58" width="80" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <!-- Bottom Safari toolbar -->
+                <line x1="48" y1="86" x2="192" y2="86" stroke="#e3dfd4" stroke-width="1"/>
+                <!-- Back arrow -->
+                <path d="M 60 100 l -6 -4 l 6 -4" stroke="#0e1b3d" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Forward -->
+                <path d="M 80 100 l 6 -4 l -6 -4" stroke="#0e1b3d" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+                <!-- SHARE BUTTON (highlighted) -->
+                <rect x="106" y="92" width="28" height="22" rx="5" fill="#1A3FB8"/>
+                <path d="M 120 99 v 10 M 116 103 l 4 -4 l 4 4" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Pulse ring around share -->
+                <rect x="102" y="88" width="36" height="30" rx="9" fill="none" stroke="#1A3FB8" stroke-width="2" stroke-dasharray="3 3"/>
+                <!-- Bookmark / tabs (dimmed) -->
+                <rect x="148" y="96" width="14" height="14" rx="2" stroke="#0e1b3d" stroke-width="1.4" fill="none" opacity="0.4"/>
+                <rect x="170" y="94" width="16" height="16" rx="3" stroke="#0e1b3d" stroke-width="1.4" fill="none" opacity="0.4"/>
+                <!-- Arrow pointer -->
+                <path d="M 165 70 q -10 12 -28 18" stroke="#1A3FB8" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="3 2"/>
+                <path d="M 137 88 l 4 -4 l 0 6 z" fill="#1A3FB8"/>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">2</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Tap the Share button</div>
+                <div class="dv2-install-step-desc">It's the square with an up-arrow at the bottom of Safari. (On iPad it's at the top.)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Add to Home Screen -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Share sheet container -->
+                <rect x="22" y="18" width="196" height="104" rx="14" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- Top app row -->
+                <circle cx="46" cy="40" r="11" fill="#FFC857"/>
+                <circle cx="74" cy="40" r="11" fill="#7AE8B0"/>
+                <circle cx="102" cy="40" r="11" fill="#FF6B6B"/>
+                <circle cx="130" cy="40" r="11" fill="#a08be0"/>
+                <circle cx="158" cy="40" r="11" fill="#0e1b3d"/>
+                <!-- Divider -->
+                <line x1="34" y1="60" x2="206" y2="60" stroke="#e3dfd4" stroke-width="1"/>
+                <!-- Action items (Copy, Add to Reading List, Add to Home Screen — highlighted) -->
+                <text x="40" y="74" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.5">Copy</text>
+                <text x="40" y="86" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.5">Add to Reading List</text>
+                <!-- HIGHLIGHTED ITEM -->
+                <rect x="30" y="90" width="180" height="16" rx="6" fill="#1A3FB8" opacity="0.10"/>
+                <rect x="30" y="90" width="180" height="16" rx="6" fill="none" stroke="#1A3FB8" stroke-width="1.5"/>
+                <text x="40" y="101" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#1A3FB8">＋ Add to Home Screen</text>
+                <text x="40" y="116" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.5">Markup</text>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">3</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Tap "Add to Home Screen"</div>
+                <div class="dv2-install-step-desc">Scroll down through the share menu. It's between "Markup" and "Print" with a ＋ icon.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Confirm -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Home screen background -->
+                <rect x="40" y="14" width="160" height="112" rx="20" fill="#0e1b3d"/>
+                <!-- Status bar dot -->
+                <text x="120" y="28" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="700" fill="#fff" opacity="0.8">9:41</text>
+                <!-- App icon grid (other apps faded) -->
+                <rect x="56" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <rect x="86" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <rect x="116" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <rect x="146" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <rect x="56" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <!-- DRIVEE icon (highlighted) -->
+                <rect x="86" y="70" width="22" height="22" rx="6" fill="#1A3FB8"/>
+                <text x="97" y="84" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="7" font-weight="800" fill="#fff">D.</text>
+                <!-- Pulse ring -->
+                <rect x="83" y="67" width="28" height="28" rx="8" fill="none" stroke="#FFC857" stroke-width="2" stroke-dasharray="3 2"/>
+                <!-- Label -->
+                <text x="97" y="102" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="6" font-weight="600" fill="#fff">Drivee</text>
+                <!-- Other icons -->
+                <rect x="116" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <rect x="146" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.2"/>
+                <!-- Dock -->
+                <rect x="56" y="106" width="112" height="14" rx="7" fill="#fff" opacity="0.1"/>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">4</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Tap "Add" — done!</div>
+                <div class="dv2-install-step-desc">Drivee will appear on your home screen. Tap it any time to open instantly.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ANDROID PANE -->
+        <div class="dv2-install-pane" data-platform="android" hidden>
+
+          <!-- Step 1: Open in Chrome -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="20" width="200" height="100" rx="14" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- Tabs -->
+                <rect x="32" y="28" width="20" height="10" rx="3" fill="#f4f1ea"/>
+                <text x="42" y="36" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="6" fill="#0e1b3d" opacity="0.7">2</text>
+                <!-- URL bar -->
+                <rect x="58" y="28" width="124" height="14" rx="7" fill="#f4f1ea"/>
+                <text x="120" y="38" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="600" fill="#0e1b3d">🔒 drivee.ca</text>
+                <!-- KEBAB MENU (highlighted) -->
+                <circle cx="200" cy="32" r="1.5" fill="#1A3FB8"/>
+                <circle cx="200" cy="36" r="1.5" fill="#1A3FB8"/>
+                <circle cx="200" cy="40" r="1.5" fill="#1A3FB8"/>
+                <circle cx="200" cy="36" r="9" fill="none" stroke="#1A3FB8" stroke-width="2" stroke-dasharray="3 2"/>
+                <!-- Page content -->
+                <rect x="36" y="60" width="80" height="10" rx="2" fill="#0e1b3d"/>
+                <rect x="36" y="76" width="120" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <rect x="36" y="86" width="100" height="4" rx="2" fill="#0e1b3d" opacity="0.2"/>
+                <rect x="36" y="100" width="168" height="14" rx="6" fill="#1A3FB8"/>
+                <text x="120" y="110" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="8" font-weight="800" fill="#fff" letter-spacing="1">DRIVEE</text>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">1</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Open drivee.ca in Chrome</div>
+                <div class="dv2-install-step-desc">Then tap the three-dot menu (⋮) at the top right of the browser.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Install app menu item -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Browser top region -->
+                <rect x="20" y="14" width="200" height="20" rx="6" fill="#f4f1ea" stroke="#d6d2c4" stroke-width="1"/>
+                <!-- Dropdown menu -->
+                <rect x="120" y="38" width="100" height="84" rx="8" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- Menu items (dimmed) -->
+                <text x="130" y="52" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">New tab</text>
+                <text x="130" y="64" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">History</text>
+                <text x="130" y="76" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">Downloads</text>
+                <text x="130" y="88" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">Bookmarks</text>
+                <!-- HIGHLIGHTED ITEM -->
+                <rect x="124" y="92" width="92" height="16" rx="4" fill="#1A3FB8" opacity="0.10"/>
+                <rect x="124" y="92" width="92" height="16" rx="4" fill="none" stroke="#1A3FB8" stroke-width="1.5"/>
+                <text x="130" y="103" font-family="Inter Tight, sans-serif" font-size="8.5" font-weight="800" fill="#1A3FB8">＋ Install app</text>
+                <text x="130" y="120" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">Settings</text>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">2</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Tap "Install app"</div>
+                <div class="dv2-install-step-desc">It'll be in the dropdown menu. Some Chrome versions show "Add to Home screen" instead — same thing.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Confirm install -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Modal backdrop -->
+                <rect x="0" y="0" width="240" height="140" rx="0" fill="#0e1b3d" opacity="0.18"/>
+                <!-- Install dialog -->
+                <rect x="32" y="22" width="176" height="96" rx="14" fill="#fff" stroke="#d6d2c4" stroke-width="1.5"/>
+                <!-- App icon -->
+                <rect x="46" y="38" width="32" height="32" rx="8" fill="#1A3FB8"/>
+                <text x="62" y="60" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="13" font-weight="800" fill="#fff">D.</text>
+                <!-- Title + url -->
+                <text x="86" y="50" font-family="Inter Tight, sans-serif" font-size="11" font-weight="800" fill="#0e1b3d">Drivee</text>
+                <text x="86" y="64" font-family="Inter Tight, sans-serif" font-size="8" fill="#0e1b3d" opacity="0.55">drivee.ca</text>
+                <!-- Cancel -->
+                <text x="118" y="100" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="8" font-weight="700" fill="#0e1b3d" opacity="0.6">Cancel</text>
+                <!-- INSTALL BUTTON (highlighted) -->
+                <rect x="142" y="88" width="56" height="20" rx="10" fill="#1A3FB8"/>
+                <text x="170" y="101" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#fff">Install</text>
+                <rect x="138" y="84" width="64" height="28" rx="14" fill="none" stroke="#1A3FB8" stroke-width="2" stroke-dasharray="3 2"/>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">3</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Tap "Install" to confirm</div>
+                <div class="dv2-install-step-desc">A small dialog will pop up. Tap the blue Install button — Drivee installs in a couple of seconds.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Done — icon on home -->
+          <div class="dv2-install-step">
+            <div class="dv2-install-step-illust" aria-hidden="true">
+              <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Home screen with wallpaper -->
+                <rect x="40" y="14" width="160" height="112" rx="20" fill="url(#g1)"/>
+                <defs>
+                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1A3FB8"/>
+                    <stop offset="100%" stop-color="#0e1b3d"/>
+                  </linearGradient>
+                </defs>
+                <text x="120" y="28" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="700" fill="#fff" opacity="0.8">12:30 · Mon Aug 5</text>
+                <!-- App grid -->
+                <rect x="56" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <rect x="86" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <rect x="116" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <rect x="146" y="40" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <rect x="56" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <!-- DRIVEE icon (highlighted) -->
+                <rect x="86" y="70" width="22" height="22" rx="6" fill="#fff"/>
+                <text x="97" y="85" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="9" font-weight="800" fill="#1A3FB8">D.</text>
+                <rect x="83" y="67" width="28" height="28" rx="8" fill="none" stroke="#FFC857" stroke-width="2" stroke-dasharray="3 2"/>
+                <text x="97" y="102" text-anchor="middle" font-family="Inter Tight, sans-serif" font-size="6" font-weight="600" fill="#fff">Drivee</text>
+                <!-- Other icons -->
+                <rect x="116" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <rect x="146" y="70" width="22" height="22" rx="6" fill="#fff" opacity="0.25"/>
+                <!-- Nav bar -->
+                <rect x="56" y="110" width="112" height="10" rx="5" fill="#fff" opacity="0.15"/>
+              </svg>
+            </div>
+            <div class="dv2-install-step-header">
+              <div class="dv2-install-step-num">4</div>
+              <div class="dv2-install-step-text">
+                <div class="dv2-install-step-title">Drivee is installed!</div>
+                <div class="dv2-install-step-desc">Find the Drivee icon in your app drawer or home screen. Tap to open instantly.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Done celebration card -->
+        <div class="dv2-install-done">
+          <div class="dv2-install-done-emoji">🚗</div>
+          <div class="dv2-install-done-title">You're set.</div>
+          <div class="dv2-install-done-sub">Drivee opens from your home screen — works offline, fast as a native app, no app store required.</div>
+        </div>
+      </div>
+
+      <!-- v1 tab-header (hidden in v2) -->
       <div class="tab-header tab-header-teal">
         <div class="tab-header-icon tab-icon-teal">📖</div>
         <div class="tab-header-text">
@@ -6103,16 +6618,27 @@
         </div>
       </div>
 
+      <!-- INSTALL CARD — top of guide, what user sees first -->
+      <button class="dv2-install-card" type="button" onclick="dv2OpenInstall()" aria-label="Install Drivee on your phone home screen">
+        <div class="dv2-install-card-icon">📲</div>
+        <div class="dv2-install-card-body">
+          <div class="dv2-install-card-title">Install Drivee on your phone</div>
+          <div class="dv2-install-card-sub">Add to home screen · iPhone &amp; Android · 30 seconds</div>
+        </div>
+        <div class="dv2-install-card-arrow">→</div>
+      </button>
+
+      <!-- "How Drivee works" intro -->
       <div class="card">
-        <div class="card-title">How Drivee Works</div>
-        <div class="card-subtitle">8 steps to go from ticket in hand to clear action</div>
+        <div class="card-title">How Drivee works</div>
+        <div class="card-subtitle">4 essentials — one tap each</div>
       </div>
 
-      <!-- 8 Steps -->
+      <!-- 4 essentials (down from 8) -->
       <div class="step-card">
         <div class="step-number">1</div>
         <div class="step-info">
-          <div class="step-title">Save Your Profile</div>
+          <div class="step-title">Set up your profile</div>
           <div class="step-tab">Dashboard tab</div>
         </div>
       </div>
@@ -6120,7 +6646,7 @@
       <div class="step-card">
         <div class="step-number">2</div>
         <div class="step-info">
-          <div class="step-title">Scan a Ticket with AI</div>
+          <div class="step-title">Scan a ticket → AI verdict</div>
           <div class="step-tab">Dashboard tab</div>
         </div>
       </div>
@@ -6128,65 +6654,16 @@
       <div class="step-card">
         <div class="step-number">3</div>
         <div class="step-info">
-          <div class="step-title">Add Fine Reminders</div>
-          <div class="step-tab">Dashboard tab</div>
+          <div class="step-title">See live enforcement hotspots</div>
+          <div class="step-tab">Hotspots tab</div>
         </div>
       </div>
 
       <div class="step-card">
         <div class="step-number">4</div>
         <div class="step-info">
-          <div class="step-title">Check Late Fee Costs</div>
-          <div class="step-tab">Dashboard tab</div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">5</div>
-        <div class="step-info">
-          <div class="step-title">Pay or Dispute Your Fine</div>
+          <div class="step-title">Pay or fight your fine</div>
           <div class="step-tab">Services tab</div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">6</div>
-        <div class="step-info">
-          <div class="step-title">Check Parking Rates</div>
-          <div class="step-tab">Services tab</div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">7</div>
-        <div class="step-info">
-          <div class="step-title">View Enforcement Hotspots</div>
-          <div class="step-tab">Hotspots tab</div>
-        </div>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">8</div>
-        <div class="step-info">
-          <div class="step-title">Get Legal Help</div>
-          <div class="step-tab">Legal tab</div>
-        </div>
-      </div>
-
-      <!-- Quick Tips -->
-      <div class="card" style="margin-top: 8px;">
-        <div class="card-title">Quick Tips</div>
-        <div class="tip-item">
-          <div class="tip-dot"></div>
-          <div class="tip-text">Enable 24h notifications to avoid fee increases</div>
-        </div>
-        <div class="tip-item">
-          <div class="tip-dot"></div>
-          <div class="tip-text">Add Drivee to your iPhone home screen via the Safari Share button</div>
-        </div>
-        <div class="tip-item">
-          <div class="tip-dot"></div>
-          <div class="tip-text">Use the "Vehicle Towed?" link to find your car fast</div>
         </div>
       </div>
 
@@ -6617,6 +7094,11 @@
           delete dashEl.dataset.scanActive;
           delete dashEl.dataset.remindersActive;
         }
+      }
+      // Leaving the Guide tab? Clear install focused-view too.
+      if (tabId !== 'tab-guide') {
+        var guideEl = document.getElementById('tab-guide');
+        if (guideEl) delete guideEl.dataset.installActive;
       }
       // Hide all sections by removing .active
       document.querySelectorAll('.tab-section').forEach(function(section) {
@@ -8659,6 +9141,37 @@
       delete dash.dataset.remindersActive;
       try { dash.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── v2 install instructions focused view (Guide tab) ───
+    function dv2OpenInstall() {
+      if (typeof showTab === 'function') showTab('tab-guide');
+      var guide = document.getElementById('tab-guide');
+      if (!guide) return;
+      guide.dataset.installActive = 'true';
+      // Default to iOS pane open
+      dv2InstallShowPlatform('ios');
+      try { guide.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function dv2CloseInstall() {
+      var guide = document.getElementById('tab-guide');
+      if (!guide) return;
+      delete guide.dataset.installActive;
+      try { guide.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function dv2InstallShowPlatform(platform) {
+      var tabs = document.querySelectorAll('.dv2-install-tab');
+      tabs.forEach(function(t){
+        var match = t.getAttribute('data-platform') === platform;
+        t.classList.toggle('active', match);
+        t.setAttribute('aria-selected', match ? 'true' : 'false');
+      });
+      var panes = document.querySelectorAll('.dv2-install-pane');
+      panes.forEach(function(p){
+        p.hidden = (p.getAttribute('data-platform') !== platform);
+      });
     }
 
     // ─── v2 bell tap → smooth-scroll to the visible reminders section + flash it ───
