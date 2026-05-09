@@ -5190,8 +5190,10 @@
       </div>
 
 
-      <!-- Demerit Points Tracker -->
-      <div class="card" data-search="demerit points licence record warning interview suspension G novice">
+      <!-- Demerit Points Tracker — hidden by owner request 2026-05-09.
+           DOM kept (display:none) so #demerit-card-body still exists and
+           renderDemerits() can write to it without throwing. -->
+      <div class="card" data-search="demerit points licence record warning interview suspension G novice" style="display:none" aria-hidden="true">
         <div class="card-title">⚖️ Demerit Points Tracker</div>
         <div class="card-subtitle">Active points on your Ontario record — last 2 years</div>
         <div id="demerit-card-body"></div>
