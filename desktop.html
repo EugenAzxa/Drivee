@@ -719,8 +719,11 @@
     border: 1px solid var(--line-s);
   }
   .map-canvas svg { width: 100%; height: 100%; display: block; }
-  .map-canvas iframe { filter: saturate(0.85) contrast(0.95); }
-  /* Click-overlay that turns the locked map into a CTA */
+  /* The 3D enforcement-map iframe — pointer-events gated by .engaged class
+     so users can scroll past the section without the map hijacking the wheel. */
+  .map-canvas .map-iframe { pointer-events: none; }
+  .map-canvas.engaged .map-iframe { pointer-events: auto; }
+  /* Click-overlay that engages map interactivity on click */
   .map-cta-overlay {
     position: absolute; inset: 0;
     cursor: pointer;
@@ -728,9 +731,27 @@
     z-index: 5;
     display: block;
     background: transparent;
-    transition: background 0.2s;
+    transition: background 0.2s, opacity 0.3s;
   }
   .map-cta-overlay:hover { background: rgba(11,20,48,0.04); }
+  .map-canvas.engaged .map-cta-overlay { opacity: 0; pointer-events: none; }
+  /* Small corner deep-link to the full interactive in-app map */
+  .map-deeplink {
+    position: absolute; top: 14px; right: 14px; z-index: 6;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 12px 8px 14px;
+    background: rgba(11,20,48,0.92); color: white;
+    border-radius: 999px; text-decoration: none;
+    font-family: var(--font); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(11,20,48,0.30);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .map-deeplink:hover {
+    transform: translateY(-1px); background: var(--blue);
+    box-shadow: 0 12px 24px rgba(46,100,255,0.45);
+  }
   .map-cta-pill {
     position: absolute;
     bottom: 16px; right: 16px;
@@ -1628,21 +1649,28 @@
     </div>
 
     <div class="map-card">
-      <div class="map-canvas" style="position: relative; background: #070d1f;">
-        <iframe
+      <div class="map-canvas" id="hotspots-map" style="position: relative; background: #070d1f;">
+        <iframe class="map-iframe" id="hotspots-map-iframe"
           src="/enforcement-map.html"
-          width="100%" height="100%" style="border:0; display:block; border-radius: 16px; pointer-events: none; background: #070d1f;"
+          width="100%" height="100%" style="border:0; display:block; border-radius: 16px; background: #070d1f;"
           loading="lazy"
           title="Drivee live parking enforcement — downtown Toronto" tabindex="-1"></iframe>
-        <!-- Click anywhere on the map → open the real interactive map in the app -->
-        <a class="map-cta-overlay" href="/?app=1#tab-hotspots"
-           aria-label="Open the live interactive map in the Drivee app"
-           title="Open the live interactive map">
+        <!-- Click anywhere on the map → engage interactivity (drag, zoom, click officers).
+             Cursor leaves the map area → re-arms so users can scroll past freely. -->
+        <a class="map-cta-overlay" href="#" id="hotspots-engage"
+           aria-label="Click to interact with the live enforcement map"
+           title="Click to drag, zoom, and explore the live map">
           <span class="map-cta-pill">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            Open live map
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
+            Click to drag · zoom · explore
           </span>
+        </a>
+        <!-- Always-visible corner deep-link to the full interactive in-app map -->
+        <a class="map-deeplink" href="/?app=1#tab-hotspots"
+           aria-label="Open the full interactive map in the Drivee app"
+           title="Open the full interactive map in the Drivee app">
+          Open in app
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
       </div>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px;">
@@ -1677,6 +1705,24 @@
       </div>
     </div>
   </section>
+
+  <!-- Hotspots map: click to engage interactivity, leave to release.
+       Pattern matches Google Maps embeds: scrolling past won't get hijacked
+       by the 3D scene's wheel-to-zoom unless the user has clicked into the map. -->
+  <script>
+  (function(){
+    var canvas = document.getElementById('hotspots-map');
+    var engage = document.getElementById('hotspots-engage');
+    if (!canvas || !engage) return;
+    engage.addEventListener('click', function(e){
+      e.preventDefault();
+      canvas.classList.add('engaged');
+    });
+    canvas.addEventListener('mouseleave', function(){
+      canvas.classList.remove('engaged');
+    });
+  })();
+  </script>
 
   <!-- LEGAL SECTION -->
   <section class="block reveal" id="legal">
