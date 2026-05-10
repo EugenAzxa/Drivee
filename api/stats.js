@@ -41,26 +41,39 @@ module.exports = async function handler(req, res) {
     || process.env.SUPABASE_KEY
     || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mbnNzc3lpaWVqb2hjbmJlanhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDE4OTcsImV4cCI6MjA5MTA3Nzg5N30._C3k82OSOklVtKaWT4zl1rWGJyaokiRQC9H6y5VhS58';
 
-  // Pull recent rows. Supabase has a default 1000-row limit per request unless we add a Range header.
-  var url = supabaseUrl + '/rest/v1/analytics?select=event,meta,created_at&order=created_at.desc&limit=' + FETCH_LIMIT;
+  // Pull recent rows. Use Range header to override Supabase's default 1000-row cap.
+  var url = supabaseUrl + '/rest/v1/analytics?select=*&order=created_at.desc';
   var rows = [];
   try {
     var r = await fetch(url, {
       headers: {
         'apikey': supabaseKey,
         'Authorization': 'Bearer ' + supabaseKey,
-        'Range-Unit': 'items',
         'Range': '0-' + (FETCH_LIMIT - 1)
       }
     });
     if (!r.ok) {
       var txt = await r.text();
-      return res.status(500).json({ error: 'Supabase fetch failed', status: r.status, body: txt.slice(0, 200) });
+      return res.status(500).json({
+        error: 'Supabase fetch failed',
+        status: r.status,
+        url: url,
+        body: txt.slice(0, 400)
+      });
     }
     rows = await r.json();
   } catch (e) {
-    return res.status(500).json({ error: 'Supabase fetch threw', detail: String(e).slice(0, 200) });
+    return res.status(500).json({ error: 'Supabase fetch threw', detail: String(e).slice(0, 400) });
   }
+
+  // Normalise rows so a missing column doesn't blow up aggregation
+  rows = rows.map(function(r){
+    return {
+      event: r.event || '',
+      meta: r.meta || '',
+      created_at: r.created_at || r.inserted_at || r.timestamp || new Date(0).toISOString()
+    };
+  });
 
   // ── Aggregate ────────────────────────────────────────
   var now = Date.now();
