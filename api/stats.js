@@ -35,10 +35,11 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'GET')     return res.status(405).json({ error: 'Method not allowed' });
 
   var supabaseUrl = process.env.SUPABASE_URL || 'https://ofnsssyiiejohcnbejxq.supabase.co';
-  var supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
-  if (!supabaseKey) {
-    return res.status(500).json({ error: 'Supabase key missing' });
-  }
+  // Anon key is already public (shipped in index.html to every visitor),
+  // so a hardcoded fallback is safe and removes the env-var setup step.
+  var supabaseKey = process.env.SUPABASE_ANON_KEY
+    || process.env.SUPABASE_KEY
+    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mbnNzc3lpaWVqb2hjbmJlanhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDE4OTcsImV4cCI6MjA5MTA3Nzg5N30._C3k82OSOklVtKaWT4zl1rWGJyaokiRQC9H6y5VhS58';
 
   // Pull recent rows. Supabase has a default 1000-row limit per request unless we add a Range header.
   var url = supabaseUrl + '/rest/v1/analytics?select=event,meta,created_at&order=created_at.desc&limit=' + FETCH_LIMIT;
