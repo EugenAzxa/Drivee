@@ -4152,6 +4152,7 @@
 
     /* The install CTA card at the top of the Guide tab (hidden when install-active) */
     .dv2-install-card {
+      position: relative;
       width: 100%;
       display: flex; align-items: center; gap: 14px;
       padding: 18px 20px;
@@ -4164,10 +4165,59 @@
       transition: transform 0.18s, box-shadow 0.18s;
       font-family: var(--dv2-font);
       margin-bottom: 16px;
+      overflow: hidden;
+      isolation: isolate;
+      animation: dv2-install-pulse 3.4s ease-in-out infinite;
+    }
+    /* Decorative drifting orbs behind the content */
+    .dv2-install-card::before {
+      content: '';
+      position: absolute;
+      inset: -40%;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18), transparent 38%),
+        radial-gradient(circle at 80% 70%, rgba(122,232,176,0.20), transparent 42%),
+        radial-gradient(circle at 60% 20%, rgba(167,139,250,0.18), transparent 40%);
+      animation: dv2-install-orbs 14s ease-in-out infinite;
+      pointer-events: none;
+    }
+    /* Diagonal shine sweep — sweeps across every 4s */
+    .dv2-install-card::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: -60%;
+      width: 50%;
+      z-index: -1;
+      background: linear-gradient(
+        100deg,
+        transparent 0%,
+        transparent 30%,
+        rgba(255,255,255,0.22) 50%,
+        transparent 70%,
+        transparent 100%
+      );
+      transform: skewX(-18deg);
+      animation: dv2-install-shine 4.2s ease-in-out infinite;
+      pointer-events: none;
     }
     .dv2-install-card:hover, .dv2-install-card:active {
       transform: translateY(-2px);
       box-shadow: 0 22px 44px -10px rgba(26,63,184,0.55);
+    }
+    @keyframes dv2-install-pulse {
+      0%, 100% { box-shadow: 0 14px 32px -8px rgba(26,63,184,0.45), 0 0 0 0 rgba(122,232,176,0.0); }
+      50%      { box-shadow: 0 18px 40px -8px rgba(26,63,184,0.55), 0 0 0 6px rgba(122,232,176,0.10); }
+    }
+    @keyframes dv2-install-shine {
+      0%        { left: -60%; }
+      55%, 100% { left: 130%; }
+    }
+    @keyframes dv2-install-orbs {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(6%, -4%) scale(1.06); }
+      66%      { transform: translate(-5%, 5%) scale(0.96); }
     }
     .dv2-install-card-icon {
       width: 48px; height: 48px;
@@ -4176,6 +4226,11 @@
       display: grid; place-items: center;
       font-size: 26px;
       flex-shrink: 0;
+      animation: dv2-install-icon-float 2.6s ease-in-out infinite;
+    }
+    @keyframes dv2-install-icon-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-3px) rotate(-4deg); }
     }
     .dv2-install-card-body { flex: 1; min-width: 0; }
     .dv2-install-card-title {
@@ -4193,9 +4248,22 @@
       font-size: 22px; font-weight: 800;
       flex-shrink: 0; margin-left: 4px;
       transition: transform 0.18s;
+      animation: dv2-install-arrow-nudge 1.8s ease-in-out infinite;
     }
-    .dv2-install-card:hover .dv2-install-card-arrow { transform: translateX(4px); }
+    @keyframes dv2-install-arrow-nudge {
+      0%, 100% { transform: translateX(0); }
+      50%      { transform: translateX(4px); }
+    }
+    .dv2-install-card:hover .dv2-install-card-arrow { transform: translateX(8px); }
     .design-v2 #tab-guide[data-install-active] .dv2-install-card { display: none; }
+    /* Respect reduced-motion users — kill all the animations */
+    @media (prefers-reduced-motion: reduce) {
+      .dv2-install-card,
+      .dv2-install-card::before,
+      .dv2-install-card::after,
+      .dv2-install-card-icon,
+      .dv2-install-card-arrow { animation: none !important; }
+    }
 
     /* Back button (Install view) — matches dv2-rem-back / dv2-scan-back style */
     .dv2-install-back { display: none !important; }
