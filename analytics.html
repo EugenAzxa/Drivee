@@ -245,71 +245,12 @@
       100% { background-position: -200% 0; }
     }
 
-    /* ── password gate ── */
-    .gate-wrap {
-      min-height: 100vh;
-      display: grid; place-items: center;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--blue), var(--blue-d));
-    }
-    .gate-card {
-      background: var(--paper);
-      border-radius: 20px; padding: 32px;
-      width: 100%; max-width: 380px;
-      box-shadow: 0 30px 70px -20px rgba(0,0,0,0.4);
-    }
-    .gate-logo {
-      width: 56px; height: 56px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--blue), var(--blue-d));
-      color: white; display: grid; place-items: center;
-      font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 22px;
-      margin-bottom: 18px;
-    }
-    .gate-title {
-      font-family: Georgia, 'IBM Plex Serif', serif;
-      font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-    .gate-sub { font-size: 13px; color: var(--ink2); margin-bottom: 20px; }
-    .gate-input {
-      width: 100%; padding: 12px 14px;
-      border: 1px solid var(--line); border-radius: 10px;
-      font: 600 14px inherit; color: var(--ink);
-      background: var(--canvas);
-      margin-bottom: 12px;
-    }
-    .gate-input:focus { outline: 2px solid var(--blue); border-color: var(--blue); }
-    .gate-btn {
-      width: 100%; padding: 12px;
-      background: var(--blue); color: white;
-      border: 0; border-radius: 10px;
-      font: 800 14px inherit; cursor: pointer;
-      transition: background 0.15s;
-    }
-    .gate-btn:hover { background: var(--blue-d); }
-    .gate-error {
-      font-size: 12px; color: var(--red);
-      margin-top: 8px; min-height: 14px;
-      font-family: 'JetBrains Mono', monospace;
-    }
   </style>
 </head>
 <body>
 
-<!-- ─────────── PASSWORD GATE ─────────── -->
-<div id="gate" class="gate-wrap" hidden>
-  <form class="gate-card" onsubmit="return submitGate(event)">
-    <div class="gate-logo">D.</div>
-    <div class="gate-title">Drivee Analytics</div>
-    <div class="gate-sub">Internal — enter the shared password to view live usage data.</div>
-    <input id="gate-input" class="gate-input" type="password" autocomplete="off" placeholder="Password" required />
-    <button class="gate-btn" type="submit">Unlock dashboard</button>
-    <div id="gate-error" class="gate-error"></div>
-  </form>
-</div>
-
 <!-- ─────────── DASHBOARD ─────────── -->
-<div id="app" class="wrap" hidden>
+<div id="app" class="wrap">
 
   <div class="topbar">
     <div class="brand">
@@ -322,7 +263,6 @@
     <div class="toolbar">
       <span id="updated" class="updated"><span class="live-dot"></span>loading…</span>
       <button class="btn" type="button" onclick="loadStats()" title="Refresh now">↻ Refresh</button>
-      <button class="btn" type="button" onclick="logout()" title="Sign out">Lock</button>
     </div>
   </div>
 
@@ -398,52 +338,17 @@
 </div>
 
 <script>
-  // ─── Storage / gate ───
-  var STORAGE_KEY = 'drivee.analytics.pwd';
   var REFRESH_MS = 30000;
-
-  function getPwd()    { try { return localStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; } }
-  function setPwd(p)   { try { localStorage.setItem(STORAGE_KEY, p); } catch (e) {} }
-  function clearPwd()  { try { localStorage.removeItem(STORAGE_KEY); } catch (e) {} }
-
-  function showGate(errMsg) {
-    document.getElementById('gate').hidden = false;
-    document.getElementById('app').hidden = true;
-    document.getElementById('gate-error').textContent = errMsg || '';
-    setTimeout(function(){ document.getElementById('gate-input').focus(); }, 50);
-  }
-  function showApp() {
-    document.getElementById('gate').hidden = true;
-    document.getElementById('app').hidden = false;
-  }
-  function logout() {
-    clearPwd();
-    showGate('');
-  }
-  function submitGate(ev) {
-    ev.preventDefault();
-    var v = document.getElementById('gate-input').value.trim();
-    if (!v) return false;
-    setPwd(v);
-    document.getElementById('gate-error').textContent = '';
-    showApp();
-    loadStats();
-    return false;
-  }
 
   // ─── Fetch ───
   async function loadStats() {
-    var pwd = getPwd();
-    if (!pwd) { showGate(''); return; }
     setUpdated('loading…');
-
     try {
       var r = await fetch('/api/stats', {
         method: 'GET',
-        headers: { 'x-stats-password': pwd, 'Cache-Control': 'no-cache' },
+        headers: { 'Cache-Control': 'no-cache' },
         cache: 'no-store'
       });
-      if (r.status === 401) { clearPwd(); showGate('Wrong password.'); return; }
       if (!r.ok) {
         var body = await r.text();
         setUpdated('error');
@@ -616,18 +521,10 @@
   function eventIcon(k)  { return EVENT_ICONS[k]  || '•'; }
 
   // ─── Init ───
-  if (getPwd()) {
-    showApp();
-    loadStats();
-  } else {
-    showGate('');
-  }
-  setInterval(function(){
-    if (!document.getElementById('app').hidden) loadStats();
-  }, REFRESH_MS);
-  // Also refresh whenever the tab regains focus
+  loadStats();
+  setInterval(loadStats, REFRESH_MS);
   document.addEventListener('visibilitychange', function(){
-    if (!document.hidden && !document.getElementById('app').hidden) loadStats();
+    if (!document.hidden) loadStats();
   });
 </script>
 

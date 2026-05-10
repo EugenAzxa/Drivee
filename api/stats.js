@@ -1,10 +1,5 @@
 // Aggregated analytics for the internal dashboard.
 // Reads /analytics rows from Supabase, returns rolled-up JSON.
-//
-// Required env vars (set in Vercel dashboard):
-//   ANALYTICS_PASSWORD  — shared secret for the dashboard
-//   SUPABASE_URL        — already present
-//   SUPABASE_ANON_KEY   — already present (read-access on analytics table)
 
 var ALLOWED_ORIGINS = [
   'https://drivee.ca',
@@ -34,19 +29,10 @@ module.exports = async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', allowed ? origin : ALLOWED_ORIGINS[0]);
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-stats-password');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')     return res.status(405).json({ error: 'Method not allowed' });
-
-  var expected = process.env.ANALYTICS_PASSWORD;
-  if (!expected) {
-    return res.status(500).json({ error: 'ANALYTICS_PASSWORD env var not set on the server' });
-  }
-  var provided = req.headers['x-stats-password'] || (req.query && req.query.p) || '';
-  if (provided !== expected) {
-    return res.status(401).json({ error: 'Wrong password' });
-  }
 
   var supabaseUrl = process.env.SUPABASE_URL || 'https://ofnsssyiiejohcnbejxq.supabase.co';
   var supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
