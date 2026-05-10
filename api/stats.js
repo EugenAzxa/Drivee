@@ -1,5 +1,8 @@
 // Aggregated analytics for the internal dashboard.
 // Reads /analytics rows from Supabase, returns rolled-up JSON.
+// Uses node:https instead of fetch — bulletproof across all Node versions.
+
+var https = require('https');
 
 var ALLOWED_ORIGINS = [
   'https://drivee.ca',
@@ -10,6 +13,30 @@ var ALLOWED_ORIGINS = [
 
 // Pull up to this many most-recent rows. Plenty of headroom for early-stage app.
 var FETCH_LIMIT = 10000;
+
+function httpsGet(urlStr, headers) {
+  return new Promise(function(resolve, reject) {
+    try {
+      var u = new URL(urlStr);
+      var req = https.request({
+        hostname: u.hostname,
+        port: u.port || 443,
+        path: u.pathname + u.search,
+        method: 'GET',
+        headers: headers || {}
+      }, function(r) {
+        var chunks = [];
+        r.on('data', function(c) { chunks.push(c); });
+        r.on('end', function() {
+          resolve({ status: r.statusCode, body: Buffer.concat(chunks).toString('utf8') });
+        });
+      });
+      req.on('error', reject);
+      req.setTimeout(8000, function(){ req.destroy(new Error('Supabase request timed out')); });
+      req.end();
+    } catch (e) { reject(e); }
+  });
+}
 
 function dayKey(iso) {
   // "YYYY-MM-DD" — bucketing in UTC keeps things simple
@@ -45,25 +72,29 @@ module.exports = async function handler(req, res) {
   var url = supabaseUrl + '/rest/v1/analytics?select=*&order=created_at.desc';
   var rows = [];
   try {
-    var r = await fetch(url, {
-      headers: {
-        'apikey': supabaseKey,
-        'Authorization': 'Bearer ' + supabaseKey,
-        'Range': '0-' + (FETCH_LIMIT - 1)
-      }
+    var resp = await httpsGet(url, {
+      'apikey': supabaseKey,
+      'Authorization': 'Bearer ' + supabaseKey,
+      'Range': '0-' + (FETCH_LIMIT - 1),
+      'Accept': 'application/json'
     });
-    if (!r.ok) {
-      var txt = await r.text();
+    if (resp.status < 200 || resp.status >= 300) {
       return res.status(500).json({
-        error: 'Supabase fetch failed',
-        status: r.status,
-        url: url,
-        body: txt.slice(0, 400)
+        error: 'Supabase request failed',
+        status: resp.status,
+        body: resp.body.slice(0, 400)
       });
     }
-    rows = await r.json();
+    try {
+      rows = JSON.parse(resp.body);
+    } catch (e) {
+      return res.status(500).json({ error: 'Supabase response not JSON', body: resp.body.slice(0, 400) });
+    }
+    if (!Array.isArray(rows)) {
+      return res.status(500).json({ error: 'Supabase response was not an array', body: JSON.stringify(rows).slice(0, 400) });
+    }
   } catch (e) {
-    return res.status(500).json({ error: 'Supabase fetch threw', detail: String(e).slice(0, 400) });
+    return res.status(500).json({ error: 'Network error', detail: String(e && e.message || e).slice(0, 400) });
   }
 
   // Normalise rows so a missing column doesn't blow up aggregation
