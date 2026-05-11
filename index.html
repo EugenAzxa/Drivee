@@ -4929,6 +4929,26 @@
     /* Hide legal footer when in install focused-view */
     .design-v2 #tab-guide[data-install-active] .dv2-legal-footer { display: none; }
 
+    /* Tiny mid-guide tip line — sits above the legal footer so the floating
+       AI mascot (bottom-right) doesn't cover it. Friendly + low-key. */
+    .dv2-tip-line {
+      margin-top: 22px;
+      padding: 14px 18px;
+      text-align: center;
+      font-family: var(--dv2-font);
+      font-size: 12px;
+      color: var(--dv2-ink2);
+      line-height: 1.5;
+    }
+    .dv2-tip-line a {
+      color: var(--dv2-blue-d);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .dv2-tip-line a:hover { text-decoration: underline; }
+    /* Hide it in install focused-view too */
+    .design-v2 #tab-guide[data-install-active] .dv2-tip-line { display: none; }
+
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
     .dv2-scanner-cta {
       width: 100%;
@@ -7509,6 +7529,12 @@
         Get Started →
       </button>
 
+      <!-- Tiny "support us" line — placed mid-guide so the floating AI bot
+           in the bottom-right doesn't obscure it. Intentionally low-key. -->
+      <div class="dv2-tip-line">
+        Built by 2 humans in Toronto · <a href="https://www.gofundme.com/manage/drivee-the-allinone-solution-for-torontos-road-drivers" target="_blank" rel="noopener">support the project →</a>
+      </div>
+
       <!-- Legal footer — privacy + terms, always at the bottom of Guide -->
       <div class="dv2-legal-footer">
         <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
@@ -7516,8 +7542,6 @@
         <a href="/privacy.html#terms" target="_blank" rel="noopener">Terms of Use</a>
         <span class="dv2-legal-sep">·</span>
         <a href="mailto:drivee.canada@gmail.com">Contact</a>
-        <span class="dv2-legal-sep">·</span>
-        <a href="https://www.gofundme.com/manage/drivee-the-allinone-solution-for-torontos-road-drivers" target="_blank" rel="noopener">Support</a>
         <div class="dv2-legal-meta">© 2026 Drivee · Toronto, ON</div>
       </div>
 
