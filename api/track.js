@@ -1,3 +1,39 @@
+// Uses node:https instead of fetch — bulletproof across all Node versions.
+var https = require('https');
+
+function httpsRequest(urlStr, options) {
+  options = options || {};
+  return new Promise(function(resolve, reject) {
+    try {
+      var u = new URL(urlStr);
+      var body = options.body || null;
+      var headers = options.headers || {};
+      if (body && !headers['Content-Length']) {
+        headers['Content-Length'] = Buffer.byteLength(body);
+      }
+      var req = https.request({
+        hostname: u.hostname,
+        port: u.port || 443,
+        path: u.pathname + u.search,
+        method: options.method || 'GET',
+        headers: headers
+      }, function(r) {
+        var chunks = [];
+        r.on('data', function(c) { chunks.push(c); });
+        r.on('end', function() {
+          resolve({ status: r.statusCode, body: Buffer.concat(chunks).toString('utf8') });
+        });
+      });
+      req.on('error', reject);
+      req.setTimeout(options.timeoutMs || 5000, function(){
+        req.destroy(new Error('Request timed out'));
+      });
+      if (body) req.write(body);
+      req.end();
+    } catch (e) { reject(e); }
+  });
+}
+
 var ALLOWED_EVENTS = [
   'app_open', 'tab_click', 'scan_ticket', 'scan_success',
   'reminder_added', 'profile_saved', 'report_created',
@@ -62,10 +98,9 @@ async function getCityFromIp(ip) {
   if (!ip || ip === 'unknown' || ip === '127.0.0.1' || ip === '::1') return null;
   try {
     var cleanIp = ip.split(',')[0].trim();
-    var r = await fetch('https://ipinfo.io/' + cleanIp + '/json', {
-      signal: AbortSignal.timeout(1500)
-    });
-    var d = await r.json();
+    var r = await httpsRequest('https://ipinfo.io/' + cleanIp + '/json', { timeoutMs: 1500 });
+    if (r.status < 200 || r.status >= 300) return null;
+    var d = JSON.parse(r.body);
     if (d.city && d.region) return d.city + ', ' + d.region;
     return d.city || null;
   } catch (e) { return null; }
@@ -96,23 +131,25 @@ module.exports = async function handler(req, res) {
 
   meta = meta.replace(/<[^>]*>/g, '');
 
-  // Save to Supabase — all events
+  // Save to Supabase — all events.
+  // Anon key is already public (shipped in index.html), so a hardcoded fallback
+  // is safe and ensures events get saved even if the Vercel env var isn't set.
   var supabaseUrl = process.env.SUPABASE_URL || 'https://ofnsssyiiejohcnbejxq.supabase.co';
-  var supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
+  var supabaseKey = process.env.SUPABASE_ANON_KEY
+    || process.env.SUPABASE_KEY
+    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9mbnNzc3lpaWVqb2hjbmJlanhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDE4OTcsImV4cCI6MjA5MTA3Nzg5N30._C3k82OSOklVtKaWT4zl1rWGJyaokiRQC9H6y5VhS58';
 
-  if (supabaseKey) {
-    try {
-      await fetch(supabaseUrl + '/rest/v1/analytics', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': supabaseKey,
-          'Authorization': 'Bearer ' + supabaseKey
-        },
-        body: JSON.stringify({ event: event, meta: meta })
-      });
-    } catch (e) {}
-  }
+  try {
+    await httpsRequest(supabaseUrl + '/rest/v1/analytics', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseKey,
+        'Authorization': 'Bearer ' + supabaseKey
+      },
+      body: JSON.stringify({ event: event, meta: meta })
+    });
+  } catch (e) {}
 
   // Telegram — only for meaningful events
   if (TELEGRAM_EVENTS.indexOf(event) !== -1) {
@@ -133,7 +170,7 @@ module.exports = async function handler(req, res) {
       lines.push('🕐 ' + ts);
 
       try {
-        await fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
+        await httpsRequest('https://api.telegram.org/bot' + botToken + '/sendMessage', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: chatId, text: lines.join('\n') })
