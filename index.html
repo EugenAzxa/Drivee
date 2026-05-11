@@ -3386,14 +3386,154 @@
     /* When a service is active: hide grid, show only that card + back button */
     .design-v2 #tab-services[data-svc-active] .dv2-svc-grid { display: none !important; }
     .design-v2 #tab-services[data-svc-active] .dv2-svc-back { display: inline-flex !important; }
-    .design-v2 #tab-services[data-svc-active="lookup"]  #svc-lookup,
-    .design-v2 #tab-services[data-svc-active="pay"]     #svc-pay,
-    .design-v2 #tab-services[data-svc-active="tow"]     #svc-tow,
-    .design-v2 #tab-services[data-svc-active="dispute"] #svc-dispute,
-    .design-v2 #tab-services[data-svc-active="streets"] #svc-streets,
-    .design-v2 #tab-services[data-svc-active="usa"]     #svc-usa,
-    .design-v2 #tab-services[data-svc-active="early"]   #svc-early {
+    .design-v2 #tab-services[data-svc-active="lookup"]   #svc-lookup,
+    .design-v2 #tab-services[data-svc-active="pay"]      #svc-pay,
+    .design-v2 #tab-services[data-svc-active="tow"]      #svc-tow,
+    .design-v2 #tab-services[data-svc-active="dispute"]  #svc-dispute,
+    .design-v2 #tab-services[data-svc-active="streets"]  #svc-streets,
+    .design-v2 #tab-services[data-svc-active="usa"]      #svc-usa,
+    .design-v2 #tab-services[data-svc-active="early"]    #svc-early,
+    .design-v2 #tab-services[data-svc-active="handicap"] #svc-handicap {
       display: block !important;
+    }
+
+    /* ─── Handicap (Accessible Parking Permit) card ─── */
+    .dv2-hc-card { border: 1px solid var(--dv2-line-soft); }
+    .dv2-hc-explainer {
+      background: var(--dv2-blue-50);
+      border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 14px 0 18px;
+    }
+    .dv2-hc-h {
+      font-family: var(--dv2-mono);
+      font-size: 10px; letter-spacing: 1.6px;
+      font-weight: 800; color: var(--dv2-blue-d);
+      margin-top: 12px; margin-bottom: 6px;
+    }
+    .dv2-hc-h:first-child { margin-top: 0; }
+    .dv2-hc-explainer p,
+    .dv2-hc-explainer li {
+      font-size: 13px; line-height: 1.55;
+      color: var(--dv2-ink); font-family: var(--dv2-font);
+      margin: 0 0 6px; font-weight: 500;
+    }
+    .dv2-hc-explainer ul { padding-left: 18px; margin: 4px 0 6px; }
+    .dv2-hc-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--dv2-font);
+      font-size: 13px; font-weight: 700;
+      color: var(--dv2-blue-d);
+      text-decoration: none;
+      padding: 6px 0;
+    }
+    .dv2-hc-link:hover { text-decoration: underline; }
+    .dv2-hc-fact {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 14px;
+      padding: 10px 14px;
+      background: rgba(31,171,107,0.08);
+      border: 1px solid rgba(31,171,107,0.18);
+      border-radius: 10px;
+      margin: 8px 0 10px;
+    }
+    .dv2-hc-fact-label {
+      font-family: var(--dv2-mono);
+      font-size: 10px; letter-spacing: 1.4px;
+      font-weight: 800; color: #0d6e44;
+    }
+    .dv2-hc-fact-value {
+      font-size: 13px; font-weight: 700;
+      color: var(--dv2-ink); text-align: right;
+    }
+    .dv2-hc-steps {
+      display: flex; flex-direction: column; gap: 10px;
+      margin: 8px 0 18px;
+    }
+    .dv2-hc-step {
+      display: grid; grid-template-columns: 32px 1fr;
+      gap: 12px; align-items: flex-start;
+      padding: 14px; background: var(--dv2-paper);
+      border: 1px solid var(--dv2-line); border-radius: 14px;
+    }
+    .dv2-hc-step-num {
+      width: 30px; height: 30px;
+      background: var(--dv2-blue); color: white;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 14px;
+    }
+    .dv2-hc-step-body { min-width: 0; }
+    .dv2-hc-step-title {
+      font-weight: 800; font-size: 15px;
+      color: var(--dv2-ink); letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+    .dv2-hc-step-desc {
+      font-size: 13px; line-height: 1.5;
+      color: var(--dv2-ink2);
+    }
+    .dv2-hc-step-desc a {
+      color: var(--dv2-blue-d);
+      font-weight: 700; text-decoration: underline;
+    }
+    /* Sticky-feeling pay CTA at the bottom of the handicap card */
+    .dv2-hc-pay {
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      color: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 18px;
+      box-shadow: 0 18px 40px -12px rgba(26,63,184,0.45);
+    }
+    .dv2-hc-pay-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.20);
+      color: white;
+      font-family: var(--dv2-mono);
+      font-size: 10px; font-weight: 800; letter-spacing: 1.6px;
+      padding: 4px 10px; border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .dv2-hc-pay-title {
+      font-family: var(--dv2-serif);
+      font-size: 22px; font-weight: 700;
+      letter-spacing: -0.4px; line-height: 1.2;
+      margin: 0 0 6px;
+    }
+    .dv2-hc-pay-sub {
+      font-size: 13px; line-height: 1.5;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 14px;
+    }
+    .dv2-hc-pay-btn {
+      width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: white; color: var(--dv2-blue-d);
+      border: 0; border-radius: 12px;
+      padding: 14px;
+      font-family: var(--dv2-font); font-weight: 800; font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .dv2-hc-pay-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+    .dv2-hc-pay-price {
+      font-family: var(--dv2-mono);
+      background: var(--dv2-blue); color: white;
+      padding: 3px 8px; border-radius: 6px;
+      font-size: 13px; font-weight: 800;
+    }
+    .dv2-hc-pay-note {
+      font-size: 11px;
+      color: rgba(255,255,255,0.72);
+      margin-top: 10px;
+      text-align: center;
+      line-height: 1.4;
     }
 
     /* ─── Early Resolution paid card styling ─── */
@@ -5778,6 +5918,14 @@
           <div class="dv2-svc-tile-name">Early Resolution</div>
           <div class="dv2-svc-tile-desc">Free guided form</div>
         </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('handicap')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(46,100,255,0.12); color: var(--dv2-blue);">
+            <!-- Accessibility / wheelchair icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M19 13v-2a7 7 0 0 0-14 0v2"/><path d="M12 8v8"/><path d="M9 19a3 3 0 1 0 6 0"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Handicap Permit</div>
+          <div class="dv2-svc-tile-desc">Accessible parking</div>
+        </button>
       </div>
 
       <!-- V2 back button (visible only inside a service detail) -->
@@ -6175,6 +6323,128 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- ============================================================
+           Accessible Parking Permit (Ontario) — application helper
+           Detailed explainer + 4 official steps + $0.99 Stripe handoff.
+      ============================================================ -->
+      <div class="card svc-card dv2-hc-card" id="svc-handicap"
+           data-search="handicap accessible parking permit disability wheelchair APP ontario service ontario blue rocker">
+        <div class="card-title">♿ Accessible Parking Permit (APP)</div>
+        <div class="card-subtitle">Ontario's "handicap" parking permit — apply yourself for free, or let Drivee fill out the forms for you.</div>
+
+        <!-- Explainer / context -->
+        <div class="dv2-hc-explainer">
+          <div class="dv2-hc-h">What is it?</div>
+          <p>The <strong>Accessible Parking Permit (APP)</strong> — issued by Service Ontario — lets you legally park in any designated accessible space, plus most metered street spaces free of charge for up to the maximum posted time. It also works in every Canadian province and most US states.</p>
+
+          <div class="dv2-hc-h">Who can get one?</div>
+          <p>You may qualify if a regulated health professional certifies that you have one of these conditions, among others:</p>
+          <ul>
+            <li>Cannot walk without the help of another person, a brace, cane, crutch, prosthetic device, wheelchair or other assistive device.</li>
+            <li>Severe lung disease — forced expiratory volume of less than 1 litre.</li>
+            <li>Severe heart condition (Class III or IV functional limitations).</li>
+            <li>Vision restricted to a field of less than 20° in the best eye, or worse than 20/200 in the best eye corrected.</li>
+            <li>Severe restriction of use of a leg or both legs.</li>
+            <li>Any other neurological, musculoskeletal or orthopedic condition that severely restricts mobility.</li>
+          </ul>
+
+          <div class="dv2-hc-h">Three permit types</div>
+          <ul>
+            <li><strong>Permanent</strong> — valid 5 years.</li>
+            <li><strong>Temporary</strong> — for short-term conditions (1 to 12 months).</li>
+            <li><strong>Traveller</strong> — for visitors who already hold a permit elsewhere.</li>
+          </ul>
+
+          <div class="dv2-hc-h">Cost &amp; processing time</div>
+          <div class="dv2-hc-fact">
+            <div class="dv2-hc-fact-label">PERMIT FEE</div>
+            <div class="dv2-hc-fact-value">$0 (free — government)</div>
+            <div class="dv2-hc-fact-label">PROCESSING</div>
+            <div class="dv2-hc-fact-value">~3–4 weeks by mail</div>
+            <div class="dv2-hc-fact-label">DOCTOR'S FEE</div>
+            <div class="dv2-hc-fact-value">Varies — usually $20–$50</div>
+          </div>
+
+          <div class="dv2-hc-h">Official source — verify before applying</div>
+          <a class="dv2-hc-link" href="https://www.ontario.ca/page/accessible-parking-permit" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            ontario.ca — Accessible Parking Permit
+          </a>
+        </div>
+
+        <!-- 4-step process -->
+        <h3 style="font-family: var(--dv2-serif); font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin: 8px 0 12px;">Apply in 4 steps</h3>
+        <div class="dv2-hc-steps">
+
+          <div class="dv2-hc-step">
+            <div class="dv2-hc-step-num">1</div>
+            <div class="dv2-hc-step-body">
+              <div class="dv2-hc-step-title">Get the application form</div>
+              <div class="dv2-hc-step-desc">
+                Download the official Application for Accessible Parking Permit form from
+                <a href="https://www.forms.ssb.gov.on.ca/mbs/ssb/forms/ssbforms.nsf/MBSPublications/008-3925-87E" target="_blank" rel="noopener">Service Ontario forms (Form 3925)</a>,
+                or pick one up free at any
+                <a href="https://www.ontario.ca/locations/serviceontario" target="_blank" rel="noopener">ServiceOntario centre</a>.
+              </div>
+            </div>
+          </div>
+
+          <div class="dv2-hc-step">
+            <div class="dv2-hc-step-num">2</div>
+            <div class="dv2-hc-step-body">
+              <div class="dv2-hc-step-title">Fill out your section</div>
+              <div class="dv2-hc-step-desc">
+                Section A is yours — name, address, date of birth, driver's licence number (if you have one), phone, and which permit type you're applying for. Make sure your address matches your driver's licence. If you don't drive, write "no driver's licence".
+              </div>
+            </div>
+          </div>
+
+          <div class="dv2-hc-step">
+            <div class="dv2-hc-step-num">3</div>
+            <div class="dv2-hc-step-body">
+              <div class="dv2-hc-step-title">Have a health professional certify Section B</div>
+              <div class="dv2-hc-step-desc">
+                A qualified professional must certify your condition — physician, nurse practitioner, optometrist (for vision), physiotherapist, occupational therapist, chiropractor, or registered nurse in extended class. Bring the form to your next appointment. Most charge a small assessment fee (typically $20–$50, not covered by OHIP).
+              </div>
+            </div>
+          </div>
+
+          <div class="dv2-hc-step">
+            <div class="dv2-hc-step-num">4</div>
+            <div class="dv2-hc-step-body">
+              <div class="dv2-hc-step-title">Submit your application</div>
+              <div class="dv2-hc-step-desc">
+                Three options — pick whichever is easiest:
+                <ul style="margin: 6px 0 0 18px; padding: 0;">
+                  <li><strong>In person</strong> at any <a href="https://www.ontario.ca/locations/serviceontario" target="_blank" rel="noopener">ServiceOntario centre</a> — fastest, you walk out with the permit same-day in many cases.</li>
+                  <li><strong>By mail</strong> to: Ministry of Transportation, Licensing Administration Office, Bldg "A", 2680 Keele St, Downsview ON M3M 3E6.</li>
+                  <li><strong>By fax</strong> to 416-235-3400.</li>
+                </ul>
+                Once approved, your permit is mailed to the address on the application within 3–4 weeks.
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- $0.99 Stripe handoff -->
+        <div class="dv2-hc-pay">
+          <span class="dv2-hc-pay-badge">⚡ DRIVEE AUTOMATIC</span>
+          <h3 class="dv2-hc-pay-title">Apply automatically — Drivee fills the forms for you</h3>
+          <p class="dv2-hc-pay-sub">Skip the paperwork. Answer a few questions, upload your medical certification photo, and we'll prepare the completed Form 3925, print it, and mail it to ServiceOntario on your behalf. You just sign and wait for the permit in your mailbox.</p>
+          <button class="dv2-hc-pay-btn" type="button"
+                  id="dv2-hc-pay-btn"
+                  data-stripe-link="REPLACE_ME_WITH_STRIPE_PAYMENT_LINK"
+                  onclick="dv2HandicapPay(event)">
+            Apply automatically for me
+            <span class="dv2-hc-pay-price">$0.99</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <div class="dv2-hc-pay-note">Secure payment via Stripe · No subscription · One-time fee · Refunded if your application is rejected by ServiceOntario</div>
+        </div>
+
       </div>
 
     </section>
@@ -7362,6 +7632,31 @@
           'To activate it: create a Payment Link in your Stripe Dashboard, ' +
           'then paste the URL into the data-stripe-link attribute on the ' +
           '"Get Drivee\'s draft" button.'
+        );
+      }
+      return false;
+    }
+
+    // ─── Handicap (Accessible Parking Permit): handoff to Stripe Payment Link ───
+    // Same pattern as dv2EarlyResolutionPay — owner pastes Stripe URL into the
+    // data-stripe-link attribute on #dv2-hc-pay-btn to go live.
+    function dv2HandicapPay(ev) {
+      if (ev) ev.preventDefault();
+      var btn = document.getElementById('dv2-hc-pay-btn');
+      var url = btn && btn.getAttribute('data-stripe-link');
+      if (url && url.indexOf('REPLACE_ME') === -1 && /^https?:\/\//.test(url)) {
+        window.location.href = url;
+        return false;
+      }
+      if (typeof showToast === 'function') {
+        showToast('Stripe link not configured yet — owner: paste your $0.99 Payment Link URL in #dv2-hc-pay-btn[data-stripe-link]');
+      } else {
+        alert(
+          'Almost ready!\n\n' +
+          'This button takes the user to Stripe Checkout for $0.99.\n' +
+          'To activate it: create a Payment Link in your Stripe Dashboard, ' +
+          'then paste the URL into the data-stripe-link attribute on the ' +
+          '"Apply automatically for me" button.'
         );
       }
       return false;
