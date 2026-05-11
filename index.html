@@ -2463,6 +2463,25 @@
       .dv2-loss-btn { width: 100%; }
     }
 
+    /* ─── Reassurance row for known users (already gave email / signed in) ─── */
+    .dv2-known-line {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(31,171,107,0.10);
+      border: 1px solid rgba(31,171,107,0.25);
+      border-radius: 12px;
+      font-size: 13px; line-height: 1.45;
+      color: #0d6e44;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dv2-known-line svg { flex-shrink: 0; }
+    .dv2-known-line b {
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
     /* ===================================================
        GPS GUARDIAN — alert banner + active button state
     =================================================== */
@@ -8937,12 +8956,35 @@
           '<div class="dv2-verdict-er-divider"><span>OR PLEAD IT DOWN</span></div>' +
           erButton;
 
-      // Loss-aversion CTA — shown to SIGNED-OUT users right under the verdict.
-      // This is where the highest-intent moment lives: they just got bad news
-      // about a fine, and we promise to save them from late fees if they
-      // give us their email. The card disappears once they have an account.
+      // 3 possible UI states under the fine amount, in order of preference:
+      //
+      //   1. Signed in (currentUser exists)        → green "we've got this" row
+      //   2. Already gave email earlier            → green "we've got this" row
+      //   3. First-time + has a real fine amount   → the loss-aversion CTA
+      //
+      // States 1 & 2 use the same reassurance line — both mean "we know who
+      // you are, no need to re-prompt." Only state 3 sees the email gate.
       var lossCTA = '';
-      if (!window.currentUser && amount > 0) {
+      var knownEmail = '';
+      try {
+        if (window.currentUser && window.currentUser.email) {
+          knownEmail = window.currentUser.email;
+        } else {
+          // drivee_signup_email is set the moment they submit ANY signup form,
+          // and never cleared on sign-out, so returning visitors aren't re-prompted.
+          knownEmail = localStorage.getItem('drivee_signup_email') || '';
+        }
+      } catch (e) {}
+
+      if (knownEmail) {
+        lossCTA =
+          '<div class="dv2-known-line">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' +
+            '</svg>' +
+            '<div>Reminder will be emailed to <b>' + esc(knownEmail) + '</b> 3 days before the due date.</div>' +
+          '</div>';
+      } else if (amount > 0) {
         var dueRaw = (lastScan.due && lastScan.due !== 'unknown') ? lastScan.due : '';
         var dueTextHuman = dueRaw
           ? new Date(dueRaw + 'T12:00:00').toLocaleDateString('en-CA', { month: 'long', day: 'numeric' })
@@ -10864,8 +10906,13 @@
         }
         if (success) success.classList.add('show');
         btn.textContent = 'Sent ✓';
-        // Also remember the email so it pre-fills elsewhere in the app
-        try { localStorage.setItem('drivee_last_email', email); } catch (e) {}
+        // Remember the email so we don't re-prompt and so it pre-fills elsewhere.
+        // drivee_signup_email is the durable "we know this person" key —
+        // never cleared on sign-out, unlike drivee_last_email.
+        try {
+          localStorage.setItem('drivee_signup_email', email);
+          localStorage.setItem('drivee_last_email', email);
+        } catch (e) {}
       }).catch(function(err) {
         showToast('Network error — try again');
         btn.disabled = false;
@@ -10890,6 +10937,7 @@
             showToast('Error: ' + res.error.message);
             if (btn) { btn.textContent = 'Send Link'; btn.disabled = false; }
           } else {
+            try { localStorage.setItem('drivee_signup_email', email); } catch (e) {}
             document.getElementById('auth-sent-msg').style.display = 'block';
             if (btn) { btn.textContent = 'Sent ✓'; }
           }
@@ -10913,9 +10961,11 @@
       var initials = email ? email[0].toUpperCase() : 'U';
       document.getElementById('auth-avatar').textContent    = initials;
       document.getElementById('auth-user-email').textContent = email;
-      // Remember email so it pre-fills next time (helps if user forgets it)
+      // Remember email so it pre-fills next time (helps if user forgets it).
+      // drivee_signup_email is the durable "known person" key — never cleared.
       if (email) {
         localStorage.setItem('drivee_last_email', email);
+        localStorage.setItem('drivee_signup_email', email);
         var authInput = document.getElementById('auth-email-input');
         var psInput   = document.getElementById('ps-email-input');
         if (authInput) authInput.value = email;
@@ -10992,6 +11042,7 @@
             showToast('Error: ' + res.error.message);
             if (btn) { btn.textContent = 'Send Magic Link'; btn.disabled = false; }
           } else {
+            try { localStorage.setItem('drivee_signup_email', email); } catch (e) {}
             document.getElementById('ps-sent').style.display = 'block';
             if (btn) { btn.textContent = 'Sent ✓'; }
           }
