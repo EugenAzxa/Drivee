@@ -229,6 +229,46 @@
       white-space: nowrap;
     }
 
+    /* ── signup list ── */
+    .signup-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+    .signup-row:last-child { border-bottom: 0; }
+    .signup-email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .signup-source {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--blue-50);
+      color: var(--blue-d);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .signup-source.loss-cta { background: rgba(217,119,6,0.15); color: #b45309; }
+    .signup-source.main     { background: var(--blue-50);       color: var(--blue-d); }
+    .signup-source.sheet    { background: rgba(122,92,240,0.15); color: #6B4EE0; }
+    .signup-when {
+      font-size: 11px;
+      color: var(--ink2);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+
     /* ── account split bar ── */
     .split {
       display: flex; height: 32px;
@@ -402,6 +442,39 @@
     </div>
   </div>
 
+  <!-- Email signups (people who gave us their email) -->
+  <div class="tiles" style="margin-bottom: 14px">
+    <div class="tile">
+      <div class="tile-label">Emails · all-time</div>
+      <div class="tile-value" id="tile-emails-all">—</div>
+      <div class="tile-sub">unique addresses captured</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Emails · today</div>
+      <div class="tile-value" id="tile-emails-today">—</div>
+      <div class="tile-sub">new in last 24h</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Emails · 7 days</div>
+      <div class="tile-value" id="tile-emails-7d">—</div>
+      <div class="tile-sub">rolling week</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Emails · 30 days</div>
+      <div class="tile-value" id="tile-emails-30d">—</div>
+      <div class="tile-sub">rolling month</div>
+    </div>
+  </div>
+
+  <!-- Signup list -->
+  <div class="card" style="margin-bottom: 16px">
+    <div class="card-title">
+      <span>Email signups</span>
+      <span class="hint">most recent first · up to 50</span>
+    </div>
+    <div id="signup-list"></div>
+  </div>
+
   <!-- Account split -->
   <div class="card" style="margin-bottom: 16px">
     <div class="card-title">
@@ -548,6 +621,29 @@
     document.getElementById('tile-7d').textContent    = fmt(d.totals.last7d);
     document.getElementById('tile-30d').textContent   = fmt(d.totals.last30d);
     document.getElementById('tile-all').textContent   = fmt(d.totals.allTime);
+
+    // Email signups
+    var sg = d.signups || { totalEmails:0, today:0, last7d:0, last30d:0, recent:[] };
+    document.getElementById('tile-emails-all').textContent   = fmt(sg.totalEmails);
+    document.getElementById('tile-emails-today').textContent = fmt(sg.today);
+    document.getElementById('tile-emails-7d').textContent    = fmt(sg.last7d);
+    document.getElementById('tile-emails-30d').textContent   = fmt(sg.last30d);
+
+    var listEl = document.getElementById('signup-list');
+    if (!sg.recent.length) {
+      listEl.innerHTML = '<div class="empty">No email signups yet.</div>';
+    } else {
+      listEl.innerHTML = sg.recent.map(function(s){
+        var srcClass = String(s.source || '').replace(/[^a-z-]/g, '');
+        var attempts = s.attempts > 1 ? ' · ' + s.attempts + 'x' : '';
+        return '' +
+          '<div class="signup-row">' +
+            '<div class="signup-email">' + esc(s.email) + '</div>' +
+            '<div class="signup-source ' + srcClass + '">' + esc(s.source || 'unknown') + attempts + '</div>' +
+            '<div class="signup-when">' + timeAgo(new Date(s.firstAt)) + '</div>' +
+          '</div>';
+      }).join('');
+    }
 
     // Sessions tiles
     var ss = d.sessions || { total:0, avg:0, median:0, longest:0 };

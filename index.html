@@ -10885,7 +10885,7 @@
       // Lock the UI and send magic link
       btn.disabled = true;
       btn.textContent = 'Sending…';
-      trackEvent('magic_link_sent', 'loss-cta');
+      trackEvent('magic_link_sent', email + '|loss-cta');
 
       if (!db || !db.auth) {
         // Supabase isn't ready — still show success because the local reminder is saved
@@ -10929,7 +10929,7 @@
       }
       var btn = document.querySelector('.auth-send-btn');
       if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
-      trackEvent('magic_link_sent');
+      trackEvent('magic_link_sent', email + '|main');
 
       db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
         .then(function(res) {
@@ -11036,6 +11036,7 @@
       }
       var btn = document.querySelector('.profile-sheet-send-btn');
       if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      trackEvent('magic_link_sent', email + '|sheet');
       db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
         .then(function(res) {
           if (res.error) {

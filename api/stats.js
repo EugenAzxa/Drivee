@@ -148,6 +148,11 @@ module.exports = async function handler(req, res) {
   var uidFirstApp = {};      // uid → ts of FIRST app_open ever — counts "tried the app"
   var appOpens = 0;
 
+  // Email signups (from magic_link_sent events).
+  // Meta format: "user@example.com|source" — split + dedupe by email.
+  var signupsByEmail = {};   // email → { first: ts, last: ts, source, count }
+  var signupsRecent = [];
+
   // Session aggregation: { sid: { first, last, authed, city, device } }
   var sessions = {};
   var authedSessions = 0, anonSessions = 0;
@@ -180,6 +185,23 @@ module.exports = async function handler(req, res) {
       }
     }
     if (row.event === 'app_open') appOpens++;
+
+    // Capture email signups from magic_link_sent events
+    if (row.event === 'magic_link_sent' && row.m) {
+      var parts = String(row.m).split('|');
+      var email = (parts[0] || '').trim().toLowerCase();
+      var source = (parts[1] || '').trim() || 'unknown';
+      if (email && email.indexOf('@') !== -1) {
+        var existing = signupsByEmail[email];
+        if (!existing) {
+          signupsByEmail[email] = { first: ts, last: ts, source: source, count: 1 };
+        } else {
+          existing.count++;
+          if (ts > existing.last) existing.last = ts;
+          if (ts < existing.first) existing.first = ts;
+        }
+      }
+    }
 
     if (row.event === 'tab_click' && row.m) {
       var tabName = String(row.m).replace(/^tab-/, '') || 'unknown';
@@ -262,6 +284,33 @@ module.exports = async function handler(req, res) {
     if (ts >= monthCutoff) tried30d++;
   });
 
+  // Signups summary: count by time window + sorted recent list
+  var signupKeys = Object.keys(signupsByEmail);
+  var signupToday = 0, signup7d = 0, signup30d = 0;
+  signupKeys.forEach(function(email){
+    var s = signupsByEmail[email];
+    // Use FIRST submission timestamp — that's when the email entered our system
+    if (s.first >= todayCutoff) signupToday++;
+    if (s.first >= weekCutoff)  signup7d++;
+    if (s.first >= monthCutoff) signup30d++;
+  });
+  signupsRecent = signupKeys
+    .map(function(email){
+      var s = signupsByEmail[email];
+      return { email: email, first: s.first, last: s.last, source: s.source, count: s.count };
+    })
+    .sort(function(a, b){ return b.first - a.first; })
+    .slice(0, 50)
+    .map(function(s){
+      return {
+        email: s.email,
+        firstAt: new Date(s.first).toISOString(),
+        lastAt:  new Date(s.last).toISOString(),
+        source:  s.source,
+        attempts: s.count
+      };
+    });
+
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
     fetchedAt: new Date().toISOString(),
@@ -277,6 +326,13 @@ module.exports = async function handler(req, res) {
       triedToday:   triedToday,
       tried7d:      tried7d,
       tried30d:     tried30d
+    },
+    signups: {
+      totalEmails: signupKeys.length,
+      today:       signupToday,
+      last7d:      signup7d,
+      last30d:     signup30d,
+      recent:      signupsRecent
     },
     byEvent: topN(byEvent, 20),
     byTab:   topN(byTab, 10),
