@@ -229,6 +229,55 @@
       white-space: nowrap;
     }
 
+    /* ── account split bar ── */
+    .split {
+      display: flex; height: 32px;
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .split-seg {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 800; color: white;
+      letter-spacing: 0.5px;
+      transition: flex 0.6s ease;
+    }
+    .split-seg.authed { background: linear-gradient(90deg, var(--blue), var(--blue-d)); }
+    .split-seg.anon   { background: #c9c4b3; color: var(--ink); }
+    .split-empty {
+      flex: 1;
+      display: grid; place-items: center;
+      font-size: 12px; color: var(--ink2);
+    }
+    .split-legend {
+      display: flex; gap: 18px;
+      margin-top: 10px;
+      font-size: 12px; color: var(--ink2);
+    }
+    .split-legend span { display: flex; align-items: center; gap: 6px; }
+    .split-legend i { width: 10px; height: 10px; border-radius: 3px; }
+    .split-legend i.authed { background: var(--blue); }
+    .split-legend i.anon   { background: #c9c4b3; }
+
+    /* ── recent feed: extra context line ── */
+    .feed-context {
+      font-size: 11px; color: var(--ink2);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+    .feed-context .pill {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--blue-50);
+      color: var(--blue-d);
+      margin-right: 4px;
+      font-weight: 700;
+    }
+    .feed-context .pill.auth { background: rgba(31,171,107,0.18); color: #0d6e44; }
+    .feed-context .pill.anon { background: #f0ece0; color: var(--ink2); }
+
     /* ── error banner ── */
     .err {
       display: none;
@@ -305,6 +354,39 @@
     </div>
   </div>
 
+  <!-- Sessions row -->
+  <div class="tiles" style="margin-bottom: 22px">
+    <div class="tile">
+      <div class="tile-label">Sessions</div>
+      <div class="tile-value" id="tile-sessions">—</div>
+      <div class="tile-sub">unique tab visits</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Avg time on app</div>
+      <div class="tile-value" id="tile-avg-dur">—</div>
+      <div class="tile-sub">mean per session</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Median time</div>
+      <div class="tile-value" id="tile-median-dur">—</div>
+      <div class="tile-sub">half above, half below</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Longest session</div>
+      <div class="tile-value" id="tile-longest-dur">—</div>
+      <div class="tile-sub">all-time max</div>
+    </div>
+  </div>
+
+  <!-- Account split -->
+  <div class="card" style="margin-bottom: 16px">
+    <div class="card-title">
+      <span>Account status</span>
+      <span class="hint">signed-in vs anonymous · sessions</span>
+    </div>
+    <div class="split" id="auth-split"></div>
+  </div>
+
   <!-- Daily trend -->
   <div class="card" style="margin-bottom: 16px">
     <div class="card-title">
@@ -330,6 +412,33 @@
       </div>
       <div class="bar-list" id="top-tabs"></div>
     </div>
+  </div>
+
+  <!-- Top cities + Top devices -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">
+        <span>Where users are</span>
+        <span class="hint">approx. from IP</span>
+      </div>
+      <div class="bar-list" id="top-cities"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <span>Devices</span>
+        <span class="hint">form-factor · OS</span>
+      </div>
+      <div class="bar-list" id="top-devices"></div>
+    </div>
+  </div>
+
+  <!-- Browsers -->
+  <div class="card" style="margin-bottom: 16px">
+    <div class="card-title">
+      <span>Browsers</span>
+      <span class="hint">events seen from each</span>
+    </div>
+    <div class="bar-list" id="top-browsers"></div>
   </div>
 
   <!-- Funnel -->
@@ -403,6 +512,34 @@
     document.getElementById('tile-30d').textContent   = fmt(d.totals.last30d);
     document.getElementById('tile-all').textContent   = fmt(d.totals.allTime);
 
+    // Sessions tiles
+    var ss = d.sessions || { total:0, avg:0, median:0, longest:0 };
+    document.getElementById('tile-sessions').textContent     = fmt(ss.total);
+    document.getElementById('tile-avg-dur').textContent      = fmtDur(ss.avg);
+    document.getElementById('tile-median-dur').textContent   = fmtDur(ss.median);
+    document.getElementById('tile-longest-dur').textContent  = fmtDur(ss.longest);
+
+    // Auth split bar (sessions: signed-in vs anonymous)
+    var splitEl = document.getElementById('auth-split');
+    var authed = (d.auth && d.auth.authedSessions) || 0;
+    var anon   = (d.auth && d.auth.anonSessions) || 0;
+    var totalS = authed + anon;
+    if (!totalS) {
+      splitEl.innerHTML = '<div class="split-empty">No session data yet.</div>';
+    } else {
+      var authedPct = (authed / totalS) * 100;
+      var anonPct   = (anon / totalS) * 100;
+      splitEl.innerHTML =
+        '<div class="split">' +
+          (authed ? '<div class="split-seg authed" style="flex:' + authed + '">✓ ' + authed + '</div>' : '') +
+          (anon   ? '<div class="split-seg anon"   style="flex:' + anon   + '">○ ' + anon   + '</div>' : '') +
+        '</div>' +
+        '<div class="split-legend">' +
+          '<span><i class="authed"></i>Signed-in users · ' + authedPct.toFixed(1) + '%</span>' +
+          '<span><i class="anon"></i>Anonymous · ' + anonPct.toFixed(1) + '%</span>' +
+        '</div>';
+    }
+
     // top events
     var maxE = Math.max.apply(null, d.byEvent.map(function(x){ return x.count; })) || 1;
     var teEl = document.getElementById('top-events');
@@ -424,6 +561,42 @@
       ttEl.innerHTML = d.byTab.map(function(x){
         var pct = (x.count / maxT) * 100;
         return rowHTML('#' + x.key, pct, x.count);
+      }).join('');
+    }
+
+    // top cities
+    var cities = d.byCity || [];
+    var maxCity = Math.max.apply(null, cities.map(function(x){ return x.count; })) || 1;
+    var citiesEl = document.getElementById('top-cities');
+    if (!cities.length) {
+      citiesEl.innerHTML = '<div class="empty">No location data yet — new events will start including city.</div>';
+    } else {
+      citiesEl.innerHTML = cities.map(function(x){
+        return rowHTML('📍 ' + x.key, (x.count/maxCity)*100, x.count);
+      }).join('');
+    }
+
+    // top devices
+    var devs = d.byDevice || [];
+    var maxDev = Math.max.apply(null, devs.map(function(x){ return x.count; })) || 1;
+    var devsEl = document.getElementById('top-devices');
+    if (!devs.length) {
+      devsEl.innerHTML = '<div class="empty">No device data yet.</div>';
+    } else {
+      devsEl.innerHTML = devs.map(function(x){
+        return rowHTML(deviceIcon(x.key) + ' ' + x.key, (x.count/maxDev)*100, x.count);
+      }).join('');
+    }
+
+    // top browsers
+    var brs = d.byBrowser || [];
+    var maxBr = Math.max.apply(null, brs.map(function(x){ return x.count; })) || 1;
+    var brEl = document.getElementById('top-browsers');
+    if (!brs.length) {
+      brEl.innerHTML = '<div class="empty">No browser data yet.</div>';
+    } else {
+      brEl.innerHTML = brs.map(function(x){
+        return rowHTML('🌐 ' + x.key, (x.count/maxBr)*100, x.count);
       }).join('');
     }
 
@@ -468,12 +641,18 @@
       fEl.innerHTML = '<div class="empty">No events yet — start using Drivee to see live activity here.</div>';
     } else {
       fEl.innerHTML = d.recent.map(function(r){
+        var pills = '';
+        pills += '<span class="pill ' + (r.authed ? 'auth' : 'anon') + '">' + (r.authed ? '✓ signed-in' : '○ anon') + '</span>';
+        if (r.city)    pills += '<span class="pill">📍 ' + esc(r.city) + '</span>';
+        if (r.device)  pills += '<span class="pill">' + deviceIcon(r.device) + ' ' + esc(r.device) + '</span>';
+        if (r.browser) pills += '<span class="pill">' + esc(r.browser) + '</span>';
         return '' +
           '<div class="feed-row">' +
             '<div class="feed-icon">' + eventIcon(r.event) + '</div>' +
             '<div class="feed-text">' +
               '<div class="feed-event">' + eventLabel(r.event) + '</div>' +
               (r.meta ? '<div class="feed-meta">' + esc(r.meta) + '</div>' : '') +
+              '<div class="feed-context">' + pills + '</div>' +
             '</div>' +
             '<div class="feed-time">' + timeAgo(new Date(r.created_at)) + '</div>' +
           '</div>';
@@ -495,6 +674,26 @@
     if (n == null) return '—';
     if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     return String(n);
+  }
+  function fmtDur(secs) {
+    if (secs == null || isNaN(secs)) return '—';
+    secs = Math.max(0, Math.round(secs));
+    if (secs < 60)   return secs + 's';
+    if (secs < 3600) return Math.floor(secs/60) + 'm ' + (secs % 60) + 's';
+    var h = Math.floor(secs/3600);
+    var m = Math.floor((secs % 3600)/60);
+    return h + 'h ' + m + 'm';
+  }
+  function deviceIcon(key) {
+    var k = String(key || '');
+    if (/iOS/.test(k))     return '';
+    if (/Android/.test(k)) return '🤖';
+    if (/macOS/.test(k))   return '🖥️';
+    if (/Windows/.test(k)) return '🖥️';
+    if (/Linux/.test(k))   return '🐧';
+    if (/Tablet/.test(k))  return '📲';
+    if (/Mobile/.test(k))  return '📱';
+    return '💻';
   }
   function esc(s) {
     return String(s == null ? '' : s)

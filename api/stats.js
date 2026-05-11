@@ -97,11 +97,30 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Network error', detail: String(e && e.message || e).slice(0, 400) });
   }
 
+  // Parse out the JSON meta blob written by track.js. Older rows that wrote a
+  // plain meta string fall back to { m: <string> } so aggregation still works.
+  function parseMeta(raw) {
+    if (!raw) return {};
+    var s = String(raw);
+    if (s.charAt(0) === '{') {
+      try { return JSON.parse(s); } catch (e) { return { m: s }; }
+    }
+    return { m: s };
+  }
+
   // Normalise rows so a missing column doesn't blow up aggregation
   rows = rows.map(function(r){
+    var meta = parseMeta(r.meta);
     return {
       event: r.event || '',
-      meta: r.meta || '',
+      metaRaw: r.meta || '',
+      m:    meta.m   || '',
+      city: meta.city || '',
+      os:   meta.os   || '',
+      dev:  meta.dev  || '',
+      br:   meta.br   || '',
+      sid:  meta.sid  || '',
+      auth: !!meta.auth,
       created_at: r.created_at || r.inserted_at || r.timestamp || new Date(0).toISOString()
     };
   });
@@ -117,8 +136,15 @@ module.exports = async function handler(req, res) {
   var byEvent = {};
   var byTab   = {};
   var byDay   = {};   // YYYY-MM-DD → count, last 14 days
+  var byCity  = {};
+  var byDevice = {};  // "Form factor / OS" → count
+  var byBrowser = {};
   var funnel  = { app_open: 0, scan_ticket: 0, scan_success: 0, dispute_generated: 0 };
   var recent  = [];
+
+  // Session aggregation: { sid: { first, last, authed, city, device } }
+  var sessions = {};
+  var authedSessions = 0, anonSessions = 0;
 
   // Build a 14-day skeleton so days with zero events still show up
   var trendDays = 14;
@@ -135,20 +161,71 @@ module.exports = async function handler(req, res) {
 
     byEvent[row.event] = (byEvent[row.event] || 0) + 1;
 
-    if (row.event === 'tab_click' && row.meta) {
-      // meta is the tab id, e.g. "tab-dashboard"
-      var tabName = String(row.meta).replace(/^tab-/, '') || 'unknown';
+    if (row.event === 'tab_click' && row.m) {
+      var tabName = String(row.m).replace(/^tab-/, '') || 'unknown';
       byTab[tabName] = (byTab[tabName] || 0) + 1;
     }
+
+    if (row.city) byCity[row.city] = (byCity[row.city] || 0) + 1;
+
+    if (row.dev || row.os) {
+      var deviceKey = (row.dev || 'Unknown') + (row.os ? ' · ' + row.os : '');
+      byDevice[deviceKey] = (byDevice[deviceKey] || 0) + 1;
+    }
+    if (row.br) byBrowser[row.br] = (byBrowser[row.br] || 0) + 1;
 
     var dk = dayKey(row.created_at);
     if (dk in byDay) byDay[dk]++;
 
     if (funnel.hasOwnProperty(row.event)) funnel[row.event]++;
+
+    // Session tracking
+    if (row.sid) {
+      var s = sessions[row.sid];
+      if (!s) {
+        s = { first: ts, last: ts, authed: row.auth, city: row.city, device: row.dev + ' · ' + row.os };
+        sessions[row.sid] = s;
+      } else {
+        if (ts < s.first) s.first = ts;
+        if (ts > s.last)  s.last  = ts;
+        if (row.auth) s.authed = true;
+        if (!s.city && row.city) s.city = row.city;
+      }
+    }
   });
 
+  // Session duration distribution
+  var sids = Object.keys(sessions);
+  var durations = sids.map(function(sid){
+    var s = sessions[sid];
+    if (s.authed) authedSessions++; else anonSessions++;
+    return Math.round((s.last - s.first) / 1000); // seconds
+  });
+  durations.sort(function(a,b){ return a-b; });
+
+  function pct(n) {
+    if (!durations.length) return 0;
+    var idx = Math.min(durations.length - 1, Math.floor((n/100) * durations.length));
+    return durations[idx];
+  }
+  var sessionStats = {
+    total:    sids.length,
+    avg:      durations.length ? Math.round(durations.reduce(function(a,b){return a+b;},0) / durations.length) : 0,
+    median:   pct(50),
+    p90:      pct(90),
+    longest:  durations.length ? durations[durations.length-1] : 0
+  };
+
   recent = rows.slice(0, 30).map(function(r){
-    return { event: r.event, meta: r.meta || '', created_at: r.created_at };
+    return {
+      event: r.event,
+      meta: r.m || '',
+      city: r.city || '',
+      device: r.dev ? (r.dev + ' · ' + r.os) : '',
+      browser: r.br || '',
+      authed: r.auth,
+      created_at: r.created_at
+    };
   });
 
   var dailyTrend = Object.keys(byDay)
@@ -162,6 +239,16 @@ module.exports = async function handler(req, res) {
     totals: totals,
     byEvent: topN(byEvent, 20),
     byTab:   topN(byTab, 10),
+    byCity:  topN(byCity, 15),
+    byDevice: topN(byDevice, 10),
+    byBrowser: topN(byBrowser, 6),
+    auth: {
+      authedEvents: rows.filter(function(r){ return r.auth; }).length,
+      anonEvents:   rows.filter(function(r){ return !r.auth; }).length,
+      authedSessions: authedSessions,
+      anonSessions:   anonSessions
+    },
+    sessions: sessionStats,
     dailyTrend: dailyTrend,
     funnel: funnel,
     recent: recent

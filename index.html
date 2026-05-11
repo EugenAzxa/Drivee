@@ -10509,12 +10509,44 @@
     }
 
     // ── Analytics tracking ──────────────────────────────
+    // Persistent session ID for the current browser tab so the server can group
+    // events into sessions and compute time-on-app. Stored in sessionStorage so
+    // it resets on tab close (not on reload, which is what we want).
+    function _dvSessionId() {
+      try {
+        var k = 'drivee_sid';
+        var v = sessionStorage.getItem(k);
+        if (!v) {
+          v = Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-6);
+          sessionStorage.setItem(k, v);
+        }
+        return v;
+      } catch (e) { return ''; }
+    }
+    // Quick check whether the user currently has a Supabase session (= signed up).
+    function _dvIsAuthed() {
+      try {
+        if (window.db && db.auth && typeof db.auth.getSession === 'function') {
+          // getSession() is async — we read the cached in-memory session synchronously.
+          // The Supabase SDK keeps the last session on db.auth.currentSession in older
+          // SDKs; on v2 we have to fall back to local storage.
+          var raw = localStorage.getItem('sb-' + 'ofnsssyiiejohcnbejxq' + '-auth-token');
+          if (raw) return true;
+        }
+      } catch (e) {}
+      return false;
+    }
     function trackEvent(event, meta) {
       try {
         fetch('/api/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event: event, meta: meta || '' })
+          body: JSON.stringify({
+            event: event,
+            meta: meta || '',
+            sid:  _dvSessionId(),
+            auth: _dvIsAuthed()
+          })
         }).catch(function() {});
       } catch (e) {}
     }

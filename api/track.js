@@ -1,6 +1,24 @@
 // Uses node:https instead of fetch — bulletproof across all Node versions.
 var https = require('https');
 
+// Parse User-Agent → { os, formFactor, browser }
+function parseUA(ua) {
+  ua = String(ua || '');
+  var os = 'Unknown', form = 'Desktop', br = 'Other';
+  if (/iPhone|iPod/.test(ua))         { os = 'iOS';     form = 'Mobile'; }
+  else if (/iPad/.test(ua))           { os = 'iOS';     form = 'Tablet'; }
+  else if (/Android/.test(ua))        { os = 'Android'; form = /Mobile/.test(ua) ? 'Mobile' : 'Tablet'; }
+  else if (/Macintosh|Mac OS X/.test(ua)) { os = 'macOS';   form = 'Desktop'; }
+  else if (/Windows/.test(ua))        { os = 'Windows'; form = 'Desktop'; }
+  else if (/Linux/.test(ua))          { os = 'Linux';   form = 'Desktop'; }
+
+  if (/Edg\//.test(ua))                          br = 'Edge';
+  else if (/Firefox\//.test(ua))                 br = 'Firefox';
+  else if (/Chrome\/|CriOS\//.test(ua))          br = 'Chrome';
+  else if (/Safari\//.test(ua))                  br = 'Safari';
+  return { os: os, form: form, br: br };
+}
+
 function httpsRequest(urlStr, options) {
   options = options || {};
   return new Promise(function(resolve, reject) {
@@ -123,13 +141,30 @@ module.exports = async function handler(req, res) {
   }
 
   var event = String(req.body.event || '').substring(0, 50);
-  var meta  = String(req.body.meta  || '').substring(0, 200);
+  var origMeta = String(req.body.meta || '').substring(0, 200).replace(/<[^>]*>/g, '');
+  var sid = String(req.body.sid || '').substring(0, 40).replace(/[^a-zA-Z0-9_-]/g, '');
+  var isAuthed = !!req.body.auth;
 
   if (ALLOWED_EVENTS.indexOf(event) === -1) {
     return res.status(400).json({ error: 'Unknown event' });
   }
 
-  meta = meta.replace(/<[^>]*>/g, '');
+  // Enrich: location (from IP) + device (from User-Agent)
+  var ua = parseUA(req.headers['user-agent']);
+  var city = null;
+  try { city = await getCityFromIp(ip); } catch (e) {}
+
+  // Pack everything into a JSON meta blob so we don't have to alter the Supabase schema.
+  // Keys are short to stay inside the column size limit.
+  var richMeta = JSON.stringify({
+    m:    origMeta || undefined,
+    city: city || undefined,
+    os:   ua.os,
+    dev:  ua.form,
+    br:   ua.br,
+    sid:  sid || undefined,
+    auth: isAuthed ? 1 : 0
+  });
 
   // Save to Supabase — all events.
   // Anon key is already public (shipped in index.html), so a hardcoded fallback
@@ -147,7 +182,7 @@ module.exports = async function handler(req, res) {
         'apikey': supabaseKey,
         'Authorization': 'Bearer ' + supabaseKey
       },
-      body: JSON.stringify({ event: event, meta: meta })
+      body: JSON.stringify({ event: event, meta: richMeta })
     });
   } catch (e) {}
 
@@ -157,7 +192,6 @@ module.exports = async function handler(req, res) {
     var chatId   = process.env.TELEGRAM_CHAT_ID;
 
     if (botToken && chatId) {
-      var city  = await getCityFromIp(ip);
       var icon  = ICONS[event]  || '📊';
       var label = LABELS[event] || event.replace(/_/g, ' ');
       var ts    = new Date().toLocaleString('en-CA', {
@@ -165,8 +199,9 @@ module.exports = async function handler(req, res) {
       });
 
       var lines = [icon + ' ' + label];
-      if (meta) lines.push('ℹ️ ' + meta);
-      if (city) lines.push('📍 ' + city);
+      if (origMeta) lines.push('ℹ️ ' + origMeta);
+      if (city)     lines.push('📍 ' + city);
+      lines.push('📱 ' + ua.form + ' · ' + ua.os + ' · ' + ua.br);
       lines.push('🕐 ' + ts);
 
       try {
