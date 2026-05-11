@@ -2362,6 +2362,107 @@
     .verdict-contest { background: rgba(10,132,255,0.07);    border: 1px solid rgba(10,132,255,0.2); }
     .verdict-minor   { background: rgba(10,132,255,0.07);    border: 1px solid rgba(10,132,255,0.2); }
 
+    /* ─── Loss-aversion CTA shown under the verdict for signed-out users ─── */
+    .dv2-loss-cta {
+      margin-top: 16px;
+      padding: 18px;
+      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      border: 1px solid #f5b94d;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dv2-loss-cta::before {
+      content: '⚠';
+      position: absolute;
+      right: -10px; top: -20px;
+      font-size: 120px;
+      color: rgba(217, 119, 6, 0.07);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .dv2-loss-title {
+      font-family: var(--dv2-serif, Georgia, serif);
+      font-size: 19px; font-weight: 700;
+      letter-spacing: -0.4px;
+      color: #7a3f00;
+      line-height: 1.2;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .dv2-loss-detail {
+      font-size: 13px; line-height: 1.5;
+      color: #5b3a0a;
+      margin-bottom: 4px;
+      position: relative;
+    }
+    .dv2-loss-detail strong { font-weight: 800; }
+    .dv2-loss-detail .dv2-loss-strike {
+      color: #b91c1c; font-weight: 800;
+    }
+    .dv2-loss-promise {
+      font-size: 12px;
+      color: #6b4818;
+      margin: 8px 0 12px;
+      opacity: 0.88;
+      position: relative;
+    }
+    .dv2-loss-row {
+      display: flex; gap: 8px;
+      position: relative;
+    }
+    .dv2-loss-input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid #d4a04a;
+      border-radius: 10px;
+      font: 600 14px var(--dv2-font, inherit);
+      background: white;
+      color: #1f1407;
+      min-width: 0;
+    }
+    .dv2-loss-input:focus { outline: 2px solid #d97706; border-color: #d97706; }
+    .dv2-loss-btn {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #d97706, #b45309);
+      color: white;
+      border: 0; border-radius: 10px;
+      font: 800 13px var(--dv2-font, inherit);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 6px 16px -4px rgba(180,83,9,0.4);
+    }
+    .dv2-loss-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px -6px rgba(180,83,9,0.55);
+    }
+    .dv2-loss-btn:disabled {
+      background: #c9b69a;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .dv2-loss-success {
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(31,171,107,0.12);
+      border: 1px solid rgba(31,171,107,0.3);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #0d6e44;
+      font-weight: 600;
+      line-height: 1.4;
+      display: none;
+      position: relative;
+    }
+    .dv2-loss-success.show { display: block; }
+    .dv2-loss-success b { font-weight: 800; }
+    @media (max-width: 480px) {
+      .dv2-loss-row { flex-direction: column; }
+      .dv2-loss-btn { width: 100%; }
+    }
+
     /* ===================================================
        GPS GUARDIAN — alert banner + active button state
     =================================================== */
@@ -8836,14 +8937,38 @@
           '<div class="dv2-verdict-er-divider"><span>OR PLEAD IT DOWN</span></div>' +
           erButton;
 
-      container.innerHTML =
-        '<div class="verdict-card ' + verdict.cls + '" style="margin-top:14px;">' +
-          '<div class="verdict-label" style="color:' + verdict.labelColor + ';">' + verdict.label + '</div>' +
-          '<div class="verdict-message">' + verdict.message + '</div>' +
-          ticketLine +
-          amountLine +
-          '<div class="verdict-reason">' + verdict.reason + '</div>' +
-          primaryAction +
+      // Loss-aversion CTA — shown to SIGNED-OUT users right under the verdict.
+      // This is where the highest-intent moment lives: they just got bad news
+      // about a fine, and we promise to save them from late fees if they
+      // give us their email. The card disappears once they have an account.
+      var lossCTA = '';
+      if (!window.currentUser && amount > 0) {
+        var dueRaw = (lastScan.due && lastScan.due !== 'unknown') ? lastScan.due : '';
+        var dueTextHuman = dueRaw
+          ? new Date(dueRaw + 'T12:00:00').toLocaleDateString('en-CA', { month: 'long', day: 'numeric' })
+          : 'soon';
+        // Toronto fee escalation: +$15.39 at day 16, +$32.10 at day 31, +$32.10 at day 60 = ~$80 worst case
+        lossCTA =
+          '<div class="dv2-loss-cta" id="dv2-loss-cta">' +
+            '<div class="dv2-loss-title">Don\'t pay late fees on this ticket</div>' +
+            '<div class="dv2-loss-detail">Your <strong>$' + amount.toFixed(2) + '</strong> is due <strong>' + dueTextHuman + '</strong>. ' +
+              'Miss it = <span class="dv2-loss-strike">+$80 in late fees</span>.</div>' +
+            '<div class="dv2-loss-promise">We\'ll email you 3 days before. No password. No spam.</div>' +
+            '<div class="dv2-loss-row">' +
+              '<input class="dv2-loss-input" id="dv2-loss-email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" />' +
+              '<button class="dv2-loss-btn" id="dv2-loss-btn" onclick="dv2EmailReminderSignup()">Email Me My Reminder</button>' +
+            '</div>' +
+            '<div class="dv2-loss-success" id="dv2-loss-success">' +
+              '<b>✓ Reminder saved.</b> Check your inbox to confirm — then you\'re set. Drivee will email you 3 days before the due date.' +
+            '</div>' +
+          '</div>';
+      }
+
+      // Old "Save as Reminder" section — kept ONLY for signed-in users
+      // (signed-out users get the more compelling loss-aversion CTA above).
+      var saveSection = '';
+      if (window.currentUser) {
+        saveSection =
           '<div class="verdict-save-section">' +
             '<div class="verdict-save-label">Save as Reminder</div>' +
             '<div class="input-group" style="margin-bottom:8px;">' +
@@ -8855,7 +8980,19 @@
               '<input type="date" id="verdict-due" value="' + (lastScan.due && lastScan.due !== 'unknown' ? lastScan.due : '') + '" />' +
             '</div>' +
             '<button class="btn btn-secondary" onclick="saveTicketAsReminder()">💾 Save Reminder</button>' +
-          '</div>' +
+          '</div>';
+      }
+
+      container.innerHTML =
+        '<div class="verdict-card ' + verdict.cls + '" style="margin-top:14px;">' +
+          '<div class="verdict-label" style="color:' + verdict.labelColor + ';">' + verdict.label + '</div>' +
+          '<div class="verdict-message">' + verdict.message + '</div>' +
+          ticketLine +
+          amountLine +
+          lossCTA +
+          '<div class="verdict-reason">' + verdict.reason + '</div>' +
+          primaryAction +
+          saveSection +
         '</div>';
 
       // Wire up the action button after injecting HTML
@@ -10664,6 +10801,75 @@
         } else {
           onUserSignedOut();
         }
+      });
+    }
+
+    // Loss-aversion CTA on the verdict card: collects email after a scan,
+    // saves the reminder LOCALLY immediately (so the user has it even if they
+    // never click the magic link), then sends the magic link to convert them.
+    function dv2EmailReminderSignup() {
+      var emailEl = document.getElementById('dv2-loss-email');
+      var btn     = document.getElementById('dv2-loss-btn');
+      var success = document.getElementById('dv2-loss-success');
+      if (!emailEl || !btn) return;
+      var email = emailEl.value.trim();
+      if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+        showToast('Enter a valid email address');
+        emailEl.focus();
+        return;
+      }
+
+      // Save the reminder locally NOW so we don't lose it
+      try {
+        var lastScan = window._lastScan || {};
+        var ref = lastScan.ref || 'Scanned ticket';
+        var due = (lastScan.due && lastScan.due !== 'unknown') ? lastScan.due : null;
+        if (due) {
+          var reminders = (typeof safeGet === 'function' ? safeGet(REMINDERS_KEY) : null) || [];
+          reminders.push({
+            ref: ref,
+            dueDate: due,
+            amount: lastScan.amount || null,
+            type: lastScan.type || '',
+            email: email,
+            createdAt: new Date().toISOString()
+          });
+          if (typeof safeSet === 'function') safeSet(REMINDERS_KEY, reminders);
+          // Refresh visible reminders list if it's currently rendered
+          if (typeof dv2RenderReminders === 'function') dv2RenderReminders();
+        }
+      } catch (e) { /* non-fatal — sign-up is still the main goal */ }
+
+      // Lock the UI and send magic link
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      trackEvent('magic_link_sent', 'loss-cta');
+
+      if (!db || !db.auth) {
+        // Supabase isn't ready — still show success because the local reminder is saved
+        if (success) success.classList.add('show');
+        btn.textContent = 'Saved ✓';
+        return;
+      }
+
+      db.auth.signInWithOtp({
+        email: email,
+        options: { shouldCreateUser: true }
+      }).then(function(res) {
+        if (res.error) {
+          showToast('Couldn\'t send email: ' + res.error.message);
+          btn.disabled = false;
+          btn.textContent = 'Email Me My Reminder';
+          return;
+        }
+        if (success) success.classList.add('show');
+        btn.textContent = 'Sent ✓';
+        // Also remember the email so it pre-fills elsewhere in the app
+        try { localStorage.setItem('drivee_last_email', email); } catch (e) {}
+      }).catch(function(err) {
+        showToast('Network error — try again');
+        btn.disabled = false;
+        btn.textContent = 'Email Me My Reminder';
       });
     }
 
