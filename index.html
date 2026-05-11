@@ -2463,6 +2463,119 @@
       .dv2-loss-btn { width: 100%; }
     }
 
+    /* ─── Generic email-doc CTA (dispute letter, ER form, etc) — blue variant ─── */
+    .dv2-doc-cta {
+      margin-top: 16px;
+      padding: 18px;
+      background: linear-gradient(135deg, #eaf0ff, #d9e3ff);
+      border: 1px solid #5a78d6;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dv2-doc-cta::before {
+      content: '✉';
+      position: absolute;
+      right: -10px; top: -30px;
+      font-size: 130px;
+      color: rgba(26,63,184,0.08);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .dv2-doc-title {
+      font-family: var(--dv2-serif, Georgia, serif);
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--dv2-blue-d);
+      line-height: 1.2;
+      margin-bottom: 6px;
+      position: relative;
+    }
+    .dv2-doc-sub {
+      font-size: 13px; line-height: 1.5;
+      color: var(--dv2-ink);
+      margin-bottom: 12px;
+      opacity: 0.85;
+      position: relative;
+    }
+    .dv2-doc-row {
+      display: flex; gap: 8px;
+      position: relative;
+    }
+    .dv2-doc-input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid #5a78d6;
+      border-radius: 10px;
+      font: 600 14px var(--dv2-font, inherit);
+      background: white;
+      color: var(--dv2-ink);
+      min-width: 0;
+    }
+    .dv2-doc-input:focus { outline: 2px solid var(--dv2-blue); border-color: var(--dv2-blue); }
+    .dv2-doc-btn {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--dv2-blue, #2E64FF), var(--dv2-blue-d, #1A3FB8));
+      color: white;
+      border: 0; border-radius: 10px;
+      font: 800 13px var(--dv2-font, inherit);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 6px 16px -4px rgba(26,63,184,0.4);
+    }
+    .dv2-doc-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px -6px rgba(26,63,184,0.55);
+    }
+    .dv2-doc-btn:disabled {
+      background: #c9c4b3;
+      cursor: not-allowed; transform: none; box-shadow: none;
+    }
+    .dv2-doc-success {
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(31,171,107,0.12);
+      border: 1px solid rgba(31,171,107,0.3);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #0d6e44;
+      font-weight: 600;
+      line-height: 1.4;
+      display: none;
+      position: relative;
+    }
+    .dv2-doc-success.show { display: block; }
+    .dv2-doc-success b { font-weight: 800; }
+    @media (max-width: 480px) {
+      .dv2-doc-row { flex-direction: column; }
+      .dv2-doc-btn { width: 100%; }
+    }
+    /* Variant: "we know you" — already-known users get a single big blue button */
+    .dv2-doc-known-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--dv2-blue, #2E64FF), var(--dv2-blue-d, #1A3FB8));
+      color: white;
+      border: 0; border-radius: 12px;
+      font: 800 14px var(--dv2-font, inherit);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 8px 20px -6px rgba(26,63,184,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .dv2-doc-known-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -6px rgba(26,63,184,0.55);
+    }
+    .dv2-doc-known-btn small {
+      font-size: 11px; font-weight: 600;
+      opacity: 0.8;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.4px;
+    }
+
     /* ─── Reassurance row for known users (already gave email / signed in) ─── */
     .dv2-known-line {
       margin-top: 14px;
@@ -6237,6 +6350,8 @@
           style="display:none; margin-top:8px;">
           Copy Script
         </button>
+        <!-- Email-me-this-letter CTA — populated by generateScript() -->
+        <div id="dispute-email-cta"></div>
       </div>
 
       <!-- TRUE COST CALCULATOR + EXPERT HELP -->
@@ -6455,8 +6570,10 @@
             <textarea class="dv2-er-output-text" id="dv2-er-output" rows="14" readonly></textarea>
             <div class="dv2-er-output-actions">
               <button type="button" class="dv2-er-action-btn primary" onclick="dv2ERCopy()">📋 Copy form</button>
-              <button type="button" class="dv2-er-action-btn" onclick="dv2EREmail()">📧 Email it to me</button>
+              <button type="button" class="dv2-er-action-btn" onclick="dv2EREmail()">📧 Open in mail app</button>
             </div>
+            <!-- Drivee email-me CTA — populated by dv2ERGenerate() -->
+            <div id="er-email-cta"></div>
             <a class="dv2-er-link" href="https://secure.toronto.ca/CourtCaseLookUp/" target="_blank" rel="noopener" style="margin-top: 14px; display: inline-flex;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Submit at Toronto Court Case Lookup
@@ -7715,6 +7832,11 @@
 
       var out = document.getElementById('dv2-er-output');
       if (out) out.value = lines.join('\n');
+
+      // Email-me-this-form CTA — same component as dispute, just configured
+      // for the ER doc. Render below the existing copy/mailto buttons.
+      var ctaHost = document.getElementById('er-email-cta');
+      if (ctaHost) ctaHost.innerHTML = buildDocCTA('er');
     }
 
     function dv2ERCopy() {
@@ -10449,6 +10571,13 @@
       document.getElementById('dispute-textarea').value = letter;
       document.getElementById('dispute-output-group').style.display = 'block';
       document.getElementById('copy-script-btn').style.display      = 'block';
+
+      // Email-me-this-letter CTA — render below the Copy button.
+      // High-intent moment: the user just got their dispute letter and now
+      // wants to keep it. New users see an email-capture box; known users
+      // see a one-tap "send to me" button.
+      var ctaHost = document.getElementById('dispute-email-cta');
+      if (ctaHost) ctaHost.innerHTML = buildDocCTA('dispute');
     }
 
     function copyScript() {
@@ -10884,6 +11013,156 @@
           onUserSignedOut();
         }
       });
+    }
+
+    // ─── Generic "email me this document" CTA ───────────────────────────
+    // Used after the dispute letter is built AND after the Early Resolution
+    // form is built. Same pattern as the post-scan loss-aversion CTA:
+    //   • Known user (signed in OR email-on-file) → one-tap "Send to me" button
+    //   • New user → email capture → magic link → durable signup
+    //
+    // The doc text is pulled from a textarea whose id we get from DOC_SOURCES.
+    var DOC_SOURCES = {
+      dispute: { textareaId: 'dispute-textarea', label: 'dispute letter', source: 'dispute-cta' },
+      er:      { textareaId: 'dv2-er-output',    label: 'Early Resolution form', source: 'er-cta' }
+    };
+
+    function _dvKnownEmail() {
+      try {
+        if (window.currentUser && window.currentUser.email) return window.currentUser.email;
+        return localStorage.getItem('drivee_signup_email') || '';
+      } catch (e) { return ''; }
+    }
+
+    function buildDocCTA(docKind) {
+      var cfg = DOC_SOURCES[docKind];
+      if (!cfg) return '';
+      var known = _dvKnownEmail();
+      if (known) {
+        // Known user — single button, no form needed
+        return '' +
+          '<button class="dv2-doc-known-btn" type="button" onclick="dv2SendDocToMe(\'' + docKind + '\')">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">' +
+              '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>' +
+            '</svg>' +
+            '<div>Email this ' + cfg.label + ' to me<br><small>' + esc(known) + '</small></div>' +
+          '</button>' +
+          '<div class="dv2-doc-success" id="dv2-doc-success-' + docKind + '"><b>✓ On its way.</b> Check your inbox in a minute.</div>';
+      }
+      // New user — full capture card
+      return '' +
+        '<div class="dv2-doc-cta">' +
+          '<div class="dv2-doc-title">Email this ' + cfg.label + ' to yourself</div>' +
+          '<div class="dv2-doc-sub">We\'ll save it to your inbox so you have it on your phone, your laptop, and when you talk to the prosecutor. No password. No spam.</div>' +
+          '<div class="dv2-doc-row">' +
+            '<input class="dv2-doc-input" id="dv2-doc-email-' + docKind + '" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" />' +
+            '<button class="dv2-doc-btn" id="dv2-doc-btn-' + docKind + '" onclick="dv2DocSignup(\'' + docKind + '\')">Email it to me</button>' +
+          '</div>' +
+          '<div class="dv2-doc-success" id="dv2-doc-success-' + docKind + '"><b>✓ Sent.</b> Check your inbox — that same email is now your Drivee account.</div>' +
+        '</div>';
+    }
+
+    // Save a document into a pending-email queue in localStorage so a future
+    // backend cron can deliver it. Until that backend exists, queueing still
+    // gives us a record of intent without losing the doc.
+    function _dvQueuePendingDoc(docKind, email) {
+      try {
+        var cfg = DOC_SOURCES[docKind];
+        if (!cfg) return;
+        var ta = document.getElementById(cfg.textareaId);
+        if (!ta) return;
+        var text = ta.value || '';
+        if (!text.trim()) return;
+        var key = 'drivee_pending_docs';
+        var queue = JSON.parse(localStorage.getItem(key) || '[]');
+        queue.push({
+          kind: docKind,
+          label: cfg.label,
+          email: email,
+          text: text,
+          createdAt: new Date().toISOString()
+        });
+        // Cap at 20 to avoid runaway localStorage growth
+        if (queue.length > 20) queue = queue.slice(-20);
+        localStorage.setItem(key, JSON.stringify(queue));
+      } catch (e) { /* non-fatal */ }
+    }
+
+    // Signed-out user submits email after seeing the doc → save email + magic link
+    function dv2DocSignup(docKind) {
+      var cfg = DOC_SOURCES[docKind];
+      if (!cfg) return;
+      var emailEl = document.getElementById('dv2-doc-email-' + docKind);
+      var btn     = document.getElementById('dv2-doc-btn-' + docKind);
+      var success = document.getElementById('dv2-doc-success-' + docKind);
+      if (!emailEl || !btn) return;
+      var email = emailEl.value.trim();
+      if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+        showToast('Enter a valid email address');
+        emailEl.focus();
+        return;
+      }
+      _dvQueuePendingDoc(docKind, email);
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      trackEvent('magic_link_sent', email + '|' + cfg.source);
+
+      if (!db || !db.auth) {
+        if (success) success.classList.add('show');
+        btn.textContent = 'Sent ✓';
+        try {
+          localStorage.setItem('drivee_signup_email', email);
+          localStorage.setItem('drivee_last_email', email);
+        } catch (e) {}
+        return;
+      }
+
+      db.auth.signInWithOtp({
+        email: email,
+        options: { shouldCreateUser: true }
+      }).then(function(res) {
+        if (res.error) {
+          showToast('Couldn\'t send email: ' + res.error.message);
+          btn.disabled = false;
+          btn.textContent = 'Email it to me';
+          return;
+        }
+        if (success) success.classList.add('show');
+        btn.textContent = 'Sent ✓';
+        try {
+          localStorage.setItem('drivee_signup_email', email);
+          localStorage.setItem('drivee_last_email', email);
+        } catch (e) {}
+      }).catch(function() {
+        showToast('Network error — try again');
+        btn.disabled = false;
+        btn.textContent = 'Email it to me';
+      });
+    }
+
+    // Known user clicks "send me this doc" → queue + show success
+    // (Until we wire up a server email sender, also opens mailto: as a
+    // fallback so the user has the doc in hand immediately.)
+    function dv2SendDocToMe(docKind) {
+      var cfg = DOC_SOURCES[docKind];
+      if (!cfg) return;
+      var email = _dvKnownEmail();
+      if (!email) return;
+      _dvQueuePendingDoc(docKind, email);
+      trackEvent('share_ticket', cfg.source + '|known');
+      var success = document.getElementById('dv2-doc-success-' + docKind);
+      if (success) success.classList.add('show');
+      // Fallback delivery: open the user's own mail client pre-composed.
+      // Removes once we have a server-side sender wired up.
+      try {
+        var ta = document.getElementById(cfg.textareaId);
+        if (ta && ta.value) {
+          var subject = 'Drivee · Your ' + cfg.label;
+          window.location.href = 'mailto:' + encodeURIComponent(email) +
+                                 '?subject=' + encodeURIComponent(subject) +
+                                 '&body=' + encodeURIComponent(ta.value);
+        }
+      } catch (e) {}
     }
 
     // Loss-aversion CTA on the verdict card: collects email after a scan,
