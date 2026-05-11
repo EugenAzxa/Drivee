@@ -188,21 +188,37 @@
   <div class="kicker">PRIVACY · DRIVEE</div>
   <h1>Your data stays yours.</h1>
   <p class="lede">Drivee is built so the people who park in Toronto don't trade their privacy for help with a parking ticket. This page explains exactly what we keep, what we don't, and how to wipe everything.</p>
-  <div class="updated">LAST UPDATED · 6 MAY 2026</div>
+  <div class="updated">LAST UPDATED · 11 MAY 2026</div>
 
   <div class="tldr">
     <h3>✓ THE SHORT VERSION</h3>
-    <p><strong>The only thing we save on our servers about you is your email address</strong> — and only if you choose to sign in to sync your reminders across devices.</p>
-    <p>Everything else — your tickets, your scans, your photos, your plate, your name — lives on <strong>your device</strong>. We don't read it. We don't sell it. We can't see it.</p>
+    <p>The only personal information we save on our servers is <strong>your email address</strong> — and only if you give it to us to get reminders or sign in.</p>
+    <p>We also save <strong>anonymous usage signals</strong> so we know which features work — like approximate city, device type, and which buttons get tapped. None of it is sold. None of it leaves our hands.</p>
+    <p>Everything sensitive — your tickets, scans, photos, plate, name — lives on <strong>your device</strong>. We don't read it. We can't see it.</p>
   </div>
 
   <h2>What we save</h2>
 
-  <h3 class="subsection">Your email address (only if you sign in)</h3>
-  <p>If you choose to sync Drivee across your phone, tablet, and laptop, you sign in with a magic link sent to your email. We store that email so we can recognise you next time. <strong>That's it.</strong> No password, no name, no phone number, no payment information.</p>
+  <h3 class="subsection">Your email address (only if you give it to us)</h3>
+  <p>There are two moments when you might give us your email:</p>
+  <ul>
+    <li><strong>After you scan a ticket</strong> — we offer to email you 3 days before the fine is due, so you don't pay late fees.</li>
+    <li><strong>When you sign in</strong> to sync Drivee across your phone, tablet, and laptop.</li>
+  </ul>
+  <p>In both cases we send you a one-tap magic link instead of asking for a password. We store the email so we can recognise you next time and send the reminder. <strong>That's it.</strong> No password, no name, no phone number, no payment information.</p>
 
   <h3 class="subsection">Anonymous usage events</h3>
-  <p>We count things like "someone scanned a ticket" or "someone opened the dispute builder" so we know which features people use and which to improve. These events <strong>don't include your email, your plate, your name, or anything that can identify you.</strong></p>
+  <p>We count things like "someone scanned a ticket", "someone opened the Hotspots tab", or "someone generated a dispute letter" so we know which features work and which to improve. Alongside each event we save a small amount of context so the numbers are meaningful:</p>
+  <ul>
+    <li><strong>Approximate city</strong> — derived from your IP address through a one-shot lookup (e.g. "Toronto, ON"). We never store the IP itself in our database — only the city it resolves to.</li>
+    <li><strong>Device type and browser</strong> — e.g. "Mobile · iOS · Safari" or "Desktop · Windows · Chrome". This is parsed from the standard User-Agent header your browser sends.</li>
+    <li><strong>An anonymous user ID and session ID</strong> — random strings (e.g. <span style="font-family:var(--mono)">u_x7k9q2pmh3z</span>) generated in your browser. They let us see things like "30 unique people opened the app this week" without ever needing your name. If you clear your browser storage, you become a new ID.</li>
+    <li><strong>Your email</strong> — but only on the specific event that records you giving us your email in the first place (the sign-in / reminder request). All other events stay completely anonymous.</li>
+  </ul>
+  <p>None of this data is sold, traded for ads, or shared with anyone outside Drivee. The internal dashboard that reads these numbers is only used by the Drivee team to decide what to build next.</p>
+
+  <h3 class="subsection">A note about Stripe</h3>
+  <p>If you ever use a paid feature (like the optional $0.99 "auto-apply" services), payment is processed entirely by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe</a> on their own checkout page. We never see your card details. Stripe gives us back only a confirmation that the payment succeeded.</p>
 
   <h2>What we don't save</h2>
   <ul>

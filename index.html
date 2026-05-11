@@ -4786,6 +4786,36 @@
     }
     .dv2-essential:hover .dv2-essential-arrow { transform: translateX(4px); }
 
+    /* ─── Legal footer at the bottom of the Guide tab ─── */
+    .dv2-legal-footer {
+      margin-top: 32px;
+      padding: 18px 0 8px;
+      text-align: center;
+      font-family: var(--dv2-font);
+      font-size: 13px;
+      color: var(--dv2-ink2);
+    }
+    .dv2-legal-footer a {
+      color: var(--dv2-blue-d);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .dv2-legal-footer a:hover { text-decoration: underline; }
+    .dv2-legal-sep {
+      margin: 0 6px;
+      color: var(--dv2-line);
+    }
+    .dv2-legal-meta {
+      margin-top: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--dv2-ink2);
+      opacity: 0.7;
+    }
+    /* Hide legal footer when in install focused-view */
+    .design-v2 #tab-guide[data-install-active] .dv2-legal-footer { display: none; }
+
     /* Scanner CTA: blue → purple gradient — flagship card, MAXIMUM visibility */
     .dv2-scanner-cta {
       width: 100%;
@@ -7371,6 +7401,16 @@
       <button class="btn btn-primary" onclick="showTab('tab-dashboard')" style="margin-top: 8px; font-size: 17px; padding: 18px;">
         Get Started →
       </button>
+
+      <!-- Legal footer — privacy + terms, always at the bottom of Guide -->
+      <div class="dv2-legal-footer">
+        <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+        <span class="dv2-legal-sep">·</span>
+        <a href="/privacy.html#terms" target="_blank" rel="noopener">Terms of Use</a>
+        <span class="dv2-legal-sep">·</span>
+        <a href="mailto:drivee.canada@gmail.com">Contact</a>
+        <div class="dv2-legal-meta">© 2026 Drivee · Toronto, ON</div>
+      </div>
 
     </section>
 
