@@ -120,6 +120,7 @@ module.exports = async function handler(req, res) {
       dev:  meta.dev  || '',
       br:   meta.br   || '',
       sid:  meta.sid  || '',
+      uid:  meta.uid  || '',
       auth: !!meta.auth,
       created_at: r.created_at || r.inserted_at || r.timestamp || new Date(0).toISOString()
     };
@@ -142,6 +143,11 @@ module.exports = async function handler(req, res) {
   var funnel  = { app_open: 0, scan_ticket: 0, scan_success: 0, dispute_generated: 0 };
   var recent  = [];
 
+  // Unique-user buckets (uid → first seen ts)
+  var uidsToday = {}, uids7d = {}, uids30d = {}, uidsAll = {};
+  var uidFirstApp = {};      // uid → ts of FIRST app_open ever — counts "tried the app"
+  var appOpens = 0;
+
   // Session aggregation: { sid: { first, last, authed, city, device } }
   var sessions = {};
   var authedSessions = 0, anonSessions = 0;
@@ -160,6 +166,20 @@ module.exports = async function handler(req, res) {
     if (ts >= monthCutoff) totals.last30d++;
 
     byEvent[row.event] = (byEvent[row.event] || 0) + 1;
+
+    // Unique users (uid-scoped) per time window
+    if (row.uid) {
+      uidsAll[row.uid] = true;
+      if (ts >= todayCutoff) uidsToday[row.uid] = true;
+      if (ts >= weekCutoff)  uids7d[row.uid]    = true;
+      if (ts >= monthCutoff) uids30d[row.uid]   = true;
+      if (row.event === 'app_open') {
+        if (!uidFirstApp[row.uid] || ts < uidFirstApp[row.uid]) {
+          uidFirstApp[row.uid] = ts;
+        }
+      }
+    }
+    if (row.event === 'app_open') appOpens++;
 
     if (row.event === 'tab_click' && row.m) {
       var tabName = String(row.m).replace(/^tab-/, '') || 'unknown';
@@ -232,11 +252,32 @@ module.exports = async function handler(req, res) {
     .sort()
     .map(function(date){ return { date: date, count: byDay[date] }; });
 
+  // "Tried the app" = unique uids who triggered app_open
+  var triedTotal = Object.keys(uidFirstApp).length;
+  var triedToday = 0, tried7d = 0, tried30d = 0;
+  Object.keys(uidFirstApp).forEach(function(uid){
+    var ts = uidFirstApp[uid];
+    if (ts >= todayCutoff) triedToday++;
+    if (ts >= weekCutoff)  tried7d++;
+    if (ts >= monthCutoff) tried30d++;
+  });
+
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
     fetchedAt: new Date().toISOString(),
     rowCount: rows.length,
     totals: totals,
+    users: {
+      today:   Object.keys(uidsToday).length,
+      last7d:  Object.keys(uids7d).length,
+      last30d: Object.keys(uids30d).length,
+      allTime: Object.keys(uidsAll).length,
+      appOpens: appOpens,
+      triedTotal:   triedTotal,
+      triedToday:   triedToday,
+      tried7d:      tried7d,
+      tried30d:     tried30d
+    },
     byEvent: topN(byEvent, 20),
     byTab:   topN(byTab, 10),
     byCity:  topN(byCity, 15),

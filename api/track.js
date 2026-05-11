@@ -143,6 +143,7 @@ module.exports = async function handler(req, res) {
   var event = String(req.body.event || '').substring(0, 50);
   var origMeta = String(req.body.meta || '').substring(0, 200).replace(/<[^>]*>/g, '');
   var sid = String(req.body.sid || '').substring(0, 40).replace(/[^a-zA-Z0-9_-]/g, '');
+  var uid = String(req.body.uid || '').substring(0, 40).replace(/[^a-zA-Z0-9_-]/g, '');
   var isAuthed = !!req.body.auth;
 
   if (ALLOWED_EVENTS.indexOf(event) === -1) {
@@ -163,6 +164,7 @@ module.exports = async function handler(req, res) {
     dev:  ua.form,
     br:   ua.br,
     sid:  sid || undefined,
+    uid:  uid || undefined,
     auth: isAuthed ? 1 : 0
   });
 

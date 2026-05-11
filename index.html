@@ -10509,7 +10509,20 @@
     }
 
     // ── Analytics tracking ──────────────────────────────
-    // Persistent session ID for the current browser tab so the server can group
+    // Persistent USER ID stored in localStorage — survives across visits, lets
+    // the dashboard count unique humans (not just sessions or events).
+    function _dvUserId() {
+      try {
+        var k = 'drivee_uid';
+        var v = localStorage.getItem(k);
+        if (!v) {
+          v = 'u_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-6);
+          localStorage.setItem(k, v);
+        }
+        return v;
+      } catch (e) { return ''; }
+    }
+    // Persistent SESSION ID for the current browser tab so the server can group
     // events into sessions and compute time-on-app. Stored in sessionStorage so
     // it resets on tab close (not on reload, which is what we want).
     function _dvSessionId() {
@@ -10545,6 +10558,7 @@
             event: event,
             meta: meta || '',
             sid:  _dvSessionId(),
+            uid:  _dvUserId(),
             auth: _dvIsAuthed()
           })
         }).catch(function() {});

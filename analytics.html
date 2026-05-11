@@ -330,25 +330,49 @@
   <!-- Error banner -->
   <div id="err" class="err"></div>
 
-  <!-- Totals -->
-  <div class="tiles" id="tiles">
+  <!-- Real users — most-prominent row -->
+  <div class="tiles" id="tiles-users" style="margin-bottom: 14px">
     <div class="tile accent">
-      <div class="tile-label">Today</div>
-      <div class="tile-value" id="tile-today">—</div>
-      <div class="tile-sub">events in last 24h</div>
+      <div class="tile-label">People · today</div>
+      <div class="tile-value" id="tile-users-today">—</div>
+      <div class="tile-sub">unique humans · last 24h</div>
     </div>
     <div class="tile">
-      <div class="tile-label">Last 7 days</div>
+      <div class="tile-label">People · 7 days</div>
+      <div class="tile-value" id="tile-users-7d">—</div>
+      <div class="tile-sub">rolling week</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">People · 30 days</div>
+      <div class="tile-value" id="tile-users-30d">—</div>
+      <div class="tile-sub">rolling month</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">People · all-time</div>
+      <div class="tile-value" id="tile-users-all">—</div>
+      <div class="tile-sub" id="tile-users-all-sub">tried the app at least once</div>
+    </div>
+  </div>
+
+  <!-- Events totals -->
+  <div class="tiles" id="tiles">
+    <div class="tile">
+      <div class="tile-label">Events · today</div>
+      <div class="tile-value" id="tile-today">—</div>
+      <div class="tile-sub">all event types · last 24h</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Events · 7 days</div>
       <div class="tile-value" id="tile-7d">—</div>
       <div class="tile-sub">rolling week</div>
     </div>
     <div class="tile">
-      <div class="tile-label">Last 30 days</div>
+      <div class="tile-label">Events · 30 days</div>
       <div class="tile-value" id="tile-30d">—</div>
       <div class="tile-sub">rolling month</div>
     </div>
     <div class="tile">
-      <div class="tile-label">All-time</div>
+      <div class="tile-label">Events · all-time</div>
       <div class="tile-value" id="tile-all">—</div>
       <div class="tile-sub">events stored</div>
     </div>
@@ -506,7 +530,20 @@
 
   // ─── Rendering ───
   function render(d) {
-    // tiles
+    // Users (top-most row): unique humans who used the app in each window
+    var u = d.users || { today:0, last7d:0, last30d:0, allTime:0, triedTotal:0 };
+    document.getElementById('tile-users-today').textContent = fmt(u.today);
+    document.getElementById('tile-users-7d').textContent    = fmt(u.last7d);
+    document.getElementById('tile-users-30d').textContent   = fmt(u.last30d);
+    document.getElementById('tile-users-all').textContent   = fmt(u.allTime);
+    var allSub = document.getElementById('tile-users-all-sub');
+    if (allSub) {
+      var tried = u.triedTotal || 0;
+      var opens = u.appOpens || 0;
+      allSub.textContent = tried + ' opened the app · ' + opens + ' total opens';
+    }
+
+    // Event totals
     document.getElementById('tile-today').textContent = fmt(d.totals.today);
     document.getElementById('tile-7d').textContent    = fmt(d.totals.last7d);
     document.getElementById('tile-30d').textContent   = fmt(d.totals.last30d);
