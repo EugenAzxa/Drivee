@@ -1154,8 +1154,22 @@
       flex: 1; border: 1.5px solid var(--border); border-radius: 9999px;
       padding: 10px 14px; font-size: 13px; font-family: 'Inter', sans-serif;
       background: var(--elevated); color: var(--text-primary); outline: none;
+      transition: border-color 0.15s, background 0.15s;
     }
     .auth-email-input:focus { border-color: var(--blue); }
+    .auth-email-input.invalid {
+      border-color: #ff8a82;
+      background: #fff4f3;
+    }
+    .auth-email-input.shake { animation: shake 0.3s ease-in-out; }
+    .auth-error {
+      display: none;
+      font-size: 11px; font-weight: 600;
+      color: #ffb1ab;
+      margin-top: 6px; padding-left: 14px;
+      text-align: left;
+    }
+    .auth-error.show { display: block; }
     .auth-send-btn {
       padding: 10px 16px; border-radius: 9999px;
       background: var(--blue); color: #fff; border: none;
@@ -1163,6 +1177,7 @@
       cursor: pointer; white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
     }
+    .auth-send-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .auth-sent-msg {
       font-size: 13px; color: var(--green); font-weight: 500;
       text-align: center; padding: 8px 0;
@@ -2447,6 +2462,15 @@
       min-width: 0;
     }
     .dv2-loss-input:focus { outline: 2px solid #d97706; border-color: #d97706; }
+    .dv2-loss-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv2-loss-input.shake   { animation: shake 0.3s ease-in-out; }
+    .dv2-loss-error {
+      display: none;
+      font-size: 12px; color: #b91c1c;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .dv2-loss-error.show { display: block; }
     .dv2-loss-btn {
       padding: 12px 16px;
       background: linear-gradient(135deg, #d97706, #b45309);
@@ -2538,6 +2562,15 @@
       min-width: 0;
     }
     .dv2-doc-input:focus { outline: 2px solid var(--dv2-blue); border-color: var(--dv2-blue); }
+    .dv2-doc-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv2-doc-input.shake   { animation: shake 0.3s ease-in-out; }
+    .dv2-doc-error {
+      display: none;
+      font-size: 12px; color: #b91c1c;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    .dv2-doc-error.show { display: block; }
     .dv2-doc-btn {
       padding: 12px 16px;
       background: linear-gradient(135deg, var(--dv2-blue, #2E64FF), var(--dv2-blue-d, #1A3FB8));
@@ -5914,10 +5947,19 @@
         <!-- Auth embedded in hero -->
         <div id="auth-signout-state" style="margin-top:12px">
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password needed</div>
-          <div class="auth-input-row">
-            <input type="email" class="auth-email-input" id="auth-email-input" placeholder="your@email.com" />
-            <button class="auth-send-btn" onclick="sendMagicLink()">Send Link</button>
-          </div>
+          <form class="auth-input-row" onsubmit="event.preventDefault(); sendMagicLink(); return false;" novalidate>
+            <input type="email"
+                   class="auth-email-input"
+                   id="auth-email-input"
+                   name="email"
+                   placeholder="your@email.com"
+                   autocomplete="email"
+                   inputmode="email"
+                   required
+                   oninput="dvClearEmailInvalid('auth-email-input','auth-email-error')" />
+            <button type="submit" class="auth-send-btn">Send Link</button>
+          </form>
+          <div class="auth-error" id="auth-email-error">Please enter a valid email address.</div>
           <div class="auth-sent-msg" id="auth-sent-msg" style="display:none">✅ Check your email — click the link to sign in</div>
         </div>
         <div id="auth-signin-state" style="display:none;margin-top:12px" class="auth-signed-in">
@@ -9229,10 +9271,11 @@
             '<div class="dv2-loss-detail">Your <strong>$' + amount.toFixed(2) + '</strong> is due <strong>' + dueTextHuman + '</strong>. ' +
               'Miss it = <span class="dv2-loss-strike">+$80 in late fees</span>.</div>' +
             '<div class="dv2-loss-promise">We\'ll email you 3 days before. No password. No spam.</div>' +
-            '<div class="dv2-loss-row">' +
-              '<input class="dv2-loss-input" id="dv2-loss-email" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" />' +
-              '<button class="dv2-loss-btn" id="dv2-loss-btn" onclick="dv2EmailReminderSignup()">Email Me My Reminder</button>' +
-            '</div>' +
+            '<form class="dv2-loss-row" onsubmit="event.preventDefault(); dv2EmailReminderSignup(); return false;" novalidate>' +
+              '<input class="dv2-loss-input" id="dv2-loss-email" type="email" inputmode="email" autocomplete="email" required placeholder="your@email.com" oninput="dvClearEmailInvalid(\'dv2-loss-email\',\'dv2-loss-error\')" />' +
+              '<button class="dv2-loss-btn" id="dv2-loss-btn" type="submit">Email Me My Reminder</button>' +
+            '</form>' +
+            '<div class="dv2-loss-error" id="dv2-loss-error">Please enter your email address.</div>' +
             '<div class="dv2-loss-success" id="dv2-loss-success">' +
               '<b>✓ Reminder saved.</b> Check your inbox to confirm — then you\'re set. Drivee will email you 3 days before the due date.' +
             '</div>' +
@@ -11156,10 +11199,11 @@
         '<div class="dv2-doc-cta">' +
           '<div class="dv2-doc-title">Email this ' + cfg.label + ' to yourself</div>' +
           '<div class="dv2-doc-sub">We\'ll save it to your inbox so you have it on your phone, your laptop, and when you talk to the prosecutor. No password. No spam.</div>' +
-          '<div class="dv2-doc-row">' +
-            '<input class="dv2-doc-input" id="dv2-doc-email-' + docKind + '" type="email" inputmode="email" autocomplete="email" placeholder="your@email.com" />' +
-            '<button class="dv2-doc-btn" id="dv2-doc-btn-' + docKind + '" onclick="dv2DocSignup(\'' + docKind + '\')">Email it to me</button>' +
-          '</div>' +
+          '<form class="dv2-doc-row" onsubmit="event.preventDefault(); dv2DocSignup(\'' + docKind + '\'); return false;" novalidate>' +
+            '<input class="dv2-doc-input" id="dv2-doc-email-' + docKind + '" type="email" inputmode="email" autocomplete="email" required placeholder="your@email.com" oninput="dvClearEmailInvalid(\'dv2-doc-email-' + docKind + '\',\'dv2-doc-error-' + docKind + '\')" />' +
+            '<button class="dv2-doc-btn" id="dv2-doc-btn-' + docKind + '" type="submit">Email it to me</button>' +
+          '</form>' +
+          '<div class="dv2-doc-error" id="dv2-doc-error-' + docKind + '">Please enter your email address.</div>' +
           '<div class="dv2-doc-success" id="dv2-doc-success-' + docKind + '"><b>✓ Sent.</b> Check your inbox — that same email is now your Drivee account.</div>' +
         '</div>';
     }
@@ -11197,11 +11241,21 @@
       var emailEl = document.getElementById('dv2-doc-email-' + docKind);
       var btn     = document.getElementById('dv2-doc-btn-' + docKind);
       var success = document.getElementById('dv2-doc-success-' + docKind);
+      var err     = document.getElementById('dv2-doc-error-' + docKind);
       if (!emailEl || !btn) return;
       var email = emailEl.value.trim();
-      if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
-        showToast('Enter a valid email address');
-        emailEl.focus();
+      if (!dvIsValidEmail(email)) {
+        emailEl.classList.add('invalid');
+        emailEl.classList.remove('shake');
+        emailEl.offsetHeight;
+        emailEl.classList.add('shake');
+        try { emailEl.focus(); } catch (e) {}
+        if (err) {
+          err.textContent = email
+            ? '"' + email + '" doesn\'t look like a valid email.'
+            : 'Please enter your email address.';
+          err.classList.add('show');
+        }
         return;
       }
       _dvQueuePendingDoc(docKind, email);
@@ -11224,7 +11278,11 @@
         options: { shouldCreateUser: true }
       }).then(function(res) {
         if (res.error) {
-          showToast('Couldn\'t send email: ' + res.error.message);
+          emailEl.classList.add('invalid');
+          if (err) {
+            err.textContent = res.error.message || 'Couldn\'t send the link — try again.';
+            err.classList.add('show');
+          }
           btn.disabled = false;
           btn.textContent = 'Email it to me';
           return;
@@ -11236,7 +11294,10 @@
           localStorage.setItem('drivee_last_email', email);
         } catch (e) {}
       }).catch(function() {
-        showToast('Network error — try again');
+        if (err) {
+          err.textContent = 'Network error — try again.';
+          err.classList.add('show');
+        }
         btn.disabled = false;
         btn.textContent = 'Email it to me';
       });
@@ -11274,11 +11335,21 @@
       var emailEl = document.getElementById('dv2-loss-email');
       var btn     = document.getElementById('dv2-loss-btn');
       var success = document.getElementById('dv2-loss-success');
+      var err     = document.getElementById('dv2-loss-error');
       if (!emailEl || !btn) return;
       var email = emailEl.value.trim();
-      if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
-        showToast('Enter a valid email address');
-        emailEl.focus();
+      if (!dvIsValidEmail(email)) {
+        emailEl.classList.add('invalid');
+        emailEl.classList.remove('shake');
+        emailEl.offsetHeight;
+        emailEl.classList.add('shake');
+        try { emailEl.focus(); } catch (e) {}
+        if (err) {
+          err.textContent = email
+            ? '"' + email + '" doesn\'t look like a valid email.'
+            : 'Please enter your email address.';
+          err.classList.add('show');
+        }
         return;
       }
 
@@ -11320,7 +11391,11 @@
         options: { shouldCreateUser: true }
       }).then(function(res) {
         if (res.error) {
-          showToast('Couldn\'t send email: ' + res.error.message);
+          emailEl.classList.add('invalid');
+          if (err) {
+            err.textContent = res.error.message || 'Couldn\'t send the link — try again.';
+            err.classList.add('show');
+          }
           btn.disabled = false;
           btn.textContent = 'Email Me My Reminder';
           return;
@@ -11334,20 +11409,40 @@
           localStorage.setItem('drivee_signup_email', email);
           localStorage.setItem('drivee_last_email', email);
         } catch (e) {}
-      }).catch(function(err) {
-        showToast('Network error — try again');
+      }).catch(function() {
+        if (err) {
+          err.textContent = 'Network error — try again.';
+          err.classList.add('show');
+        }
         btn.disabled = false;
         btn.textContent = 'Email Me My Reminder';
       });
     }
 
     function sendMagicLink() {
-      if (!db) { showToast('Not connected — try refreshing'); return; }
-      var email = document.getElementById('auth-email-input').value.trim();
-      if (!email || !email.includes('@')) {
-        showToast('Enter a valid email address');
+      var input = document.getElementById('auth-email-input');
+      var err   = document.getElementById('auth-email-error');
+      var email = input ? input.value.trim() : '';
+
+      if (!dvIsValidEmail(email)) {
+        if (input) {
+          input.classList.add('invalid');
+          input.classList.remove('shake');
+          input.offsetHeight;
+          input.classList.add('shake');
+          try { input.focus(); } catch (e) {}
+        }
+        if (err) {
+          err.textContent = email
+            ? '"' + email + '" doesn\'t look like a valid email.'
+            : 'Please enter your email address.';
+          err.classList.add('show');
+        }
         return;
       }
+
+      if (!db) { showToast('Not connected — try refreshing'); return; }
+
       var btn = document.querySelector('.auth-send-btn');
       if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
       trackEvent('magic_link_sent', email + '|main');
@@ -11355,7 +11450,11 @@
       db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
         .then(function(res) {
           if (res.error) {
-            showToast('Error: ' + res.error.message);
+            if (input) input.classList.add('invalid');
+            if (err) {
+              err.textContent = res.error.message || 'Couldn\'t send the link — try again.';
+              err.classList.add('show');
+            }
             if (btn) { btn.textContent = 'Send Link'; btn.disabled = false; }
           } else {
             try { localStorage.setItem('drivee_signup_email', email); } catch (e) {}
