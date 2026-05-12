@@ -6077,7 +6077,7 @@
 
 
       <!-- Scan History Card -->
-      <div class="card">
+      <div class="card" id="scan-history-card" hidden>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
           <div class="card-title" style="margin-bottom:0">🎫 Scanned Tickets</div>
           <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px" onclick="safeSet('drivee_scans',[]);renderScanHistory()">Clear</button>
@@ -6092,26 +6092,37 @@
         <div class="card-title">Fine Reminders</div>
         <div class="card-subtitle">Track your deadlines — never miss a payment</div>
 
-        <div class="input-group">
-          <label for="reminder-ref">Ticket / Reference Number</label>
-          <input type="text" id="reminder-ref" placeholder="e.g. TPA-123456" />
-        </div>
-        <div class="input-group">
-          <label for="reminder-date">Due Date</label>
-          <input type="date" id="reminder-date" />
-        </div>
-        <div class="input-group" id="reminder-car-group">
-          <label for="reminder-car-select">Vehicle (optional)</label>
-          <select id="reminder-car-select">
-            <option value="">All vehicles</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" id="add-reminder-btn" onclick="addReminder()">Add Reminder</button>
+        <!-- Default state: a single + Add Reminder button. The full form sits
+             hidden until the user explicitly opens it — keeps the dashboard
+             from looking like an unfinished prototype with empty fields. -->
+        <button class="btn btn-primary" id="reminders-add-btn" onclick="toggleReminderForm(true)" style="margin-top: 10px;">
+          + Add Reminder
+        </button>
 
-        <div class="divider"></div>
+        <!-- The expanded form — hidden by default, revealed by the button above -->
+        <div id="reminders-form" hidden>
+          <div class="input-group">
+            <label for="reminder-ref">Ticket / Reference Number</label>
+            <input type="text" id="reminder-ref" placeholder="e.g. TPA-123456" />
+          </div>
+          <div class="input-group">
+            <label for="reminder-date">Due Date</label>
+            <input type="date" id="reminder-date" />
+          </div>
+          <div class="input-group" id="reminder-car-group">
+            <label for="reminder-car-select">Vehicle (optional)</label>
+            <select id="reminder-car-select">
+              <option value="">All vehicles</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:8px; margin-top: 4px;">
+            <button class="btn btn-secondary" type="button" onclick="toggleReminderForm(false)" style="flex: 0 0 auto;">Cancel</button>
+            <button class="btn btn-primary" id="add-reminder-btn" type="button" onclick="addReminder()" style="flex: 1;">Save Reminder</button>
+          </div>
+        </div>
 
         <!-- Car filter chips — shown when 2+ cars exist -->
-        <div class="car-filter-row" id="car-filter-row" style="display:none"></div>
+        <div class="car-filter-row" id="car-filter-row" style="display:none; margin-top: 14px;"></div>
 
         <!-- Reminder cards render here -->
         <div id="reminders-list"></div>
@@ -8870,13 +8881,18 @@
     // Render scan history cards in the Dashboard
     var _showAllScans = false;
     function renderScanHistory() {
-      var el = document.getElementById('scan-history-list');
+      var el   = document.getElementById('scan-history-list');
+      var card = document.getElementById('scan-history-card');
       if (!el) return;
       var scans = safeGet(SCANS_KEY) || [];
       if (scans.length === 0) {
-        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎫</div>No scans yet — scan a ticket photo to get started</div>';
+        // Hide the whole card when there's nothing to show — keeps the
+        // dashboard from looking like an unfinished product.
+        if (card) card.hidden = true;
+        el.innerHTML = '';
         return;
       }
+      if (card) card.hidden = false;
       var visible = _showAllScans ? scans : scans.slice(0, 2);
       el.innerHTML = visible.map(function(s) {
         var dueLabel = s.due && s.due !== 'unknown' ? '<span style="color:var(--danger);font-size:11px">Due ' + formatDate(s.due) + '</span>' : '';
@@ -10180,8 +10196,9 @@
 
     // ─── v2 inline reminders (Open reminders section on dashboard) ───
     function dv2RenderReminders() {
-      var list   = document.getElementById('dv2-reminders-list');
-      var seeAll = document.getElementById('dv2-rem-see-all');
+      var list    = document.getElementById('dv2-reminders-list');
+      var seeAll  = document.getElementById('dv2-rem-see-all');
+      var section = document.getElementById('dv2-reminders-section');
       if (!list) return;
 
       var reminders = (typeof safeGet === 'function' ? safeGet(REMINDERS_KEY) : null) || [];
@@ -10190,9 +10207,13 @@
       if (seeAll) seeAll.textContent = 'SEE ALL · ' + reminders.length;
 
       if (reminders.length === 0) {
-        list.innerHTML = '<div class="dv2-rem-empty">You\'re all clear. No outstanding tickets — nice driving.</div>';
+        // Hide the whole section when there's nothing to show — the dashboard
+        // shouldn't lead with an empty state for a new user.
+        if (section) section.style.display = 'none';
+        list.innerHTML = '';
         return;
       }
+      if (section) section.style.display = '';
 
       var withMeta = reminders.map(function(r) {
         var due = (typeof parseLocalDate === 'function') ? parseLocalDate(r.dueDate) : new Date(r.dueDate);
@@ -10244,11 +10265,34 @@
     // ===================================================
     var REMINDERS_KEY = 'drivee_reminders';
 
+    // Show/hide the Add Reminder form. Default state is "hidden behind the
+    // button"; tapping + Add Reminder reveals the form, Cancel collapses it.
+    function toggleReminderForm(show) {
+      var form = document.getElementById('reminders-form');
+      var btn  = document.getElementById('reminders-add-btn');
+      if (!form || !btn) return;
+      if (show) {
+        form.hidden = false;
+        btn.style.display = 'none';
+        var refEl = document.getElementById('reminder-ref');
+        if (refEl) setTimeout(function(){ try { refEl.focus(); } catch(e){} }, 50);
+      } else {
+        form.hidden = true;
+        btn.style.display = '';
+        var refEl = document.getElementById('reminder-ref');
+        var dtEl  = document.getElementById('reminder-date');
+        if (refEl) refEl.value = '';
+        if (dtEl)  dtEl.value  = '';
+      }
+    }
+
     function addReminder() {
       var ref  = document.getElementById('reminder-ref').value.trim();
       var date = document.getElementById('reminder-date').value;
       if (!ref || !date) {
         showToast('Enter a ticket number and due date');
+        // Make sure the form is visible so the user can see what's wrong
+        if (typeof toggleReminderForm === 'function') toggleReminderForm(true);
         // Shake the Add Reminder button — same feedback as a wrong PIN
         var addBtn = document.getElementById('add-reminder-btn');
         if (addBtn) {
@@ -10279,6 +10323,10 @@
       if (cards.length) cards[cards.length - 1].classList.add('new');
       document.getElementById('reminder-ref').value  = '';
       document.getElementById('reminder-date').value = '';
+      // Collapse the form back into a button now that we've saved
+      if (typeof toggleReminderForm === 'function') toggleReminderForm(false);
+      // Refresh the v2 inline reminders too so a previously-empty section appears
+      if (typeof dv2RenderReminders === 'function') dv2RenderReminders();
       showToast('Reminder added');
     }
 
@@ -10431,11 +10479,10 @@
         : allReminders.filter(function(r) { return r.carId === activeCarFilter; });
 
       if (allReminders.length === 0) {
-        list.innerHTML =
-          '<div class="empty-state">' +
-            '<div class="empty-state-icon">🔔</div>' +
-            'No reminders yet — add one above' +
-          '</div>';
+        // Don't render an empty-state placeholder — the + Add Reminder button
+        // above is the only call-to-action a new user needs. Avoid the
+        // "half-built product" look of stacked empty boxes.
+        list.innerHTML = '';
         return;
       }
 
