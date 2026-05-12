@@ -1072,12 +1072,37 @@
       border: 1px solid var(--border); font-size: 14px;
       font-family: inherit; margin-bottom: 10px;
       background: var(--elevated);
+      transition: border-color 0.15s, background 0.15s;
     }
+    .profile-sheet-email-input:focus {
+      outline: 2px solid var(--blue);
+      border-color: var(--blue);
+    }
+    /* Invalid state — red border, soft red background, shake */
+    .profile-sheet-email-input.invalid {
+      border-color: #e1473d;
+      background: #fff4f3;
+    }
+    .profile-sheet-email-input.shake {
+      animation: shake 0.3s ease-in-out;
+    }
+    .profile-sheet-error {
+      display: none;
+      font-size: 12px; color: #e1473d;
+      font-weight: 600;
+      margin: -4px 0 10px 2px;
+      text-align: left;
+    }
+    .profile-sheet-error.show { display: block; }
     .profile-sheet-send-btn {
       width: 100%; padding: 13px;
       background: var(--blue); color: #fff;
       border: none; border-radius: 10px;
       font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .profile-sheet-send-btn:disabled {
+      background: #b5bcc9;
+      cursor: not-allowed;
     }
     .profile-sheet-sent {
       font-size: 13px; color: var(--green);
@@ -5574,8 +5599,22 @@
     <div id="ps-signed-out" class="profile-sheet-signin-wrap">
       <div class="profile-sheet-signin-title">☁️ Sign in to sync</div>
       <div class="profile-sheet-signin-sub">No password needed — we'll email you a magic link.</div>
-      <input type="email" class="profile-sheet-email-input" id="ps-email-input" placeholder="your@email.com" />
-      <button class="profile-sheet-send-btn" onclick="sendMagicLinkFromSheet()">Send Magic Link</button>
+      <!-- Wrapped in a form so Enter submits AND native HTML5 email validation
+           kicks in. The JS handler also does its own validation as a backstop. -->
+      <form onsubmit="event.preventDefault(); sendMagicLinkFromSheet(); return false;" novalidate>
+        <input type="email"
+               class="profile-sheet-email-input"
+               id="ps-email-input"
+               name="email"
+               placeholder="your@email.com"
+               autocomplete="email"
+               inputmode="email"
+               required
+               oninput="dvClearEmailInvalid('ps-email-input', 'ps-email-error')"
+        />
+        <div class="profile-sheet-error" id="ps-email-error">Please enter a valid email address.</div>
+        <button type="submit" class="profile-sheet-send-btn">Send Magic Link</button>
+      </form>
       <div class="profile-sheet-sent" id="ps-sent">✅ Check your email and tap the link</div>
     </div>
   </div>
@@ -11409,20 +11448,60 @@
       document.getElementById('profile-overlay').classList.remove('open');
     }
 
+    // Stricter than ".includes('@')" — requires a non-empty user part,
+    // an @, a domain part, and at least a 2-char TLD. Good enough to catch
+    // typos like "foo@bar" or "foo@.com" or "foo@bar." without being annoying.
+    var EMAIL_RE = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
+    function dvIsValidEmail(s) {
+      return typeof s === 'string' && EMAIL_RE.test(s.trim());
+    }
+
+    // Used by oninput on email fields to clear the invalid state once the user
+    // starts typing again.
+    function dvClearEmailInvalid(inputId, errorId) {
+      var inp = document.getElementById(inputId);
+      var err = errorId ? document.getElementById(errorId) : null;
+      if (inp) inp.classList.remove('invalid', 'shake');
+      if (err) err.classList.remove('show');
+    }
+
     function sendMagicLinkFromSheet() {
-      if (!db) { showToast('Not connected — try refreshing'); return; }
-      var email = document.getElementById('ps-email-input').value.trim();
-      if (!email || !email.includes('@')) {
-        showToast('Enter a valid email address');
+      var input = document.getElementById('ps-email-input');
+      var err   = document.getElementById('ps-email-error');
+      var email = input ? input.value.trim() : '';
+
+      // Validate first — block submit if email is empty or malformed.
+      if (!dvIsValidEmail(email)) {
+        if (input) {
+          input.classList.add('invalid');
+          // Re-trigger shake animation by removing + forcing reflow + re-adding
+          input.classList.remove('shake');
+          input.offsetHeight; // force reflow
+          input.classList.add('shake');
+          try { input.focus(); } catch (e) {}
+        }
+        if (err) {
+          err.textContent = email
+            ? '"' + email + '" doesn\'t look like a valid email — please double-check.'
+            : 'Please enter your email address.';
+          err.classList.add('show');
+        }
         return;
       }
+
+      if (!db) { showToast('Not connected — try refreshing'); return; }
+
       var btn = document.querySelector('.profile-sheet-send-btn');
       if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
       trackEvent('magic_link_sent', email + '|sheet');
       db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
         .then(function(res) {
           if (res.error) {
-            showToast('Error: ' + res.error.message);
+            if (input) input.classList.add('invalid');
+            if (err) {
+              err.textContent = res.error.message || 'Couldn\'t send the link — try again.';
+              err.classList.add('show');
+            }
             if (btn) { btn.textContent = 'Send Magic Link'; btn.disabled = false; }
           } else {
             try { localStorage.setItem('drivee_signup_email', email); } catch (e) {}
