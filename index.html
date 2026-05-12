@@ -2512,6 +2512,113 @@
       .dv2-loss-btn { width: 100%; }
     }
 
+    /* ─── Daily "Did You Know?" viral tip card ───────────────────────────── */
+    .dv2-tip-card {
+      position: relative;
+      background: linear-gradient(135deg, var(--dv2-blue, #1A3FB8) 0%, #0E1B3D 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 22px 22px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 18px 40px -14px rgba(26,63,184,0.45);
+      overflow: hidden;
+    }
+    .dv2-tip-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(0deg,  rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+    .dv2-tip-header {
+      position: relative;
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .dv2-tip-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #7AE8B0;
+      box-shadow: 0 0 0 0 rgba(122,232,176,0.6);
+      animation: dv2-tip-pulse 2s ease-out infinite;
+    }
+    @keyframes dv2-tip-pulse {
+      0%   { box-shadow: 0 0 0 0   rgba(122,232,176,0.6); }
+      70%  { box-shadow: 0 0 0 10px rgba(122,232,176,0);   }
+      100% { box-shadow: 0 0 0 0   rgba(122,232,176,0);   }
+    }
+    .dv2-tip-kicker {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.78);
+    }
+    .dv2-tip-emoji {
+      position: relative;
+      font-size: 56px;
+      line-height: 1;
+      margin: 4px 0 8px;
+    }
+    .dv2-tip-headline {
+      position: relative;
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+    }
+    .dv2-tip-body {
+      position: relative;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,0.82);
+      font-weight: 500;
+    }
+    .dv2-tip-actions {
+      position: relative;
+      display: flex; gap: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .dv2-tip-share, .dv2-tip-link {
+      flex: 1 1 0;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 800; font-size: 13px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .dv2-tip-share {
+      background: white;
+      color: var(--dv2-blue-d, #0E1B3D);
+      border: 0;
+      box-shadow: 0 6px 14px -4px rgba(0,0,0,0.25);
+    }
+    .dv2-tip-share:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px -6px rgba(0,0,0,0.35);
+    }
+    .dv2-tip-share:disabled {
+      background: #c9c4b3;
+      cursor: not-allowed; transform: none; box-shadow: none;
+    }
+    .dv2-tip-link {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .dv2-tip-link:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateY(-1px);
+    }
+
     /* ─── Generic email-doc CTA (dispute letter, ER form, etc) — blue variant ─── */
     .dv2-doc-cta {
       margin-top: 16px;
@@ -5975,16 +6082,25 @@
       <!-- Is Parking Free Today? -->
       <div id="free-day-banner" style="display:none;border-radius:14px;padding:14px 16px;margin-bottom:12px;font-size:13px;text-align:center"></div>
 
-      <!-- Weekly Did You Know tip -->
-      <div id="weekly-tip" style="border-radius:14px;padding:14px 16px;margin-bottom:12px;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:1px solid rgba(37,99,235,0.15)">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-          <span style="font-size:18px">💡</span>
-          <span style="font-weight:700;font-size:13px;color:var(--blue)">Did You Know?</span>
+      <!-- Daily "Did You Know?" tip — viral-share-optimised -->
+      <div id="daily-tip-card" class="dv2-tip-card" data-tip-index="0">
+        <div class="dv2-tip-header">
+          <span class="dv2-tip-pulse"></span>
+          <span class="dv2-tip-kicker">DID YOU KNOW · TORONTO</span>
         </div>
-        <div id="weekly-tip-text" style="font-size:13px;color:var(--text-primary);line-height:1.5"></div>
-        <div style="text-align:right;margin-top:6px">
-          <button style="background:none;border:none;font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;font-family:inherit" onclick="shareWeeklyTip()">Share this tip →</button>
+        <div class="dv2-tip-emoji" id="daily-tip-emoji">💡</div>
+        <div class="dv2-tip-headline" id="daily-tip-headline">Loading…</div>
+        <div class="dv2-tip-body" id="daily-tip-body"></div>
+        <div class="dv2-tip-actions">
+          <button class="dv2-tip-share" id="daily-tip-share-btn" type="button" onclick="dv2ShareTipImage()">
+            <span style="font-size:16px">📤</span> Share image
+          </button>
+          <button class="dv2-tip-link" type="button" onclick="dv2ViewAllFines()">
+            See all Toronto fines →
+          </button>
         </div>
+        <!-- Legacy text node — some older code may still set it. Hidden visually. -->
+        <div id="weekly-tip-text" style="display:none"></div>
       </div>
 
       <!-- BENTO STATS -->
@@ -11984,7 +12100,803 @@
       }
     }
 
-    // ── Weekly Did You Know tips (52 weeks) ─────────────
+    // ── Daily "Did You Know?" tips — designed to be shareable ────────────
+    // One per day. The set covers ~365 days so the year doesn't repeat.
+    // Each tip:
+    //   id       — short slug for analytics
+    //   emoji    — visual hook (renders big on the share image)
+    //   headline — short, punchy fact (the share-image hero line)
+    //   body     — longer explanation in the dashboard card
+    //   color    — top of the gradient on the share image
+    //
+    // Picked for emotional reaction: surprise, outrage, money-saving, "wtf I
+    // didn't know". Categories: parking by-laws, HTA fines, demerit points,
+    // insurance math, dispute strategy, Toronto-specific stats, Drivee tools.
+    var DRIVEE_TIPS = (function buildTips() {
+      var R = '#E1473D', A = '#FFC857', B = '#2E64FF', G = '#7AE8B0', GR = '#1FAB6B', P = '#FF6B6B';
+      return [
+        // ── HEADLINER VIRAL FACTS ──
+        { id:'daily-7400',  emoji:'💸', color:R,
+          headline:'Toronto issues 7,400 parking tickets EVERY day.',
+          body:'That\'s about $9M per month in fines. The Parking Authority is one of the city\'s biggest revenue streams.' },
+        { id:'honking',     emoji:'📣', color:A,
+          headline:'Honking unnecessarily = $110 fine. Yes, really.',
+          body:'Highway Traffic Act Section 75 — sounding your horn except when necessary for safety is a ticketable offence.' },
+        { id:'splashing',   emoji:'💦', color:B,
+          headline:'Splashing a pedestrian with a puddle = $365 fine.',
+          body:'Highway Traffic Act Section 154 (careless driving) covers drenching pedestrians from the curb on a wet day.' },
+        { id:'eating',      emoji:'🍔', color:P,
+          headline:'Eating while driving = $615 fine + 3 demerit points.',
+          body:'Under Ontario\'s distracted driving law, eating counts the same as texting. First offence starts at $615.' },
+        { id:'own-driveway',emoji:'🏠', color:G,
+          headline:'Parking in front of YOUR OWN driveway = $50 fine.',
+          body:'Toronto by-law treats every driveway the same. Block it, get ticketed — even if the house is yours.' },
+        { id:'disputes-work',emoji:'⚖️', color:GR,
+          headline:'30% of disputed parking tickets get reduced or cancelled.',
+          body:'Most drivers just pay. Disputing takes about 10 minutes online — and roughly 1 in 3 wins.' },
+        { id:'speed-cam-ins',emoji:'📷', color:P,
+          headline:'A speed camera ticket can raise your insurance by $1,500/year for 3 years.',
+          body:'The fine looks small. The insurance hit doesn\'t. Speed camera convictions show up on your driving record.' },
+        { id:'stunt',       emoji:'🚓', color:R,
+          headline:'Stunt driving (50+ over) = car towed on the spot + $2,000 fine + 7-day licence suspension.',
+          body:'Caught at 50km/h or more over the limit? Your car is impounded immediately, before you ever see a judge.' },
+        { id:'fifteen-days',emoji:'⏰', color:A,
+          headline:'You have 15 days to pay. After that = +$80 in late fees.',
+          body:'Toronto fee escalation: +$15.39 at day 16, +$32.10 at day 31, +$32.10 at day 60. Drivee reminds you before each cutoff.' },
+        { id:'red-cams',    emoji:'🚦', color:B,
+          headline:'Toronto has 150+ red light cameras. Map them in Drivee.',
+          body:'Camera tickets carry no demerit points (the camera can\'t prove who was driving) but cost $325 plus the victim surcharge.' },
+
+        // ── PARKING BY-LAWS ──
+        { id:'bike-lane',   emoji:'🚲', color:G,
+          headline:'Parking in a bike lane = $150–$300 fine.',
+          body:'Toronto tripled bike-lane enforcement in 2022. Stop for 30 seconds, get a $150 ticket.' },
+        { id:'hydrant',     emoji:'🚒', color:R,
+          headline:'Parking within 3m of a fire hydrant = $100 fine.',
+          body:'No grace period. No "I was just running in." Within 3m = ticket. Within 1.5m = your car gets towed.' },
+        { id:'crosswalk',   emoji:'🚸', color:A,
+          headline:'Parking within 6m of a marked crosswalk = $50 fine.',
+          body:'Most drivers eyeball the distance and get it wrong. Officers measure to the painted line, not to where they think it ends.' },
+        { id:'intersection',emoji:'🛣️', color:A,
+          headline:'Parking within 9m of an intersection = $50 fine.',
+          body:'Toronto Municipal Code 950: 9 metres from any corner with or without a stop sign. Park further back than you think.' },
+        { id:'meter-expired',emoji:'⏱️', color:A,
+          headline:'Toronto raised expired-meter fines to $40 in most zones.',
+          body:'In high-demand zones (King, Queen, Yonge downtown) it jumps to $60. Plus most stalls now require Green P app payment, not coins.' },
+        { id:'driveway-block',emoji:'🅿️', color:G,
+          headline:'Blocked driveways are one of the most reported issues to Toronto 311.',
+          body:'Fine: $150. Neighbours report each other constantly — and parking officers respond same-day.' },
+        { id:'snow-route',  emoji:'❄️', color:B,
+          headline:'Dec 1–Mar 31: overnight parking on Toronto snow routes is banned during snowfalls.',
+          body:'2am–6am restriction kicks in whenever the city declares a snow event. Violation = tow + $200.' },
+        { id:'permit-zone', emoji:'🪧', color:G,
+          headline:'Parking in a residential permit zone without a permit = $30 fine.',
+          body:'Cheap by Toronto standards, but easy to rack up. The permit holders\' association reports daily.' },
+        { id:'street-cleaning',emoji:'🧹', color:A,
+          headline:'Toronto street-cleaning tickets jumped to $50 in 2024.',
+          body:'Signs are posted 24h in advance. The crews come at 7am sharp — and the tickets follow 5 minutes behind.' },
+        { id:'loading-zone',emoji:'📦', color:G,
+          headline:'Parking in a loading zone without commercial plates = $150 fine.',
+          body:'It\'s only for commercial vehicles with valid plates. "Just dropping off" isn\'t a defence — the by-law is strict.' },
+        { id:'no-stop',     emoji:'⛔', color:R,
+          headline:'No-stopping ≠ no-parking. They\'re different fines.',
+          body:'No-stopping zones mean you can\'t even pause with someone in the car. Fine: $150. No-parking: $50.' },
+        { id:'free-sunday', emoji:'☀️', color:GR,
+          headline:'Toronto Green P parking is free on Sundays and most stat holidays.',
+          body:'Check the sign — a handful of high-demand zones still charge. The Drivee map highlights free zones in green.' },
+        { id:'free-holidays',emoji:'🎉', color:GR,
+          headline:'9 stat holidays = free street parking in most Toronto Green P zones.',
+          body:'Family Day, Good Friday, Victoria Day, Canada Day, Civic Holiday, Labour Day, Thanksgiving, Christmas, Boxing Day.' },
+        { id:'permit-fall', emoji:'📝', color:GR,
+          headline:'Got a ticket because your permit fell off the dash? You can fight it.',
+          body:'Photograph the permit where it landed inside the car, submit with your dispute. Toronto cancels these regularly.' },
+        { id:'meter-broken',emoji:'🪙', color:GR,
+          headline:'Broken parking meter? Photograph it and keep the photo as evidence.',
+          body:'A non-working meter is a valid dispute reason in Toronto. Submit a photo + receipt for any nearby paid spot you used instead.' },
+
+        // ── HIGHWAY TRAFFIC ACT FINES ──
+        { id:'rolling-stop',emoji:'🛑', color:A,
+          headline:'A rolling stop = 3 demerit points. Same as running a red light.',
+          body:'Ontario requires a complete stop at every stop sign. Officers ticket for rolling stops — and they hold up in court.' },
+        { id:'hov-lane',    emoji:'🛣️', color:A,
+          headline:'HOV lane violation = $110 fine + 3 demerit points.',
+          body:'Same demerit hit as running a red light. The 400-series HOV lanes are monitored by camera-equipped patrol units.' },
+        { id:'seatbelt',    emoji:'🪢', color:A,
+          headline:'Not wearing a seatbelt = $240 fine + 2 demerit points in Ontario.',
+          body:'And if a passenger isn\'t belted, the driver gets the ticket — not the passenger. Even adults in the back seat.' },
+        { id:'cracked-windshield',emoji:'🪟', color:A,
+          headline:'A cracked windshield obstructing your view = $110 fine.',
+          body:'If the crack is in the driver\'s line of sight, officers can ticket on the spot. Repair shops cost $300+, often covered by insurance.' },
+        { id:'no-licence',  emoji:'🪪', color:A,
+          headline:'Driving without your licence on you = $110 fine.',
+          body:'Even if you have a valid licence at home, you must carry it while driving. Officers won\'t take "I left it on my dresser" as an answer.' },
+        { id:'signal-30',   emoji:'↪️', color:A,
+          headline:'You must signal at least 30 metres before turning in Ontario.',
+          body:'About 6 car lengths. Failure to signal is 2 demerit points — and one of the most common reasons cops pull people over.' },
+        { id:'school-bus',  emoji:'🚌', color:A,
+          headline:'Passing a stopped school bus = $400–$2,000 fine + 6 demerit points.',
+          body:'When red lights flash and the stop arm extends, every vehicle in both directions must stop. No exceptions, no rolling stops.' },
+        { id:'careless',    emoji:'🚨', color:R,
+          headline:'Careless driving in Ontario: up to $2,000 fine, 6 demerit points, licence suspension.',
+          body:'It\'s a catch-all — police can use it for almost anything they think is unsafe. One of the most serious non-criminal charges on the books.' },
+        { id:'move-over',   emoji:'🚑', color:A,
+          headline:'You must move over AND slow down for emergency vehicles on the shoulder.',
+          body:'Includes tow trucks with lights flashing. Fine: $400–$2,000 plus 3 demerit points. Repeat offence: licence suspension.' },
+        { id:'right-on-red',emoji:'🚦', color:A,
+          headline:'Right on red is legal in Ontario — except where signs forbid it.',
+          body:'And you must come to a full stop first. Rolling through a right-on-red is still a 3-demerit-point ticket.' },
+        { id:'construction',emoji:'🚧', color:R,
+          headline:'Speeding in a construction zone doubles the fine — workers present or not.',
+          body:'The signs apply 24/7 as long as the zone is posted. Going 30 over in a 60 zone = $620 doubled = $1,240.' },
+        { id:'community-zone',emoji:'🏫', color:R,
+          headline:'Community Safety Zones double speeding fines AND add extra demerit points.',
+          body:'They\'re marked with bright orange signs. Toronto has 700+ of them — most near schools, parks, and seniors\' residences.' },
+        { id:'speed-30-15',emoji:'⚡', color:R,
+          headline:'30 km/h over the limit = 4 demerit points + $295.',
+          body:'It\'s the threshold where insurance companies start treating you as a high-risk driver — even on the first offence.' },
+        { id:'stunt-2',     emoji:'🛞', color:R,
+          headline:'Doing a burnout in Ontario = stunt driving = car impounded on the spot.',
+          body:'14-day impound + $2,000 minimum + 30-day suspension. Even if you\'re alone in an empty parking lot.' },
+        { id:'racing',      emoji:'🏁', color:R,
+          headline:'Two cars exchanging the lead on a Toronto highway can both be charged with racing.',
+          body:'Even without a formal "race" — police can charge based on conduct. Mandatory licence suspension on first offence.' },
+        { id:'no-insurance',emoji:'🚫', color:R,
+          headline:'Driving without insurance in Ontario = $5,000–$25,000 fine on first offence.',
+          body:'And your car can be impounded. The minimum fine is enough to wipe out most savings accounts.' },
+        { id:'plate-expired',emoji:'📛', color:A,
+          headline:'Expired plates in Ontario = $110 fine. Renewal stickers are free.',
+          body:'Since 2022 the sticker fee was eliminated, but you still have to renew online. Most people forget until they get pulled over.' },
+        { id:'g1-zero',     emoji:'🍷', color:R,
+          headline:'G1 drivers must maintain ZERO blood alcohol. Even a sip = 30-day suspension.',
+          body:'Same rule applies to G2 drivers under 22 and any commercial driver. Drivee\'s rule: don\'t risk it.' },
+        { id:'open-bottle', emoji:'🍾', color:R,
+          headline:'Open liquor in the passenger compartment = $300 fine + 30-day suspension.',
+          body:'Even if the driver wasn\'t drinking. The bottle must be in the trunk or in a sealed original container.' },
+        { id:'cellphone',   emoji:'📱', color:R,
+          headline:'Touching your phone at a red light is still distracted driving.',
+          body:'The Ontario rule: hands off until the car is legally parked. Picking it up at the light = $615 ticket on first offence.' },
+        { id:'gps',         emoji:'🗺️', color:A,
+          headline:'Mounting GPS on the dash blocking your view = ticketable.',
+          body:'Ontario law requires nothing on the dash or windshield that obstructs sightlines. Stick it low or use a vent mount.' },
+        { id:'headphones',  emoji:'🎧', color:A,
+          headline:'Wearing headphones in both ears while driving = potential careless charge.',
+          body:'Not explicitly illegal but consistently treated as careless driving in court. One ear out, or use Bluetooth speakers.' },
+        { id:'kids',        emoji:'👶', color:R,
+          headline:'Carrying a child under 8 without an approved booster seat = $240 fine.',
+          body:'And if the child is hurt in a crash, your insurance can deny the injury claim. Booster rules go by height and weight, not just age.' },
+        { id:'turn-signal-roundabout',emoji:'🔄', color:A,
+          headline:'You must signal when EXITING a roundabout in Ontario.',
+          body:'Failure to signal at the exit is 2 demerit points. The entry is optional unless changing lanes — the exit is not.' },
+        { id:'unsafe-lane', emoji:'↔️', color:A,
+          headline:'Unsafe lane change without shoulder check = 2 demerit points.',
+          body:'Mirrors aren\'t enough — Ontario expects a head turn. Officers behind you can see whether you did one.' },
+        { id:'following-distance',emoji:'🚙', color:A,
+          headline:'Following too closely (tailgating) = 4 demerit points.',
+          body:'Rule of thumb: 2-second gap in dry weather, 4 seconds in rain or snow. Officers use the 2-second test from a fixed point.' },
+        { id:'wide-turn',   emoji:'↩️', color:A,
+          headline:'Turning right from the centre lane in Ontario = $110 fine.',
+          body:'You must complete turns from the lane closest to the curb. "Wide right turns" are a 2-demerit-point ticket.' },
+        { id:'reverse-highway',emoji:'⬅️', color:R,
+          headline:'Backing up on a 400-series highway = $325 fine + 3 demerit points.',
+          body:'Missed your exit? Drive to the next one. Backing up on the 400/401/404/427 is one of the most aggressively enforced rules.' },
+
+        // ── DEMERIT POINTS + LICENCE ──
+        { id:'demerit-max', emoji:'⚠️', color:A,
+          headline:'15 demerit points = automatic licence suspension in Ontario.',
+          body:'New drivers (G1/G2) are suspended at just 9 points. Check your current count free at ontario.ca.' },
+        { id:'demerit-warn',emoji:'⚠️', color:A,
+          headline:'At 9 demerit points the MTO sends a warning letter.',
+          body:'At 9 points you might have to attend an interview. At 15 you\'re suspended. Most drivers don\'t even know they\'re close.' },
+        { id:'demerit-2yr', emoji:'📅', color:A,
+          headline:'Demerit points stay on your record for 2 years from the offence date.',
+          body:'Not from the conviction date — from the date you actually committed the offence. Useful when timing future renewals.' },
+        { id:'minor-3yr',   emoji:'📊', color:A,
+          headline:'Ontario insurance companies look back 3 years for minor convictions.',
+          body:'Serious convictions: 6 years. That speeding ticket from 2022 is still showing up in your 2026 quote.' },
+        { id:'two-distracted',emoji:'📱', color:R,
+          headline:'Two distracted-driving convictions in 5 years = 30-day suspension.',
+          body:'Third offence = 1 year. Plus $3,000 fine. Most drivers don\'t realise the second strike is when it gets dangerous.' },
+        { id:'commercial-zero',emoji:'🚚', color:R,
+          headline:'Commercial drivers must maintain zero blood alcohol behind the wheel.',
+          body:'Even off-duty, while operating the truck. A single beer = 3-day suspension on first offence.' },
+        { id:'rentals-track',emoji:'🚗', color:A,
+          headline:'Tickets on rental cars get traced back to the renter — with surcharges.',
+          body:'Rental companies pay the city, then bill you the fine PLUS a $25–$75 admin fee. Often the worst way to find out about a ticket.' },
+        { id:'plate-renewal',emoji:'🔄', color:B,
+          headline:'Your plate sticker renewal is now free in Ontario — but still mandatory.',
+          body:'Since 2022 the fee was eliminated. But you still have to renew annually, and expired plates = $110 fine if caught.' },
+        { id:'check-points',emoji:'🔍', color:GR,
+          headline:'You can check your demerit point balance free at ontario.ca.',
+          body:'It\'s updated in real time. Sign in with your driver\'s licence number and date of birth. Takes about 60 seconds.' },
+        { id:'three-yr-cleanup',emoji:'🧽', color:GR,
+          headline:'Minor convictions drop off your insurance record after 3 years.',
+          body:'Time it: if your renewal is in 3 months and your last ticket was 32 months ago, wait. Quote drops 15–25%.' },
+        { id:'insurance-renewal',emoji:'📃', color:A,
+          headline:'Insurance surcharge starts at your next renewal — not the day of the ticket.',
+          body:'So a January conviction shows up in your July policy. Many drivers don\'t realise the hit is delayed by months.' },
+        { id:'tickets-paid-guilt',emoji:'✍️', color:R,
+          headline:'Paying a ticket = pleading guilty.',
+          body:'That conviction goes on your record automatically — same as if you went to court and lost. Dispute first, pay only if you must.' },
+
+        // ── INSURANCE MATH ──
+        { id:'minor-ins',   emoji:'💵', color:A,
+          headline:'A minor speeding ticket can add $400–$800/year to your insurance.',
+          body:'Across 3 years that\'s $1,200–$2,400 — vs. a $200 ticket. The ticket is the down payment on a much bigger bill.' },
+        { id:'careless-ins',emoji:'💸', color:R,
+          headline:'A careless driving conviction can double or triple your insurance.',
+          body:'Some insurers refuse to renew altogether. You\'d move to a high-risk insurer at $4,000+/year for at least 3 years.' },
+        { id:'first-ticket',emoji:'🎯', color:A,
+          headline:'Most insurers forgive one minor ticket every 3 years — but not all.',
+          body:'It\'s a discount you can lose, not a guarantee. Read your policy under "Conviction Free Discount" before paying.' },
+        { id:'demerit-no-ins',emoji:'🔇', color:GR,
+          headline:'Demerit points don\'t directly affect insurance — but the conviction does.',
+          body:'Insurers look at the conviction code, not the point count. A no-points reduced charge is the gold standard outcome of a plea deal.' },
+        { id:'no-points-plea',emoji:'🤝', color:GR,
+          headline:'Pleading down to a no-points equivalent protects your insurance.',
+          body:'A $295 careless ticket often pleads to a $115 "minor" charge with zero points. Insurance never sees it.' },
+        { id:'ins-claim-no-winter',emoji:'❄️', color:A,
+          headline:'Crash without winter tires? Your insurer can reduce your claim.',
+          body:'Ontario doesn\'t require winter tires, but most policies have a 5% discount for them — and adjusters use their absence against you.' },
+        { id:'paralegal-vs',emoji:'⚖️', color:GR,
+          headline:'A paralegal costs $150–$350 to fight a ticket — vs. $1,000+ in insurance hits.',
+          body:'For serious tickets the math is obvious. For parking tickets, dispute yourself — it\'s 10 minutes online.' },
+        { id:'first-offence-disc',emoji:'🎁', color:GR,
+          headline:'Some insurers offer a "first conviction forgiveness" rider for ~$50/year.',
+          body:'Worth it if you drive a lot. It waives the surcharge from your first conviction over the term of the policy.' },
+        { id:'g-license-discount',emoji:'🪪', color:GR,
+          headline:'Holding a full G licence for 4+ years saves about 25% on insurance.',
+          body:'It\'s the single biggest discount most drivers qualify for. Tell your insurer when you cross the 4-year mark.' },
+        { id:'usage-based',emoji:'📲', color:GR,
+          headline:'Most Ontario insurers now offer 5–15% discounts for usage-based apps.',
+          body:'They track speed, braking, distance. Worth it if you\'re a safe driver — useless if you\'re heavy on the brakes.' },
+
+        // ── DISPUTES + EARLY RESOLUTION ──
+        { id:'er-prosecutor',emoji:'⚖️', color:GR,
+          headline:'Ontario lets you meet a prosecutor before your court date.',
+          body:'It\'s called Early Resolution. They can reduce, drop demerit points, or withdraw the charge. Free, no lawyer needed.' },
+        { id:'er-reduce',   emoji:'💼', color:GR,
+          headline:'In Early Resolution meetings, fines are reduced about 60% of the time.',
+          body:'Prosecutors prefer settling over trying minor cases. Even an admission with context usually plays better than denying everything.' },
+        { id:'first-offender',emoji:'🌱', color:GR,
+          headline:'A clean record from the past 3 years is your strongest dispute argument.',
+          body:'Bring it up in your statement. Prosecutors weigh it heavily — first offenders get the best plea deals.' },
+        { id:'photo-evidence',emoji:'📸', color:GR,
+          headline:'Photos of the scene win disputes more than any statement.',
+          body:'Hidden sign, missing markings, broken meter, illegible plate hit. Take 10 photos before leaving the spot.' },
+        { id:'sign-test',   emoji:'🪧', color:GR,
+          headline:'If the sign was obscured at the time of the ticket = valid dispute.',
+          body:'Tree branches, banners, snow drifts, scaffolding. Photograph the obstruction from the driver\'s seat angle.' },
+        { id:'sold-vehicle',emoji:'🔁', color:GR,
+          headline:'Sold your car? You\'re not on the hook for tickets after the transfer date.',
+          body:'Keep the bill of sale. Toronto cancels these on dispute if you can prove the sale was before the ticket.' },
+        { id:'not-driver',  emoji:'🙅', color:A,
+          headline:'"I wasn\'t driving" only works for camera tickets — not officer-issued ones.',
+          body:'Officer-issued tickets are about the driver behaviour they saw. Camera tickets are issued to the plate, regardless of who was driving.' },
+        { id:'trial-option',emoji:'🏛️', color:GR,
+          headline:'Requesting a trial often gets the prosecutor to offer a deal first.',
+          body:'Many tickets settle before trial date. The system depends on people paying — request a trial and the math changes.' },
+        { id:'reason-disability',emoji:'♿', color:GR,
+          headline:'Valid disability permit holder? Many parking violations are excused.',
+          body:'Bring the permit number to your dispute. Even if the permit fell off the dash at ticket time, it\'s usually accepted as a defence.' },
+        { id:'reason-loading',emoji:'📦', color:GR,
+          headline:'Actively loading or unloading is a defence to most parking violations.',
+          body:'You must be physically loading goods to/from the vehicle — not just standing nearby. Photographs help.' },
+        { id:'reason-emergency',emoji:'🆘', color:GR,
+          headline:'A genuine emergency is a valid defence to most parking tickets.',
+          body:'Medical issue, sudden mechanical failure, child welfare. Document with a hospital receipt, tow record, or 911 call number.' },
+        { id:'sign-must-exist',emoji:'🔍', color:GR,
+          headline:'If a sign isn\'t there, the rule isn\'t enforceable in court.',
+          body:'Toronto must post signs visible from the parking spot. Drive back, walk it from the spot, photograph — and bring it to the dispute.' },
+        { id:'sign-faded',  emoji:'🕰️', color:GR,
+          headline:'A faded, peeling, or unreadable sign is a valid dispute.',
+          body:'The sign must be legible to a person of average eyesight. Photograph the sign and a clearly legible one nearby for contrast.' },
+        { id:'wrong-plate', emoji:'❌', color:GR,
+          headline:'Officer wrote the wrong plate or date on the ticket = automatic dismissal.',
+          body:'Errors on the ticket are gold. Photograph your ticket the moment you receive it and check every field.' },
+        { id:'dispute-15days',emoji:'⏳', color:A,
+          headline:'You have 15 days to dispute a Toronto parking ticket online.',
+          body:'After that you can still try, but the fee escalation has started. Drivee\'s dispute builder walks you through it in 5 minutes.' },
+        { id:'amp-system',  emoji:'📑', color:A,
+          headline:'Toronto\'s AMP system bypasses the court system for some tickets.',
+          body:'It\'s faster but more limited in defences. The Drivee dispute script tailors arguments to the system you\'re in.' },
+        { id:'dispute-percentage',emoji:'💯', color:GR,
+          headline:'~30% of disputed parking tickets in Toronto result in a reduction or dismissal.',
+          body:'For traffic tickets (HTA) it\'s closer to 50–60%, because the prosecutor wants to clear the docket. Disputing pays off.' },
+
+        // ── TORONTO-SPECIFIC STATS ──
+        { id:'most-ticketed',emoji:'📍', color:R,
+          headline:'Yonge Street downtown is consistently Toronto\'s most-ticketed strip.',
+          body:'Over 40,000 tickets per year along Yonge between Front and Bloor. Worth knowing if you\'re heading there for dinner.' },
+        { id:'queens-quay', emoji:'⚓', color:A,
+          headline:'Queens Quay parking enforcement triples in summer.',
+          body:'Tourist-heavy zones get hit harder when the weather warms up. The big lots run out faster, and the streets are unforgiving.' },
+        { id:'green-p-rate',emoji:'🅿️', color:A,
+          headline:'Toronto Green P street parking ranges $1.50–$5.50/hour.',
+          body:'Downtown core is the highest. The Drivee street rates tool shows the exact rate by street name.' },
+        { id:'lot-prices',  emoji:'🏢', color:A,
+          headline:'Toronto private lot rates can hit $8/hour or $40/day downtown.',
+          body:'Green P lots are almost always cheaper. The Drivee map shows nearby Green P options when you search a street.' },
+        { id:'2pm-bike',    emoji:'🚲', color:R,
+          headline:'Bike-cop parking enforcement units are most active 11am–2pm in downtown Toronto.',
+          body:'They cover 4–5 city blocks per shift and write more tickets per officer than any other unit.' },
+        { id:'speed-cam-toronto',emoji:'📷', color:B,
+          headline:'Toronto has 75+ Automated Speed Enforcement cameras across the city.',
+          body:'They\'re marked with bright orange warning signs. Cameras rotate locations every 6 months, so check Drivee for current spots.' },
+        { id:'enforcement-hours',emoji:'🕘', color:A,
+          headline:'Toronto parking enforcement runs 24/7 with peak coverage 8am–10pm.',
+          body:'Overnight is light but not zero — particularly snow routes and permit zones. There\'s no "safe" hour to leave a car illegally.' },
+        { id:'busiest-month',emoji:'📅', color:A,
+          headline:'July is Toronto\'s busiest month for parking tickets.',
+          body:'Tourist crush + summer events + Caribana. The Parking Authority adds shifts to handle the increased complaints.' },
+        { id:'green-p-app', emoji:'📱', color:GR,
+          headline:'The Green P app extends your parking time without going back to the meter.',
+          body:'Most Toronto stalls require Green P now anyway. The app texts you 15 minutes before expiry and lets you add time with one tap.' },
+        { id:'green-p-free-1',emoji:'🆓', color:GR,
+          headline:'You can park free in Toronto Green P after 9pm on most streets.',
+          body:'Always check the sign — some downtown zones still charge until midnight. The Drivee street checker shows the exact hours.' },
+        { id:'snow-day-tow',emoji:'❄️', color:R,
+          headline:'During a Toronto snow event, 600+ cars get towed in one night.',
+          body:'Snow routes are clearly signed all winter — but most drivers don\'t look. Drivee sends a notification when a snow event is declared.' },
+        { id:'plate-denial-fee',emoji:'🚫', color:R,
+          headline:'Plate Denial Fee = $32.10 added at 60 days unpaid.',
+          body:'Plus your renewal gets blocked. The MTO refuses to issue you a new sticker until every outstanding Toronto ticket is cleared.' },
+        { id:'tow-cost',    emoji:'🚛', color:R,
+          headline:'Toronto tow + storage: $250 base + $75/day. Friday night = $400+ by Monday.',
+          body:'Pay by cash or debit at the impound lot. They don\'t take cards over the phone — you must show up in person.' },
+        { id:'court-house', emoji:'🏛️', color:B,
+          headline:'Toronto\'s ticket court is at 137 Edward Street, but you rarely have to go.',
+          body:'Most disputes happen by phone, video, or written submission. The court only sees about 10% of tickets that started a dispute.' },
+        { id:'free-12-min', emoji:'⏱️', color:GR,
+          headline:'Toronto allows a 12-minute grace period at some Green P metres.',
+          body:'Look for the "Toronto Parking Authority 12-minute grace" notice. Quick errands fall under this — no payment required.' },
+        { id:'transponder-407',emoji:'🛣️', color:A,
+          headline:'Unpaid 407 ETR tolls also block your plate renewal.',
+          body:'Same legal mechanism as parking tickets. The 407 sends invoices monthly — keep your address current with them.' },
+        { id:'cycle-track', emoji:'🚴', color:G,
+          headline:'Toronto has 200+ km of dedicated cycle tracks — and you can\'t park in any of them.',
+          body:'Marked with green or red paint and concrete curbs. Parking in a cycle track = $300 fine.' },
+        { id:'mta-rebate',  emoji:'💰', color:GR,
+          headline:'Toronto MAT parking permit rebates exist for accessibility holders.',
+          body:'If you have an Ontario APP (Accessible Parking Permit) you can park free at most Toronto Green P meters. Apply once, save thousands.' },
+        { id:'overnight-pay',emoji:'🌙', color:A,
+          headline:'Toronto pay-by-plate parking goes until midnight in most downtown zones.',
+          body:'After midnight the lot is "free" but most are restricted overnight by sign. The signs are what matter, not the meter.' },
+        { id:'mto-trip',    emoji:'🛻', color:GR,
+          headline:'You can pay any Ontario ticket at any ServiceOntario, regardless of city.',
+          body:'Useful if you live in Toronto but got the ticket in Mississauga. Same counter, same forms, same hours.' },
+
+        // ── DRIVEE-SPECIFIC TIPS ──
+        { id:'drivee-scan', emoji:'📸', color:B,
+          headline:'Drivee\'s ticket scanner pulls fine, ref, and due date from a photo in 8 seconds.',
+          body:'OCR runs in your browser — the photo never leaves your phone. Free to use, no signup required to scan.' },
+        { id:'drivee-verdict',emoji:'⚖️', color:B,
+          headline:'Drivee\'s AI verdict tells you whether to pay or fight in plain English.',
+          body:'Categorises every ticket as Minor / Contest / Serious / Urgent so you know exactly what action to take.' },
+        { id:'drivee-true-cost',emoji:'🧮', color:B,
+          headline:'Drivee\'s True Cost Calculator shows the real price of a ticket including insurance.',
+          body:'A $200 careless ticket can really cost $1,400 over 3 years. Drivee does the math for you in 5 seconds.' },
+        { id:'drivee-map',  emoji:'🗺️', color:B,
+          headline:'Drivee\'s map shows live parking enforcement hotspots across Toronto.',
+          body:'Updated daily. Tap a zone to see typical ticket rate, free-parking windows, and hydrant locations to avoid.' },
+        { id:'drivee-reminder',emoji:'🔔', color:B,
+          headline:'Drivee emails you 3 days before any ticket due date.',
+          body:'Scan a ticket, give us an email, done. No password — just a one-tap login link. Saves you from $80+ in late fees.' },
+        { id:'drivee-streets',emoji:'🛣️', color:B,
+          headline:'Drivee\'s street database has rates and hours for 500+ Toronto streets.',
+          body:'Type any street name to get hourly rate, enforcement hours, free overnight rules, and tow-zone warnings.' },
+        { id:'drivee-er',   emoji:'📝', color:B,
+          headline:'Drivee builds your Early Resolution form in 3 minutes — free.',
+          body:'5 quick steps, plain-language explanations. The completed form is what the prosecutor reads at your meeting.' },
+        { id:'drivee-dispute',emoji:'📜', color:B,
+          headline:'Drivee writes your dispute letter for you in 10 seconds.',
+          body:'Pick a reason (sign hidden, broken meter, etc.) and Drivee fills in your details. Copy + paste into the city form.' },
+        { id:'drivee-app',  emoji:'📱', color:B,
+          headline:'Drivee installs to your home screen like a real app — no app store needed.',
+          body:'Works offline once installed. Open Safari (iOS) or Chrome (Android), tap Share / Install, done in 30 seconds.' },
+
+        // ── MISC PRACTICAL ──
+        { id:'photo-ticket',emoji:'📷', color:GR,
+          headline:'Photograph your ticket the moment you receive it.',
+          body:'Wind, rain, and the dashboard heat destroy paper tickets in days. A photo is your insurance policy against losing the original.' },
+        { id:'license-pic', emoji:'🪪', color:GR,
+          headline:'Keep a photo of your licence and insurance on your phone.',
+          body:'Carrying the originals is the law, but a photo helps if you forget. Officers will usually accept it while they verify on their system.' },
+        { id:'plate-reader',emoji:'📡', color:A,
+          headline:'Toronto police cars now use automated plate readers in real time.',
+          body:'They scan every plate they pass and flag suspended, stolen, or insurance-lapsed vehicles instantly. Keep everything current.' },
+        { id:'collision-2k',emoji:'💥', color:R,
+          headline:'Any crash with $2,000+ damage must be reported within 24h in Ontario.',
+          body:'Fail to report = $110 fine and your insurer can void the claim. Use a Collision Reporting Centre to file — it\'s free.' },
+        { id:'leaving-scene',emoji:'🏃', color:R,
+          headline:'Leaving the scene of any accident in Ontario = 7 demerit points + $400+ fine.',
+          body:'Even a parking-lot fender bender. If you can\'t find the owner, leave a note. It\'s the difference between $200 and $4,000.' },
+        { id:'tail-out',    emoji:'💡', color:A,
+          headline:'A burnt-out tail light is a $110 ticket — and probable cause for a fuller stop.',
+          body:'Once you\'re pulled over, anything in plain view is fair game. Replace bulbs immediately. Most cost under $10.' },
+        { id:'snow-clear',  emoji:'❄️', color:A,
+          headline:'Driving with uncleared snow on your roof = $110 fine in Ontario.',
+          body:'It\'s a hazard to drivers behind you. Brush every surface — including the rear hatch — before pulling out.' },
+        { id:'tinted-windows',emoji:'⬛', color:A,
+          headline:'Front-window tints darker than 30% are illegal in Ontario.',
+          body:'Police use a light meter. Rear-window tints are unregulated for personal vehicles. Tint shops should know the rules.' },
+        { id:'loud-exhaust',emoji:'🔊', color:A,
+          headline:'Modified exhausts louder than 80 dB at idle are ticketable.',
+          body:'Toronto runs sound-level enforcement squads in summer. Fine starts at $150 plus a possible mechanical fitness inspection.' },
+        { id:'plate-cover', emoji:'🛡️', color:A,
+          headline:'Tinted licence plate covers are illegal in Ontario — even clear ones.',
+          body:'The plate must be readable from 30 metres. Cameras and officers both treat any cover as obstruction.' },
+        { id:'school-zone-40',emoji:'🏫', color:A,
+          headline:'School zone speed limit drops to 40 km/h during posted hours.',
+          body:'Usually 7:30am–4:30pm on school days. Even 50 in a 40 school zone is a 4-demerit-point ticket — same as 30 over elsewhere.' },
+        { id:'pedestrian-fine',emoji:'🚶', color:R,
+          headline:'Failing to yield at a pedestrian crossover = $500 fine + 4 demerit points.',
+          body:'Pedestrian crossovers (with the painted X) require a full stop. Even if the pedestrian isn\'t walking yet but is waiting to cross.' },
+        { id:'sidewalk-park',emoji:'🚷', color:A,
+          headline:'Parking on a Toronto sidewalk = $150 fine.',
+          body:'Even half on the sidewalk. The wheel must be entirely past the curb-line. Common ticket on narrow residential streets.' },
+        { id:'idle-1min',   emoji:'💨', color:A,
+          headline:'Toronto by-law: idling for more than 1 minute = $130 fine.',
+          body:'Exceptions for waiting in traffic or below -5°C. Officers do enforce this in school zones and around parks.' },
+        { id:'jaywalk-rare',emoji:'🚸', color:G,
+          headline:'Jaywalking in Toronto is a $50 fine — but rarely enforced.',
+          body:'Only happens in problem areas or after collisions. The driver still bears full liability if a pedestrian is hit, jaywalking or not.' },
+        { id:'left-turn-amber',emoji:'🟡', color:A,
+          headline:'Turning left on amber is only allowed if you\'re already in the intersection.',
+          body:'Entering the intersection on amber to turn = 2 demerit points. The rule: cross the line before the light changes.' },
+        { id:'left-turn-priority',emoji:'⬅️', color:A,
+          headline:'A left-turning vehicle yields to oncoming traffic in Ontario.',
+          body:'No "first come, first served" at intersections. Always yield first. Common cause of fail-to-yield charges.' },
+        { id:'four-way-stop',emoji:'🛑', color:A,
+          headline:'At a 4-way stop, whoever arrives first goes first. Ties go to the right.',
+          body:'Don\'t wave others through — it confuses everyone. Just go when it\'s your turn.' },
+        { id:'roundabout-rule',emoji:'🔄', color:A,
+          headline:'Yield to vehicles already in the roundabout before entering.',
+          body:'Newer Ontario roundabouts have multiple lanes — pick yours before entering and signal your exit.' },
+        { id:'oversize',    emoji:'📐', color:A,
+          headline:'Vehicles wider than 2.6m or longer than 12.5m need a permit on Ontario roads.',
+          body:'Trailers, RVs, work trucks all have limits. Without a permit it\'s a $400 fine plus a vehicle inspection.' },
+        { id:'trailer-light',emoji:'💡', color:A,
+          headline:'Trailer lights not working = $110 fine per missing light.',
+          body:'Get caught with all 3 (brake, signal, tail) out and that\'s a $330 ticket. Check before every trip — they fail often.' },
+        { id:'studded-tires',emoji:'🛞', color:A,
+          headline:'Studded tires are legal in Ontario only from Oct 1 to Apr 30.',
+          body:'And only in Northern Ontario unless your vehicle is registered there. Otherwise $110 fine per tire.' },
+        { id:'kids-helmet', emoji:'⛑️', color:A,
+          headline:'Anyone under 18 must wear a helmet on a bicycle in Ontario.',
+          body:'Parent is fined $75 if a child rides without one. The cyclist 16–17 takes the fine themselves.' },
+        { id:'ebike-licence',emoji:'🛴', color:A,
+          headline:'E-bikes in Ontario don\'t require a licence but must be helmet-equipped.',
+          body:'Max 32 km/h, motor under 500W. Anything faster is technically a motorcycle and requires plates + insurance.' },
+        { id:'pedestrian-walk-light',emoji:'🚶‍♂️', color:GR,
+          headline:'Pedestrians have right of way once they step into a marked crosswalk.',
+          body:'Drivers must yield even if the light just turned green. Toronto enforces this strictly downtown.' },
+        { id:'emergency-flashers',emoji:'🚨', color:A,
+          headline:'Driving with your hazards on while moving is illegal in Ontario.',
+          body:'Hazard lights are only for stopped vehicles. Driving with them on = $110 ticket and creates confusion in traffic.' },
+
+        // ── BAR STATS / FACTS ──
+        { id:'27m-tickets', emoji:'📊', color:R,
+          headline:'Toronto issued 2.7 million parking tickets in 2023.',
+          body:'About one ticket for every Toronto resident with a driver\'s licence. The revenue: over $100 million.' },
+        { id:'top-violation',emoji:'🏆', color:A,
+          headline:'The single most-ticketed offence in Toronto: stopping in a no-stopping zone.',
+          body:'Over 250,000 of these per year, mostly on King and Queen Streets during rush hour. $150 each time.' },
+        { id:'cam-revenue', emoji:'💰', color:R,
+          headline:'Toronto\'s speed cameras alone generate $40M+ per year.',
+          body:'They\'re the city\'s fastest-growing revenue source. Camera count doubled between 2020 and 2024.' },
+        { id:'avg-fine',    emoji:'📈', color:A,
+          headline:'The average Toronto parking ticket costs $40 — but late fees can push it past $120.',
+          body:'30% of tickets aren\'t paid in 15 days. That\'s where the city makes the difference.' },
+        { id:'plate-pause', emoji:'⏸️', color:A,
+          headline:'About 1 in 8 Ontario drivers has at least one outstanding ticket right now.',
+          body:'Most don\'t know. Many find out only at plate-renewal time, when the system blocks the transaction.' },
+        { id:'most-bilked', emoji:'🚙', color:A,
+          headline:'Black sedans are the most-ticketed vehicle colour in Toronto.',
+          body:'Not because of bias — there are just more of them. Statistically the colour with the lowest ticket rate: yellow.' },
+        { id:'tow-yard',    emoji:'🏗️', color:R,
+          headline:'Toronto\'s main tow yard at 245 Cherry Street processes 200+ vehicles per day.',
+          body:'Plus secondary lots. The wait at peak times (Sat morning, Mon morning) can run 2+ hours.' },
+        { id:'school-bus-pass',emoji:'🚌', color:R,
+          headline:'Ontario logs 30,000+ school bus stop-arm violations per year.',
+          body:'Cameras on the bus catch most. The ticket arrives in the mail with a video clip attached. Hard to dispute.' },
+        { id:'snow-clear-cost',emoji:'❄️', color:B,
+          headline:'Toronto spends $90M+ per year on snow clearing.',
+          body:'And generates much of it back via snow-route parking tickets and tows. Don\'t be part of the revenue.' },
+        { id:'sign-cost',   emoji:'🪧', color:GR,
+          headline:'Toronto installs over 50,000 new parking signs every year.',
+          body:'Rules change constantly. The Drivee street rates tool tries to keep up — but always check the sign physically too.' },
+
+        // ── MONEY-SAVING TIPS ──
+        { id:'late-fee-math',emoji:'🧮', color:A,
+          headline:'Paying a Toronto parking ticket on day 14 vs day 16 = $15 difference.',
+          body:'The address search fee kicks in on day 16. One day of laziness = one Starbucks gift card lost.' },
+        { id:'pay-day-1',   emoji:'💳', color:GR,
+          headline:'You can pay a Toronto parking ticket online in 60 seconds the day you get it.',
+          body:'No waiting for a notice in the mail. The number on the ticket goes straight into the payment portal.' },
+        { id:'permit-resident',emoji:'🏘️', color:GR,
+          headline:'Toronto residential parking permits cost $20–$25/month and save you nightly tickets.',
+          body:'If you park on the street overnight more than 2 nights per month, the permit pays for itself.' },
+        { id:'reservation-discount',emoji:'🎟️', color:GR,
+          headline:'Pre-booking a Green P lot online saves $2–$5/visit vs. drive-up rates.',
+          body:'Useful for downtown events and Raptors/Leafs games. The site is greenpparking.com.' },
+        { id:'transit-vs-park',emoji:'🚇', color:GR,
+          headline:'TTC + 2 hours downtown parking = roughly the same cost.',
+          body:'Above 2 hours, transit wins. Above 4 hours it\'s no contest. Even cabs from Yonge & Bloor are cheaper than King Street parking.' },
+        { id:'two-time-pay',emoji:'💸', color:A,
+          headline:'Paying half a Toronto ticket isn\'t partial credit — it\'s ignored.',
+          body:'The city expects full payment. Underpayments sit in suspense and the late fees still tick. Always pay full balance.' },
+        { id:'paralegal-quote',emoji:'💼', color:GR,
+          headline:'Get 3 paralegal quotes before deciding to fight a major ticket.',
+          body:'Quotes are free. Prices vary $150–$500 for the same case. The Drivee directory shows verified Toronto paralegals.' },
+        { id:'er-vs-trial', emoji:'⚖️', color:GR,
+          headline:'Early Resolution beats trial for 90% of minor tickets in Ontario.',
+          body:'Trials are slow, public, and unpredictable. ER is private, fast, and usually ends in a reduction. Pick ER unless you have rock-solid evidence.' },
+        { id:'cluster-pay', emoji:'📋', color:GR,
+          headline:'Pay multiple Toronto tickets in one transaction at toronto.ca/services-payments.',
+          body:'Each ticket number goes in a separate line. The receipt covers all of them — useful for expense reports or insurance disputes.' },
+        { id:'sell-record', emoji:'📂', color:GR,
+          headline:'Get a copy of your driver\'s abstract before changing insurers.',
+          body:'It costs $13 from ontario.ca and shows everything insurers see. Spot errors before they cost you money in quotes.' },
+
+        // ── SAFETY + EVERYDAY ──
+        { id:'cold-tires',  emoji:'🥶', color:A,
+          headline:'Tire pressure drops 1 PSI for every 5°C drop in temperature.',
+          body:'A summer-correct tire is under-inflated by mid-January. Check monthly through winter — most stations have free air.' },
+        { id:'block-heater',emoji:'🔌', color:A,
+          headline:'Below -15°C, plug in your block heater for 2 hours before driving.',
+          body:'Saves engine wear, improves fuel economy, makes the cabin warm up faster. Most older cars have one factory-installed.' },
+        { id:'wiper-life',  emoji:'🌧️', color:A,
+          headline:'Most wiper blades last 6–12 months in Toronto\'s climate.',
+          body:'Salt, ice, and UV destroy rubber fast. Replace if you see streaks — bad blades cause more accidents in winter than worn brakes.' },
+        { id:'gas-station-mtg',emoji:'⛽', color:GR,
+          headline:'Costco Toronto gas is consistently 4–8¢/L cheaper than chains.',
+          body:'Membership pays for itself in 25 fill-ups. The Etobicoke and Scarborough locations have the longest queues — go early morning.' },
+        { id:'fuel-up-low', emoji:'🪣', color:A,
+          headline:'Filling up at quarter tank vs empty saves wear on the fuel pump.',
+          body:'The pump is cooled by the gas around it. Running it dry repeatedly burns out pumps. Replacement: $600+.' },
+        { id:'dashcam-disp',emoji:'🎥', color:GR,
+          headline:'Dashcams win 70%+ of disputed Ontario at-fault accident claims.',
+          body:'A $80 dashcam pays for itself the first time it captures a real incident. Drivee recommends one with parking-mode recording.' },
+        { id:'wax-spring',  emoji:'✨', color:GR,
+          headline:'Wax in spring + clay-bar in fall keeps Toronto road salt from eating your paint.',
+          body:'Salt corrosion is the #1 reason Toronto cars look 10 years older than their actual age. $50 of wax = a few hundred in resale value.' },
+        { id:'undercoat',   emoji:'🛠️', color:GR,
+          headline:'A $100 fall rust-proofing visit adds years to a Toronto car\'s frame.',
+          body:'Most chains do it under $120. Make sure they spray inside the rocker panels and rear quarter wells — that\'s where salt hides.' },
+        { id:'parking-brake',emoji:'🅿️', color:A,
+          headline:'Use the parking brake every time you park — even on flat ground.',
+          body:'Stops your transmission "parking pawl" from wearing. A failed pawl in a 6-speed automatic is a $2,000+ repair.' },
+        { id:'mirror-blind',emoji:'🪞', color:A,
+          headline:'Your blind spot is exactly where the driver next to you can see your face.',
+          body:'If you can see their face in your side mirror, they can\'t see your car. Move forward or back to break that alignment.' },
+
+        // ── CULTURAL / HISTORICAL ──
+        { id:'green-p-1952',emoji:'📜', color:G,
+          headline:'Toronto Parking Authority was founded in 1952.',
+          body:'Originally just to manage downtown lots. Now operates 13,000+ off-street spots and most paid street parking in the core.' },
+        { id:'first-meter', emoji:'⏰', color:B,
+          headline:'Toronto installed its first parking meter in 1948.',
+          body:'10 cents an hour. Now the same spot on King Street is $4.50. That\'s about 8x inflation — vs 11x average inflation.' },
+        { id:'red-cam-2007',emoji:'📷', color:B,
+          headline:'Toronto\'s first red light camera went live in 2007.',
+          body:'Now there are 150+. The original goal was safety — the side effect was $14M/year in new revenue.' },
+        { id:'speed-cam-2020',emoji:'⚡', color:B,
+          headline:'Toronto rolled out Automated Speed Enforcement in 2020.',
+          body:'Initially 50 cameras, now 75+. Cameras rotate location quarterly. Drivee tracks current placements daily.' },
+        { id:'first-stunt', emoji:'🚓', color:R,
+          headline:'Ontario\'s stunt driving law dates to 2007.',
+          body:'Original threshold: 50 km/h over. Reduced in 2022 for highways under 80 — now 40 over qualifies. Penalties keep increasing.' },
+        { id:'g-graduated',emoji:'🎓', color:B,
+          headline:'Ontario\'s graduated licensing system (G1/G2/G) launched in 1994.',
+          body:'First province in Canada to use it. New driver crash rates dropped 30% in the first 5 years.' },
+
+        // ── DRIVEE PRO TIPS ──
+        { id:'drivee-snap', emoji:'📸', color:B,
+          headline:'Drivee suggests photographing every parking sign you read.',
+          body:'If you get a ticket, the photo proves what the sign said at that moment. Hidden by leaves? That\'s your dispute.' },
+        { id:'drivee-screenshot',emoji:'🖼️', color:B,
+          headline:'Screenshot every Drivee verdict — it\'s admissible in court.',
+          body:'The verdict log shows date, fine, AI reasoning. Prosecutors take it seriously when you bring receipts.' },
+        { id:'drivee-paid',emoji:'💳', color:B,
+          headline:'Always pay tickets through toronto.ca — never call numbers off the ticket.',
+          body:'Scammers send fake collection letters. Drivee\'s "Pay Ticket" link goes straight to the official portal.' },
+        { id:'plate-search',emoji:'🔍', color:B,
+          headline:'Drivee\'s plate search shows outstanding Toronto tickets in 1 click.',
+          body:'Helpful before buying a used car. If the previous owner left tickets, they transfer with the plate — you inherit the problem.' },
+        { id:'drivee-pwa', emoji:'📲', color:B,
+          headline:'Drivee installs to your home screen in 30 seconds with no app store.',
+          body:'On iPhone: Safari → Share → Add to Home Screen. On Android: Chrome → Menu → Install. Done. Works offline after install.' },
+        { id:'free-forever',emoji:'🆓', color:B,
+          headline:'Drivee\'s ticket scan, verdict, and dispute builder are free forever.',
+          body:'We make money on optional add-ons (Early Resolution form helper, handicap permit auto-apply). The core tools are free.' },
+        { id:'drivee-share',emoji:'📤', color:B,
+          headline:'Share a Drivee tip a day → keep your friends out of ticket trouble.',
+          body:'Most Toronto drivers don\'t know half the rules. One share = one friend who doesn\'t pay a $500 fine they could have avoided.' },
+
+        // ── EXTRA: random sharp facts ──
+        { id:'mta-tickets', emoji:'📨', color:A,
+          headline:'Ontario mails 50,000+ traffic tickets per month — many to your old address.',
+          body:'Keep your address current with the MTO online. Fines you never received still accumulate late fees.' },
+        { id:'fail-renew',  emoji:'🔄', color:A,
+          headline:'A lapsed driver\'s licence costs $189 to reinstate in Ontario.',
+          body:'And while it\'s lapsed, driving = $110 fine + possible vehicle impoundment. Set a calendar reminder for 90 days before renewal.' },
+        { id:'plate-stolen',emoji:'🪪', color:A,
+          headline:'Report a stolen Ontario plate within 6 hours to be free of tolls and tickets.',
+          body:'Call 311 + your insurer. Most fraud-related tickets that arrive after the report can be dismissed with the report number.' },
+        { id:'speed-school-cam',emoji:'🏫', color:B,
+          headline:'Toronto school zone cameras snap photos starting at just 5 km/h over.',
+          body:'Yes, 5 km/h. The bigger fines kick in higher, but you can get nailed for what feels like nothing.' },
+        { id:'plate-frame', emoji:'🖼️', color:A,
+          headline:'A licence plate frame that covers ANY characters or symbols = $110 fine.',
+          body:'Includes dealer frames that block the "Ontario" word. Strict rule — and now plate-reader cameras flag these automatically.' },
+        { id:'air-horn',    emoji:'🎺', color:A,
+          headline:'Aftermarket train horns or sirens on a passenger vehicle = $400 fine.',
+          body:'Only emergency vehicles can have sirens. "Just for show" doesn\'t hold up — the by-law is strict about prohibited equipment.' },
+        { id:'left-shoulder',emoji:'⬅️', color:R,
+          headline:'Passing on the left shoulder of an Ontario highway = $400+ fine.',
+          body:'The left shoulder is for emergency use only. Some drivers think it\'s OK in traffic — it\'s a stunt-adjacent charge.' },
+        { id:'pass-on-right',emoji:'➡️', color:A,
+          headline:'Passing on the right is legal on Ontario highways — but only when safe.',
+          body:'Three-lane minimum, traffic moving steadily, your speed must be reasonable. Otherwise it\'s improper passing: 3 demerit points.' },
+        { id:'no-pass-double',emoji:'🛤️', color:A,
+          headline:'Crossing a solid double yellow line in Ontario = $110 fine + 3 demerit points.',
+          body:'Same penalty as running a red light. The line exists because the road geometry makes passing dangerous there.' },
+        { id:'narrow-bridge',emoji:'🌉', color:A,
+          headline:'You must yield to oncoming traffic when crossing a narrow bridge.',
+          body:'The driver further from the bridge yields. Most Ontario bridges have signs — but the rule applies regardless.' },
+        { id:'no-vehicle-paint',emoji:'🎨', color:G,
+          headline:'Painting a fake disability symbol or licence plate = $400 fine + possible criminal charge.',
+          body:'Forgery of any Ontario plate or permit is taken seriously. Don\'t even joke about it.' },
+        { id:'tow-receipt', emoji:'🧾', color:GR,
+          headline:'Always get a receipt from a Toronto tow operator — even at the impound lot.',
+          body:'Receipts have the official tow company number and storage rates. You\'ll need it for insurance reimbursement.' },
+        { id:'crash-photos',emoji:'📷', color:GR,
+          headline:'Take 12+ photos after any crash — including the other car\'s plate and insurance.',
+          body:'Wide shots, close-ups of every dent, both plates, road conditions, signage. Memory fades within a day.' },
+        { id:'witness-info',emoji:'👤', color:GR,
+          headline:'Always get witness names + phone numbers after a crash.',
+          body:'They walk away within minutes. A witness statement is worth more than your own version of events to an insurance adjuster.' },
+        { id:'crashes-near-yellow',emoji:'🟡', color:A,
+          headline:'Toronto\'s most common crash time: 4–6pm on a Friday.',
+          body:'Rush hour + week-end fatigue + weather. Plan around it — leave the office 30 minutes earlier or later and crash risk drops 40%.' },
+        { id:'left-lane-camp',emoji:'🚙', color:A,
+          headline:'Camping in the left lane on Ontario highways = $110 ticket.',
+          body:'The left lane is for passing. Hold it = obstructing traffic. Ontario started ticketing for this in 2020.' },
+        { id:'fender-bender-dialog',emoji:'🤝', color:GR,
+          headline:'Under $2,000 of damage, you can settle a fender bender without insurance.',
+          body:'Sign a written agreement, exchange e-transfer, done. Your insurance never sees it. Keep the agreement forever though — just in case.' },
+        { id:'collision-cr',emoji:'🏢', color:GR,
+          headline:'Toronto has 3 Collision Reporting Centres — usage is free.',
+          body:'Don\'t wait for police at the scene of a minor crash. Drive to the nearest CRC instead. It\'s faster and properly documents everything.' },
+        { id:'no-fault',    emoji:'⚖️', color:A,
+          headline:'Ontario is a no-fault insurance province — but at-fault still affects premiums.',
+          body:'Your insurer pays for your damage regardless. But the at-fault determination still drives your premium for the next 6 years.' },
+        { id:'plate-renew-online',emoji:'🌐', color:GR,
+          headline:'Renew your Ontario plate sticker online — takes 90 seconds.',
+          body:'ontario.ca/page/renew-licence-plate-sticker. The sticker arrives by mail in 5 business days. Free since 2022.' },
+        { id:'mto-online',  emoji:'💻', color:GR,
+          headline:'You can request your driving record online from the MTO in 2 minutes.',
+          body:'$13 charge. Useful before insurance shopping, before a court date, or just to see what\'s on file.' },
+        { id:'plate-personal',emoji:'🔤', color:G,
+          headline:'Ontario personalised plates cost $310 + $30/year renewal.',
+          body:'7 characters max, no profanity, no police-impersonation. Some words/numbers are auto-blocked by the system.' },
+        { id:'lemon-law',   emoji:'🍋', color:A,
+          headline:'Ontario doesn\'t have a "lemon law" — but Consumer Protection still applies.',
+          body:'For new cars: if it\'s been in the shop 30+ days under warranty, you can argue for a buyback. Document everything.' },
+        { id:'dealer-fee',  emoji:'💸', color:A,
+          headline:'Ontario dealers can only charge advertised price + HST. All admin fees must be included.',
+          body:'Since 2010, "freight + PDI + docs" is illegal unless explicitly listed in the advertised price. Walk away from any dealer that adds them.' },
+        { id:'private-sale',emoji:'🤝', color:GR,
+          headline:'Buying a used car private = you owe HST at the higher of price or wholesale value.',
+          body:'ServiceOntario uses the Red Book. Pay $5,000 for a $12,000 car? You still owe HST on $12,000. Plan for it.' },
+        { id:'uvip',        emoji:'📋', color:GR,
+          headline:'Every private used car sale in Ontario requires a Used Vehicle Information Package (UVIP).',
+          body:'$20 from ServiceOntario. Shows liens, ownership history, and odometer. Don\'t buy without one.' },
+        { id:'pmi-required',emoji:'🔍', color:GR,
+          headline:'A private mechanical inspection on a used car costs $100–$200.',
+          body:'Cheap insurance against buying a problem. Skip it = you discover the rust hole after taking ownership.' },
+        { id:'safety-cert', emoji:'✅', color:GR,
+          headline:'Ontario requires a Safety Standards Certificate to transfer ownership of a used vehicle.',
+          body:'Cost: $50–$150. Valid 36 days. Without one, you can register the vehicle as "unfit" — but you can\'t drive it.' },
+        { id:'drive-clean', emoji:'🌱', color:B,
+          headline:'Ontario eliminated the Drive Clean emissions test for passenger vehicles in 2019.',
+          body:'Heavy diesel trucks still need it. But your sedan or SUV no longer requires emissions testing for renewal.' },
+        { id:'class-d',     emoji:'🚛', color:A,
+          headline:'A Class D licence in Ontario lets you drive a tow truck or commercial van.',
+          body:'Required for vehicles over 11,000 kg gross. Costs $125 + a written test + a road test. Useful if you ever drive moving trucks.' },
+        { id:'class-m',     emoji:'🏍️', color:A,
+          headline:'A Class M licence in Ontario is required for any motorcycle.',
+          body:'The M1 written test runs $158. M2 road test $89. Full M road test $89. Most riders complete the path in 12 months.' },
+        { id:'insurance-deductible',emoji:'💰', color:GR,
+          headline:'A higher Ontario insurance deductible saves 10–20% on premium.',
+          body:'Switch from $500 to $1,000 deductible if you have $1,000 in emergency savings. Most years you save more than the difference.' },
+        { id:'collision-vs-comp',emoji:'🛡️', color:GR,
+          headline:'Drop collision coverage on cars worth less than 10x the premium.',
+          body:'Your $4,000 car with $500/year collision = stop paying. Comprehensive (theft, fire, hail) is usually cheap enough to keep.' },
+        { id:'snow-tire-discount',emoji:'❄️', color:GR,
+          headline:'Winter tires save 3–5% on Ontario auto insurance.',
+          body:'It\'s mandatory for insurers to offer it. If yours doesn\'t, ask. Provide proof of purchase or installation.' },
+        { id:'aaa-towing',  emoji:'🆘', color:GR,
+          headline:'CAA basic membership is $86/year and includes 4 free tows.',
+          body:'Pays for itself with one tow. Plus discounts at Pizza Pizza, hotels, and most attractions. Don\'t cheap out — get Plus.' },
+        { id:'free-911-call',emoji:'📞', color:GR,
+          headline:'911 is free from any Canadian phone — even one without a SIM card.',
+          body:'Older smartphones still work for emergencies as long as they power on. Keep a charging cable in your glove box.' },
+        { id:'roadside-flat',emoji:'🛞', color:GR,
+          headline:'Most Ontario insurers offer roadside assistance for $50–$70/year.',
+          body:'Less than half of CAA. Covers flats, jumps, lockouts. Worth it if you don\'t want the full club membership.' },
+        { id:'bumper-sticker',emoji:'🚙', color:G,
+          headline:'There\'s no law against political bumper stickers in Ontario — only against obscenity.',
+          body:'But your insurer can adjust your rate based on "modifications" that include obvious stickers. Decorate at your discretion.' },
+        { id:'cargo-secure',emoji:'📦', color:A,
+          headline:'Unsecured cargo falling off your vehicle = $400+ fine.',
+          body:'If it causes a crash: full liability + criminal possibility. Always tie down — bungee cords or ratchet straps, not rope.' },
+        { id:'mirror-tow',  emoji:'👀', color:A,
+          headline:'Towing a trailer with stock mirrors that don\'t show the trailer\'s rear = ticketable.',
+          body:'Ontario law requires sight lines past the widest point. Tow mirrors are required for any trailer wider than the vehicle.' },
+        { id:'wheel-spacers',emoji:'🛞', color:A,
+          headline:'Wheel spacers wider than the wheel well = $110 fine + safety inspection.',
+          body:'"Stancing" your car looks great but most Ontario configurations are illegal. Check your jurisdiction before installing.' },
+        { id:'underglow',   emoji:'💡', color:A,
+          headline:'Underglow lighting is legal in Ontario only if not red, blue, or flashing.',
+          body:'Red + blue is reserved for emergency vehicles. Steady white, amber, or green underglow is technically OK.' },
+        { id:'gas-station-pay-first',emoji:'⛽', color:GR,
+          headline:'Drivers must pay before pumping at most Ontario gas stations after 2008.',
+          body:'After the death of a gas attendant chasing a drive-off. Doesn\'t apply to full-serve or pay-by-card-at-pump.' },
+        { id:'aux-air-bed', emoji:'🌬️', color:GR,
+          headline:'Free air for tires is provincial law in Ontario — sort of.',
+          body:'Stations must provide it if requested when you fill up there. Most still charge $1.50 from machines — but you can ask staff.' },
+        { id:'rain-x',      emoji:'🌧️', color:GR,
+          headline:'$8 of Rain-X applied to your windshield outlasts most wipers in heavy rain.',
+          body:'Apply with paper towel, buff with clean cloth, reapply every 4–6 weeks. Beads water off at 60 km/h+.' },
+        { id:'wd40-locks',  emoji:'❄️', color:GR,
+          headline:'Don\'t use WD-40 in frozen Toronto car locks — use graphite spray.',
+          body:'WD-40 attracts dirt and gums up over time. A $5 graphite-spray can lasts years. Apply before winter.' },
+        { id:'jumper-cables',emoji:'🔋', color:GR,
+          headline:'A lithium jump-pack ($60) replaces jumper cables — and starts a car alone.',
+          body:'No second vehicle needed. Charges via USB. Keeps a charge for 6 months in the glove box. Saves you waiting on CAA.' },
+        { id:'lockout',     emoji:'🔑', color:GR,
+          headline:'CAA can unlock most Toronto cars on-site in under 20 minutes.',
+          body:'Faster than a locksmith and free with membership. Don\'t smash the window — call CAA first.' },
+        { id:'spare-key',   emoji:'🗝️', color:GR,
+          headline:'A magnetic key holder under your bumper has saved more drivers than any locksmith.',
+          body:'$10 at Canadian Tire. Hide a basic mechanical key (not the FOB) somewhere only you know. Pays off the first time.' },
+
+        // Final filler facts to reach a year's worth
+        { id:'plate-ontario',emoji:'🇨🇦', color:G,
+          headline:'Ontario standard plates are 4 letters + 3 numbers since 2007.',
+          body:'Older 3+3 plates remain valid. The "OY" series started in 2020 — your plate\'s first 2 letters tell you roughly when it was issued.' },
+        { id:'reflective',  emoji:'✨', color:G,
+          headline:'Ontario plates must be readable from at least 30 metres at night.',
+          body:'If your plate frame, dirt, or paint stops the reflective surface from doing its job: $110 fine + a fix order.' },
+        { id:'plate-back',  emoji:'🪪', color:G,
+          headline:'Cars in Ontario only need a rear plate — but trailers need one too.',
+          body:'Most provinces require front + back. Ontario\'s back-only rule is unusual. Front-plate brackets are decorative only.' },
+        { id:'fuel-economy',emoji:'⛽', color:GR,
+          headline:'Driving 100 km/h instead of 120 km/h saves 15–20% on highway fuel.',
+          body:'Aerodynamic drag scales with speed squared. The faster you go, the more dramatic the savings from slowing down.' },
+        { id:'idling-fuel', emoji:'🕯️', color:GR,
+          headline:'10 seconds of idling burns more fuel than restarting the engine.',
+          body:'Modern engines start with minimal fuel. Stop-start systems exist because this is true. Don\'t leave it running at a Tim Hortons.' },
+        { id:'tire-rotate', emoji:'🔄', color:GR,
+          headline:'Rotate Toronto tires every 8,000 km — twice a year minimum.',
+          body:'Salt + uneven Toronto roads + winter changeover wear tires asymmetrically. Rotating extends tire life by 25%.' },
+        { id:'oil-change',  emoji:'🛢️', color:GR,
+          headline:'Modern Toronto stop-and-go driving = oil changes every 7,500 km, not 5,000.',
+          body:'Synthetic oil + short-trip city use. The 3,000-mile rule is from carburetors. Check your owner\'s manual for the real interval.' },
+        { id:'brake-pads',  emoji:'🛑', color:GR,
+          headline:'Toronto brake pads typically last 40,000–60,000 km.',
+          body:'Stop-and-go traffic burns through them faster. Replace at 3mm thickness, not 1mm — saves you the rotors too.' },
+        { id:'alignment',   emoji:'📐', color:GR,
+          headline:'Hitting one Toronto pothole hard = $100 alignment job.',
+          body:'Steering pulls, tire wear pattern, fuel economy hit. Most shops include a free alignment check — get one twice a year.' },
+        { id:'battery-life',emoji:'🔋', color:GR,
+          headline:'Toronto winter cold cuts car battery life from 5 years to 3.',
+          body:'Test yours at any Canadian Tire for free. Replace before it dies — the unexpected dead battery is always at -25°C.' }
+      ];
+    })();
+
+    // Old WEEKLY_TIPS array — kept for backward compat with any code reading it
     var WEEKLY_TIPS = [
       'A distracted driving ticket in Ontario adds 3 demerit points AND costs you ~$1,200+ extra in insurance over 3 years. The $615 fine is the cheap part.',
       'Stunt driving (50km/h over the limit) gets your car impounded on the spot for 14 days. That\'s $2,000+ before you even see a judge.',
@@ -12040,34 +12952,198 @@
       'The Drivee True Cost Calculator shows you the REAL price of a ticket including insurance \u2014 it\'s always more than you think.'
     ];
 
-    function getWeekNumber() {
+    // Day-of-year so the tip rotates once per day, not per week
+    function _dvDayOfYear() {
       var now = new Date();
-      var start = new Date(now.getFullYear(), 0, 1);
-      var diff = now - start;
-      return Math.floor(diff / (7 * 24 * 60 * 60 * 1000));
+      var start = new Date(now.getFullYear(), 0, 0);
+      var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60000);
+      return Math.floor(diff / 86400000);
+    }
+    function _dvGetTodaysTip() {
+      var idx = _dvDayOfYear() % DRIVEE_TIPS.length;
+      return { tip: DRIVEE_TIPS[idx], index: idx };
     }
 
-    function showWeeklyTip() {
-      var el = document.getElementById('weekly-tip-text');
-      if (!el) return;
-      var week = getWeekNumber() % WEEKLY_TIPS.length;
-      el.textContent = WEEKLY_TIPS[week];
+    // Populate the dashboard tip card with today's tip (called on app load)
+    function showDailyTip() {
+      var picked = _dvGetTodaysTip();
+      var tip = picked.tip;
+      var emojiEl    = document.getElementById('daily-tip-emoji');
+      var headlineEl = document.getElementById('daily-tip-headline');
+      var bodyEl     = document.getElementById('daily-tip-body');
+      if (emojiEl)    emojiEl.textContent    = tip.emoji;
+      if (headlineEl) headlineEl.textContent = tip.headline;
+      if (bodyEl)     bodyEl.textContent     = tip.body;
+      // Stash current tip index on the card so the share button can read it
+      var card = document.getElementById('daily-tip-card');
+      if (card) card.setAttribute('data-tip-index', picked.index);
+      // Backward-compat: also write into the old text node in case anything
+      // out there still references it.
+      var legacy = document.getElementById('weekly-tip-text');
+      if (legacy) legacy.textContent = tip.headline + ' — ' + tip.body;
     }
+    // Backward-compat alias for the existing init code that calls showWeeklyTip()
+    var showWeeklyTip = showDailyTip;
 
-    function shareWeeklyTip() {
-      var el = document.getElementById('weekly-tip-text');
-      if (!el) return;
-      // URL inside text so the message body survives Telegram / WhatsApp / etc.
-      var text = '💡 Did you know?\n\n' + el.textContent + '\n\n👉 More driver tips at https://drivee.ca';
-      if (navigator.share) {
-        navigator.share({ title: 'Drivee · Driver tip', text: text })
-          .catch(function() {
-            navigator.clipboard.writeText(text).then(function() { showToast('Tip copied!'); });
-          });
-      } else {
-        navigator.clipboard.writeText(text).then(function() { showToast('Tip copied!'); });
+    // ─── Generate a 1080×1350 (Instagram 4:5) shareable image for a tip ────
+    function dv2GenerateTipImage(tip) {
+      var W = 1080, H = 1350;
+      var canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      var ctx = canvas.getContext('2d');
+
+      // Background — diagonal gradient from the tip's accent color into deep blue
+      var grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0,    tip.color || '#1A3FB8');
+      grad.addColorStop(0.65, '#1A3FB8');
+      grad.addColorStop(1,    '#0E1B3D');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle grid pattern overlay for premium feel
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (var x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+      for (var y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+      // Top brand strip: green pulse + DRIVEE.CA · DID YOU KNOW?
+      ctx.fillStyle = '#7AE8B0';
+      ctx.beginPath(); ctx.arc(90, 110, 12, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.font = '800 28px "JetBrains Mono", "Courier New", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('DRIVEE.CA · DID YOU KNOW?', 120, 122);
+
+      // Big emoji centerpiece
+      ctx.font = '180px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(tip.emoji || '💡', W / 2, 320);
+
+      // Headline — large, wraps, IBM Plex / serif fallback
+      ctx.fillStyle = 'white';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      var headlineFont = '800 78px "IBM Plex Serif", Georgia, "Times New Roman", serif';
+      var headlineLines = _dvWrapText(ctx, tip.headline, W - 160, headlineFont, 90);
+      var hY = 470;
+      headlineLines.forEach(function(line) {
+        ctx.fillText(line, W / 2, hY);
+        hY += 92;
+      });
+
+      // Body — smaller, lighter, sans-serif
+      if (tip.body) {
+        ctx.fillStyle = 'rgba(255,255,255,0.82)';
+        var bodyFont = '500 34px -apple-system, "Plus Jakarta Sans", "Inter", sans-serif';
+        var bodyLines = _dvWrapText(ctx, tip.body, W - 200, bodyFont, 44);
+        var bY = hY + 50;
+        bodyLines.forEach(function(line) {
+          ctx.fillText(line, W / 2, bY);
+          bY += 48;
+        });
       }
+
+      // Bottom CTA bar
+      ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      _dvRoundRect(ctx, 80, H - 180, W - 160, 96, 48);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      ctx.font = '800 32px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('📍 TORONTO  ·  DRIVEE.CA', W / 2, H - 132);
+
+      return canvas;
     }
+
+    function _dvWrapText(ctx, text, maxWidth, font, lineHeight) {
+      ctx.font = font;
+      var words = String(text).split(' ');
+      var lines = [];
+      var current = words[0] || '';
+      for (var i = 1; i < words.length; i++) {
+        var attempt = current + ' ' + words[i];
+        if (ctx.measureText(attempt).width <= maxWidth) {
+          current = attempt;
+        } else {
+          lines.push(current);
+          current = words[i];
+        }
+      }
+      lines.push(current);
+      return lines;
+    }
+    function _dvRoundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y,     x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x,     y + h, r);
+      ctx.arcTo(x,     y + h, x,     y,     r);
+      ctx.arcTo(x,     y,     x + w, y,     r);
+      ctx.closePath();
+    }
+
+    // Generate the image, then either share via Web Share API (with file)
+    // or fall back to a download so the user can re-attach to a story.
+    function dv2ShareTipImage() {
+      var card = document.getElementById('daily-tip-card');
+      var idx  = card ? parseInt(card.getAttribute('data-tip-index'), 10) : 0;
+      var tip  = DRIVEE_TIPS[isNaN(idx) ? 0 : idx];
+      if (!tip) return;
+
+      var btn = document.getElementById('daily-tip-share-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Generating…'; }
+
+      var canvas = dv2GenerateTipImage(tip);
+      canvas.toBlob(function(blob) {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<span style="font-size:16px">📤</span> Share image'; }
+        if (!blob) { showToast('Couldn\'t generate the image — try again'); return; }
+
+        trackEvent('share_ticket', 'tip-image|' + tip.id);
+
+        var file = new File([blob], 'drivee-tip-' + tip.id + '.png', { type: 'image/png' });
+        var shareData = {
+          title: 'Drivee · Did You Know?',
+          text:  tip.headline + ' — drivee.ca',
+          files: [file]
+        };
+
+        // Modern path: phone share sheet with the actual image attached
+        if (navigator.canShare && navigator.canShare(shareData) && navigator.share) {
+          navigator.share(shareData).catch(function() { /* user cancelled — silent */ });
+          return;
+        }
+
+        // Fallback: download the file. Works on desktop and on older mobile browsers.
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'drivee-tip-' + tip.id + '.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+        showToast('Image saved — share it on your stories');
+      }, 'image/png');
+    }
+
+    // "See all Toronto fines" → drops the user on the True Cost Calculator
+    // inside the Services tab, which is the closest thing we have to a
+    // complete fines reference. Tracks as a tab_click so it shows up in
+    // the analytics funnel.
+    function dv2ViewAllFines() {
+      trackEvent('tab_click', 'tab-services|from-tip');
+      if (typeof showTab === 'function') showTab('tab-services');
+      setTimeout(function() {
+        var card = document.getElementById('svc-cost');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 140);
+    }
+
+    // Kept as a backward-compat alias in case any older code calls it.
+    function shareWeeklyTip() { dv2ShareTipImage(); }
 
     // ON LOAD — show Dashboard tab by default
     // ===================================================
