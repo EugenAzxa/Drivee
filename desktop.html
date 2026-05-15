@@ -286,32 +286,34 @@
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-    /* No max-width here — the hero spans the full viewport so the video
-       background fills edge to edge. The content rail (.hero-content)
-       handles the centered max-width below. */
+    /* Hero is pure white so the video's own white background blends
+       seamlessly — no visible rectangle. A short gradient at the very
+       bottom fades into the page bg (#EEF2FB) for a clean transition
+       into the rest of the page. */
+    background: #FFFFFF;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 80px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    z-index: 2;
   }
   .hero-bg { display: none; }
 
-  /* Background animation — covers the whole hero. Edges feather to
-     transparent so the white video background dissolves into the page
-     bg (#FAFBFD) with no visible rectangle. */
+  /* Background animation — sits on top of the white hero bg. Since both
+     are white, no mask or fade needed — they blend by default. */
   .hero-video-bg {
     position: absolute;
     inset: 0;
     width: 100%; height: 100%;
-    /* contain (not cover) so the video shows at its natural aspect ratio
-       without being zoomed-in to fill the hero. Smaller visible footprint. */
     object-fit: contain;
     object-position: center;
-    /* Knock it down another ~15% so it really feels like an in-page
-       element rather than a full-bleed wallpaper. */
     transform: scale(0.85);
     z-index: 0;
     pointer-events: none;
-    -webkit-mask-image:
-      radial-gradient(ellipse 75% 75% at 50% 50%, #000 50%, rgba(0,0,0,0.65) 75%, transparent 100%);
-            mask-image:
-      radial-gradient(ellipse 75% 75% at 50% 50%, #000 50%, rgba(0,0,0,0.65) 75%, transparent 100%);
   }
 
   /* Hero copy sits on the LEFT inside a centered 1480px rail so it lines
