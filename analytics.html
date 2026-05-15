@@ -84,7 +84,12 @@
       grid-template-columns: repeat(4, 1fr);
       margin-bottom: 22px;
     }
-    @media (max-width: 700px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+    .tiles-5 { grid-template-columns: repeat(5, 1fr); }
+    @media (max-width: 900px) { .tiles-5 { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px) {
+      .tiles    { grid-template-columns: repeat(2, 1fr); }
+      .tiles-5  { grid-template-columns: repeat(2, 1fr); }
+    }
     .tile {
       background: var(--paper); border: 1px solid var(--line);
       border-radius: 16px; padding: 16px;
@@ -330,6 +335,17 @@
     .err.show { display: block; }
     .err b { font-family: -apple-system, 'Inter Tight', sans-serif; font-weight: 800; }
 
+    /* ── coverage notice (info, not error) ── */
+    .notice {
+      display: none;
+      background: #fff8e7; border: 1px solid #f5cf73;
+      color: #7a4f00; border-radius: 12px;
+      padding: 12px 14px; margin-bottom: 14px;
+      font-size: 12px; line-height: 1.5;
+    }
+    .notice.show { display: block; }
+    .notice b { font-weight: 800; }
+
     /* ── empty / loading ── */
     .empty {
       text-align: center; color: var(--ink2);
@@ -370,8 +386,11 @@
   <!-- Error banner -->
   <div id="err" class="err"></div>
 
+  <!-- Coverage notice (shown when 60-day window can't be fully filled) -->
+  <div id="coverage" class="notice"></div>
+
   <!-- Real users — most-prominent row -->
-  <div class="tiles" id="tiles-users" style="margin-bottom: 14px">
+  <div class="tiles tiles-5" id="tiles-users" style="margin-bottom: 14px">
     <div class="tile accent">
       <div class="tile-label">People · today</div>
       <div class="tile-value" id="tile-users-today">—</div>
@@ -388,6 +407,11 @@
       <div class="tile-sub">rolling month</div>
     </div>
     <div class="tile">
+      <div class="tile-label">People · 2 months</div>
+      <div class="tile-value" id="tile-users-60d">—</div>
+      <div class="tile-sub">rolling 60 days</div>
+    </div>
+    <div class="tile">
       <div class="tile-label">People · all-time</div>
       <div class="tile-value" id="tile-users-all">—</div>
       <div class="tile-sub" id="tile-users-all-sub">tried the app at least once</div>
@@ -395,7 +419,7 @@
   </div>
 
   <!-- Events totals -->
-  <div class="tiles" id="tiles">
+  <div class="tiles tiles-5" id="tiles">
     <div class="tile">
       <div class="tile-label">Events · today</div>
       <div class="tile-value" id="tile-today">—</div>
@@ -410,6 +434,11 @@
       <div class="tile-label">Events · 30 days</div>
       <div class="tile-value" id="tile-30d">—</div>
       <div class="tile-sub">rolling month</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Events · 2 months</div>
+      <div class="tile-value" id="tile-60d">—</div>
+      <div class="tile-sub">rolling 60 days</div>
     </div>
     <div class="tile">
       <div class="tile-label">Events · all-time</div>
@@ -443,7 +472,7 @@
   </div>
 
   <!-- Email signups (people who gave us their email) -->
-  <div class="tiles" style="margin-bottom: 14px">
+  <div class="tiles tiles-5" style="margin-bottom: 14px">
     <div class="tile">
       <div class="tile-label">Emails · all-time</div>
       <div class="tile-value" id="tile-emails-all">—</div>
@@ -463,6 +492,11 @@
       <div class="tile-label">Emails · 30 days</div>
       <div class="tile-value" id="tile-emails-30d">—</div>
       <div class="tile-sub">rolling month</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Emails · 2 months</div>
+      <div class="tile-value" id="tile-emails-60d">—</div>
+      <div class="tile-sub">rolling 60 days</div>
     </div>
   </div>
 
@@ -591,6 +625,32 @@
     el.innerHTML = '';
   }
 
+  // Show a small amber banner when the 60-day window isn't fully covered
+  // (either because the app is younger than 60 days, or the fetch limit
+  // hit the cap before reaching 60 days back).
+  function renderCoverageNotice(d) {
+    var el = document.getElementById('coverage');
+    if (!el) return;
+    var days = (d && typeof d.coverageDays === 'number') ? d.coverageDays : 60;
+    var capped = !!(d && d.fetchCapped);
+    if (days >= 60 && !capped) {
+      el.classList.remove('show');
+      el.innerHTML = '';
+      return;
+    }
+    var msg;
+    if (capped) {
+      msg = '<b>⚠ Fetch capped at ' + fmt(d.fetchLimit) + ' events.</b> ' +
+            'The 2-month numbers only cover the last <b>' + days + ' day' + (days === 1 ? '' : 's') + '</b> of data ' +
+            '— raise FETCH_LIMIT in api/stats.js or add pagination to see further back.';
+    } else {
+      msg = '<b>ℹ Only ' + days + ' day' + (days === 1 ? '' : 's') + ' of data so far.</b> ' +
+            '2-month tiles will catch up as events keep coming in.';
+    }
+    el.innerHTML = msg;
+    el.classList.add('show');
+  }
+
   function setUpdated(label) {
     document.getElementById('updated').innerHTML = '<span class="live-dot"></span>updated ' + label;
   }
@@ -604,10 +664,11 @@
   // ─── Rendering ───
   function render(d) {
     // Users (top-most row): unique humans who used the app in each window
-    var u = d.users || { today:0, last7d:0, last30d:0, allTime:0, triedTotal:0 };
+    var u = d.users || { today:0, last7d:0, last30d:0, last60d:0, allTime:0, triedTotal:0 };
     document.getElementById('tile-users-today').textContent = fmt(u.today);
     document.getElementById('tile-users-7d').textContent    = fmt(u.last7d);
     document.getElementById('tile-users-30d').textContent   = fmt(u.last30d);
+    document.getElementById('tile-users-60d').textContent   = fmt(u.last60d);
     document.getElementById('tile-users-all').textContent   = fmt(u.allTime);
     var allSub = document.getElementById('tile-users-all-sub');
     if (allSub) {
@@ -620,14 +681,20 @@
     document.getElementById('tile-today').textContent = fmt(d.totals.today);
     document.getElementById('tile-7d').textContent    = fmt(d.totals.last7d);
     document.getElementById('tile-30d').textContent   = fmt(d.totals.last30d);
+    document.getElementById('tile-60d').textContent   = fmt(d.totals.last60d);
     document.getElementById('tile-all').textContent   = fmt(d.totals.allTime);
 
     // Email signups
-    var sg = d.signups || { totalEmails:0, today:0, last7d:0, last30d:0, recent:[] };
+    var sg = d.signups || { totalEmails:0, today:0, last7d:0, last30d:0, last60d:0, recent:[] };
     document.getElementById('tile-emails-all').textContent   = fmt(sg.totalEmails);
     document.getElementById('tile-emails-today').textContent = fmt(sg.today);
     document.getElementById('tile-emails-7d').textContent    = fmt(sg.last7d);
     document.getElementById('tile-emails-30d').textContent   = fmt(sg.last30d);
+    document.getElementById('tile-emails-60d').textContent   = fmt(sg.last60d);
+
+    // Coverage warning: if the fetched window doesn't cover a full 60 days,
+    // the 2-month numbers are partial. Tell the dashboard viewer.
+    renderCoverageNotice(d);
 
     var listEl = document.getElementById('signup-list');
     if (!sg.recent.length) {

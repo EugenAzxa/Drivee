@@ -11,8 +11,10 @@ var ALLOWED_ORIGINS = [
   'http://127.0.0.1'
 ];
 
-// Pull up to this many most-recent rows. Plenty of headroom for early-stage app.
-var FETCH_LIMIT = 10000;
+// Pull up to this many most-recent rows. Sized so 2+ months of usage at
+// early-stage volumes fits in a single response — bumped from 10k to give
+// the 60-day "last 2 months" window room to breathe.
+var FETCH_LIMIT = 50000;
 
 function httpsGet(urlStr, headers) {
   return new Promise(function(resolve, reject) {
@@ -129,11 +131,12 @@ module.exports = async function handler(req, res) {
   // ── Aggregate ────────────────────────────────────────
   var now = Date.now();
   var DAY = 86400000;
-  var todayCutoff = now - 1 * DAY;
-  var weekCutoff  = now - 7 * DAY;
-  var monthCutoff = now - 30 * DAY;
+  var todayCutoff   = now - 1  * DAY;
+  var weekCutoff    = now - 7  * DAY;
+  var monthCutoff   = now - 30 * DAY;
+  var twoMonthCutoff = now - 60 * DAY;
 
-  var totals = { today: 0, last7d: 0, last30d: 0, allTime: rows.length };
+  var totals = { today: 0, last7d: 0, last30d: 0, last60d: 0, allTime: rows.length };
   var byEvent = {};
   var byTab   = {};
   var byDay   = {};   // YYYY-MM-DD → count, last 14 days
@@ -144,7 +147,7 @@ module.exports = async function handler(req, res) {
   var recent  = [];
 
   // Unique-user buckets (uid → first seen ts)
-  var uidsToday = {}, uids7d = {}, uids30d = {}, uidsAll = {};
+  var uidsToday = {}, uids7d = {}, uids30d = {}, uids60d = {}, uidsAll = {};
   var uidFirstApp = {};      // uid → ts of FIRST app_open ever — counts "tried the app"
   var appOpens = 0;
 
@@ -166,18 +169,20 @@ module.exports = async function handler(req, res) {
 
   rows.forEach(function(row) {
     var ts = new Date(row.created_at).getTime();
-    if (ts >= todayCutoff) totals.today++;
-    if (ts >= weekCutoff)  totals.last7d++;
-    if (ts >= monthCutoff) totals.last30d++;
+    if (ts >= todayCutoff)    totals.today++;
+    if (ts >= weekCutoff)     totals.last7d++;
+    if (ts >= monthCutoff)    totals.last30d++;
+    if (ts >= twoMonthCutoff) totals.last60d++;
 
     byEvent[row.event] = (byEvent[row.event] || 0) + 1;
 
     // Unique users (uid-scoped) per time window
     if (row.uid) {
       uidsAll[row.uid] = true;
-      if (ts >= todayCutoff) uidsToday[row.uid] = true;
-      if (ts >= weekCutoff)  uids7d[row.uid]    = true;
-      if (ts >= monthCutoff) uids30d[row.uid]   = true;
+      if (ts >= todayCutoff)    uidsToday[row.uid] = true;
+      if (ts >= weekCutoff)     uids7d[row.uid]    = true;
+      if (ts >= monthCutoff)    uids30d[row.uid]   = true;
+      if (ts >= twoMonthCutoff) uids60d[row.uid]   = true;
       if (row.event === 'app_open') {
         if (!uidFirstApp[row.uid] || ts < uidFirstApp[row.uid]) {
           uidFirstApp[row.uid] = ts;
@@ -276,23 +281,25 @@ module.exports = async function handler(req, res) {
 
   // "Tried the app" = unique uids who triggered app_open
   var triedTotal = Object.keys(uidFirstApp).length;
-  var triedToday = 0, tried7d = 0, tried30d = 0;
+  var triedToday = 0, tried7d = 0, tried30d = 0, tried60d = 0;
   Object.keys(uidFirstApp).forEach(function(uid){
     var ts = uidFirstApp[uid];
-    if (ts >= todayCutoff) triedToday++;
-    if (ts >= weekCutoff)  tried7d++;
-    if (ts >= monthCutoff) tried30d++;
+    if (ts >= todayCutoff)    triedToday++;
+    if (ts >= weekCutoff)     tried7d++;
+    if (ts >= monthCutoff)    tried30d++;
+    if (ts >= twoMonthCutoff) tried60d++;
   });
 
   // Signups summary: count by time window + sorted recent list
   var signupKeys = Object.keys(signupsByEmail);
-  var signupToday = 0, signup7d = 0, signup30d = 0;
+  var signupToday = 0, signup7d = 0, signup30d = 0, signup60d = 0;
   signupKeys.forEach(function(email){
     var s = signupsByEmail[email];
     // Use FIRST submission timestamp — that's when the email entered our system
-    if (s.first >= todayCutoff) signupToday++;
-    if (s.first >= weekCutoff)  signup7d++;
-    if (s.first >= monthCutoff) signup30d++;
+    if (s.first >= todayCutoff)    signupToday++;
+    if (s.first >= weekCutoff)     signup7d++;
+    if (s.first >= monthCutoff)    signup30d++;
+    if (s.first >= twoMonthCutoff) signup60d++;
   });
   signupsRecent = signupKeys
     .map(function(email){
@@ -311,27 +318,39 @@ module.exports = async function handler(req, res) {
       };
     });
 
+  // How many days of data does the fetched window actually cover?
+  // Useful so the dashboard can warn when 60-day numbers are partial.
+  var oldestTs = rows.length ? new Date(rows[rows.length - 1].created_at).getTime() : now;
+  var coverageDays = Math.max(0, Math.round((now - oldestTs) / DAY));
+  var capped = rows.length >= FETCH_LIMIT;
+
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
     fetchedAt: new Date().toISOString(),
     rowCount: rows.length,
+    coverageDays: coverageDays,
+    fetchCapped: capped,
+    fetchLimit: FETCH_LIMIT,
     totals: totals,
     users: {
       today:   Object.keys(uidsToday).length,
       last7d:  Object.keys(uids7d).length,
       last30d: Object.keys(uids30d).length,
+      last60d: Object.keys(uids60d).length,
       allTime: Object.keys(uidsAll).length,
       appOpens: appOpens,
       triedTotal:   triedTotal,
       triedToday:   triedToday,
       tried7d:      tried7d,
-      tried30d:     tried30d
+      tried30d:     tried30d,
+      tried60d:     tried60d
     },
     signups: {
       totalEmails: signupKeys.length,
       today:       signupToday,
       last7d:      signup7d,
       last30d:     signup30d,
+      last60d:     signup60d,
       recent:      signupsRecent
     },
     byEvent: topN(byEvent, 20),
