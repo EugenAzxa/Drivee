@@ -382,32 +382,28 @@
   }
   .receipt:hover { transform: rotate(0); }
 
-  /* Hero video — sits where the original ticket mockup was. Right side
-     of the hero, slight rotation, soft shadow.
-     object-fit: cover + object-position: right anchors the frame to the
-     RIGHT side of the source video so only the ticket portion is visible
-     (the left half of the source clip is cropped out). */
+  /* Hero graphic — sits where the original ticket mockup was. Right side
+     of the hero, slight rotation, soft shadow. Natural aspect ratio is
+     ~16:9 (1400x782 source), so height is auto from the width. */
   .receipt-video {
     position: absolute;
     top: 50%;
     right: -4%;
     transform: translateY(-50%) rotate(-2.5deg);
     width: clamp(480px, 46vw, 680px);
-    height: 800px;
+    height: auto;
     background: transparent;
     border-radius: 20px;
     box-shadow:
       0 60px 120px -36px rgba(11,20,48,0.32),
       0 24px 48px -20px rgba(11,20,48,0.16);
     transition: transform 0.6s cubic-bezier(0.2,0.7,0.2,1);
-    object-fit: cover;
-    object-position: 100% 50%;
     display: block;
   }
   .receipt-video:hover { transform: translateY(-50%) rotate(0); }
   @media (max-width: 1100px) {
-    .receipt-video { width: clamp(380px, 58vw, 540px); height: 640px; right: 0; }
-    .receipt-wrap { height: 680px; }
+    .receipt-video { width: clamp(380px, 58vw, 540px); right: 0; }
+    .receipt-wrap { height: auto; min-height: 420px; }
   }
   .receipt::before, .receipt::after {
     content: ""; position: absolute; left: 0; right: 0; height: 14px;
@@ -1371,15 +1367,15 @@
       </div>
     </div>
 
-    <!-- RIGHT: animated ticket — plays forward, then ping-pongs in reverse. -->
+    <!-- RIGHT: hero graphic — Drivee receipt + paid yellow ticket -->
     <div class="receipt-wrap">
-      <video
+      <img
         class="receipt-video"
-        id="hero-receipt-video"
-        src="parking-ticket-animation.mp4"
-        autoplay muted playsinline preload="auto"
-        aria-label="Drivee parking ticket scanner animation">
-      </video>
+        id="hero-receipt-graphic"
+        src="parking-ticket.png"
+        alt="Drivee app showing a paid Toronto parking ticket with $255 saved this year"
+        loading="eager"
+        decoding="async">
     </div>
   </section>
 
@@ -1992,54 +1988,6 @@
     });
   }, { threshold: 0.15 });
   document.querySelectorAll(".reveal").forEach(el => io.observe(el));
-
-  /* ─── Hero ticket animation: ping-pong playback ───────────────────────
-     Browsers don't reliably support negative playbackRate, so we let the
-     <video> element play forward natively (smooth), then on `ended` we
-     switch to a requestAnimationFrame loop that scrubs currentTime back
-     to 0. When we hit 0, hand control back to native play() and repeat.
-     Effect: the clip appears to play forward + reverse on loop, roughly
-     doubling the perceived length of the animation without doubling
-     the underlying file size.
-  ────────────────────────────────────────────────────────────────────── */
-  (function pingPongHeroVideo() {
-    var v = document.getElementById('hero-receipt-video');
-    if (!v) return;
-    var rafId = null;
-    var lastTs = 0;
-    function reverseScrub(ts) {
-      if (!lastTs) lastTs = ts;
-      var dt = (ts - lastTs) / 1000;
-      lastTs = ts;
-      var next = v.currentTime - dt;
-      if (next <= 0) {
-        v.currentTime = 0;
-        rafId = null;
-        lastTs = 0;
-        // Hand back to native forward playback
-        var p = v.play();
-        if (p && p.catch) p.catch(function(){ /* autoplay blocked — silent */ });
-        return;
-      }
-      v.currentTime = next;
-      rafId = requestAnimationFrame(reverseScrub);
-    }
-    v.addEventListener('ended', function() {
-      if (rafId) cancelAnimationFrame(rafId);
-      lastTs = 0;
-      rafId = requestAnimationFrame(reverseScrub);
-    });
-    // Some Safari builds need a kick after metadata loads
-    v.addEventListener('loadedmetadata', function() {
-      var p = v.play();
-      if (p && p.catch) p.catch(function(){});
-    });
-    // If the tab is hidden during the reverse loop, stop the rAF so we
-    // don't burn battery seeking against a paused video.
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden && rafId) { cancelAnimationFrame(rafId); rafId = null; lastTs = 0; }
-    });
-  })();
 
 </script>
 
