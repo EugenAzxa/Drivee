@@ -277,18 +277,18 @@
     display: flex; align-items: center; gap: 6px;
   }
 
-  /* ─────────── Hero — full-bleed video background + centered copy ─────── */
+  /* ─────────── Hero — full-bleed video background + LEFT-aligned copy ─── */
   .hero {
     position: relative;
     min-height: clamp(680px, 88vh, 900px);
-    padding: 160px 32px 100px;
-    margin: 0 auto;
+    padding: 160px 0 100px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    text-align: center;
     overflow: hidden;
+    /* No max-width here — the hero spans the full viewport so the video
+       background fills edge to edge. The content rail (.hero-content)
+       handles the centered max-width below. */
   }
   .hero-bg { display: none; }
 
@@ -303,32 +303,36 @@
     object-position: center;
     z-index: 0;
     pointer-events: none;
-    /* Soft inward feather so left/right/top/bottom edges blend smoothly
-       into the page background regardless of any micro color difference. */
     -webkit-mask-image:
       radial-gradient(ellipse 90% 80% at 50% 50%, #000 55%, rgba(0,0,0,0.7) 78%, transparent 100%);
             mask-image:
       radial-gradient(ellipse 90% 80% at 50% 50%, #000 55%, rgba(0,0,0,0.7) 78%, transparent 100%);
   }
 
-  /* Centered copy sits on top of the animation. */
+  /* Hero copy sits on the LEFT inside a centered 1480px rail so it lines
+     up with the rest of the site's sections. */
   .hero-content {
     position: relative;
     z-index: 1;
-    max-width: 760px;
     width: 100%;
+    max-width: 1480px;
     margin: 0 auto;
+    padding: 0 32px;
+    text-align: left;
+  }
+  .hero-content > * {
+    max-width: 580px;
   }
   .hero-content .hero-sub {
-    margin-left: auto; margin-right: auto;
+    margin-left: 0; margin-right: 0;
     max-width: 580px;
   }
   .hero-content .hero-actions,
   .hero-content .hero-meta {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .hero-content .install-nudge {
-    margin-left: auto; margin-right: auto;
+    margin-left: 0; margin-right: 0;
   }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
