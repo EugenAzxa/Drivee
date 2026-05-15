@@ -277,31 +277,74 @@
     display: flex; align-items: center; gap: 6px;
   }
 
-  /* ─────────── Hero ─────────── */
+  /* ─────────── Hero — full-bleed video bg, centered copy on top ─────────── */
   .hero {
-    padding: 140px 32px 100px;
-    max-width: 1480px; margin: 0 auto;
-    /* Asymmetric split with the video side taking the heavier weight —
-       the animation IS the product demo, so it earns the bigger column. */
-    display: grid; grid-template-columns: 1fr 1.15fr; gap: 60px;
-    align-items: center;
     position: relative;
+    min-height: clamp(660px, 86vh, 880px);
+    padding: 140px 32px 90px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     overflow: hidden;
   }
   .hero-bg { display: none; }
 
-  /* Toronto skyline silhouette behind the hero — soft, oversized,
-     anchored to the bottom-right so it ghosts behind the animation. */
-  .toronto-skyline {
+  /* The animation fills the whole hero. A radial mask fades the edges to
+     fully transparent so there's no rectangular boundary between the video
+     and the page background — it just dissolves out. */
+  .hero-video {
     position: absolute;
-    right: -60px; bottom: 0;
-    width: 70%; max-width: 1100px; height: auto;
-    pointer-events: none;
-    opacity: 0.10;
-    color: #1A3FB8;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
     z-index: 0;
+    pointer-events: none;
+    /* Soft inward feather. Solid at center, fully gone before the edges. */
+    -webkit-mask-image:
+      radial-gradient(ellipse 70% 70% at 50% 50%, #000 35%, rgba(0,0,0,0.55) 60%, transparent 92%);
+            mask-image:
+      radial-gradient(ellipse 70% 70% at 50% 50%, #000 35%, rgba(0,0,0,0.55) 60%, transparent 92%);
   }
-  .hero > *:not(.toronto-skyline) { position: relative; z-index: 1; }
+  /* Soft white wash so the dark headline copy stays legible over the
+     brightest middle of the animation. Stronger near the top where the
+     headline sits, fades toward the bottom so the animation reads clearly. */
+  .hero-video-veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(244,247,253,0.78) 0%,
+      rgba(244,247,253,0.55) 35%,
+      rgba(244,247,253,0.20) 70%,
+      rgba(244,247,253,0)    100%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .hero-content .eyebrow { margin-bottom: 4px; }
+  .hero-content .hero-sub {
+    margin-left: auto; margin-right: auto;
+    max-width: 580px;
+  }
+  .hero-content .hero-actions {
+    justify-content: center;
+  }
+  .hero-content .hero-meta {
+    justify-content: center;
+  }
+  .hero-content .install-nudge {
+    /* The nudge has its own size; just center it horizontally. */
+    margin-left: auto; margin-right: auto;
+  }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 6px 14px; border-radius: 999px;
@@ -363,13 +406,10 @@
 
   /* hero elements visible by default; intro overlay covers them during reveal */
 
-  /* ─────────── Hero receipt mockup ─────────── */
+  /* ─────────── Hero receipt mockup — kept for any future use; the
+     active layout now uses .hero-video as full-bleed background. ─────── */
   .receipt-wrap {
-    position: relative;
-    /* Tall enough for the now-much-larger video plus the floating cards
-       that orbit it. */
-    height: 760px;
-    perspective: 1600px;
+    display: none;
   }
   .receipt {
     /* Pinned to the right edge instead of dead-centered. Slight rotation
@@ -1292,74 +1332,20 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <!-- Full-bleed background video. Radial mask in CSS feathers the edges
+         so the rectangle dissolves into the page bg with no hard border. -->
+    <video
+      class="hero-video"
+      id="hero-receipt-video"
+      src="parking-ticket-animation.mp4"
+      autoplay muted playsinline preload="auto"
+      aria-hidden="true">
+    </video>
+    <!-- Subtle white wash so centered headline copy stays legible over the
+         brightest parts of the animation. -->
+    <div class="hero-video-veil"></div>
 
-    <!-- Toronto skyline silhouette — CN Tower, downtown towers, condos.
-         Sits behind everything as a soft watermark to ground the page
-         in the city Drivee is built for. -->
-    <svg class="toronto-skyline" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <!-- CN Tower (main spire) -->
-      <g fill="currentColor">
-        <!-- Tower observation pod -->
-        <path d="M 280 70 L 310 70 L 318 96 L 272 96 Z"/>
-        <!-- Tower upper antenna -->
-        <rect x="293" y="20" width="4" height="50"/>
-        <!-- Lower revolving deck -->
-        <path d="M 277 96 L 313 96 L 318 110 L 272 110 Z"/>
-        <!-- Tower shaft -->
-        <polygon points="288,110 302,110 304,280 286,280"/>
-        <!-- Tower legs (forked at bottom) -->
-        <polygon points="286,240 290,280 280,280 274,250"/>
-        <polygon points="304,240 300,280 310,280 316,250"/>
-      </g>
-      <!-- Skyline towers — left cluster -->
-      <g fill="currentColor">
-        <rect x="60"  y="170" width="38"  height="110"/>
-        <rect x="105" y="200" width="28"  height="80"/>
-        <rect x="140" y="150" width="44"  height="130"/>
-        <rect x="190" y="180" width="32"  height="100"/>
-        <rect x="228" y="140" width="40"  height="140"/>
-      </g>
-      <!-- Skyline towers — right of CN Tower -->
-      <g fill="currentColor">
-        <rect x="335" y="120" width="46" height="160"/>
-        <polygon points="388,120 426,90 426,280 388,280"/>
-        <rect x="432" y="160" width="34" height="120"/>
-        <rect x="472" y="100" width="50" height="180"/>
-        <polygon points="528,180 528,280 568,280 568,150"/>
-        <rect x="574" y="140" width="38" height="140"/>
-        <rect x="618" y="170" width="28" height="110"/>
-        <rect x="652" y="120" width="48" height="160"/>
-        <rect x="706" y="180" width="30" height="100"/>
-        <rect x="742" y="150" width="44" height="130"/>
-        <rect x="792" y="200" width="26" height="80"/>
-        <rect x="824" y="130" width="50" height="150"/>
-        <polygon points="880,160 880,280 920,280 920,140"/>
-        <rect x="926" y="180" width="32" height="100"/>
-        <rect x="964" y="155" width="42" height="125"/>
-        <rect x="1012" y="200" width="28" height="80"/>
-        <rect x="1046" y="170" width="38" height="110"/>
-        <rect x="1090" y="190" width="30" height="90"/>
-        <rect x="1126" y="160" width="44" height="120"/>
-      </g>
-      <!-- Window dots — sparse texture on the bigger towers -->
-      <g fill="rgba(255,255,255,0.6)">
-        <rect x="68"  y="190" width="3" height="3"/><rect x="80"  y="190" width="3" height="3"/>
-        <rect x="68"  y="210" width="3" height="3"/><rect x="80"  y="210" width="3" height="3"/>
-        <rect x="148" y="170" width="3" height="3"/><rect x="162" y="170" width="3" height="3"/>
-        <rect x="148" y="195" width="3" height="3"/><rect x="162" y="195" width="3" height="3"/>
-        <rect x="148" y="220" width="3" height="3"/><rect x="162" y="220" width="3" height="3"/>
-        <rect x="486" y="120" width="3" height="3"/><rect x="500" y="120" width="3" height="3"/>
-        <rect x="486" y="145" width="3" height="3"/><rect x="500" y="145" width="3" height="3"/>
-        <rect x="486" y="170" width="3" height="3"/><rect x="500" y="170" width="3" height="3"/>
-        <rect x="662" y="140" width="3" height="3"/><rect x="676" y="140" width="3" height="3"/>
-        <rect x="662" y="165" width="3" height="3"/><rect x="676" y="165" width="3" height="3"/>
-        <rect x="832" y="150" width="3" height="3"/><rect x="848" y="150" width="3" height="3"/>
-        <rect x="832" y="175" width="3" height="3"/><rect x="848" y="175" width="3" height="3"/>
-      </g>
-    </svg>
-
-    <div>
+    <div class="hero-content">
       <div class="anim a1 eyebrow">
         <span class="dot"></span>
         <span>NOW LIVE IN TORONTO</span>
@@ -1396,52 +1382,6 @@
       <div class="hero-meta anim a5">
         <div><b>$142</b> SAVED YTD</div>
         <div><b>74%</b> DISPUTES WON</div>
-      </div>
-    </div>
-
-    <!-- HERO RECEIPT -->
-    <div class="receipt-wrap">
-      <div class="receipt-glow"></div>
-
-      <!-- Animated ticket — Eugen's custom motion graphic. Plays forward then
-           scrubs in reverse via JS (ping-pong) so the loop feels twice as long
-           as the underlying clip without doubling the file size. -->
-      <video
-        class="receipt-video"
-        id="hero-receipt-video"
-        src="parking-ticket-animation.mp4"
-        autoplay muted playsinline preload="auto"
-        aria-label="Drivee parking ticket scanner animation">
-      </video>
-
-      <!-- floating cards -->
-      <div class="float-card float-1">
-        <div class="ic">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
-        </div>
-        <div>
-          <div class="lbl">DISPUTE WON</div>
-        </div>
-      </div>
-
-      <div class="float-card float-2">
-        <div class="ic">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
-        </div>
-        <div>
-          <div class="lbl">AI VERDICT</div>
-          <div class="val">Contest it</div>
-        </div>
-      </div>
-
-      <div class="float-card float-3">
-        <div class="ic">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <div>
-          <div class="lbl">USA TICKETS</div>
-          <div class="val" style="color: var(--blue);">Supported</div>
-        </div>
       </div>
     </div>
   </section>
