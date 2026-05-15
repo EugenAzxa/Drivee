@@ -277,31 +277,59 @@
     display: flex; align-items: center; gap: 6px;
   }
 
-  /* ─────────── Hero — 2-column: copy on left, animation on right ─────────── */
+  /* ─────────── Hero — full-bleed video background + centered copy ─────── */
   .hero {
-    padding: 140px 32px 100px;
-    max-width: 1480px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 1.05fr; gap: 60px;
-    align-items: center;
     position: relative;
+    min-height: clamp(680px, 88vh, 900px);
+    padding: 160px 32px 100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     overflow: hidden;
   }
   .hero-bg { display: none; }
 
-  /* Toronto skyline silhouette behind the hero — soft watermark anchored
-     to the bottom of the section so it ghosts behind the animation. */
-  .toronto-skyline {
+  /* Background animation — covers the whole hero. Edges feather to
+     transparent so the white video background dissolves into the page
+     bg (#FAFBFD) with no visible rectangle. */
+  .hero-video-bg {
     position: absolute;
-    left: 50%; bottom: 0;
-    width: 96%; max-width: 1480px;
-    transform: translateX(-50%);
-    height: auto;
-    pointer-events: none;
-    opacity: 0.09;
-    color: #1A3FB8;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
     z-index: 0;
+    pointer-events: none;
+    /* Soft inward feather so left/right/top/bottom edges blend smoothly
+       into the page background regardless of any micro color difference. */
+    -webkit-mask-image:
+      radial-gradient(ellipse 90% 80% at 50% 50%, #000 55%, rgba(0,0,0,0.7) 78%, transparent 100%);
+            mask-image:
+      radial-gradient(ellipse 90% 80% at 50% 50%, #000 55%, rgba(0,0,0,0.7) 78%, transparent 100%);
   }
-  .hero > *:not(.toronto-skyline) { position: relative; z-index: 1; }
+
+  /* Centered copy sits on top of the animation. */
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .hero-content .hero-sub {
+    margin-left: auto; margin-right: auto;
+    max-width: 580px;
+  }
+  .hero-content .hero-actions,
+  .hero-content .hero-meta {
+    justify-content: center;
+  }
+  .hero-content .install-nudge {
+    margin-left: auto; margin-right: auto;
+  }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 6px 14px; border-radius: 999px;
@@ -363,11 +391,9 @@
 
   /* hero elements visible by default; intro overlay covers them during reveal */
 
-  /* ─────────── Hero receipt mockup — container for the side video ─────── */
-  .receipt-wrap {
-    position: relative; height: 820px;
-    perspective: 1600px;
-  }
+  /* Old side-mounted receipt mockup — no longer used (hero now uses
+     full-bleed .hero-video-bg). Kept hidden for any future revert. */
+  .receipt-wrap { display: none; }
   .receipt {
     /* Pinned to the right edge instead of dead-centered. Slight rotation
        so it reads as a real photographed receipt, not a marketing render. */
@@ -1287,47 +1313,20 @@
 
   <!-- HERO -->
   <section class="hero">
-    <!-- Toronto skyline silhouette — sits behind the hero as a watermark. -->
-    <svg class="toronto-skyline" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <g fill="currentColor">
-        <!-- CN Tower -->
-        <path d="M 280 70 L 310 70 L 318 96 L 272 96 Z"/>
-        <rect x="293" y="20" width="4" height="50"/>
-        <path d="M 277 96 L 313 96 L 318 110 L 272 110 Z"/>
-        <polygon points="288,110 302,110 304,280 286,280"/>
-        <polygon points="286,240 290,280 280,280 274,250"/>
-        <polygon points="304,240 300,280 310,280 316,250"/>
-        <!-- Skyline towers — left cluster -->
-        <rect x="60"  y="170" width="38"  height="110"/>
-        <rect x="105" y="200" width="28"  height="80"/>
-        <rect x="140" y="150" width="44"  height="130"/>
-        <rect x="190" y="180" width="32"  height="100"/>
-        <rect x="228" y="140" width="40"  height="140"/>
-        <!-- Skyline towers — right of CN Tower -->
-        <rect x="335" y="120" width="46" height="160"/>
-        <polygon points="388,120 426,90 426,280 388,280"/>
-        <rect x="432" y="160" width="34" height="120"/>
-        <rect x="472" y="100" width="50" height="180"/>
-        <polygon points="528,180 528,280 568,280 568,150"/>
-        <rect x="574" y="140" width="38" height="140"/>
-        <rect x="618" y="170" width="28" height="110"/>
-        <rect x="652" y="120" width="48" height="160"/>
-        <rect x="706" y="180" width="30" height="100"/>
-        <rect x="742" y="150" width="44" height="130"/>
-        <rect x="792" y="200" width="26" height="80"/>
-        <rect x="824" y="130" width="50" height="150"/>
-        <polygon points="880,160 880,280 920,280 920,140"/>
-        <rect x="926" y="180" width="32" height="100"/>
-        <rect x="964" y="155" width="42" height="125"/>
-        <rect x="1012" y="200" width="28" height="80"/>
-        <rect x="1046" y="170" width="38" height="110"/>
-        <rect x="1090" y="190" width="30" height="90"/>
-        <rect x="1126" y="160" width="44" height="120"/>
-      </g>
-    </svg>
+    <!-- Full-bleed background animation. The video's own background is
+         clean white, so it blends naturally with the page bg (#FAFBFD).
+         A subtle radial mask on the edges insures against any minor
+         color mismatch so there's no visible rectangle. -->
+    <video
+      class="hero-video-bg"
+      id="hero-bg-video"
+      src="parking-ticket-2.mp4"
+      autoplay muted playsinline loop preload="auto"
+      aria-hidden="true">
+    </video>
 
-    <!-- LEFT: copy column -->
-    <div>
+    <!-- Centered hero copy sits above the animation. -->
+    <div class="hero-content">
       <div class="anim a1 eyebrow">
         <span class="dot"></span>
         <span>NOW LIVE IN TORONTO</span>
@@ -1365,17 +1364,6 @@
         <div><b>$142</b> SAVED YTD</div>
         <div><b>74%</b> DISPUTES WON</div>
       </div>
-    </div>
-
-    <!-- RIGHT: hero graphic — Drivee receipt + paid yellow ticket -->
-    <div class="receipt-wrap">
-      <img
-        class="receipt-video"
-        id="hero-receipt-graphic"
-        src="parking-ticket.png"
-        alt="Drivee app showing a paid Toronto parking ticket with $255 saved this year"
-        loading="eager"
-        decoding="async">
     </div>
   </section>
 
