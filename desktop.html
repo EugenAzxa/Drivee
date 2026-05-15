@@ -279,16 +279,29 @@
 
   /* ─────────── Hero ─────────── */
   .hero {
-    padding: 140px 32px 80px;
-    max-width: 1320px; margin: 0 auto;
-    /* Asymmetric split — copy gets more weight than the receipt, and the
-       receipt sits offset right instead of centered so the layout doesn't
-       read as the default "feature image on the right" SaaS template. */
-    display: grid; grid-template-columns: 1.3fr 1fr; gap: 80px;
-    align-items: start;
+    padding: 140px 32px 100px;
+    max-width: 1480px; margin: 0 auto;
+    /* Asymmetric split with the video side taking the heavier weight —
+       the animation IS the product demo, so it earns the bigger column. */
+    display: grid; grid-template-columns: 1fr 1.15fr; gap: 60px;
+    align-items: center;
     position: relative;
+    overflow: hidden;
   }
   .hero-bg { display: none; }
+
+  /* Toronto skyline silhouette behind the hero — soft, oversized,
+     anchored to the bottom-right so it ghosts behind the animation. */
+  .toronto-skyline {
+    position: absolute;
+    right: -60px; bottom: 0;
+    width: 70%; max-width: 1100px; height: auto;
+    pointer-events: none;
+    opacity: 0.10;
+    color: #1A3FB8;
+    z-index: 0;
+  }
+  .hero > *:not(.toronto-skyline) { position: relative; z-index: 1; }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 10px;
     padding: 6px 14px; border-radius: 999px;
@@ -352,7 +365,10 @@
 
   /* ─────────── Hero receipt mockup ─────────── */
   .receipt-wrap {
-    position: relative; height: 640px;
+    position: relative;
+    /* Tall enough for the now-much-larger video plus the floating cards
+       that orbit it. */
+    height: 760px;
     perspective: 1600px;
   }
   .receipt {
@@ -369,25 +385,31 @@
   }
   .receipt:hover { transform: rotate(0); }
 
-  /* Hero video — replaces the static receipt mockup. Same offset-right
-     position, same gentle rotation, same warm shadow. */
+  /* Hero video — the animation IS the product demo. Sized to dominate
+     the right side of the hero. Width clamps with the viewport so it
+     stays huge on big screens but doesn't blow out on smaller ones. */
   .receipt-video {
-    position: absolute; top: 20px; right: 8%;
-    width: 360px; max-height: 600px;
+    position: absolute;
+    top: 0;
+    right: -2%;
+    width: clamp(420px, 46vw, 700px);
+    max-height: 760px;
     height: auto;
-    transform: rotate(-3.2deg);
-    background: white;
-    border-radius: 14px;
+    transform: rotate(-2.5deg);
+    background: transparent;
+    border-radius: 18px;
     box-shadow:
-      0 40px 80px -30px rgba(11,20,48,0.30),
-      0 20px 40px -20px rgba(11,20,48,0.16);
+      0 60px 120px -40px rgba(11,20,48,0.35),
+      0 24px 48px -24px rgba(11,20,48,0.18);
     transition: transform 0.6s cubic-bezier(0.2,0.7,0.2,1);
     object-fit: contain;
     display: block;
-    pointer-events: auto;
-    cursor: default;
   }
   .receipt-video:hover { transform: rotate(0); }
+  @media (max-width: 1100px) {
+    .receipt-video { right: 4%; width: clamp(360px, 60vw, 520px); }
+    .receipt-wrap { height: 620px; }
+  }
   .receipt::before, .receipt::after {
     content: ""; position: absolute; left: 0; right: 0; height: 14px;
     background-image: radial-gradient(circle at 7px 7px, var(--bg) 5px, transparent 5px);
@@ -1271,6 +1293,72 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
+
+    <!-- Toronto skyline silhouette — CN Tower, downtown towers, condos.
+         Sits behind everything as a soft watermark to ground the page
+         in the city Drivee is built for. -->
+    <svg class="toronto-skyline" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- CN Tower (main spire) -->
+      <g fill="currentColor">
+        <!-- Tower observation pod -->
+        <path d="M 280 70 L 310 70 L 318 96 L 272 96 Z"/>
+        <!-- Tower upper antenna -->
+        <rect x="293" y="20" width="4" height="50"/>
+        <!-- Lower revolving deck -->
+        <path d="M 277 96 L 313 96 L 318 110 L 272 110 Z"/>
+        <!-- Tower shaft -->
+        <polygon points="288,110 302,110 304,280 286,280"/>
+        <!-- Tower legs (forked at bottom) -->
+        <polygon points="286,240 290,280 280,280 274,250"/>
+        <polygon points="304,240 300,280 310,280 316,250"/>
+      </g>
+      <!-- Skyline towers — left cluster -->
+      <g fill="currentColor">
+        <rect x="60"  y="170" width="38"  height="110"/>
+        <rect x="105" y="200" width="28"  height="80"/>
+        <rect x="140" y="150" width="44"  height="130"/>
+        <rect x="190" y="180" width="32"  height="100"/>
+        <rect x="228" y="140" width="40"  height="140"/>
+      </g>
+      <!-- Skyline towers — right of CN Tower -->
+      <g fill="currentColor">
+        <rect x="335" y="120" width="46" height="160"/>
+        <polygon points="388,120 426,90 426,280 388,280"/>
+        <rect x="432" y="160" width="34" height="120"/>
+        <rect x="472" y="100" width="50" height="180"/>
+        <polygon points="528,180 528,280 568,280 568,150"/>
+        <rect x="574" y="140" width="38" height="140"/>
+        <rect x="618" y="170" width="28" height="110"/>
+        <rect x="652" y="120" width="48" height="160"/>
+        <rect x="706" y="180" width="30" height="100"/>
+        <rect x="742" y="150" width="44" height="130"/>
+        <rect x="792" y="200" width="26" height="80"/>
+        <rect x="824" y="130" width="50" height="150"/>
+        <polygon points="880,160 880,280 920,280 920,140"/>
+        <rect x="926" y="180" width="32" height="100"/>
+        <rect x="964" y="155" width="42" height="125"/>
+        <rect x="1012" y="200" width="28" height="80"/>
+        <rect x="1046" y="170" width="38" height="110"/>
+        <rect x="1090" y="190" width="30" height="90"/>
+        <rect x="1126" y="160" width="44" height="120"/>
+      </g>
+      <!-- Window dots — sparse texture on the bigger towers -->
+      <g fill="rgba(255,255,255,0.6)">
+        <rect x="68"  y="190" width="3" height="3"/><rect x="80"  y="190" width="3" height="3"/>
+        <rect x="68"  y="210" width="3" height="3"/><rect x="80"  y="210" width="3" height="3"/>
+        <rect x="148" y="170" width="3" height="3"/><rect x="162" y="170" width="3" height="3"/>
+        <rect x="148" y="195" width="3" height="3"/><rect x="162" y="195" width="3" height="3"/>
+        <rect x="148" y="220" width="3" height="3"/><rect x="162" y="220" width="3" height="3"/>
+        <rect x="486" y="120" width="3" height="3"/><rect x="500" y="120" width="3" height="3"/>
+        <rect x="486" y="145" width="3" height="3"/><rect x="500" y="145" width="3" height="3"/>
+        <rect x="486" y="170" width="3" height="3"/><rect x="500" y="170" width="3" height="3"/>
+        <rect x="662" y="140" width="3" height="3"/><rect x="676" y="140" width="3" height="3"/>
+        <rect x="662" y="165" width="3" height="3"/><rect x="676" y="165" width="3" height="3"/>
+        <rect x="832" y="150" width="3" height="3"/><rect x="848" y="150" width="3" height="3"/>
+        <rect x="832" y="175" width="3" height="3"/><rect x="848" y="175" width="3" height="3"/>
+      </g>
+    </svg>
+
     <div>
       <div class="anim a1 eyebrow">
         <span class="dot"></span>
