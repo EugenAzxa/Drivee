@@ -7293,6 +7293,11 @@
           Official Toronto Parking Authority lots — guaranteed legal parking. Rates are an estimate; tap a lot for the live rate on greenp.com.
         </div>
         <div id="greenp-list"></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px" onclick="dvOpenGreenPApp()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+          Pay with the Green P app
+        </button>
+        <div style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:6px">Opens the app if installed · otherwise the app store to download</div>
       </div>
 
       <!-- GPS Guardian -->
@@ -11278,7 +11283,7 @@
     var STREETS = [
       { name: 'Queen St W — Spadina to Bathurst',       rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 3:30–6:30pm' },
       { name: 'Queen St W — Bathurst to Ossington',     rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
-      { name: 'Queen St E — Parliament to Broadview',   rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Queen St E — Parliament to Broadview',   rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Bloor St W — Spadina to Bathurst',       rate: '$4.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
       { name: 'Bloor St W — Ossington to Dufferin',     rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Bloor St E — Yonge to Sherbourne',       rate: '$4.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 4–6pm' },
@@ -11287,35 +11292,35 @@
       { name: 'Yonge St — Eglinton to Lawrence',        rate: '$3.00/hr', hours: 'Mon–Sat 8am–8pm',      free: 'Sun · Daily after 8pm',         tow: null },
       { name: 'King St W — Spadina to Bathurst',        rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 3–7pm' },
       { name: 'King St E — Yonge to Parliament',        rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
-      { name: 'Dundas St W — Spadina to Bathurst',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'Dundas St W — Bathurst to Dufferin',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'Dundas St E — Yonge to Parliament',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'College St — Spadina to Bathurst',       rate: '$2.50/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'College St — Bathurst to Dufferin',      rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Dundas St W — Spadina to Bathurst',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Dundas St W — Bathurst to Dufferin',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Dundas St E — Yonge to Parliament',      rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'College St — Spadina to Bathurst',       rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'College St — Bathurst to Dufferin',      rate: '$2.00/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Spadina Ave — Queen to College',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
       { name: 'Spadina Ave — College to Bloor',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Bay St — Front to Bloor',                rate: '$4.00/hr', hours: 'Mon–Fri 7am–10pm',     free: 'Sat–Sun · Daily after 10pm',    tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
       { name: 'Front St — Yonge to Jarvis',             rate: '$5.00/hr', hours: 'Mon–Sun 7am–midnight', free: 'After midnight only',           tow: 'Tow-away: Event days — check signage' },
       { name: 'Front St W — Spadina to Bathurst',       rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Queens Quay W — Harbourfront',           rate: '$3.50/hr', hours: 'Mon–Sun 9am–9pm',      free: 'Daily after 9pm',               tow: null },
-      { name: 'Kensington Market — Augusta Ave',        rate: '$2.50/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Kensington Market — Augusta Ave',        rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Church St — Bloor to Wellesley',         rate: '$3.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Danforth Ave — Broadview to Pape',       rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
-      { name: 'Danforth Ave — Pape to Donlands',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'St Clair Ave W — Yonge to Avenue',       rate: '$2.50/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'St Clair Ave W — Bathurst to Dufferin',  rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Danforth Ave — Pape to Donlands',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'St Clair Ave W — Yonge to Avenue',       rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'St Clair Ave W — Bathurst to Dufferin',  rate: '$2.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Eglinton Ave W — Avenue to Bathurst',    rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Eglinton Ave E — Yonge to Mt Pleasant',  rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
-      { name: 'Lawrence Ave W — Dufferin to Allen',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Lawrence Ave W — Dufferin to Allen',     rate: '$2.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Avenue Rd — Bloor to Davenport',         rate: '$3.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: 'Tow-away: Mon–Fri 4–6pm' },
-      { name: 'Ossington Ave — Dundas to Queen',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
-      { name: 'Roncesvalles Ave — Queen to Howard Park',rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Ossington Ave — Dundas to Queen',        rate: '$2.00/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
+      { name: 'Roncesvalles Ave — Queen to Howard Park',rate: '$2.00/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Parliament St — Dundas to Bloor',        rate: '$2.50/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Bathurst St — Bloor to Dupont',          rate: '$2.50/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
-      { name: 'Dufferin St — Bloor to Dupont',          rate: '$2.00/hr', hours: 'Mon–Sat 8am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Dufferin St — Bloor to Dupont',          rate: '$2.00/hr', hours: 'Mon–Sat 8am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
       { name: 'Wellington St W — Bay to Spadina',       rate: '$4.00/hr', hours: 'Mon–Fri 7am–9pm',      free: 'Sat–Sun · Daily after 9pm',     tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
       { name: 'Adelaide St W — Bay to Spadina',         rate: '$4.00/hr', hours: 'Mon–Fri 7am–9pm',      free: 'Sat–Sun · Daily after 9pm',     tow: 'Tow-away: Mon–Fri 7–9am and 4–6pm' },
-      { name: 'Gerrard St E — Broadview to Greenwood',  rate: '$2.00/hr', hours: 'Mon–Sat 9am–6pm',      free: 'Sun · Daily after 6pm',         tow: null },
+      { name: 'Gerrard St E — Broadview to Greenwood',  rate: '$2.00/hr', hours: 'Mon–Sat 9am–9pm',      free: 'Sun · Daily after 9pm',         tow: null },
     ];
 
     // ── Free Parking Now — live calculation from STREETS + current time ──
@@ -11522,6 +11527,33 @@
             '</div>' +
           '</div>';
       }).join('');
+    }
+
+    // Open the official Green P app. On iOS/Android the store link opens the
+    // app's store page — which shows "Open" if it's already installed, or
+    // "Get/Install" if not. On Android we first try an intent that launches
+    // the installed app directly, falling back to Play Store. Desktop → web.
+    function dvOpenGreenPApp() {
+      var ua = navigator.userAgent || '';
+      var ios     = /iPhone|iPad|iPod/i.test(ua);
+      var android = /Android/i.test(ua);
+      trackEvent('tab_click', 'greenp-app-open');
+      if (ios) {
+        window.location.href = 'https://apps.apple.com/ca/app/green-p/id429679356';
+      } else if (android) {
+        // Try to launch the installed app; Android falls back to the Play
+        // Store page automatically if the app isn't present.
+        var pkg = 'com.passportparking.mobile.toronto';
+        var fallback = 'https://play.google.com/store/apps/details?id=' + pkg;
+        try {
+          window.location.href = 'intent://#Intent;package=' + pkg +
+            ';scheme=https;S.browser_fallback_url=' + encodeURIComponent(fallback) + ';end';
+        } catch (e) {
+          window.location.href = fallback;
+        }
+      } else {
+        window.open('https://mobilepay.greenp.com/', '_blank');
+      }
     }
 
     function dvLocateGreenP() {
