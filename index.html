@@ -529,6 +529,47 @@
       margin-top: 6px;
     }
     .parking-spot-map-hint svg { width: 12px; height: 12px; }
+
+    /* Official Green P lot rows */
+    .greenp-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; margin-bottom: 8px;
+      background: var(--elevated); border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .greenp-info { flex: 1; min-width: 0; }
+    .greenp-name {
+      font-size: 14px; font-weight: 700; color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+    .greenp-meta {
+      font-size: 11px; color: var(--text-tertiary);
+      margin-top: 3px; font-family: var(--dv2-mono, monospace);
+    }
+    .greenp-rate {
+      font-size: 12px; color: var(--text-secondary); margin-top: 4px;
+    }
+    .greenp-rate b { color: var(--text-primary); font-weight: 700; }
+    .greenp-rate .live {
+      color: var(--blue); font-weight: 700; text-decoration: none;
+    }
+    .greenp-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+    .greenp-map {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--blue); color: #fff; text-decoration: none;
+      font-size: 12px; font-weight: 800; padding: 8px 11px; border-radius: 10px;
+      white-space: nowrap;
+    }
+    .greenp-map svg { width: 13px; height: 13px; }
+    .greenp-dist {
+      font-family: var(--dv2-mono, monospace);
+      font-size: 11px; font-weight: 700; color: var(--green);
+      text-align: center;
+    }
+    .greenp-empty {
+      font-size: 13px; color: var(--text-tertiary);
+      text-align: center; padding: 12px;
+    }
     #map {
       /* Full-bleed: cancel the tab section's 20px side padding */
       width: calc(100% + 40px);
@@ -7242,6 +7283,18 @@
         </div>
       </div>
 
+      <!-- Official Green P lots — guaranteed legal parking, from City Open Data -->
+      <div class="card" id="greenp-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="card-title" style="margin-bottom:0">🅿️ Green P lots near you</div>
+          <button class="btn btn-secondary" id="greenp-locate-btn" style="padding:5px 10px;font-size:12px" onclick="dvLocateGreenP()">Use my location</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:12px">
+          Official Toronto Parking Authority lots — guaranteed legal parking. Rates are an estimate; tap a lot for the live rate on greenp.com.
+        </div>
+        <div id="greenp-list"></div>
+      </div>
+
       <!-- GPS Guardian -->
       <div class="card">
         <div class="card-title">GPS Guardian</div>
@@ -8101,6 +8154,9 @@
   <!-- Tesseract.js — client-side OCR. Ticket photos never leave the device. -->
   <script src="https://unpkg.com/tesseract.js@4/dist/tesseract.min.js"></script>
 
+  <!-- Official Toronto Parking Authority (Green P) lots — City Open Data -->
+  <script src="greenp-lots.js"></script>
+
   <script>
     // ===================================================
     // FEE ESCALATION CALCULATOR
@@ -8509,6 +8565,7 @@
       if (tabId === 'tab-hotspots') {
         initMap();
         renderFreeParkingNow();
+        if (typeof renderGreenPLots === 'function') renderGreenPLots(); // downtown default until "Use my location"
       }
     }
 
@@ -11405,6 +11462,85 @@
       } else {
         soonSection.style.display = 'none';
       }
+    }
+
+    // ─── Official Green P lots (City of Toronto Open Data) ───
+    // Guaranteed legal off-street parking. Locations are official + stable;
+    // rates are a 2019 estimate, so each lot links to its live greenp.com page.
+    var DV_DOWNTOWN = { lat: 43.6532, lng: -79.3832 }; // Yonge & Dundas-ish
+
+    function dvHaversineKm(a, b) {
+      var R = 6371, toRad = function(d){ return d * Math.PI / 180; };
+      var dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+      var s = Math.sin(dLat/2)*Math.sin(dLat/2) +
+              Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)*Math.sin(dLng/2);
+      return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1-s));
+    }
+    function dvFmtDist(km) {
+      if (km < 1) return Math.round(km * 1000) + ' m';
+      return km.toFixed(1) + ' km';
+    }
+
+    function renderGreenPLots(origin) {
+      var listEl = document.getElementById('greenp-list');
+      if (!listEl || typeof window.GREENP_LOTS === 'undefined') return;
+      origin = origin || DV_DOWNTOWN;
+
+      var lots = window.GREENP_LOTS
+        .map(function(l){ return { l: l, d: dvHaversineKm(origin, { lat: l.lat, lng: l.lng }) }; })
+        .sort(function(x, y){ return x.d - y.d; })
+        .slice(0, 6);
+
+      if (!lots.length) {
+        listEl.innerHTML = '<div class="greenp-empty">No Green P lots found.</div>';
+        return;
+      }
+
+      listEl.innerHTML = lots.map(function(item){
+        var l = item.l;
+        var mapUrl = 'https://www.google.com/maps/search/?api=1&query=' + l.lat + ',' + l.lng;
+        var capTxt = l.cap ? (l.cap + ' spaces') : '';
+        var typeTxt = l.t || 'Lot';
+        var metaParts = [typeTxt];
+        if (capTxt) metaParts.push(capTxt);
+        metaParts.push(dvFmtDist(item.d) + ' away');
+        var rateLine = l.r
+          ? '~<b>' + esc(l.r) + '</b> · ' + (l.u ? '<a class="live" href="' + esc(l.u) + '" target="_blank" rel="noopener">live rate ↗</a>' : 'verify rate')
+          : (l.u ? '<a class="live" href="' + esc(l.u) + '" target="_blank" rel="noopener">See live rate ↗</a>' : '');
+        return '' +
+          '<div class="greenp-row">' +
+            '<div class="greenp-info">' +
+              '<div class="greenp-name">' + esc(l.a) + '</div>' +
+              '<div class="greenp-meta">' + esc(metaParts.join(' · ')) + '</div>' +
+              '<div class="greenp-rate">' + rateLine + '</div>' +
+            '</div>' +
+            '<div class="greenp-actions">' +
+              '<a class="greenp-map" href="' + mapUrl + '" target="_blank" rel="noopener">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+                'Map' +
+              '</a>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function dvLocateGreenP() {
+      var btn = document.getElementById('greenp-locate-btn');
+      if (!navigator.geolocation) {
+        renderGreenPLots(DV_DOWNTOWN);
+        showToast('Showing downtown lots — location not available');
+        return;
+      }
+      if (btn) { btn.textContent = 'Locating…'; btn.disabled = true; }
+      navigator.geolocation.getCurrentPosition(function(pos){
+        renderGreenPLots({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        if (btn) { btn.textContent = 'Nearest to you ✓'; btn.disabled = false; }
+        trackEvent('gps_started', 'greenp-lots');
+      }, function(){
+        renderGreenPLots(DV_DOWNTOWN);
+        if (btn) { btn.textContent = 'Use my location'; btn.disabled = false; }
+        showToast('Location denied — showing downtown lots');
+      }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 });
     }
 
     // ─── Free streets sheet: shows which streets are free + Google Maps link ───

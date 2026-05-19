@@ -1,10 +1,11 @@
 // Drivee Service Worker — enables PWA install + offline caching.
 // Bump this version string whenever index.html / sw.js change so older
 // installed PWAs throw away their stale caches on the next visit.
-var CACHE_NAME = 'drivee-v2-2026-05-11-conservative-parking-hours';
+var CACHE_NAME = 'drivee-v2-2026-05-11-greenp-lots';
 var URLS_TO_CACHE = [
   '/',
-  '/index.html'
+  '/index.html',
+  '/greenp-lots.js'
 ];
 
 self.addEventListener('install', function(e) {
