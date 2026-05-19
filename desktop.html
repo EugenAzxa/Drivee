@@ -54,10 +54,7 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    /* White instead of var(--bg) so the hero (which is also white)
-       seamlessly blends — no visible line anywhere. Sections below the
-       hero set their own backgrounds where they want the blue tint. */
-    background: #FFFFFF; color: var(--ink);
+    background: var(--bg); color: var(--ink);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
@@ -289,14 +286,25 @@
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-    /* Hero stays white. Body is also white now, so there's no boundary
-       between the hero and the surrounding page — fully seamless. */
+    /* Hero is white where the video plays; a short gradient at the bottom
+       fades into the light-blue page background. */
     background: #FFFFFF;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 90px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    z-index: 2;
   }
   .hero-bg { display: none; }
 
-  /* Background animation — sits on top of the white hero bg. Since both
-     are white, no mask or fade needed — they blend by default. */
+  /* Background animation. object-fit: contain leaves letterbox areas around
+     the video; browsers fill those with BLACK by default — that's the
+     "black lane" you saw. Forcing the element background to white makes
+     the letterbox blend invisibly into the white hero. */
   .hero-video-bg {
     position: absolute;
     inset: 0;
@@ -304,6 +312,7 @@
     object-fit: contain;
     object-position: center;
     transform: scale(0.85);
+    background: #FFFFFF;
     z-index: 0;
     pointer-events: none;
   }
