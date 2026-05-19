@@ -1194,6 +1194,109 @@
       border: 0; margin-bottom: 0;
     }
 
+    /* ── Unified sign-in modal ── */
+    .dv-auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,20,48,0.58);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 10000; display: none;
+      align-items: center; justify-content: center; padding: 22px;
+    }
+    .dv-auth-overlay.open { display: flex; }
+    .dv-auth-modal {
+      position: relative;
+      background: var(--surface, #fff);
+      border-radius: 24px; padding: 30px 26px 22px;
+      width: 100%; max-width: 380px;
+      text-align: center;
+      box-shadow: 0 40px 90px -24px rgba(0,0,0,0.55);
+      animation: dvAuthPop 0.24s cubic-bezier(0.2,0.8,0.2,1);
+      max-height: 92vh; overflow-y: auto;
+    }
+    @keyframes dvAuthPop { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .dv-auth-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 999px;
+      background: var(--elevated, #f4f1ea); color: var(--text-primary, #0e1b3d);
+      border: 0; cursor: pointer; display: grid; place-items: center;
+    }
+    .dv-auth-logo {
+      width: 52px; height: 52px; margin: 0 auto 14px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue, #2E64FF), var(--blue-d, #1A3FB8));
+      color: #fff; display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 20px;
+    }
+    .dv-auth-title {
+      font-family: var(--dv2-serif, Georgia, serif);
+      font-size: 22px; font-weight: 700; letter-spacing: -0.4px;
+      color: var(--text-primary, #0e1b3d); margin: 0 0 6px;
+    }
+    .dv-auth-sub {
+      font-size: 13.5px; line-height: 1.5;
+      color: var(--text-secondary, #5a6075); margin: 0 0 20px;
+    }
+    .dv-auth-google {
+      width: 100%; padding: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: #fff; color: #1f1f1f;
+      border: 1px solid var(--border, #dadce0); border-radius: 12px;
+      font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .dv-auth-google:hover { background: #f7f8fa; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .dv-auth-or {
+      display: flex; align-items: center; gap: 12px;
+      margin: 16px 0; color: var(--text-tertiary, #8c95a7); font-size: 12px;
+    }
+    .dv-auth-or::before, .dv-auth-or::after {
+      content: ""; flex: 1; height: 1px; background: var(--border, #e3dfd4);
+    }
+    .dv-auth-input {
+      width: 100%; padding: 12px 14px;
+      border: 1px solid var(--border, #e3dfd4); border-radius: 12px;
+      font: 600 14px inherit; background: var(--elevated, #f8f6f0);
+      color: var(--text-primary, #0e1b3d);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .dv-auth-input:focus { outline: 2px solid var(--blue, #2E64FF); border-color: var(--blue, #2E64FF); }
+    .dv-auth-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv-auth-code {
+      text-align: center; letter-spacing: 8px;
+      font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;
+    }
+    .dv-auth-fielderr {
+      display: none; font-size: 12px; color: #e1473d; font-weight: 700;
+      margin: 6px 0 0; text-align: left;
+    }
+    .dv-auth-fielderr.show { display: block; }
+    .dv-auth-primary {
+      width: 100%; margin-top: 10px; padding: 13px;
+      background: var(--blue, #2E64FF); color: #fff; border: 0; border-radius: 12px;
+      font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .dv-auth-primary:hover { background: var(--blue-d, #1A3FB8); }
+    .dv-auth-primary:disabled { background: #b5bcc9; cursor: not-allowed; }
+    .dv-auth-codeinfo {
+      font-size: 13px; line-height: 1.5; color: var(--text-secondary, #5a6075);
+      margin: 0 0 14px;
+    }
+    .dv-auth-codeinfo b { color: var(--text-primary, #0e1b3d); font-weight: 800; }
+    .dv-auth-link {
+      background: transparent; border: 0; cursor: pointer;
+      color: var(--text-secondary, #5a6075); font: 600 13px inherit;
+      margin-top: 12px;
+    }
+    .dv-auth-trust {
+      display: flex; align-items: flex-start; gap: 7px;
+      margin-top: 20px; padding-top: 16px;
+      border-top: 1px solid var(--border, #e3dfd4);
+      font-size: 11.5px; line-height: 1.45;
+      color: var(--text-tertiary, #8c95a7); text-align: left;
+    }
+    .dv-auth-trust svg { flex-shrink: 0; margin-top: 1px; color: var(--green, #1FAB6B); }
+
     /* ── Free streets sheet ── */
     .dv-free-overlay {
       position: fixed; inset: 0;
@@ -5994,24 +6097,15 @@
     <!-- Signed OUT view -->
     <div id="ps-signed-out" class="profile-sheet-signin-wrap">
       <div class="profile-sheet-signin-title">☁️ Sign in to sync</div>
-      <div class="profile-sheet-signin-sub">No password needed — we'll email you a magic link.</div>
-      <!-- Wrapped in a form so Enter submits AND native HTML5 email validation
-           kicks in. The JS handler also does its own validation as a backstop. -->
-      <form onsubmit="event.preventDefault(); sendMagicLinkFromSheet(); return false;" novalidate>
-        <input type="email"
-               class="profile-sheet-email-input"
-               id="ps-email-input"
-               name="email"
-               placeholder="your@email.com"
-               autocomplete="email"
-               inputmode="email"
-               required
-               oninput="dvClearEmailInvalid('ps-email-input', 'ps-email-error')"
-        />
-        <div class="profile-sheet-error" id="ps-email-error">Please enter a valid email address.</div>
-        <button type="submit" class="profile-sheet-send-btn">Send Magic Link</button>
-      </form>
-      <div class="profile-sheet-sent" id="ps-sent">✅ Check your email and tap the link</div>
+      <div class="profile-sheet-signin-sub">Keep your reminders across devices. No password — Google or a quick email code.</div>
+      <button type="button" class="profile-sheet-send-btn"
+              onclick="closeProfileSheet(); dvOpenAuth('Sign in to Drivee', 'Sync your reminders across devices. Google or a 6-digit email code — no password.')">
+        Sign in / Create account
+      </button>
+      <!-- Hidden legacy inputs kept so older code referencing them never errors -->
+      <input type="hidden" id="ps-email-input" />
+      <div class="profile-sheet-error" id="ps-email-error" style="display:none"></div>
+      <div class="profile-sheet-sent" id="ps-sent" style="display:none"></div>
     </div>
 
     <!-- Log out — always available. Opens a confirmation modal first. -->
@@ -6039,6 +6133,54 @@
         Log out &amp; delete everything
       </button>
       <button class="dv-logout-btn cancel" type="button" onclick="dvLogoutCancel()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ── Unified sign-in modal: Google + email 6-digit code ── -->
+  <div class="dv-auth-overlay" id="dv-auth-overlay" onclick="dvAuthCancel(event)">
+    <div class="dv-auth-modal" role="dialog" aria-modal="true" aria-labelledby="dv-auth-title">
+      <button class="dv-auth-close" type="button" aria-label="Close" onclick="dvAuthCancel()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="dv-auth-logo">D.</div>
+      <h3 class="dv-auth-title" id="dv-auth-title">Save this to your phone</h3>
+      <p class="dv-auth-sub" id="dv-auth-sub">Sign in so Drivee can save your reminder and email you before the deadline.</p>
+
+      <!-- Step 1: choose a method -->
+      <div id="dv-auth-step1">
+        <button class="dv-auth-google" type="button" onclick="dvAuthGoogle()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 1 0 24 44c11 0 20-8.9 20-20 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 0 0 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5A20 20 0 0 0 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2c-.4.4 6.6-4.8 6.6-14.8 0-1.3-.1-2.3-.4-3.5z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="dv-auth-or"><span>or use your email</span></div>
+
+        <form onsubmit="event.preventDefault(); dvAuthSendCode(); return false;" novalidate>
+          <input type="email" class="dv-auth-input" id="dv-auth-email" name="email"
+                 placeholder="your@email.com" autocomplete="email" inputmode="email" required
+                 oninput="dvClearEmailInvalid('dv-auth-email','dv-auth-error')" />
+          <div class="dv-auth-fielderr" id="dv-auth-error">Please enter a valid email.</div>
+          <button class="dv-auth-primary" id="dv-auth-send-btn" type="submit">Send me a code</button>
+        </form>
+      </div>
+
+      <!-- Step 2: enter the code -->
+      <div id="dv-auth-step2" hidden>
+        <p class="dv-auth-codeinfo">We emailed a 6-digit code to <b id="dv-auth-email-echo"></b>. Enter it below.</p>
+        <form onsubmit="event.preventDefault(); dvAuthVerifyCode(); return false;" novalidate>
+          <input type="text" class="dv-auth-input dv-auth-code" id="dv-auth-code"
+                 inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"
+                 oninput="this.classList.remove('invalid'); document.getElementById('dv-auth-error2').classList.remove('show');" />
+          <div class="dv-auth-fielderr" id="dv-auth-error2">That code didn't work — check and try again.</div>
+          <button class="dv-auth-primary" id="dv-auth-verify-btn" type="submit">Verify &amp; sign in</button>
+        </form>
+        <button class="dv-auth-link" type="button" onclick="dvAuthBackToEmail()">← Use a different email</button>
+      </div>
+
+      <div class="dv-auth-trust">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        No marketing emails. No spam. Just your ticket reminders — and you can delete everything anytime.
+      </div>
     </div>
   </div>
 
@@ -6358,21 +6500,15 @@
         <div class="hero-divider" style="margin-top:14px"></div>
         <!-- Auth embedded in hero -->
         <div id="auth-signout-state" style="margin-top:12px">
-          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password needed</div>
-          <form class="auth-input-row" onsubmit="event.preventDefault(); sendMagicLink(); return false;" novalidate>
-            <input type="email"
-                   class="auth-email-input"
-                   id="auth-email-input"
-                   name="email"
-                   placeholder="your@email.com"
-                   autocomplete="email"
-                   inputmode="email"
-                   required
-                   oninput="dvClearEmailInvalid('auth-email-input','auth-email-error')" />
-            <button type="submit" class="auth-send-btn">Send Link</button>
-          </form>
-          <div class="auth-error" id="auth-email-error">Please enter a valid email address.</div>
-          <div class="auth-sent-msg" id="auth-sent-msg" style="display:none">✅ Check your email — click the link to sign in</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password, no spam</div>
+          <button type="button" class="auth-send-btn" style="width:100%"
+                  onclick="dvOpenAuth('Sync your reminders', 'Sign in to keep your tickets across devices. Google or a 6-digit email code — no password.')">
+            Sign in / Create account
+          </button>
+          <!-- Hidden legacy nodes so older references never error -->
+          <input type="hidden" id="auth-email-input" />
+          <div class="auth-error" id="auth-email-error" style="display:none"></div>
+          <div class="auth-sent-msg" id="auth-sent-msg" style="display:none"></div>
         </div>
         <div id="auth-signin-state" style="display:none;margin-top:12px" class="auth-signed-in">
           <div class="auth-avatar" id="auth-avatar">U</div>
@@ -12027,27 +12163,12 @@
     // Loss-aversion CTA on the verdict card: collects email after a scan,
     // saves the reminder LOCALLY immediately (so the user has it even if they
     // never click the magic link), then sends the magic link to convert them.
+    // Loss-aversion CTA after a scan → soft gate. Save the reminder locally
+    // (so it's never lost), then open the unified sign-in modal (Google or
+    // email code) so we can deliver the deadline reminder.
     function dv2EmailReminderSignup() {
       var emailEl = document.getElementById('dv2-loss-email');
-      var btn     = document.getElementById('dv2-loss-btn');
-      var success = document.getElementById('dv2-loss-success');
-      var err     = document.getElementById('dv2-loss-error');
-      if (!emailEl || !btn) return;
-      var email = emailEl.value.trim();
-      if (!dvIsValidEmail(email)) {
-        emailEl.classList.add('invalid');
-        emailEl.classList.remove('shake');
-        emailEl.offsetHeight;
-        emailEl.classList.add('shake');
-        try { emailEl.focus(); } catch (e) {}
-        if (err) {
-          err.textContent = email
-            ? '"' + email + '" doesn\'t look like a valid email.'
-            : 'Please enter your email address.';
-          err.classList.add('show');
-        }
-        return;
-      }
+      var typed = emailEl ? emailEl.value.trim() : '';
 
       // Save the reminder locally NOW so we don't lose it
       try {
@@ -12061,58 +12182,140 @@
             dueDate: due,
             amount: lastScan.amount || null,
             type: lastScan.type || '',
-            email: email,
             createdAt: new Date().toISOString()
           });
           if (typeof safeSet === 'function') safeSet(REMINDERS_KEY, reminders);
-          // Refresh visible reminders list if it's currently rendered
           if (typeof dv2RenderReminders === 'function') dv2RenderReminders();
         }
       } catch (e) { /* non-fatal — sign-up is still the main goal */ }
 
-      // Lock the UI and send magic link
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-      trackEvent('magic_link_sent', email + '|loss-cta');
+      trackEvent('magic_link_sent', 'loss-cta');
 
-      if (!db || !db.auth) {
-        // Supabase isn't ready — still show success because the local reminder is saved
-        if (success) success.classList.add('show');
-        btn.textContent = 'Saved ✓';
+      // Open the unified sign-in modal. Pre-fill the email if they typed one.
+      dvOpenAuth(
+        'Save this & get your reminder',
+        'Sign in so Drivee can email you 3 days before this fine is due. Google or a 6-digit code — no spam.',
+        function(){
+          var success = document.getElementById('dv2-loss-success');
+          if (success) success.classList.add('show');
+        }
+      );
+      if (typed && dvIsValidEmail(typed)) {
+        var modalEmail = document.getElementById('dv-auth-email');
+        if (modalEmail) modalEmail.value = typed;
+      }
+    }
+
+    // ─── Unified sign-in modal: Google + email 6-digit code ─────────────
+    // Soft-gate entry point. Call dvOpenAuth(title, sub) from any "you need
+    // an account for this" moment (e.g. saving a reminder while signed out).
+    var _dvAuthPending = null; // optional callback to run after successful sign-in
+
+    function dvOpenAuth(title, sub, onDone) {
+      var ov = document.getElementById('dv-auth-overlay');
+      if (!ov) return;
+      _dvAuthPending = (typeof onDone === 'function') ? onDone : null;
+      if (title) document.getElementById('dv-auth-title').textContent = title;
+      if (sub)   document.getElementById('dv-auth-sub').textContent = sub;
+      // Reset to step 1
+      document.getElementById('dv-auth-step1').hidden = false;
+      document.getElementById('dv-auth-step2').hidden = true;
+      var err = document.getElementById('dv-auth-error');
+      if (err) err.classList.remove('show');
+      ov.classList.add('open');
+      setTimeout(function(){ var e = document.getElementById('dv-auth-email'); if (e) try { e.focus(); } catch(x){} }, 60);
+    }
+    function dvAuthCancel(ev) {
+      if (ev && ev.target && ev.target.id !== 'dv-auth-overlay') return;
+      var ov = document.getElementById('dv-auth-overlay');
+      if (ov) ov.classList.remove('open');
+    }
+    function dvAuthClose() {
+      var ov = document.getElementById('dv-auth-overlay');
+      if (ov) ov.classList.remove('open');
+    }
+    function dvAuthBackToEmail() {
+      document.getElementById('dv-auth-step1').hidden = false;
+      document.getElementById('dv-auth-step2').hidden = true;
+    }
+
+    // Google one-tap → Supabase OAuth (requires Google provider enabled in
+    // Supabase → Auth → Providers). Returns to the app; onAuthStateChange
+    // picks up the session and runs onUserSignedIn automatically.
+    function dvAuthGoogle() {
+      if (!db || !db.auth) { showToast('Not connected — try refreshing'); return; }
+      trackEvent('magic_link_sent', 'google');
+      db.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + window.location.pathname }
+      }).then(function(res){
+        if (res && res.error) showToast('Google sign-in unavailable — use email instead');
+      }).catch(function(){
+        showToast('Google sign-in unavailable — use email instead');
+      });
+    }
+
+    // Email → send a 6-digit code (Supabase email template must use {{ .Token }}).
+    function dvAuthSendCode() {
+      var input = document.getElementById('dv-auth-email');
+      var err   = document.getElementById('dv-auth-error');
+      var btn   = document.getElementById('dv-auth-send-btn');
+      var email = input ? input.value.trim() : '';
+      if (!dvIsValidEmail(email)) {
+        if (input) { input.classList.add('invalid'); try { input.focus(); } catch(e){} }
+        if (err) { err.textContent = email ? 'That doesn\'t look like a valid email.' : 'Please enter your email.'; err.classList.add('show'); }
         return;
       }
-
-      db.auth.signInWithOtp({
-        email: email,
-        options: { shouldCreateUser: true }
-      }).then(function(res) {
-        if (res.error) {
-          emailEl.classList.add('invalid');
-          if (err) {
-            err.textContent = res.error.message || 'Couldn\'t send the link — try again.';
-            err.classList.add('show');
+      if (!db || !db.auth) { showToast('Not connected — try refreshing'); return; }
+      if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      window._dvAuthEmail = email;
+      trackEvent('magic_link_sent', email + '|code');
+      db.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
+        .then(function(res){
+          if (btn) { btn.textContent = 'Send me a code'; btn.disabled = false; }
+          if (res && res.error) {
+            if (err) { err.textContent = res.error.message || 'Couldn\'t send the code — try again.'; err.classList.add('show'); }
+            return;
           }
-          btn.disabled = false;
-          btn.textContent = 'Email Me My Reminder';
-          return;
-        }
-        if (success) success.classList.add('show');
-        btn.textContent = 'Sent ✓';
-        // Remember the email so we don't re-prompt and so it pre-fills elsewhere.
-        // drivee_signup_email is the durable "we know this person" key —
-        // never cleared on sign-out, unlike drivee_last_email.
-        try {
-          localStorage.setItem('drivee_signup_email', email);
-          localStorage.setItem('drivee_last_email', email);
-        } catch (e) {}
-      }).catch(function() {
-        if (err) {
-          err.textContent = 'Network error — try again.';
-          err.classList.add('show');
-        }
-        btn.disabled = false;
-        btn.textContent = 'Email Me My Reminder';
-      });
+          try {
+            localStorage.setItem('drivee_signup_email', email);
+            localStorage.setItem('drivee_last_email', email);
+          } catch (e) {}
+          // Reveal the code-entry step
+          document.getElementById('dv-auth-email-echo').textContent = email;
+          document.getElementById('dv-auth-step1').hidden = true;
+          document.getElementById('dv-auth-step2').hidden = false;
+          setTimeout(function(){ var c = document.getElementById('dv-auth-code'); if (c) try { c.focus(); } catch(x){} }, 60);
+        });
+    }
+
+    // Verify the typed code → Supabase verifyOtp. Success creates a session,
+    // onAuthStateChange runs onUserSignedIn, then we close + run any pending cb.
+    function dvAuthVerifyCode() {
+      var input = document.getElementById('dv-auth-code');
+      var err   = document.getElementById('dv-auth-error2');
+      var btn   = document.getElementById('dv-auth-verify-btn');
+      var code  = input ? input.value.trim().replace(/\s/g, '') : '';
+      if (!/^\d{6}$/.test(code)) {
+        if (input) input.classList.add('invalid');
+        if (err) { err.textContent = 'Enter the 6-digit code from your email.'; err.classList.add('show'); }
+        return;
+      }
+      if (!db || !db.auth) { showToast('Not connected — try refreshing'); return; }
+      if (btn) { btn.textContent = 'Verifying…'; btn.disabled = true; }
+      db.auth.verifyOtp({ email: window._dvAuthEmail, token: code, type: 'email' })
+        .then(function(res){
+          if (btn) { btn.textContent = 'Verify & sign in'; btn.disabled = false; }
+          if (res && res.error) {
+            if (input) input.classList.add('invalid');
+            if (err) { err.textContent = 'That code didn\'t work — check and try again.'; err.classList.add('show'); }
+            return;
+          }
+          // Session is live; onAuthStateChange handles onUserSignedIn.
+          dvAuthClose();
+          showToast('Signed in ✓');
+          if (_dvAuthPending) { try { _dvAuthPending(); } catch (e) {} _dvAuthPending = null; }
+        });
     }
 
     function sendMagicLink() {
