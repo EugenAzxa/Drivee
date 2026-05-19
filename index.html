@@ -1532,6 +1532,24 @@
       font-size: 13px;
       font-weight: 600;
     }
+    /* Live "right now" status line in the street checker result */
+    .street-status-live {
+      margin: 0 0 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.4;
+    }
+    .street-status-live b { font-weight: 800; }
+    .street-status-live.free { background: rgba(31,171,107,0.12); border: 1px solid rgba(31,171,107,0.3); color: #0d6e44; }
+    .street-status-live.soon { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #92400e; }
+    .street-status-live.paid { background: rgba(255,69,58,0.10);  border: 1px solid rgba(255,69,58,0.25); color: var(--red); }
+    /* "Read the sign" reminder under every street result */
+    .street-sign-note {
+      margin-top: 12px;
+      font-size: 12px; line-height: 1.45;
+      color: var(--text-secondary);
+    }
+    .street-map-btn:hover { background: var(--blue-d, #1A3FB8); }
 
     /* ===================================================
        ONBOARDING OVERLAY — story-style, first visit only
@@ -11555,15 +11573,41 @@
 
     function showStreetResult(s) {
       var output = document.getElementById('street-output');
+
+      // Live right-now status so the checker is instantly understandable
+      var statusLine = '';
+      if (typeof getStreetStatus === 'function') {
+        var st = getStreetStatus(s);
+        if (st === 'free') {
+          statusLine = '<div class="street-status-live free">🟢 <b>Free right now</b> — enforcement resumes ' + esc(s.hours) + '</div>';
+        } else if (st === 'soon') {
+          statusLine = '<div class="street-status-live soon">🟡 <b>Free within the hour</b> — meter ends soon</div>';
+        } else {
+          statusLine = '<div class="street-status-live paid">🔴 <b>Paid right now</b> — ' + esc(s.rate) + ' · free ' + esc(s.free) + '</div>';
+        }
+      }
+
+      var mapUrl = (typeof dvStreetMapQuery === 'function')
+        ? dvStreetMapQuery(s)
+        : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(getStreetShortName(s.name) + ', Toronto, ON');
+
       output.innerHTML =
         '<div style="margin-top:12px">' +
           '<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">' + esc(s.name) + '</div>' +
+          statusLine +
           '<div class="street-info-row"><span class="street-info-label">Hourly Rate</span><span class="street-info-value">' + s.rate + '</span></div>' +
           '<div class="street-info-row"><span class="street-info-label">Enforcement Hours</span><span class="street-info-value">' + s.hours + '</span></div>' +
           '<div class="street-info-row"><span class="street-info-label">Free Parking</span><span class="street-info-value">' + s.free + '</span></div>' +
         '</div>' +
         (s.tow ? '<div class="street-tow-warning">⚠️ ' + s.tow + '</div>' : '') +
-        '<button class="btn btn-secondary" style="margin-top:12px" onclick="window.open(\'https://apps.apple.com/ca/app/green-p/id429679356\',\'_blank\')">Open Green P App →</button>';
+        // Always remind to read the sign
+        '<div class="street-sign-note">📍 Always read the posted sign — rules change block-by-block and on event days.</div>' +
+        // Primary action: open this street in the phone\'s maps app
+        '<a class="btn btn-primary street-map-btn" href="' + mapUrl + '" target="_blank" rel="noopener" style="margin-top:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+          'Show this street on the map' +
+        '</a>' +
+        '<button class="btn btn-secondary" style="margin-top:8px" onclick="window.open(\'https://apps.apple.com/ca/app/green-p/id429679356\',\'_blank\')">Open Green P App →</button>';
     }
 
     // ===================================================
