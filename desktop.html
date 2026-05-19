@@ -54,7 +54,10 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    background: var(--bg); color: var(--ink);
+    /* White instead of var(--bg) so the hero (which is also white)
+       seamlessly blends — no visible line anywhere. Sections below the
+       hero set their own backgrounds where they want the blue tint. */
+    background: #FFFFFF; color: var(--ink);
     font-family: var(--font);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
@@ -286,20 +289,9 @@
     flex-direction: column;
     justify-content: center;
     overflow: hidden;
-    /* Hero is pure white so the video's own white background blends
-       seamlessly — no visible rectangle. A short gradient at the very
-       bottom fades into the page bg (#EEF2FB) for a clean transition
-       into the rest of the page. */
+    /* Hero stays white. Body is also white now, so there's no boundary
+       between the hero and the surrounding page — fully seamless. */
     background: #FFFFFF;
-  }
-  .hero::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 80px;
-    pointer-events: none;
-    background: linear-gradient(to bottom, transparent, var(--bg));
-    z-index: 2;
   }
   .hero-bg { display: none; }
 
