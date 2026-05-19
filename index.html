@@ -6017,7 +6017,7 @@
       </div>
       <div class="dv-free-warn">
         <span style="font-size:16px">⚠️</span>
-        <div><b>Always read the posted sign.</b> Toronto parking rules change block-by-block, on event days, and during snow routes. This list is a guide — the sign on the pole wins.</div>
+        <div><b>Always read the posted sign.</b> Downtown Toronto charges 7 days a week — <b>Sundays and stat holidays are often still paid until 9pm.</b> This list is a conservative guide; the sign on the pole is the law.</div>
       </div>
       <div class="dv-free-list" id="dv-free-list"></div>
     </div>
@@ -11296,18 +11296,42 @@
       return day >= startDay || day <= endDay; // wraps around (e.g. Sat–Sun)
     }
 
+    // CONSERVATIVE on purpose — this protects drivers from tickets.
+    //
+    // We verified against City of Toronto + Green P sources: downtown core
+    // streets charge SEVEN DAYS A WEEK, including Sunday afternoons (e.g.
+    // Yonge runs paid 1pm–9pm on Sundays) and stat holidays. The old logic
+    // returned "free" any time it was outside the posted day range (so it
+    // falsely said "free all day Sunday"). That could send someone to a
+    // metered spot on a Sunday at 2pm → $50–$80 ticket.
+    //
+    // New rule: a spot is only "free" when the current time is OUTSIDE the
+    // posted time window (before start hour OR after end hour) — on ANY day.
+    // We never call a spot free based on day-of-week alone. If a particular
+    // residential street genuinely is free on Sundays, the driver will read
+    // the sign and park anyway — no harm. The reverse (saying free when it's
+    // paid) is the harm we refuse to risk.
     function getStreetStatus(street) {
       var now = new Date();
-      var day = now.getDay(); // 0=Sun
       var hour = now.getHours();
       var e = parseEnforcementHours(street);
-      var inDay = isDayInRange(day, e.startDay, e.endDay);
 
-      if (!inDay) return 'free';
       if (hour < e.startHour) return 'free';
       if (hour >= e.endHour) return 'free';
       if (hour >= e.endHour - 1) return 'soon'; // within 1 hour of free
       return 'paid';
+    }
+
+    // Honest free-time text DERIVED from the posted hours, so the displayed
+    // "free after X" can never contradict the status calculation.
+    function getStreetFreeText(street) {
+      var e = parseEnforcementHours(street);
+      if (e.endHour >= 24) return 'After midnight only';
+      var lbl = e.endHour > 12 ? (e.endHour - 12) + 'pm'
+              : (e.endHour === 12 ? 'noon' : e.endHour + 'am');
+      var startLbl = e.startHour > 12 ? (e.startHour - 12) + 'pm'
+              : (e.startHour === 12 ? 'noon' : e.startHour + 'am');
+      return 'Free after ' + lbl + ' & before ' + startLbl + ' — every day';
     }
 
     function getStreetShortName(name) {
@@ -11591,16 +11615,19 @@
     function showStreetResult(s) {
       var output = document.getElementById('street-output');
 
+      // Honest free-time text derived from the posted hours
+      var freeText = (typeof getStreetFreeText === 'function') ? getStreetFreeText(s) : s.free;
+
       // Live right-now status so the checker is instantly understandable
       var statusLine = '';
       if (typeof getStreetStatus === 'function') {
         var st = getStreetStatus(s);
         if (st === 'free') {
-          statusLine = '<div class="street-status-live free">🟢 <b>Free right now</b> — enforcement resumes ' + esc(s.hours) + '</div>';
+          statusLine = '<div class="street-status-live free">🟢 <b>Likely free right now</b> — paid hours resume ' + esc(s.hours) + '. Read the sign to be sure.</div>';
         } else if (st === 'soon') {
           statusLine = '<div class="street-status-live soon">🟡 <b>Free within the hour</b> — meter ends soon</div>';
         } else {
-          statusLine = '<div class="street-status-live paid">🔴 <b>Paid right now</b> — ' + esc(s.rate) + ' · free ' + esc(s.free) + '</div>';
+          statusLine = '<div class="street-status-live paid">🔴 <b>Paid right now</b> — ' + esc(s.rate) + ' · ' + esc(freeText) + '</div>';
         }
       }
 
@@ -11613,12 +11640,12 @@
           '<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:10px">' + esc(s.name) + '</div>' +
           statusLine +
           '<div class="street-info-row"><span class="street-info-label">Hourly Rate</span><span class="street-info-value">' + s.rate + '</span></div>' +
-          '<div class="street-info-row"><span class="street-info-label">Enforcement Hours</span><span class="street-info-value">' + s.hours + '</span></div>' +
-          '<div class="street-info-row"><span class="street-info-label">Free Parking</span><span class="street-info-value">' + s.free + '</span></div>' +
+          '<div class="street-info-row"><span class="street-info-label">Posted Paid Hours</span><span class="street-info-value">' + s.hours + '</span></div>' +
+          '<div class="street-info-row"><span class="street-info-label">Free Parking</span><span class="street-info-value">' + esc(freeText) + '</span></div>' +
         '</div>' +
         (s.tow ? '<div class="street-tow-warning">⚠️ ' + s.tow + '</div>' : '') +
-        // Always remind to read the sign
-        '<div class="street-sign-note">📍 Always read the posted sign — rules change block-by-block and on event days.</div>' +
+        // Always remind to read the sign — and the specific Sunday/holiday trap
+        '<div class="street-sign-note">📍 <b>Always read the posted sign.</b> Downtown Toronto charges 7 days a week — Sundays and stat holidays are often still paid until 9pm. Drivee is a guide; the sign on the pole is the law.</div>' +
         // Primary action: open this street in the phone\'s maps app
         '<a class="btn btn-primary street-map-btn" href="' + mapUrl + '" target="_blank" rel="noopener" style="margin-top:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px">' +
           '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
