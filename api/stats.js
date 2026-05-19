@@ -156,6 +156,10 @@ module.exports = async function handler(req, res) {
   var signupsByEmail = {};   // email → { first: ts, last: ts, source, count }
   var signupsRecent = [];
 
+  // Sign-in method counts (Google vs email-code vs which CTA) from the
+  // source tag on magic_link_sent events.
+  var byMethod = {};
+
   // Session aggregation: { sid: { first, last, authed, city, device } }
   var sessions = {};
   var authedSessions = 0, anonSessions = 0;
@@ -191,19 +195,29 @@ module.exports = async function handler(req, res) {
     }
     if (row.event === 'app_open') appOpens++;
 
-    // Capture email signups from magic_link_sent events
+    // Capture email signups + sign-in method from magic_link_sent events
     if (row.event === 'magic_link_sent' && row.m) {
       var parts = String(row.m).split('|');
       var email = (parts[0] || '').trim().toLowerCase();
-      var source = (parts[1] || '').trim() || 'unknown';
-      if (email && email.indexOf('@') !== -1) {
+      var source = (parts[1] || '').trim();
+      var hasEmail = email && email.indexOf('@') !== -1;
+
+      // Method tally: if the meta is just a tag (e.g. "google-start") with no
+      // email, the tag itself is the method. Otherwise the source after "|".
+      var method = hasEmail ? (source || 'email') : (email || 'unknown');
+      // Normalise: "google" / "code" / "loss-cta" / "main" / "sheet" / "google-start"
+      byMethod[method] = (byMethod[method] || 0) + 1;
+
+      if (hasEmail) {
         var existing = signupsByEmail[email];
         if (!existing) {
-          signupsByEmail[email] = { first: ts, last: ts, source: source, count: 1 };
+          signupsByEmail[email] = { first: ts, last: ts, source: source || 'email', count: 1 };
         } else {
           existing.count++;
           if (ts > existing.last) existing.last = ts;
           if (ts < existing.first) existing.first = ts;
+          // Prefer a concrete method source over a blank one
+          if (source && (!existing.source || existing.source === 'unknown')) existing.source = source;
         }
       }
     }
@@ -353,6 +367,7 @@ module.exports = async function handler(req, res) {
       last60d:     signup60d,
       recent:      signupsRecent
     },
+    signinMethods: topN(byMethod, 10),
     byEvent: topN(byEvent, 20),
     byTab:   topN(byTab, 10),
     byCity:  topN(byCity, 15),

@@ -500,6 +500,15 @@
     </div>
   </div>
 
+  <!-- Sign-in methods -->
+  <div class="card" style="margin-bottom: 16px">
+    <div class="card-title">
+      <span>Sign-in methods</span>
+      <span class="hint">how people authenticate</span>
+    </div>
+    <div class="bar-list" id="signin-methods"></div>
+  </div>
+
   <!-- Signup list -->
   <div class="card" style="margin-bottom: 16px">
     <div class="card-title">
@@ -695,6 +704,27 @@
     // Coverage warning: if the fetched window doesn't cover a full 60 days,
     // the 2-month numbers are partial. Tell the dashboard viewer.
     renderCoverageNotice(d);
+
+    // Sign-in methods breakdown
+    var methods = d.signinMethods || [];
+    var maxM = Math.max.apply(null, methods.map(function(x){ return x.count; })) || 1;
+    var methodsEl = document.getElementById('signin-methods');
+    if (methodsEl) {
+      if (!methods.length) {
+        methodsEl.innerHTML = '<div class="empty">No sign-ins yet.</div>';
+      } else {
+        var METHOD_LABELS = {
+          'google': '🟢 Google', 'google-start': '🟡 Google (started)',
+          'code': '✉️ Email code', 'email': '✉️ Email',
+          'loss-cta': '🎟️ After-scan reminder', 'main': '🏠 Dashboard card',
+          'sheet': '👤 Profile sheet', 'unknown': '• Other'
+        };
+        methodsEl.innerHTML = methods.map(function(x){
+          var label = METHOD_LABELS[x.key] || x.key;
+          return rowHTML(label, (x.count/maxM)*100, x.count);
+        }).join('');
+      }
+    }
 
     var listEl = document.getElementById('signup-list');
     if (!sg.recent.length) {
