@@ -1058,6 +1058,19 @@
       border: none; border-radius: 12px;
       font-size: 15px; font-weight: 600; cursor: pointer;
     }
+    /* Always-visible log out — subtler than the red cloud sign-out so it
+       doesn't scream, but is clearly available at the bottom of the sheet. */
+    .profile-sheet-logout {
+      width: 100%; margin-top: 18px; padding: 13px;
+      background: transparent; color: #DC2626;
+      border: 1px solid rgba(220,38,38,0.35); border-radius: 12px;
+      font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .profile-sheet-logout:hover {
+      background: #FEE2E2; border-color: #DC2626;
+    }
     .profile-sheet-signin-wrap {
       text-align: center;
     }
@@ -5757,6 +5770,13 @@
       </form>
       <div class="profile-sheet-sent" id="ps-sent">✅ Check your email and tap the link</div>
     </div>
+
+    <!-- Log out — always available. Signs out of any cloud session AND
+         clears the local profile/identity on this device. -->
+    <button class="profile-sheet-logout" type="button" onclick="dvLogOut()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </button>
   </div>
 
   <div class="chat-overlay" id="chat-overlay" onclick="closeChat()"></div>
@@ -11586,6 +11606,48 @@
         onUserSignedOut();
         showToast('Signed out');
       });
+    }
+
+    // Full log out from this device — works whether or not the user has a
+    // cloud account. Clears the cloud session (if any) AND the local
+    // identity (profile name/plate + the "known person" email flag) so the
+    // greeting resets and the app behaves like a fresh visitor.
+    // Does NOT delete reminders/scans — those are the user's data; we only
+    // clear who they are, not what they saved.
+    function dvLogOut() {
+      var ok = confirm('Log out of Drivee on this device?\n\nThis clears your profile and sign-in. Your saved reminders stay on this device.');
+      if (!ok) return;
+
+      // 1) End any Supabase session
+      try {
+        if (window.db && db.auth && currentUser) {
+          db.auth.signOut().then(function(){ onUserSignedOut(); }).catch(function(){});
+        } else if (typeof onUserSignedOut === 'function') {
+          onUserSignedOut();
+        }
+      } catch (e) {}
+
+      // 2) Clear local identity
+      try {
+        localStorage.removeItem(PROFILE_KEY);          // name + plate
+        localStorage.removeItem('drivee_signup_email'); // durable "known person" flag
+        localStorage.removeItem('drivee_last_email');
+      } catch (e) {}
+
+      // 3) Reset the on-screen profile fields + greeting
+      var nameInput  = document.getElementById('profile-name');
+      var plateInput = document.getElementById('profile-plate');
+      if (nameInput)  nameInput.value  = '';
+      if (plateInput) plateInput.value = '';
+      var dv2Name = document.getElementById('dv2-name');
+      if (dv2Name) dv2Name.textContent = 'Driver';
+      var topName = document.getElementById('top-greeting-name');
+      if (topName) topName.textContent = 'Driver';
+      var heroName = document.getElementById('hero-name');
+      if (heroName) heroName.textContent = 'Driver';
+
+      closeProfileSheet();
+      showToast('Logged out');
     }
 
     function onUserSignedIn(user) {
