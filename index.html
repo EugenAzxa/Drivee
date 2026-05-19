@@ -1007,6 +1007,11 @@
       padding: 24px 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
       z-index: 201;
       transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      /* Cap the height and scroll internally so the bottom (log out button)
+         is always reachable on shorter screens. */
+      max-height: 90vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .profile-sheet.open { transform: translateX(-50%) translateY(0); }
     .profile-sheet-handle {
@@ -1070,6 +1075,67 @@
     }
     .profile-sheet-logout:hover {
       background: #FEE2E2; border-color: #DC2626;
+    }
+
+    /* ── Log-out confirmation modal ── */
+    .dv-logout-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,20,48,0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      z-index: 9999;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .dv-logout-overlay.open { display: flex; }
+    .dv-logout-modal {
+      background: var(--surface, #fff);
+      border-radius: 22px;
+      padding: 26px 24px 20px;
+      width: 100%; max-width: 380px;
+      text-align: center;
+      box-shadow: 0 30px 70px -20px rgba(0,0,0,0.5);
+      animation: dvLogoutPop 0.22s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    @keyframes dvLogoutPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .dv-logout-icon { font-size: 38px; margin-bottom: 8px; }
+    .dv-logout-title {
+      font-family: var(--dv2-serif, Georgia, serif);
+      font-size: 21px; font-weight: 700; letter-spacing: -0.4px;
+      color: var(--text-primary, #0e1b3d);
+      margin: 0 0 10px;
+    }
+    .dv-logout-body {
+      font-size: 14px; line-height: 1.5;
+      color: var(--text-secondary, #5a6075);
+      margin: 0 0 10px;
+    }
+    .dv-logout-body b { color: var(--text-primary, #0e1b3d); font-weight: 800; }
+    .dv-logout-sub {
+      font-size: 13px; line-height: 1.45;
+      color: var(--text-secondary, #5a6075);
+      margin: 0 0 18px;
+    }
+    .dv-logout-btn {
+      width: 100%; padding: 13px;
+      border-radius: 12px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.12s, background 0.15s, opacity 0.15s;
+    }
+    .dv-logout-btn:hover { transform: translateY(-1px); }
+    .dv-logout-btn.email {
+      background: var(--blue, #2E64FF); color: #fff; border: 0;
+    }
+    .dv-logout-btn.danger {
+      background: #FEE2E2; color: #DC2626; border: 1px solid rgba(220,38,38,0.3);
+    }
+    .dv-logout-btn.danger:hover { background: #fecaca; }
+    .dv-logout-btn.cancel {
+      background: transparent; color: var(--text-secondary, #5a6075);
+      border: 0; margin-bottom: 0;
     }
     .profile-sheet-signin-wrap {
       text-align: center;
@@ -5771,12 +5837,32 @@
       <div class="profile-sheet-sent" id="ps-sent">✅ Check your email and tap the link</div>
     </div>
 
-    <!-- Log out — always available. Signs out of any cloud session AND
-         clears the local profile/identity on this device. -->
+    <!-- Log out — always available. Opens a confirmation modal first. -->
     <button class="profile-sheet-logout" type="button" onclick="dvLogOut()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Log out
     </button>
+  </div>
+
+  <!-- ── Log-out confirmation modal ── -->
+  <div class="dv-logout-overlay" id="dv-logout-overlay" onclick="dvLogoutCancel(event)">
+    <div class="dv-logout-modal" role="dialog" aria-modal="true" aria-labelledby="dv-logout-title">
+      <div class="dv-logout-icon">⚠️</div>
+      <h3 class="dv-logout-title" id="dv-logout-title">Log out &amp; erase this device?</h3>
+      <p class="dv-logout-body">
+        Everything saved here — your <b>profile, reminders, and scanned tickets</b> —
+        will be permanently deleted from this device. This can't be undone.
+      </p>
+      <p class="dv-logout-sub">Want a copy before you go? We'll open your email with everything ready to send to yourself.</p>
+      <button class="dv-logout-btn email" type="button" onclick="dvEmailBackup()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+        Email me a backup first
+      </button>
+      <button class="dv-logout-btn danger" type="button" onclick="dvLogOutConfirm()">
+        Log out &amp; delete everything
+      </button>
+      <button class="dv-logout-btn cancel" type="button" onclick="dvLogoutCancel()">Cancel</button>
+    </div>
   </div>
 
   <div class="chat-overlay" id="chat-overlay" onclick="closeChat()"></div>
@@ -11608,16 +11694,73 @@
       });
     }
 
-    // Full log out from this device — works whether or not the user has a
-    // cloud account. Clears the cloud session (if any) AND the local
-    // identity (profile name/plate + the "known person" email flag) so the
-    // greeting resets and the app behaves like a fresh visitor.
-    // Does NOT delete reminders/scans — those are the user's data; we only
-    // clear who they are, not what they saved.
+    // Log out opens a confirmation modal that warns data will be erased
+    // and offers an email backup first.
     function dvLogOut() {
-      var ok = confirm('Log out of Drivee on this device?\n\nThis clears your profile and sign-in. Your saved reminders stay on this device.');
-      if (!ok) return;
+      var ov = document.getElementById('dv-logout-overlay');
+      if (ov) ov.classList.add('open');
+    }
+    function dvLogoutCancel(ev) {
+      // When called from the overlay click, only close if the backdrop
+      // itself was clicked (not the modal interior).
+      if (ev && ev.target && ev.target.id !== 'dv-logout-overlay') return;
+      var ov = document.getElementById('dv-logout-overlay');
+      if (ov) ov.classList.remove('open');
+    }
 
+    // Build a plain-text export of everything stored on this device.
+    function dvBuildDataExport() {
+      var lines = ['DRIVEE — your data backup', new Date().toLocaleString('en-CA'), ''];
+      var profile = (typeof safeGet === 'function' ? safeGet(PROFILE_KEY) : null) || {};
+      lines.push('── PROFILE ──');
+      lines.push('Name:  ' + (profile.name || '—'));
+      lines.push('Plate: ' + (profile.plate || '—'));
+      lines.push('');
+      var reminders = (typeof safeGet === 'function' ? safeGet(REMINDERS_KEY) : null) || [];
+      lines.push('── REMINDERS (' + reminders.length + ') ──');
+      reminders.forEach(function(r){
+        lines.push('• ' + (r.ref || 'ticket') + ' — due ' + (r.dueDate || '?') +
+                   (r.amount ? ' — $' + r.amount : ''));
+      });
+      if (!reminders.length) lines.push('(none)');
+      lines.push('');
+      var cars = (typeof safeGet === 'function' ? safeGet(CARS_KEY) : null) || [];
+      lines.push('── VEHICLES (' + cars.length + ') ──');
+      cars.forEach(function(c){
+        lines.push('• ' + (c.nickname || c.name || 'Vehicle') + ' — ' + (c.plate || '?'));
+      });
+      if (!cars.length) lines.push('(none)');
+      lines.push('');
+      var scans = (typeof safeGet === 'function' ? safeGet(SCANS_KEY) : null) || [];
+      lines.push('── SCANNED TICKETS (' + scans.length + ') ──');
+      scans.forEach(function(s){
+        lines.push('• ' + (s.ref || 'ticket') + (s.amount ? ' — $' + s.amount : '') +
+                   (s.due && s.due !== 'unknown' ? ' — due ' + s.due : ''));
+      });
+      if (!scans.length) lines.push('(none)');
+      lines.push('');
+      lines.push('— Keep this email. It\'s your record from Drivee.');
+      return lines.join('\n');
+    }
+
+    // Open the user's email app with their data pre-filled, addressed to
+    // themselves (if we know their email). After they send it they can
+    // come back and finish the log out.
+    function dvEmailBackup() {
+      var body = encodeURIComponent(dvBuildDataExport());
+      var subject = encodeURIComponent('My Drivee backup — ' + new Date().toLocaleDateString('en-CA'));
+      var to = '';
+      try {
+        to = (window.currentUser && window.currentUser.email) ||
+             localStorage.getItem('drivee_signup_email') ||
+             localStorage.getItem('drivee_last_email') || '';
+      } catch (e) {}
+      window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + subject + '&body=' + body;
+      showToast('Opening your email with the backup…');
+    }
+
+    // The actual destructive log out: clears EVERYTHING on this device.
+    function dvLogOutConfirm() {
       // 1) End any Supabase session
       try {
         if (window.db && db.auth && currentUser) {
@@ -11627,27 +11770,34 @@
         }
       } catch (e) {}
 
-      // 2) Clear local identity
+      // 2) Wipe all local data + identity
       try {
-        localStorage.removeItem(PROFILE_KEY);          // name + plate
-        localStorage.removeItem('drivee_signup_email'); // durable "known person" flag
+        localStorage.removeItem(PROFILE_KEY);
+        localStorage.removeItem(REMINDERS_KEY);
+        localStorage.removeItem(CARS_KEY);
+        localStorage.removeItem(SCANS_KEY);
+        localStorage.removeItem('drivee_signup_email');
         localStorage.removeItem('drivee_last_email');
       } catch (e) {}
 
-      // 3) Reset the on-screen profile fields + greeting
+      // 3) Reset the on-screen state
       var nameInput  = document.getElementById('profile-name');
       var plateInput = document.getElementById('profile-plate');
       if (nameInput)  nameInput.value  = '';
       if (plateInput) plateInput.value = '';
-      var dv2Name = document.getElementById('dv2-name');
-      if (dv2Name) dv2Name.textContent = 'Driver';
-      var topName = document.getElementById('top-greeting-name');
-      if (topName) topName.textContent = 'Driver';
-      var heroName = document.getElementById('hero-name');
-      if (heroName) heroName.textContent = 'Driver';
+      ['dv2-name','top-greeting-name','hero-name'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.textContent = 'Driver';
+      });
+      if (typeof renderReminders === 'function')     renderReminders();
+      if (typeof dv2RenderReminders === 'function')  dv2RenderReminders();
+      if (typeof renderScanHistory === 'function')   renderScanHistory();
+      if (typeof updateHeroCard === 'function')      updateHeroCard();
 
+      var ov = document.getElementById('dv-logout-overlay');
+      if (ov) ov.classList.remove('open');
       closeProfileSheet();
-      showToast('Logged out');
+      showToast('Logged out — all data cleared');
     }
 
     function onUserSignedIn(user) {
