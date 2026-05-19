@@ -1137,6 +1137,109 @@
       background: transparent; color: var(--text-secondary, #5a6075);
       border: 0; margin-bottom: 0;
     }
+
+    /* ── Free streets sheet ── */
+    .dv-free-overlay {
+      position: fixed; inset: 0;
+      background: rgba(11,20,48,0.5);
+      backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      z-index: 9998;
+      display: none;
+      align-items: flex-end; justify-content: center;
+    }
+    .dv-free-overlay.open { display: flex; }
+    .dv-free-sheet {
+      background: var(--surface, #fff);
+      width: 100%; max-width: 460px;
+      border-radius: 24px 24px 0 0;
+      padding: 14px 18px calc(env(safe-area-inset-bottom, 0px) + 24px);
+      max-height: 88vh; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+      animation: dvFreeUp 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    @keyframes dvFreeUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .dv-free-handle {
+      width: 38px; height: 4px; border-radius: 999px;
+      background: var(--border, #e3dfd4);
+      margin: 2px auto 14px;
+    }
+    .dv-free-close {
+      position: absolute; top: 14px; right: 16px;
+      width: 32px; height: 32px; border-radius: 999px;
+      background: var(--elevated, #f4f1ea); color: var(--text-primary, #0e1b3d);
+      border: 0; cursor: pointer;
+      display: grid; place-items: center;
+    }
+    .dv-free-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 12px; margin-bottom: 14px; padding-right: 40px;
+    }
+    .dv-free-kicker {
+      font-family: var(--dv2-mono, monospace);
+      font-size: 10px; font-weight: 800; letter-spacing: 1.6px;
+      color: var(--green, #1FAB6B);
+    }
+    .dv-free-title {
+      font-family: var(--dv2-serif, Georgia, serif);
+      font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--text-primary, #0e1b3d); margin-top: 3px;
+    }
+    .dv-free-count {
+      flex-shrink: 0;
+      background: rgba(31,171,107,0.14); color: #0d6e44;
+      font-family: var(--dv2-mono, monospace);
+      font-size: 12px; font-weight: 800;
+      padding: 6px 12px; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .dv-free-warn {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: #fff8e7; border: 1px solid #f5cf73;
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 16px;
+      font-size: 12.5px; line-height: 1.45; color: #7a4f00;
+    }
+    .dv-free-warn b { font-weight: 800; }
+    .dv-free-list { display: flex; flex-direction: column; gap: 8px; }
+    .dv-free-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px;
+      background: var(--elevated, #f8f6f0);
+      border: 1px solid var(--border, #e3dfd4);
+      border-radius: 14px;
+    }
+    .dv-free-info { flex: 1; min-width: 0; }
+    .dv-free-name {
+      font-weight: 800; font-size: 15px;
+      color: var(--text-primary, #0e1b3d);
+      letter-spacing: -0.2px;
+    }
+    .dv-free-seg {
+      font-size: 12px; color: var(--text-secondary, #5a6075);
+      margin-top: 1px;
+    }
+    .dv-free-hours {
+      font-family: var(--dv2-mono, monospace);
+      font-size: 11px; color: var(--text-tertiary, #8c95a7);
+      margin-top: 5px; letter-spacing: 0.2px;
+    }
+    .dv-free-hours b { color: var(--green, #1FAB6B); font-weight: 800; }
+    .dv-free-map {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue, #2E64FF); color: #fff;
+      text-decoration: none;
+      font-size: 12px; font-weight: 800;
+      padding: 9px 13px; border-radius: 10px;
+      transition: transform 0.12s, background 0.15s;
+    }
+    .dv-free-map:hover { transform: translateY(-1px); background: var(--blue-d, #1A3FB8); }
+    .dv-free-map svg { width: 14px; height: 14px; }
+    .dv-free-empty {
+      text-align: center; padding: 24px 12px;
+      font-size: 13px; color: var(--text-secondary, #5a6075);
+      line-height: 1.5;
+    }
     .profile-sheet-signin-wrap {
       text-align: center;
     }
@@ -5865,6 +5968,28 @@
     </div>
   </div>
 
+  <!-- ── Free streets sheet ── -->
+  <div class="dv-free-overlay" id="dv-free-overlay" onclick="dvCloseFreeStreets(event)">
+    <div class="dv-free-sheet" role="dialog" aria-modal="true" aria-labelledby="dv-free-title">
+      <div class="dv-free-handle"></div>
+      <button class="dv-free-close" type="button" aria-label="Close" onclick="dvCloseFreeStreets()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="dv-free-head">
+        <div>
+          <div class="dv-free-kicker">FREE PARKING · TORONTO</div>
+          <div class="dv-free-title" id="dv-free-title">Free right now</div>
+        </div>
+        <div class="dv-free-count" id="dv-free-count">—</div>
+      </div>
+      <div class="dv-free-warn">
+        <span style="font-size:16px">⚠️</span>
+        <div><b>Always read the posted sign.</b> Toronto parking rules change block-by-block, on event days, and during snow routes. This list is a guide — the sign on the pole wins.</div>
+      </div>
+      <div class="dv-free-list" id="dv-free-list"></div>
+    </div>
+  </div>
+
   <div class="chat-overlay" id="chat-overlay" onclick="closeChat()"></div>
 
   <div class="chat-panel" id="chat-panel">
@@ -6071,7 +6196,7 @@
 
       <!-- Free parking / Holidays status -->
       <div class="dv2-tab-hero dv2-section dv2-section-mint" id="dv2-fp-section">
-        <button class="dv2-fp-card" type="button" onclick="if(typeof showTab==='function') showTab('tab-hotspots');">
+        <button class="dv2-fp-card" type="button" onclick="dvOpenFreeStreets()">
           <div class="dv2-fp-icon" id="dv2-fp-icon">🅿️</div>
           <div class="dv2-fp-info">
             <div class="dv2-fp-meta" id="dv2-fp-meta">FREE PARKING · TORONTO</div>
@@ -11221,6 +11346,99 @@
       } else {
         soonSection.style.display = 'none';
       }
+    }
+
+    // ─── Free streets sheet: shows which streets are free + Google Maps link ───
+    // The STREETS data has no lat/lng, so we use Google Maps search-by-text
+    // (works on the maps app on mobile + web on desktop). We build the most
+    // precise query we can from the street name + its first cross-street.
+    function dvStreetMapQuery(street) {
+      var main = getStreetShortName(street.name); // e.g. "Queen St W"
+      var seg  = getStreetSegment(street.name);   // e.g. "Spadina to Bathurst"
+      var cross = '';
+      if (seg) {
+        // first cross-street is the word(s) before "to"
+        var m = seg.split(/\s+to\s+/i);
+        cross = (m[0] || '').trim();
+      }
+      var q = cross ? (main + ' & ' + cross + ', Toronto, ON')
+                    : (main + ', Toronto, ON');
+      return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+    }
+
+    function dvOpenFreeStreets() {
+      var ov   = document.getElementById('dv-free-overlay');
+      var list = document.getElementById('dv-free-list');
+      var count= document.getElementById('dv-free-count');
+      var title= document.getElementById('dv-free-title');
+      if (!ov || !list) return;
+      trackEvent('tab_click', 'free-streets-sheet');
+
+      var freeNow = [], freeSoon = [];
+      if (typeof STREETS !== 'undefined' && typeof getStreetStatus === 'function') {
+        STREETS.forEach(function(s){
+          var st = getStreetStatus(s);
+          if (st === 'free') freeNow.push(s);
+          else if (st === 'soon') freeSoon.push(s);
+        });
+      }
+
+      if (count) count.textContent = freeNow.length + ' free now';
+
+      if (!freeNow.length && !freeSoon.length) {
+        if (title) title.textContent = 'No free streets right now';
+        list.innerHTML = '<div class="dv-free-empty">Every tracked street is in paid enforcement hours. ' +
+          'Free parking usually opens up after 6–9pm and on Sundays. Check back later, or read the meter for the exact end time.</div>';
+        ov.classList.add('open');
+        return;
+      }
+
+      if (title) title.textContent = freeNow.length ? 'Free right now' : 'Free very soon';
+
+      var html = '';
+      freeNow.forEach(function(s){
+        html += dvFreeRow(s, 'free');
+      });
+      if (freeSoon.length) {
+        html += '<div style="font-family:var(--dv2-mono,monospace);font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--text-tertiary);margin:12px 0 2px">FREE WITHIN THE HOUR</div>';
+        freeSoon.forEach(function(s){
+          html += dvFreeRow(s, 'soon');
+        });
+      }
+      list.innerHTML = html;
+      ov.classList.add('open');
+    }
+
+    function dvFreeRow(s, status) {
+      var main = esc(getStreetShortName(s.name));
+      var seg  = esc(getStreetSegment(s.name));
+      var hoursLine;
+      if (status === 'free') {
+        // tell them when it flips back to paid (enforcement window)
+        hoursLine = '<b>Free now</b> · paid hours: ' + esc(s.hours);
+      } else {
+        var e = parseEnforcementHours(s);
+        var freeAt = e.endHour >= 24 ? 'midnight' : (e.endHour > 12 ? (e.endHour - 12) + 'pm' : e.endHour + 'am');
+        hoursLine = 'Free at <b>' + freeAt + '</b> · paid hours: ' + esc(s.hours);
+      }
+      return '' +
+        '<div class="dv-free-row">' +
+          '<div class="dv-free-info">' +
+            '<div class="dv-free-name">' + main + '</div>' +
+            (seg ? '<div class="dv-free-seg">' + seg + '</div>' : '') +
+            '<div class="dv-free-hours">' + hoursLine + '</div>' +
+          '</div>' +
+          '<a class="dv-free-map" href="' + dvStreetMapQuery(s) + '" target="_blank" rel="noopener">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+            'Map' +
+          '</a>' +
+        '</div>';
+    }
+
+    function dvCloseFreeStreets(ev) {
+      if (ev && ev.target && ev.target.id !== 'dv-free-overlay') return;
+      var ov = document.getElementById('dv-free-overlay');
+      if (ov) ov.classList.remove('open');
     }
 
     // ── Analytics tracking ──────────────────────────────
