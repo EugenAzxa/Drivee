@@ -1,7 +1,7 @@
 // Drivee Service Worker — enables PWA install + offline caching.
 // Bump this version string whenever index.html / sw.js change so older
 // installed PWAs throw away their stale caches on the next visit.
-var CACHE_NAME = 'drivee-v2-2026-05-11-email-first-auth';
+var CACHE_NAME = 'drivee-v2-2026-05-11-notifications-full';
 var URLS_TO_CACHE = [
   '/',
   '/index.html',
@@ -34,6 +34,40 @@ self.addEventListener('fetch', function(e) {
   e.respondWith(
     fetch(e.request).catch(function() {
       return caches.match(e.request);
+    })
+  );
+});
+
+// ─── Web Push ────────────────────────────────────────────────────────────
+// Fires even when the app is closed. The server sends a JSON payload:
+//   { title, body, url, tag }
+self.addEventListener('push', function(e) {
+  var data = {};
+  try { data = e.data ? e.data.json() : {}; } catch (err) { data = { body: (e.data && e.data.text()) || '' }; }
+  var title = data.title || 'Drivee';
+  var options = {
+    body: data.body || '',
+    icon: data.icon || '/icon-192.png',
+    badge: '/icon-192.png',
+    tag: data.tag || 'drivee',
+    data: { url: data.url || '/' },
+    vibrate: [80, 40, 80],
+    requireInteraction: !!data.requireInteraction
+  };
+  e.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Tapping the notification focuses an open tab or opens the app.
+self.addEventListener('notificationclick', function(e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || '/';
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        var c = list[i];
+        if ('focus' in c) { c.navigate(url); return c.focus(); }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(url);
     })
   );
 });
