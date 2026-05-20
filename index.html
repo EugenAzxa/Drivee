@@ -1245,6 +1245,14 @@
       transition: background 0.15s, box-shadow 0.15s;
     }
     .dv-auth-google:hover { background: #f7f8fa; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    /* Secondary (de-emphasised) Google button — quieter than the email CTA */
+    .dv-auth-google.secondary {
+      background: transparent;
+      color: var(--text-secondary, #5a6075);
+      font-size: 13px; padding: 11px;
+      border-color: var(--border, #e3dfd4);
+    }
+    .dv-auth-google.secondary:hover { background: var(--elevated, #f4f1ea); box-shadow: none; }
     .dv-auth-or {
       display: flex; align-items: center; gap: 12px;
       margin: 16px 0; color: var(--text-tertiary, #8c95a7); font-size: 12px;
@@ -6148,20 +6156,22 @@
 
       <!-- Step 1: choose a method -->
       <div id="dv-auth-step1">
-        <button class="dv-auth-google" type="button" onclick="dvAuthGoogle()">
-          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 1 0 24 44c11 0 20-8.9 20-20 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 0 0 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5A20 20 0 0 0 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2c-.4.4 6.6-4.8 6.6-14.8 0-1.3-.1-2.3-.4-3.5z"/></svg>
-          Continue with Google
-        </button>
-
-        <div class="dv-auth-or"><span>or use your email</span></div>
-
+        <!-- Email code is the PRIMARY path — no scary redirect, stays in-app -->
         <form onsubmit="event.preventDefault(); dvAuthSendCode(); return false;" novalidate>
           <input type="email" class="dv-auth-input" id="dv-auth-email" name="email"
                  placeholder="your@email.com" autocomplete="email" inputmode="email" required
                  oninput="dvClearEmailInvalid('dv-auth-email','dv-auth-error')" />
           <div class="dv-auth-fielderr" id="dv-auth-error">Please enter a valid email.</div>
-          <button class="dv-auth-primary" id="dv-auth-send-btn" type="submit">Send me a code</button>
+          <button class="dv-auth-primary" id="dv-auth-send-btn" type="submit">Email me a 6-digit code</button>
         </form>
+
+        <div class="dv-auth-or"><span>or</span></div>
+
+        <!-- Google is secondary — quieter outline style -->
+        <button class="dv-auth-google secondary" type="button" onclick="dvAuthGoogle()">
+          <svg width="17" height="17" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 1 0 24 44c11 0 20-8.9 20-20 0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 0 0 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2A12 12 0 0 1 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5A20 20 0 0 0 24 44z"/><path fill="#1976D2" d="M43.6 20.5H24v8h11.3a12 12 0 0 1-4.1 5.6l6.2 5.2c-.4.4 6.6-4.8 6.6-14.8 0-1.3-.1-2.3-.4-3.5z"/></svg>
+          Continue with Google
+        </button>
       </div>
 
       <!-- Step 2: enter the code -->
