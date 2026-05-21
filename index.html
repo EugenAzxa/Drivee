@@ -11236,24 +11236,40 @@
           });
         });
       }).then(function(sub) {
-        if (!sub) return;
+        if (!sub) { showToast('Could not create a push subscription'); return; }
         var email = '';
         try {
           email = (window.currentUser && window.currentUser.email) ||
                   localStorage.getItem('drivee_signup_email') || '';
         } catch (e) {}
-        // Save to Supabase push_subscriptions (anon insert allowed by RLS policy)
-        if (window.db) {
-          var json = sub.toJSON();
-          db.from('push_subscriptions').upsert({
-            endpoint: json.endpoint,
-            p256dh: json.keys && json.keys.p256dh,
-            auth: json.keys && json.keys.auth,
-            email: email || null,
-            uid: (typeof _dvUserId === 'function') ? _dvUserId() : null
-          }, { onConflict: 'endpoint' }).then(function(){}, function(){});
-        }
+        if (!window.db) { showToast('Not connected to Drivee servers — refresh'); return; }
+        var json = sub.toJSON();
+        // Plain insert (upsert/merge needs extra RLS perms). On a duplicate
+        // endpoint we just ignore the conflict error — the row already exists.
+        db.from('push_subscriptions').insert({
+          endpoint: json.endpoint,
+          p256dh: json.keys && json.keys.p256dh,
+          auth: json.keys && json.keys.auth,
+          email: email || null,
+          uid: (typeof _dvUserId === 'function') ? _dvUserId() : null
+        }).then(function(res) {
+          if (res && res.error) {
+            // 23505 = duplicate key (already saved) — that's fine
+            if (res.error.code === '23505') {
+              showToast('🔔 Reminders are on');
+            } else {
+              showToast('Save failed: ' + (res.error.message || res.error.code || 'unknown'));
+              console.warn('Drivee push save error:', res.error);
+            }
+          } else {
+            showToast('🔔 Reminders on — saved to your account');
+          }
+          dvRefreshNotifUI();
+        }, function(err) {
+          showToast('Save error: ' + (err && err.message ? err.message : 'network'));
+        });
       }).catch(function(err) {
+        showToast('Push setup failed: ' + (err && err.message ? err.message : err));
         console.warn('Drivee push subscribe failed:', err);
       });
     }
