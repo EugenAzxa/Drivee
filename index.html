@@ -11124,8 +11124,17 @@
       return arr;
     }
 
-    // Profile-sheet notification toggle. Reflects the current permission
-    // state and lets the user turn notifications on.
+    // Profile-sheet notification toggle. "On/off" is based on whether there's
+    // an active push SUBSCRIPTION — not just browser permission (which can't be
+    // revoked by JS once granted). Turning off unsubscribes so pushes stop.
+    function _dvHasPushSub() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return Promise.resolve(false);
+      return navigator.serviceWorker.ready
+        .then(function(reg){ return reg.pushManager.getSubscription(); })
+        .then(function(sub){ return !!sub; })
+        .catch(function(){ return false; });
+    }
+
     function dvRefreshNotifUI() {
       var card  = document.getElementById('ps-notif-card');
       var btn   = document.getElementById('ps-notif-btn');
@@ -11138,26 +11147,59 @@
         if (sub) sub.textContent = 'This browser doesn\'t support notifications.';
         return;
       }
-      var p = Notification.permission;
-      if (p === 'granted') {
-        card.classList.add('is-on');
-        btn.textContent = 'On ✓'; btn.disabled = true;
-        if (title) title.textContent = 'Reminders are on';
-        if (sub) sub.textContent = 'We\'ll alert you before a fine is due — even with the app closed.';
-      } else if (p === 'denied') {
+      if (Notification.permission === 'denied') {
         card.classList.add('is-blocked');
         btn.textContent = 'Blocked'; btn.disabled = true;
-        if (sub) sub.textContent = 'Notifications are blocked — turn them on in your browser/phone settings for Drivee.';
-      } else {
-        btn.textContent = 'Turn on'; btn.disabled = false;
         if (title) title.textContent = 'Deadline reminders';
-        if (sub) sub.textContent = 'Get a heads-up before any fine is due — even when the app is closed.';
+        if (sub) sub.textContent = 'Blocked — turn notifications back on for Drivee in your browser/phone settings.';
+        return;
       }
+      // Permission default or granted → state depends on active subscription
+      _dvHasPushSub().then(function(on){
+        if (on) {
+          card.classList.add('is-on');
+          btn.textContent = 'Turn off'; btn.disabled = false;
+          if (title) title.textContent = 'Reminders are on';
+          if (sub) sub.textContent = 'We\'ll alert you before a fine is due — even with the app closed.';
+        } else {
+          btn.textContent = 'Turn on'; btn.disabled = false;
+          if (title) title.textContent = 'Deadline reminders';
+          if (sub) sub.textContent = 'Get a heads-up before any fine is due — even when the app is closed.';
+        }
+      });
     }
+
     function dvToggleNotifs() {
-      requestNotifications();
-      // Re-render the toggle state shortly after the permission prompt resolves
-      setTimeout(dvRefreshNotifUI, 400);
+      var btn = document.getElementById('ps-notif-btn');
+      // If already subscribed → turn OFF (unsubscribe). Otherwise → turn ON.
+      _dvHasPushSub().then(function(on){
+        if (on) {
+          dvUnsubscribePush();
+        } else {
+          requestNotifications();
+        }
+        setTimeout(dvRefreshNotifUI, 600);
+      });
+    }
+
+    // Turn notifications off: unsubscribe locally + remove the row from Supabase
+    // so the cron stops pushing to this device.
+    function dvUnsubscribePush() {
+      if (!('serviceWorker' in navigator)) return;
+      navigator.serviceWorker.ready.then(function(reg){
+        return reg.pushManager.getSubscription();
+      }).then(function(sub){
+        if (!sub) return;
+        var endpoint = sub.endpoint;
+        return sub.unsubscribe().then(function(){
+          if (window.db && endpoint) {
+            db.from('push_subscriptions').delete().eq('endpoint', endpoint).then(function(){}, function(){});
+          }
+        });
+      }).then(function(){
+        showToast('🔕 Reminders turned off');
+        dvRefreshNotifUI();
+      }).catch(function(){ /* non-fatal */ });
     }
 
     function requestNotifications() {
