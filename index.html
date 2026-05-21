@@ -6633,6 +6633,10 @@
           🤖 Drivee is reading your ticket…
         </div>
 
+        <!-- AI VERDICT first — the "what should I do" summary leads, so the
+             driver reads the recommendation BEFORE the payment details. -->
+        <div id="verdict-output"></div>
+
         <!-- Post-scan actions — shown after successful scan -->
         <div id="scan-actions" style="display:none;margin-bottom:12px">
 
@@ -6686,14 +6690,14 @@
               <div class="dv2-er-inline-info">
                 <div class="dv2-er-inline-meta">EARLY RESOLUTION · AI EUGEN</div>
                 <div class="dv2-er-inline-title">Plead this down before court</div>
-                <div class="dv2-er-inline-sub">AI drafts the prosecutor request from this scan. Often turns demerit-point tickets into no-points reduced fines. <strong>$0.99 one-time</strong> · no subscription.</div>
+                <div class="dv2-er-inline-sub">AI drafts the prosecutor request from this scan. Often turns demerit-point tickets into no-points reduced fines. <strong>Free</strong> · no payment, no subscription.</div>
               </div>
             </div>
             <button class="dv2-er-inline-cta" type="button" onclick="dv2OpenEarlyResolution()">
-              See how it works — then decide
+              Build my request — free
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
-            <div class="dv2-er-inline-trust">🔒 Stripe · $0.99 one-time · Refund if unused</div>
+            <div class="dv2-er-inline-trust">✦ 100% free · no card needed</div>
           </div>
         </div>
 
@@ -6738,7 +6742,6 @@
 
           <button class="btn btn-primary" onclick="analyseTicket()">Get Instant Verdict</button>
         </div>
-        <div id="verdict-output"></div>
       </div>
 
 
@@ -7141,7 +7144,7 @@
         </a>
       </div>
 
-      <!-- EARLY RESOLUTION AI HELPER — paid feature ($0.99 via Stripe) -->
+      <!-- EARLY RESOLUTION AI HELPER — free guided wizard (no payment) -->
       <div class="card svc-card dv2-er-card" id="svc-early"
            data-search="early resolution form ai eugen prosecutor reduce fine plea ticket fight">
         <div class="card-title">⚖️ Early Resolution — AI form helper</div>
