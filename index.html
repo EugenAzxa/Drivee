@@ -181,7 +181,8 @@
       padding: calc(env(safe-area-inset-top, 0px) + 80px) 20px calc(env(safe-area-inset-bottom, 0px) + 140px);
       /* Smooth momentum scrolling on iOS */
       -webkit-overflow-scrolling: touch;
-      transform: translateZ(0); /* GPU compositing for smoother scroll */
+      /* NOTE: do NOT add transform/will-change here — a transformed scroll
+         container breaks position:fixed on the bottom nav (it sticks mid-page). */
     }
 
     .tab-section.active {
@@ -6657,9 +6658,6 @@
               </div>
               <div id="pay-portal-badge" style="font-size:11px;color:var(--text-secondary);text-align:right;max-width:130px;line-height:1.4;white-space:pre-line">—</div>
             </div>
-            <div style="font-size:11px;color:var(--text-tertiary);background:rgba(0,0,0,0.03);border-radius:8px;padding:7px 9px;margin-bottom:10px">
-              💡 Copy your ticket number above, then paste it on the payment page.
-            </div>
             <button id="scan-pay-btn" onclick="showPaymentGuide(window._lastScan||{})"
                     style="display:block;width:100%;text-align:center;border:none;cursor:pointer"
                     class="btn btn-primary">
@@ -6699,42 +6697,47 @@
           </div>
         </div>
 
-        <div class="divider"></div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Or enter details manually to get a verdict:</div>
+        <!-- Manual entry — the fallback for users who don't scan. Hidden once
+             a scan succeeds (#scan-actions is shown) so the result stays clean.
+             #verdict-output is OUTSIDE this block so the verdict always shows. -->
+        <div id="manual-entry">
+          <div class="divider"></div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Or enter details manually to get a verdict:</div>
 
-        <div class="calc-input-wrap" style="margin-bottom:12px">
-          <span class="calc-dollar">$</span>
-          <input type="number" id="ticket-amount" class="calc-input" placeholder="Fine amount" min="0" max="9999" />
+          <div class="calc-input-wrap" style="margin-bottom:12px">
+            <span class="calc-dollar">$</span>
+            <input type="number" id="ticket-amount" class="calc-input" placeholder="Fine amount" min="0" max="9999" />
+          </div>
+
+          <div class="input-group">
+            <label for="ticket-type">Violation Type</label>
+            <select id="ticket-type">
+              <option value="">Select violation type…</option>
+              <option value="parking">Parking Violation</option>
+              <option value="speeding">Speeding</option>
+              <option value="redlight">Red Light Camera</option>
+              <option value="stopsign">Stop Sign</option>
+              <option value="toll">Toll (407 ETR / Highway)</option>
+              <option value="hov">HOV Lane Violation</option>
+              <option value="distracted">Distracted Driving</option>
+              <option value="seatbelt">Seatbelt</option>
+              <option value="careless">Careless Driving</option>
+              <option value="stunt">Stunt Driving</option>
+              <option value="dui">DUI / Impaired Driving</option>
+              <option value="insurance">No Insurance</option>
+              <option value="registration">Registration / Plate</option>
+              <option value="camera">Camera Enforcement</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="verdict-ref">Reference / Ticket Number</label>
+            <input type="text" id="verdict-ref" placeholder="e.g. PK151776" />
+          </div>
+
+          <button class="btn btn-primary" onclick="analyseTicket()">Get Instant Verdict</button>
         </div>
-
-        <div class="input-group">
-          <label for="ticket-type">Violation Type</label>
-          <select id="ticket-type">
-            <option value="">Select violation type…</option>
-            <option value="parking">Parking Violation</option>
-            <option value="speeding">Speeding</option>
-            <option value="redlight">Red Light Camera</option>
-            <option value="stopsign">Stop Sign</option>
-            <option value="toll">Toll (407 ETR / Highway)</option>
-            <option value="hov">HOV Lane Violation</option>
-            <option value="distracted">Distracted Driving</option>
-            <option value="seatbelt">Seatbelt</option>
-            <option value="careless">Careless Driving</option>
-            <option value="stunt">Stunt Driving</option>
-            <option value="dui">DUI / Impaired Driving</option>
-            <option value="insurance">No Insurance</option>
-            <option value="registration">Registration / Plate</option>
-            <option value="camera">Camera Enforcement</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="input-group">
-          <label for="verdict-ref">Reference / Ticket Number</label>
-          <input type="text" id="verdict-ref" placeholder="e.g. PK151776" />
-        </div>
-
-        <button class="btn btn-primary" onclick="analyseTicket()">Get Instant Verdict</button>
         <div id="verdict-output"></div>
       </div>
 
@@ -9196,6 +9199,9 @@
       var statusEl  = document.getElementById('scan-status');
       var actionsEl = document.getElementById('scan-actions');
       if (actionsEl) actionsEl.style.display = 'none';
+      // Show the manual fallback again while scanning (re-hidden on success).
+      var manualEntryEl = document.getElementById('manual-entry');
+      if (manualEntryEl) manualEntryEl.style.display = '';
 
       statusEl.style.display    = 'block';
       statusEl.textContent      = '🤖 Drivee is reading your ticket…';
@@ -9249,6 +9255,10 @@
           if (payPortalBadge) payPortalBadge.textContent = getPortalName(p.type, p.province, p.municipality);
           if (reminderConfirm) reminderConfirm.style.display = reminderAdded ? 'block' : 'none';
           if (actionsEl) actionsEl.style.display = 'block';
+          // Scan succeeded — hide the manual "or enter details" form so the
+          // result page stays clean (the verdict + payment + ER are enough).
+          var manualEntry = document.getElementById('manual-entry');
+          if (manualEntry) manualEntry.style.display = 'none';
 
           // Update status
           var found = [];

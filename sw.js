@@ -1,7 +1,7 @@
 // Drivee Service Worker — enables PWA install + offline caching.
 // Bump this version string whenever index.html / sw.js change so older
 // installed PWAs throw away their stale caches on the next visit.
-var CACHE_NAME = 'drivee-v2-2026-05-20-verdict-signup-nudge';
+var CACHE_NAME = 'drivee-v2-2026-05-20-navfix-leaner-scan';
 var URLS_TO_CACHE = [
   '/',
   '/index.html',
