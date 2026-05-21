@@ -4198,30 +4198,59 @@
     .dv2-insp-intro b { font-weight: 800; }
     .dv2-insp-featured {
       position: relative;
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
-      color: #fff; border-radius: 18px; padding: 18px;
+      background: #fff; color: var(--dv2-ink);
+      border: 1px solid var(--dv2-line); border-radius: 18px; padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 16px 36px -14px rgba(26,63,184,0.45);
+      box-shadow: 0 16px 36px -18px rgba(14,27,61,0.18);
     }
     .dv2-insp-badge {
       display: inline-block; font-family: 'JetBrains Mono', monospace;
       font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-      background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 999px;
-      margin-bottom: 10px;
+      background: var(--dv2-blue-50); color: var(--dv2-blue-d);
+      padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
     }
     .dv2-insp-featured h3 {
       font-family: var(--dv2-serif); font-size: 22px; font-weight: 700;
-      letter-spacing: -0.4px; margin: 0 0 4px;
+      letter-spacing: -0.4px; margin: 0 0 4px; color: var(--dv2-ink);
     }
-    .dv2-insp-featured p { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.88); margin: 0 0 14px; }
+    .dv2-insp-featured p { font-size: 13px; line-height: 1.5; color: var(--dv2-ink2); margin: 0 0 12px; }
+    /* Google reviews row */
+    .dv2-insp-reviews {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin: 0 0 12px; font-size: 12px; color: var(--dv2-ink2); text-decoration: none;
+    }
+    .dv2-insp-reviews .g {
+      font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; color: var(--dv2-ink);
+    }
+    .dv2-insp-reviews .stars { color: #FBBC04; letter-spacing: 1px; font-size: 13px; }
+    .dv2-insp-reviews u { color: var(--dv2-blue-d); font-weight: 700; text-decoration: none; }
+    /* price + discount strip */
+    .dv2-insp-price {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 12px; padding: 11px 13px; margin: 0 0 12px;
+    }
+    .dv2-insp-price .amt { font-weight: 800; font-size: 15px; color: var(--dv2-ink); }
+    .dv2-insp-price .lbl { font-size: 12px; color: var(--dv2-ink2); }
+    .dv2-insp-disc {
+      display: inline-flex; align-items: center; gap: 6px; margin-left: auto;
+      background: #1a9a52; color: #fff; font-weight: 800; font-size: 11px;
+      letter-spacing: 0.3px; padding: 5px 10px; border-radius: 999px;
+    }
+    .dv2-insp-script {
+      font-size: 12px; line-height: 1.5; color: var(--dv2-ink); font-weight: 500;
+      background: rgba(26,154,82,0.07); border: 1px dashed rgba(26,154,82,0.35);
+      border-radius: 11px; padding: 10px 12px; margin: 0 0 14px;
+    }
+    .dv2-insp-script b { font-weight: 800; color: #157a40; }
     .dv2-insp-featured .dv2-insp-actions { display: flex; gap: 8px; }
     .dv2-insp-fbtn {
       flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
       padding: 12px; border-radius: 12px; text-decoration: none;
       font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; border: 0;
     }
-    .dv2-insp-fbtn.call { background: #fff; color: var(--dv2-blue-d); }
-    .dv2-insp-fbtn.maps { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .dv2-insp-fbtn.call { background: var(--dv2-blue); color: #fff; }
+    .dv2-insp-fbtn.maps { background: var(--dv2-blue-50); color: var(--dv2-blue-d); border: 1px solid rgba(46,100,255,0.2); }
     .dv2-insp-fbtn svg { width: 15px; height: 15px; }
 
     .dv2-insp-row {
@@ -7656,7 +7685,27 @@
         <div class="dv2-insp-featured">
           <span class="dv2-insp-badge">★ DRIVEE PARTNER</span>
           <h3>Azcan Auto</h3>
-          <p>Pre-purchase inspections + Ontario Safety Standards Certificates. Honest reports, fast turnaround — Drivee's recommended shop for buying or selling.</p>
+          <p>Pre-purchase inspections + Ontario Safety Standards Certificates. Every car gets a full inspection — honest reports, fast turnaround.</p>
+
+          <!-- Live Google reviews -->
+          <a class="dv2-insp-reviews" href="https://www.google.com/maps/search/?api=1&query=Azcan+Auto+Toronto" target="_blank" rel="noopener">
+            <span class="g">Google</span>
+            <span class="stars">★★★★★</span>
+            <u>See reviews →</u>
+          </a>
+
+          <!-- Pricing + Drivee discount -->
+          <div class="dv2-insp-price">
+            <span class="amt">$80–$120</span>
+            <span class="lbl">full car inspection</span>
+            <span class="dv2-insp-disc">🎁 5% OFF with Drivee</span>
+          </div>
+
+          <!-- Call script -->
+          <div class="dv2-insp-script">
+            📞 When you call, say <b>"I'm calling from Drivee"</b> to get your <b>5% discount</b>.
+          </div>
+
           <div class="dv2-insp-actions">
             <a class="dv2-insp-fbtn call" href="tel:+14160000000" id="azcan-call">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
