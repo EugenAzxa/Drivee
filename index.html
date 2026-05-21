@@ -4198,59 +4198,59 @@
     .dv2-insp-intro b { font-weight: 800; }
     .dv2-insp-featured {
       position: relative;
-      background: #fff; color: var(--dv2-ink);
-      border: 1px solid var(--dv2-line); border-radius: 18px; padding: 18px;
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      color: #fff; border-radius: 18px; padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 16px 36px -18px rgba(14,27,61,0.18);
+      box-shadow: 0 16px 36px -14px rgba(26,63,184,0.45);
     }
     .dv2-insp-badge {
       display: inline-block; font-family: 'JetBrains Mono', monospace;
       font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
-      background: var(--dv2-blue-50); color: var(--dv2-blue-d);
+      background: rgba(255,255,255,0.18); color: #fff;
       padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
     }
     .dv2-insp-featured h3 {
       font-family: var(--dv2-serif); font-size: 22px; font-weight: 700;
-      letter-spacing: -0.4px; margin: 0 0 4px; color: var(--dv2-ink);
+      letter-spacing: -0.4px; margin: 0 0 4px; color: #fff;
     }
-    .dv2-insp-featured p { font-size: 13px; line-height: 1.5; color: var(--dv2-ink2); margin: 0 0 12px; }
+    .dv2-insp-featured p { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.88); margin: 0 0 12px; }
     /* Google reviews row */
     .dv2-insp-reviews {
       display: inline-flex; align-items: center; gap: 8px;
-      margin: 0 0 12px; font-size: 12px; color: var(--dv2-ink2); text-decoration: none;
+      margin: 0 0 12px; font-size: 12px; color: rgba(255,255,255,0.85); text-decoration: none;
     }
     .dv2-insp-reviews .g {
-      font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; color: var(--dv2-ink);
+      font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 13px; color: #fff;
     }
-    .dv2-insp-reviews .stars { color: #FBBC04; letter-spacing: 1px; font-size: 13px; }
-    .dv2-insp-reviews u { color: var(--dv2-blue-d); font-weight: 700; text-decoration: none; }
+    .dv2-insp-reviews .stars { color: #FFD24A; letter-spacing: 1px; font-size: 13px; }
+    .dv2-insp-reviews u { color: #fff; font-weight: 700; text-decoration: underline; }
     /* price + discount strip */
     .dv2-insp-price {
       display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
       border-radius: 12px; padding: 11px 13px; margin: 0 0 12px;
     }
-    .dv2-insp-price .amt { font-weight: 800; font-size: 15px; color: var(--dv2-ink); }
-    .dv2-insp-price .lbl { font-size: 12px; color: var(--dv2-ink2); }
+    .dv2-insp-price .amt { font-weight: 800; font-size: 15px; color: #fff; }
+    .dv2-insp-price .lbl { font-size: 12px; color: rgba(255,255,255,0.8); }
     .dv2-insp-disc {
       display: inline-flex; align-items: center; gap: 6px; margin-left: auto;
-      background: #1a9a52; color: #fff; font-weight: 800; font-size: 11px;
+      background: #2bd673; color: #06351c; font-weight: 800; font-size: 11px;
       letter-spacing: 0.3px; padding: 5px 10px; border-radius: 999px;
     }
     .dv2-insp-script {
-      font-size: 12px; line-height: 1.5; color: var(--dv2-ink); font-weight: 500;
-      background: rgba(26,154,82,0.07); border: 1px dashed rgba(26,154,82,0.35);
+      font-size: 12px; line-height: 1.5; color: #fff; font-weight: 500;
+      background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.4);
       border-radius: 11px; padding: 10px 12px; margin: 0 0 14px;
     }
-    .dv2-insp-script b { font-weight: 800; color: #157a40; }
+    .dv2-insp-script b { font-weight: 800; color: #fff; }
     .dv2-insp-featured .dv2-insp-actions { display: flex; gap: 8px; }
     .dv2-insp-fbtn {
       flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
       padding: 12px; border-radius: 12px; text-decoration: none;
       font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; border: 0;
     }
-    .dv2-insp-fbtn.call { background: var(--dv2-blue); color: #fff; }
-    .dv2-insp-fbtn.maps { background: var(--dv2-blue-50); color: var(--dv2-blue-d); border: 1px solid rgba(46,100,255,0.2); }
+    .dv2-insp-fbtn.call { background: #fff; color: var(--dv2-blue-d); }
+    .dv2-insp-fbtn.maps { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
     .dv2-insp-fbtn svg { width: 15px; height: 15px; }
 
     .dv2-insp-row {
@@ -4282,7 +4282,7 @@
     /* Entry button (lives inside the inspect card, opens the sub-page) */
     .dv2-buy-cta {
       display: flex; align-items: center; gap: 13px; width: 100%;
-      text-align: left; cursor: pointer; border: 0; margin: 18px 0 4px;
+      text-align: left; cursor: pointer; border: 0; margin: 0 0 16px;
       background: linear-gradient(135deg, #0E1B3D, #1A2F5C);
       color: #fff; border-radius: 18px; padding: 16px 18px;
       box-shadow: 0 16px 34px -16px rgba(14,27,61,0.6);
@@ -4345,8 +4345,15 @@
 
     /* VIN-match animation */
     .dv2-vin {
-      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      background: linear-gradient(135deg, #0E1B3D, #182a52);
+      border: 1px solid rgba(46,100,255,0.3);
       border-radius: 16px; padding: 16px;
+    }
+    .dv2-vin .dv2-vin-sub { color: rgba(255,255,255,0.8); }
+    .dv2-vin .dv2-vin-tag { color: #8FB0FF; }
+    .dv2-vin .dv2-vin-code {
+      color: #EAF0FF; background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
     }
     .dv2-vin-sub { font-size: 12px; color: var(--dv2-ink2); line-height: 1.5; margin-bottom: 14px; }
     .dv2-vin-rows { display: grid; gap: 8px; }
@@ -4386,13 +4393,24 @@
     /* Inspection checklist */
     .dv2-chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .dv2-chk {
-      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
-      border-radius: 14px; padding: 13px; transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border-radius: 14px; padding: 13px; border: 1px solid transparent;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .dv2-chk:active { transform: scale(0.97); }
-    .dv2-chk-ico { font-size: 24px; line-height: 1; margin-bottom: 7px; }
+    .dv2-chk-ico {
+      font-size: 22px; line-height: 1; margin-bottom: 8px;
+      width: 38px; height: 38px; border-radius: 11px;
+      display: grid; place-items: center; background: rgba(255,255,255,0.7);
+    }
     .dv2-chk-name { font-weight: 800; font-size: 13px; color: var(--dv2-ink); margin-bottom: 2px; }
     .dv2-chk-desc { font-size: 11px; line-height: 1.45; color: var(--dv2-ink2); }
+    /* Tinted variants so the grid reads as a colourful checklist */
+    .dv2-chk.c1 { background: #FFF1E8; border-color: #FFD9C2; }
+    .dv2-chk.c2 { background: #EAF1FF; border-color: #CFE0FF; }
+    .dv2-chk.c3 { background: #F0ECFF; border-color: #DDD3FF; }
+    .dv2-chk.c4 { background: #E8F8F0; border-color: #C6ECD7; }
+    .dv2-chk.c5 { background: #FFF6E0; border-color: #FBE6AE; }
+    .dv2-chk.c6 { background: #FDEAEF; border-color: #F8C9D4; }
     /* Records (Carfax / UVIP) callout */
     .dv2-records {
       background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
@@ -7681,6 +7699,18 @@
           <b>Pre-purchase inspection</b> = a licensed mechanic checks a used car <i>before you buy it</i> — engine, frame, brakes, rust, accident history — so you don't inherit someone else's $4,000 problem. A <b>Safety Standards Certificate (MVIS)</b> is the official inspection required to <i>transfer ownership</i> when you buy or sell in Ontario. Both are worth it. Book one below.
         </div>
 
+        <!-- Entry to the DIY guide sub-page (top of the card) -->
+        <button class="dv2-buy-cta" type="button" onclick="dv2SvcShow('buyguide')">
+          <span class="dv2-buy-cta-ic">🔍</span>
+          <span class="dv2-buy-cta-tx">
+            <span class="dv2-buy-cta-t">How to check a car yourself</span>
+            <span class="dv2-buy-cta-s">VIN match · what to inspect · video guide</span>
+          </span>
+          <span class="dv2-buy-cta-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </button>
+
         <!-- Featured: Azcan Auto -->
         <div class="dv2-insp-featured">
           <span class="dv2-insp-badge">★ DRIVEE PARTNER</span>
@@ -7724,18 +7754,6 @@
         <div class="dv2-insp-disclaimer">
           Drivee lists these shops as a convenience and earns nothing from the rankings (Azcan Auto is our featured partner). Ratings &amp; reviews open live on Google. Always confirm price &amp; availability when you call.
         </div>
-
-        <!-- Entry to the DIY guide sub-page -->
-        <button class="dv2-buy-cta" type="button" onclick="dv2SvcShow('buyguide')">
-          <span class="dv2-buy-cta-ic">🔍</span>
-          <span class="dv2-buy-cta-tx">
-            <span class="dv2-buy-cta-t">How to check a car yourself</span>
-            <span class="dv2-buy-cta-s">VIN match · what to inspect · video guide</span>
-          </span>
-          <span class="dv2-buy-cta-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </button>
       </div>
 
       <!-- ============================================================
@@ -7778,32 +7796,32 @@
           <span class="dv2-step-t">Walk around &amp; inspect</span>
         </div>
         <div class="dv2-chk-grid">
-          <div class="dv2-chk dv-reveal" style="animation-delay:.10s">
+          <div class="dv2-chk c1 dv-reveal" style="animation-delay:.10s">
             <div class="dv2-chk-ico">🛢️</div>
             <div class="dv2-chk-name">Oil &amp; fluid leaks</div>
             <div class="dv2-chk-desc">Look under the engine &amp; on the ground. Wet spots, drips or a burnt smell = trouble.</div>
           </div>
-          <div class="dv2-chk dv-reveal" style="animation-delay:.16s">
+          <div class="dv2-chk c2 dv-reveal" style="animation-delay:.16s">
             <div class="dv2-chk-ico">🔢</div>
             <div class="dv2-chk-name">Odometer</div>
             <div class="dv2-chk-desc">Does the mileage fit the wear? Low km but worn pedals = possible rollback.</div>
           </div>
-          <div class="dv2-chk dv-reveal" style="animation-delay:.22s">
+          <div class="dv2-chk c3 dv-reveal" style="animation-delay:.22s">
             <div class="dv2-chk-ico">🦶</div>
             <div class="dv2-chk-name">Pedals &amp; interior</div>
             <div class="dv2-chk-desc">Heavily worn pedals, seat &amp; wheel mean far more use than the seller claims.</div>
           </div>
-          <div class="dv2-chk dv-reveal" style="animation-delay:.28s">
+          <div class="dv2-chk c4 dv-reveal" style="animation-delay:.28s">
             <div class="dv2-chk-ico">🚗</div>
             <div class="dv2-chk-name">Body &amp; panels</div>
             <div class="dv2-chk-desc">Uneven gaps, mismatched paint or overspray = past collision/repair.</div>
           </div>
-          <div class="dv2-chk dv-reveal" style="animation-delay:.34s">
+          <div class="dv2-chk c5 dv-reveal" style="animation-delay:.34s">
             <div class="dv2-chk-ico">🛞</div>
             <div class="dv2-chk-name">Tires &amp; rust</div>
             <div class="dv2-chk-desc">Uneven tread = alignment/suspension issues. Check wheel wells &amp; sills for rust.</div>
           </div>
-          <div class="dv2-chk dv-reveal" style="animation-delay:.40s">
+          <div class="dv2-chk c6 dv-reveal" style="animation-delay:.40s">
             <div class="dv2-chk-ico">🔧</div>
             <div class="dv2-chk-name">Test drive</div>
             <div class="dv2-chk-desc">Listen for knocks, watch the dash lights, feel for pulling or rough shifting.</div>
