@@ -4248,6 +4248,77 @@
       margin-top: 14px; text-align: center;
     }
 
+    /* ─── "How to check a car before buying" guide ─── */
+    .dv2-buy-guide { margin: 22px 0 0; }
+    .dv2-buy-head {
+      font-family: var(--dv2-mono); font-size: 10px; letter-spacing: 1.6px;
+      font-weight: 800; color: var(--dv2-blue-d); margin-bottom: 6px;
+    }
+    .dv2-buy-title {
+      font-family: var(--dv2-serif); font-size: 20px; font-weight: 700;
+      letter-spacing: -0.4px; color: var(--dv2-ink); margin: 0 0 12px;
+    }
+    /* VIN-match animation */
+    .dv2-vin {
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      border-radius: 16px; padding: 16px; margin-bottom: 16px;
+    }
+    .dv2-vin-h { font-weight: 800; font-size: 14px; color: var(--dv2-ink); margin-bottom: 4px; }
+    .dv2-vin-sub { font-size: 12px; color: var(--dv2-ink2); line-height: 1.5; margin-bottom: 14px; }
+    .dv2-vin-rows { display: grid; gap: 8px; }
+    .dv2-vin-row { display: flex; align-items: center; gap: 10px; }
+    .dv2-vin-tag {
+      flex-shrink: 0; width: 64px; font-family: var(--dv2-mono);
+      font-size: 9px; letter-spacing: 0.8px; font-weight: 800;
+      color: var(--dv2-ink2); text-transform: uppercase;
+    }
+    .dv2-vin-code {
+      flex: 1; font-family: var(--dv2-mono); font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; color: var(--dv2-ink);
+      background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 10px; padding: 9px 11px; overflow: hidden; white-space: nowrap;
+    }
+    .dv2-vin-code span { opacity: 0; animation: dvVinChar 0.05s forwards; }
+    @keyframes dvVinChar { to { opacity: 1; } }
+    .dv2-vin-match {
+      display: flex; align-items: center; gap: 7px; justify-content: center;
+      margin-top: 12px; font-size: 13px; font-weight: 800; color: #1a9a52;
+      opacity: 0; animation: dvVinMatch 0.4s ease forwards; animation-delay: 1.6s;
+    }
+    @keyframes dvVinMatch { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .dv2-vin-match svg { width: 17px; height: 17px; }
+    /* Inspection checklist */
+    .dv2-chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dv2-chk {
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      border-radius: 14px; padding: 13px;
+    }
+    .dv2-chk-ico { font-size: 22px; line-height: 1; margin-bottom: 7px; }
+    .dv2-chk-name { font-weight: 800; font-size: 13px; color: var(--dv2-ink); margin-bottom: 2px; }
+    .dv2-chk-desc { font-size: 11px; line-height: 1.45; color: var(--dv2-ink2); }
+    /* Records (Carfax / UVIP) callout */
+    .dv2-records {
+      background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 14px; padding: 14px 16px; margin-top: 12px;
+      font-size: 13px; line-height: 1.55; color: var(--dv2-ink); font-weight: 500;
+    }
+    .dv2-records b { font-weight: 800; }
+    /* Video guide card */
+    .dv2-vid-card {
+      display: flex; align-items: center; gap: 13px; text-decoration: none;
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      color: #fff; border-radius: 16px; padding: 16px; margin-top: 16px;
+      box-shadow: 0 14px 30px -14px rgba(26,63,184,0.45);
+    }
+    .dv2-vid-play {
+      flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,0.18); display: grid; place-items: center;
+    }
+    .dv2-vid-play svg { width: 20px; height: 20px; fill: #fff; }
+    .dv2-vid-txt { flex: 1; min-width: 0; }
+    .dv2-vid-t { font-weight: 800; font-size: 14px; letter-spacing: -0.2px; }
+    .dv2-vid-s { font-size: 12px; color: rgba(255,255,255,0.85); margin-top: 2px; }
+
     /* ─── Handicap (Accessible Parking Permit) card ─── */
     .dv2-hc-card { border: 1px solid var(--dv2-line-soft); }
     .dv2-hc-explainer {
@@ -7528,6 +7599,82 @@
         <div class="dv2-insp-disclaimer">
           Drivee lists these shops as a convenience and earns nothing from the rankings (Azcan Auto is our featured partner). Ratings &amp; reviews open live on Google. Always confirm price &amp; availability when you call.
         </div>
+
+        <!-- ── How to check a car before buying ── -->
+        <div class="dv2-buy-guide">
+          <div class="dv2-buy-head">DIY PRE-PURCHASE CHECK</div>
+          <div class="dv2-buy-title">How to check a car before you buy</div>
+
+          <!-- VIN-match animation -->
+          <div class="dv2-vin">
+            <div class="dv2-vin-h">1. Match the VIN</div>
+            <div class="dv2-vin-sub">Compare the VIN on the dashboard (visible through the windshield) and the door-jamb sticker against the one on the ownership / registration. If a single character differs, walk away.</div>
+            <div class="dv2-vin-rows">
+              <div class="dv2-vin-row">
+                <div class="dv2-vin-tag">Car</div>
+                <div class="dv2-vin-code" id="dv-vin-car"></div>
+              </div>
+              <div class="dv2-vin-row">
+                <div class="dv2-vin-tag">Papers</div>
+                <div class="dv2-vin-code" id="dv-vin-doc"></div>
+              </div>
+            </div>
+            <div class="dv2-vin-match">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              VIN matches — this car is what the papers say
+            </div>
+          </div>
+
+          <!-- Visual checklist -->
+          <div class="dv2-buy-head">2. WALK AROUND &amp; INSPECT</div>
+          <div class="dv2-chk-grid">
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🛢️</div>
+              <div class="dv2-chk-name">Oil &amp; fluid leaks</div>
+              <div class="dv2-chk-desc">Look under the engine &amp; on the ground. Wet spots, drips or burnt smell = trouble.</div>
+            </div>
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🔢</div>
+              <div class="dv2-chk-name">Odometer</div>
+              <div class="dv2-chk-desc">Does the mileage fit the wear? Worn pedals + low km = possible rollback.</div>
+            </div>
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🦶</div>
+              <div class="dv2-chk-name">Pedals &amp; interior</div>
+              <div class="dv2-chk-desc">Heavily worn pedals, seat &amp; wheel mean far more use than the seller claims.</div>
+            </div>
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🚗</div>
+              <div class="dv2-chk-name">Body &amp; panels</div>
+              <div class="dv2-chk-desc">Uneven gaps, mismatched paint or overspray = past collision/repair.</div>
+            </div>
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🛞</div>
+              <div class="dv2-chk-name">Tires &amp; rust</div>
+              <div class="dv2-chk-desc">Uneven tread = alignment/suspension issues. Check wheel wells &amp; sills for rust.</div>
+            </div>
+            <div class="dv2-chk">
+              <div class="dv2-chk-ico">🔧</div>
+              <div class="dv2-chk-name">Test drive</div>
+              <div class="dv2-chk-desc">Listen for knocks, watch the dash lights, feel for pulling or rough shifting.</div>
+            </div>
+          </div>
+
+          <!-- Records -->
+          <div class="dv2-buy-head" style="margin-top:14px">3. CHECK THE HISTORY</div>
+          <div class="dv2-records">
+            Always pull a <b>Carfax</b> report and the seller's <b>UVIP</b> (Used Vehicle Information Package — required by law in Ontario). They reveal accidents, liens, branding (salvage/rebuilt) and previous owners. A clean car with a shady report is not a clean car.
+          </div>
+
+          <!-- Video guide -->
+          <a class="dv2-vid-card" href="https://youtu.be/60cermck_XY" target="_blank" rel="noopener">
+            <span class="dv2-vid-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+            <span class="dv2-vid-txt">
+              <span class="dv2-vid-t">Watch: pre-purchase inspection guide</span>
+              <span class="dv2-vid-s">A short walkthrough of exactly what to check — 5 min on YouTube</span>
+            </span>
+          </a>
+        </div>
       </div>
 
     </section>
@@ -8791,7 +8938,7 @@
       var svc = document.getElementById('tab-services');
       if (!svc) return;
       svc.dataset.svcActive = key;
-      if (key === 'inspect') dvRenderInspectShops();
+      if (key === 'inspect') { dvRenderInspectShops(); dvPlayVinMatch(); }
       // Smooth scroll the tab content to top so the panel header is visible
       try { svc.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -8831,6 +8978,24 @@
       });
       box.innerHTML = html;
       box.dataset.rendered = '1';
+    }
+
+    // Types the VIN into both rows char-by-char so the "match" reads as a check.
+    function dvPlayVinMatch() {
+      var vin = '1HGCM82633A004352';
+      var car = document.getElementById('dv-vin-car');
+      var doc = document.getElementById('dv-vin-doc');
+      if (!car || !doc) return;
+      function fill(el) {
+        el.innerHTML = '';
+        for (var i = 0; i < vin.length; i++) {
+          var s = document.createElement('span');
+          s.textContent = vin[i];
+          s.style.animationDelay = (i * 0.045) + 's';
+          el.appendChild(s);
+        }
+      }
+      fill(car); fill(doc);
     }
     function dv2SvcGrid() {
       var svc = document.getElementById('tab-services');
