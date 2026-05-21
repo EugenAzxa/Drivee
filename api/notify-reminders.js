@@ -93,7 +93,7 @@ module.exports = async function handler(req, res) {
     try {
       webpush = require('web-push');
       webpush.setVapidDetails('mailto:drivee.canada@gmail.com',
-        process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+        (process.env.VAPID_PUBLIC_KEY || '').trim(), (process.env.VAPID_PRIVATE_KEY || '').trim());
     } catch (e) { webpush = null; }
   }
 

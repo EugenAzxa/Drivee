@@ -1119,6 +1119,29 @@
       border: none; border-radius: 12px;
       font-size: 15px; font-weight: 600; cursor: pointer;
     }
+    /* Notifications toggle card in the profile sheet */
+    .ps-notif-card {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 16px; padding: 14px;
+      background: var(--blue-50, #eaf0ff);
+      border: 1px solid rgba(46,100,255,0.18);
+      border-radius: 14px;
+    }
+    .ps-notif-icon { font-size: 22px; flex-shrink: 0; }
+    .ps-notif-text { flex: 1; min-width: 0; }
+    .ps-notif-title { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .ps-notif-sub { font-size: 12px; color: var(--text-secondary); line-height: 1.4; margin-top: 2px; }
+    .ps-notif-btn {
+      flex-shrink: 0;
+      padding: 9px 14px; border-radius: 10px;
+      background: var(--blue, #2E64FF); color: #fff; border: 0;
+      font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+      white-space: nowrap;
+    }
+    .ps-notif-btn:disabled { background: #1FAB6B; cursor: default; }
+    .ps-notif-card.is-on { background: rgba(31,171,107,0.10); border-color: rgba(31,171,107,0.3); }
+    .ps-notif-card.is-blocked .ps-notif-btn { background: #c9c4b3; }
+
     /* Always-visible log out — subtler than the red cloud sign-out so it
        doesn't scream, but is clearly available at the bottom of the sheet. */
     .profile-sheet-logout {
@@ -6069,6 +6092,16 @@
       <button class="profile-sheet-signout" onclick="signOutUser(); closeProfileSheet()">Sign Out</button>
     </div>
 
+    <!-- Notifications toggle (always visible) -->
+    <div class="ps-notif-card" id="ps-notif-card">
+      <div class="ps-notif-icon">🔔</div>
+      <div class="ps-notif-text">
+        <div class="ps-notif-title" id="ps-notif-title">Deadline reminders</div>
+        <div class="ps-notif-sub" id="ps-notif-sub">Get a heads-up before any fine is due — even when the app is closed.</div>
+      </div>
+      <button class="ps-notif-btn" id="ps-notif-btn" type="button" onclick="dvToggleNotifs()">Turn on</button>
+    </div>
+
     <!-- Profile & Vehicles (always visible in sheet) -->
     <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px" id="ps-profile-section">
       <div style="font-weight:700;font-size:14px;margin-bottom:10px">Your Profile</div>
@@ -9825,17 +9858,15 @@
       //   2. Already gave email earlier            → green "we've got this" row
       //   3. First-time + has a real fine amount   → the loss-aversion CTA
       //
-      // States 1 & 2 use the same reassurance line — both mean "we know who
-      // you are, no need to re-prompt." Only state 3 sees the email gate.
+      // The "we've got this" reassurance only shows for users who are ACTUALLY
+      // signed in (real Supabase session). A cached email from a past visit is
+      // NOT enough — if they're not signed in, we still prompt them to sign in
+      // so they can't keep browsing + saving without an account.
       var lossCTA = '';
       var knownEmail = '';
       try {
         if (window.currentUser && window.currentUser.email) {
           knownEmail = window.currentUser.email;
-        } else {
-          // drivee_signup_email is set the moment they submit ANY signup form,
-          // and never cleared on sign-out, so returning visitors aren't re-prompted.
-          knownEmail = localStorage.getItem('drivee_signup_email') || '';
         }
       } catch (e) {}
 
@@ -11091,6 +11122,42 @@
       var arr = new Uint8Array(raw.length);
       for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
       return arr;
+    }
+
+    // Profile-sheet notification toggle. Reflects the current permission
+    // state and lets the user turn notifications on.
+    function dvRefreshNotifUI() {
+      var card  = document.getElementById('ps-notif-card');
+      var btn   = document.getElementById('ps-notif-btn');
+      var title = document.getElementById('ps-notif-title');
+      var sub   = document.getElementById('ps-notif-sub');
+      if (!card || !btn) return;
+      card.classList.remove('is-on', 'is-blocked');
+      if (!('Notification' in window)) {
+        btn.textContent = 'N/A'; btn.disabled = true;
+        if (sub) sub.textContent = 'This browser doesn\'t support notifications.';
+        return;
+      }
+      var p = Notification.permission;
+      if (p === 'granted') {
+        card.classList.add('is-on');
+        btn.textContent = 'On ✓'; btn.disabled = true;
+        if (title) title.textContent = 'Reminders are on';
+        if (sub) sub.textContent = 'We\'ll alert you before a fine is due — even with the app closed.';
+      } else if (p === 'denied') {
+        card.classList.add('is-blocked');
+        btn.textContent = 'Blocked'; btn.disabled = true;
+        if (sub) sub.textContent = 'Notifications are blocked — turn them on in your browser/phone settings for Drivee.';
+      } else {
+        btn.textContent = 'Turn on'; btn.disabled = false;
+        if (title) title.textContent = 'Deadline reminders';
+        if (sub) sub.textContent = 'Get a heads-up before any fine is due — even when the app is closed.';
+      }
+    }
+    function dvToggleNotifs() {
+      requestNotifications();
+      // Re-render the toggle state shortly after the permission prompt resolves
+      setTimeout(dvRefreshNotifUI, 400);
     }
 
     function requestNotifications() {
@@ -12616,6 +12683,7 @@
         document.getElementById('ps-signed-in').style.display  = 'none';
         document.getElementById('ps-signed-out').style.display = 'block';
       }
+      if (typeof dvRefreshNotifUI === 'function') dvRefreshNotifUI();
       overlay.classList.add('open');
       sheet.classList.add('open');
     }

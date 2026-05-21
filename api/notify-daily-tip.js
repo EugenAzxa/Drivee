@@ -74,8 +74,13 @@ module.exports = async function handler(req, res) {
   }
   try {
     webpush = require('web-push');
-    webpush.setVapidDetails('mailto:drivee.canada@gmail.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
-  } catch (e) { return res.status(500).json({ error: 'web-push load failed', detail: String(e).slice(0, 120) }); }
+    // Trim to defend against a stray space/newline pasted into the env var.
+    webpush.setVapidDetails(
+      'mailto:drivee.canada@gmail.com',
+      (process.env.VAPID_PUBLIC_KEY || '').trim(),
+      (process.env.VAPID_PRIVATE_KEY || '').trim()
+    );
+  } catch (e) { return res.status(500).json({ error: 'web-push load failed', detail: String(e).slice(0, 160) }); }
 
   // Pull all push subscriptions
   var subs = [];
