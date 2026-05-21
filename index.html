@@ -6141,7 +6141,7 @@
       <div class="profile-sheet-signin-title">☁️ Sign in to sync</div>
       <div class="profile-sheet-signin-sub">Keep your reminders across devices. No password — Google or a quick email code.</div>
       <button type="button" class="profile-sheet-send-btn"
-              onclick="closeProfileSheet(); dvOpenAuth('Sign in to Drivee', 'Sync your reminders across devices. Google or a 6-digit email code — no password.')">
+              onclick="closeProfileSheet(); dvOpenAuth('Sign in to Drivee', 'Sync your reminders across devices. Google or a email code — no password.')">
         Sign in / Create account
       </button>
       <!-- Hidden legacy inputs kept so older code referencing them never errors -->
@@ -6196,7 +6196,7 @@
                  placeholder="your@email.com" autocomplete="email" inputmode="email" required
                  oninput="dvClearEmailInvalid('dv-auth-email','dv-auth-error')" />
           <div class="dv-auth-fielderr" id="dv-auth-error">Please enter a valid email.</div>
-          <button class="dv-auth-primary" id="dv-auth-send-btn" type="submit">Email me a 6-digit code</button>
+          <button class="dv-auth-primary" id="dv-auth-send-btn" type="submit">Email me a sign-in code</button>
         </form>
 
         <div class="dv-auth-or"><span>or</span></div>
@@ -6210,10 +6210,10 @@
 
       <!-- Step 2: enter the code -->
       <div id="dv-auth-step2" hidden>
-        <p class="dv-auth-codeinfo">We emailed a 6-digit code to <b id="dv-auth-email-echo"></b>. Enter it below.</p>
+        <p class="dv-auth-codeinfo">We emailed a code to <b id="dv-auth-email-echo"></b>. Enter it below.</p>
         <form onsubmit="event.preventDefault(); dvAuthVerifyCode(); return false;" novalidate>
           <input type="text" class="dv-auth-input dv-auth-code" id="dv-auth-code"
-                 inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"
+                 inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter code"
                  oninput="this.classList.remove('invalid'); document.getElementById('dv-auth-error2').classList.remove('show');" />
           <div class="dv-auth-fielderr" id="dv-auth-error2">That code didn't work — check and try again.</div>
           <button class="dv-auth-primary" id="dv-auth-verify-btn" type="submit">Verify &amp; sign in</button>
@@ -6546,7 +6546,7 @@
         <div id="auth-signout-state" style="margin-top:12px">
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password, no spam</div>
           <button type="button" class="auth-send-btn" style="width:100%"
-                  onclick="dvOpenAuth('Sync your reminders', 'Sign in to keep your tickets across devices. Google or a 6-digit email code — no password.')">
+                  onclick="dvOpenAuth('Sync your reminders', 'Sign in to keep your tickets across devices. Google or a email code — no password.')">
             Sign in / Create account
           </button>
           <!-- Hidden legacy nodes so older references never error -->
@@ -12411,7 +12411,7 @@
       // Open the unified sign-in modal. Pre-fill the email if they typed one.
       dvOpenAuth(
         'Save this & get your reminder',
-        'Sign in so Drivee can email you 3 days before this fine is due. Google or a 6-digit code — no spam.',
+        'Sign in so Drivee can email you 3 days before this fine is due. Google or a code — no spam.',
         function(){
           var success = document.getElementById('dv2-loss-success');
           if (success) success.classList.add('show');
@@ -12516,9 +12516,11 @@
       var err   = document.getElementById('dv-auth-error2');
       var btn   = document.getElementById('dv-auth-verify-btn');
       var code  = input ? input.value.trim().replace(/\s/g, '') : '';
-      if (!/^\d{6}$/.test(code)) {
+      // Supabase OTP length is configurable (commonly 6 or 8 digits) — accept
+      // any 4–10 digit code so we match whatever the project is set to.
+      if (!/^\d{4,10}$/.test(code)) {
         if (input) input.classList.add('invalid');
-        if (err) { err.textContent = 'Enter the 6-digit code from your email.'; err.classList.add('show'); }
+        if (err) { err.textContent = 'Enter the code from your email.'; err.classList.add('show'); }
         return;
       }
       if (!db || !db.auth) { showToast('Not connected — try refreshing'); return; }
