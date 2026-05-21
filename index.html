@@ -9953,6 +9953,26 @@
           window.open('https://www.toronto.ca/services-payments/tickets-fines-penalties/pay-a-parking-ticket/');
         };
       }
+
+      // ── Delayed "create an account" nudge ──
+      // The verdict is the peak-trust moment. ~10s after a signed-out user
+      // reads their result, pop the sign-in modal so we don't lose them.
+      // Fires once per scan; cancelled if they sign in or already opened it.
+      if (window._dvVerdictNudgeTimer) clearTimeout(window._dvVerdictNudgeTimer);
+      window._dvVerdictNudgeTimer = setTimeout(function() {
+        // Don't nudge if: signed in, modal already open, or they dismissed it this scan
+        if (window.currentUser) return;
+        var authOv = document.getElementById('dv-auth-overlay');
+        if (authOv && authOv.classList.contains('open')) return;
+        if (window._dvVerdictNudgeShown) return;
+        window._dvVerdictNudgeShown = true;
+        if (typeof dvOpenAuth === 'function') {
+          dvOpenAuth(
+            'Save your verdict before you lose it',
+            'Create a free account so this verdict + your ticket stay on every device — and we email you before the deadline. Takes 10 seconds, no spam.'
+          );
+        }
+      }, 10000);
     }
 
     // Reads the save section inputs from the verdict card and adds a reminder.
