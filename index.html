@@ -4182,8 +4182,70 @@
     .design-v2 #tab-services[data-svc-active="streets"]  #svc-streets,
     .design-v2 #tab-services[data-svc-active="usa"]      #svc-usa,
     .design-v2 #tab-services[data-svc-active="early"]    #svc-early,
-    .design-v2 #tab-services[data-svc-active="handicap"] #svc-handicap {
+    .design-v2 #tab-services[data-svc-active="handicap"] #svc-handicap,
+    .design-v2 #tab-services[data-svc-active="inspect"]  #svc-inspect {
       display: block !important;
+    }
+
+    /* ─── Inspection shops list ─── */
+    .dv2-insp-intro {
+      background: var(--dv2-blue-50);
+      border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 14px; padding: 16px; margin: 14px 0 18px;
+      font-size: 13px; line-height: 1.55; color: var(--dv2-ink); font-weight: 500;
+    }
+    .dv2-insp-intro b { font-weight: 800; }
+    .dv2-insp-featured {
+      position: relative;
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      color: #fff; border-radius: 18px; padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 16px 36px -14px rgba(26,63,184,0.45);
+    }
+    .dv2-insp-badge {
+      display: inline-block; font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+      background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .dv2-insp-featured h3 {
+      font-family: var(--dv2-serif); font-size: 22px; font-weight: 700;
+      letter-spacing: -0.4px; margin: 0 0 4px;
+    }
+    .dv2-insp-featured p { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.88); margin: 0 0 14px; }
+    .dv2-insp-featured .dv2-insp-actions { display: flex; gap: 8px; }
+    .dv2-insp-fbtn {
+      flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 12px; border-radius: 12px; text-decoration: none;
+      font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; border: 0;
+    }
+    .dv2-insp-fbtn.call { background: #fff; color: var(--dv2-blue-d); }
+    .dv2-insp-fbtn.maps { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .dv2-insp-fbtn svg { width: 15px; height: 15px; }
+
+    .dv2-insp-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px; margin-bottom: 8px;
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line); border-radius: 14px;
+    }
+    .dv2-insp-rank {
+      width: 26px; height: 26px; flex-shrink: 0;
+      border-radius: 50%; background: var(--dv2-blue-50); color: var(--dv2-blue-d);
+      display: grid; place-items: center; font-weight: 800; font-size: 13px;
+    }
+    .dv2-insp-info { flex: 1; min-width: 0; }
+    .dv2-insp-name { font-weight: 800; font-size: 14px; color: var(--dv2-ink); letter-spacing: -0.2px; }
+    .dv2-insp-tags { font-size: 11px; color: var(--dv2-ink2); margin-top: 2px; }
+    .dv2-insp-gbtn {
+      flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
+      background: var(--dv2-blue); color: #fff; text-decoration: none;
+      font-size: 12px; font-weight: 800; padding: 8px 11px; border-radius: 10px;
+      white-space: nowrap;
+    }
+    .dv2-insp-gbtn svg { width: 13px; height: 13px; }
+    .dv2-insp-disclaimer {
+      font-size: 11px; color: var(--dv2-ink2); line-height: 1.5;
+      margin-top: 14px; text-align: center;
     }
 
     /* ─── Handicap (Accessible Parking Permit) card ─── */
@@ -6897,6 +6959,14 @@
           <div class="dv2-svc-tile-name">Handicap Permit</div>
           <div class="dv2-svc-tile-desc">Accessible parking</div>
         </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('inspect')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(31,171,107,0.12); color: var(--dv2-green);">
+            <!-- Inspection / shield-check icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Car Inspection</div>
+          <div class="dv2-svc-tile-desc">Safety &amp; pre-purchase</div>
+        </button>
       </div>
 
       <!-- V2 back button (visible only inside a service detail) -->
@@ -7420,6 +7490,44 @@
           <div class="dv2-hc-pay-note">Secure payment via Stripe · No subscription · One-time fee · Refunded if your application is rejected by ServiceOntario</div>
         </div>
 
+      </div>
+
+      <!-- ============================================================
+           Car Safety & Pre-Purchase Inspection — shop directory.
+           Featured: Azcan Auto. Others link to live Google ratings.
+      ============================================================ -->
+      <div class="card svc-card" id="svc-inspect"
+           data-search="car safety inspection pre-purchase prepurchase mechanic buy sell vehicle azcan certified mvis">
+        <div class="card-title">🛡️ Car Safety &amp; Pre-Purchase Inspection</div>
+        <div class="card-subtitle">Buying or selling a car? Get it inspected first. Trusted Toronto shops, ranked.</div>
+
+        <div class="dv2-insp-intro">
+          <b>Pre-purchase inspection</b> = a licensed mechanic checks a used car <i>before you buy it</i> — engine, frame, brakes, rust, accident history — so you don't inherit someone else's $4,000 problem. A <b>Safety Standards Certificate (MVIS)</b> is the official inspection required to <i>transfer ownership</i> when you buy or sell in Ontario. Both are worth it. Book one below.
+        </div>
+
+        <!-- Featured: Azcan Auto -->
+        <div class="dv2-insp-featured">
+          <span class="dv2-insp-badge">★ DRIVEE PARTNER</span>
+          <h3>Azcan Auto</h3>
+          <p>Pre-purchase inspections + Ontario Safety Standards Certificates. Honest reports, fast turnaround — Drivee's recommended shop for buying or selling.</p>
+          <div class="dv2-insp-actions">
+            <a class="dv2-insp-fbtn call" href="tel:+14160000000" id="azcan-call">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Book by phone
+            </a>
+            <a class="dv2-insp-fbtn maps" href="https://www.google.com/maps/search/?api=1&query=Azcan+Auto+Toronto" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              View on Google ★
+            </a>
+          </div>
+        </div>
+
+        <!-- Other shops — each links to its live Google rating + call/directions -->
+        <div id="dv2-insp-list"></div>
+
+        <div class="dv2-insp-disclaimer">
+          Drivee lists these shops as a convenience and earns nothing from the rankings (Azcan Auto is our featured partner). Ratings &amp; reviews open live on Google. Always confirm price &amp; availability when you call.
+        </div>
       </div>
 
     </section>
@@ -8683,9 +8791,46 @@
       var svc = document.getElementById('tab-services');
       if (!svc) return;
       svc.dataset.svcActive = key;
+      if (key === 'inspect') dvRenderInspectShops();
       // Smooth scroll the tab content to top so the panel header is visible
       try { svc.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Real Toronto safety / pre-purchase inspection shops. Ratings are NOT
+    // hardcoded — each row links to live Google so the number is always current.
+    var DV_INSPECT_SHOPS = [
+      { name: 'Downtown Auto Centre', tags: 'Safety certificates · pre-purchase · diagnostics' },
+      { name: 'Yonge Steeles Auto Service', tags: 'MVIS safety · used-car inspections' },
+      { name: 'Active Green + Ross', tags: 'Multi-location · safety inspections · tires' },
+      { name: 'Kennedy Auto Service', tags: 'Pre-purchase checks · safety certificates' },
+      { name: 'Eglinton Auto Service', tags: 'Used-vehicle inspections · MVIS' },
+      { name: 'Dufferin Auto Service', tags: 'Safety standards · brake & frame checks' },
+      { name: 'Midas Toronto', tags: 'Nationwide chain · safety inspections' },
+      { name: 'Canadian Tire Auto Service', tags: 'Many locations · safety certificates' },
+      { name: 'Mr. Lube + Tires', tags: 'Quick inspections · multi-location' },
+      { name: 'Leslieville Garage', tags: 'Independent · pre-purchase inspections' }
+    ];
+    function dvRenderInspectShops() {
+      var box = document.getElementById('dv2-insp-list');
+      if (!box || box.dataset.rendered === '1') return;
+      var mapsSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+      var html = '';
+      DV_INSPECT_SHOPS.forEach(function(s, i) {
+        var q = encodeURIComponent(s.name + ' Toronto');
+        html +=
+          '<div class="dv2-insp-row">' +
+            '<div class="dv2-insp-rank">' + (i + 2) + '</div>' +
+            '<div class="dv2-insp-info">' +
+              '<div class="dv2-insp-name">' + s.name + '</div>' +
+              '<div class="dv2-insp-tags">' + s.tags + '</div>' +
+            '</div>' +
+            '<a class="dv2-insp-gbtn" href="https://www.google.com/maps/search/?api=1&query=' + q + '" target="_blank" rel="noopener">' +
+              mapsSvg + 'Google ★</a>' +
+          '</div>';
+      });
+      box.innerHTML = html;
+      box.dataset.rendered = '1';
     }
     function dv2SvcGrid() {
       var svc = document.getElementById('tab-services');
