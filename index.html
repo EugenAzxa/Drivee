@@ -6999,7 +6999,7 @@
             <div class="dv2-quick-name">Parking</div>
             <div class="dv2-quick-sub">FREE SPOTS</div>
           </button>
-          <button class="dv2-quick" onclick="showTab('tab-services')">
+          <button class="dv2-quick" onclick="dvOpenCalculator()">
             <div class="dv2-quick-ic" style="background: var(--dv2-sand); color: var(--dv2-amber);">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
@@ -9345,6 +9345,18 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    // Quick-action "Calculator" → open Services in grid mode and scroll straight
+    // to the always-visible True Cost Calculator card (#svc-cost).
+    function dvOpenCalculator() {
+      if (typeof showTab === 'function') showTab('tab-services');
+      var svc = document.getElementById('tab-services');
+      if (svc) delete svc.dataset.svcActive; // ensure grid mode so #svc-cost shows
+      setTimeout(function() {
+        var card = document.getElementById('svc-cost');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
+
     // Plays the reveal stagger + VIN scan each time the guide opens.
     function dvOpenBuyGuide() {
       var card = document.getElementById('svc-buyguide');
@@ -9527,11 +9539,13 @@
 
         // Two CARTO tile themes — Voyager (day) + Dark Matter (night). Toggle via control.
         var tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+        // Use explicit @2x retina tiles + detectRetina so phones (high-DPI
+        // screens) get sharp tiles instead of a stretched, pixelated basemap.
         lightTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-          subdomains: 'abcd', maxZoom: 20, attribution: tileAttribution
+          subdomains: 'abcd', maxZoom: 20, detectRetina: true, attribution: tileAttribution
         });
         darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png', {
-          subdomains: 'abcd', maxZoom: 20, attribution: tileAttribution
+          subdomains: 'abcd', maxZoom: 20, detectRetina: true, attribution: tileAttribution
         });
         var savedTheme = safeGet(MAP_THEME_KEY) || 'light';
         (savedTheme === 'dark' ? darkTileLayer : lightTileLayer).addTo(driveeMap);
@@ -10973,11 +10987,17 @@
         popupAnchor: [0, -18]
       });
 
+      // Photo: hide gracefully if the file is missing (onerror removes it).
       var photoHtml = report.photo
-        ? '<br><img src="' + report.photo + '" style="width:160px;border-radius:8px;margin-top:6px;display:block">'
+        ? '<br><img src="' + report.photo + '" onerror="this.style.display=\'none\'" style="width:160px;border-radius:8px;margin-top:6px;display:block">'
+        : '';
+      // Sample reports get a clear grey tag so users never mistake them for live ones.
+      var sampleTag = report.sample
+        ? '<span style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;background:#E6E8EE;color:#6b7280;padding:2px 6px;border-radius:5px;margin-bottom:4px">SAMPLE</span><br>'
         : '';
       var marker = L.marker([report.lat, report.lng], { icon: icon })
         .bindPopup(
+          sampleTag +
           '<strong>' + report.label + '</strong><br>' +
           report.date +
           (report.desc ? '<br><span style="color:#666">' + report.desc + '</span>' : '') +
@@ -11018,10 +11038,35 @@
       // Supabase cleanup handled server-side only (no client DELETE)
     }
 
+    // ── SAMPLE community reports ──────────────────────────────────────────
+    // Demo pins so the map + reports list aren't empty for first users. They
+    // are CLEARLY tagged "SAMPLE", kept entirely separate from real reports
+    // (never saved to localStorage/Supabase, never deletable), and spread
+    // across downtown Toronto. Photos live in /sample-reports/; if a file is
+    // missing the pin still shows with its emoji.
+    var DV_SAMPLE_REPORTS = [
+      { id: 'sample-pothole', type: 'pothole', label: 'Pothole', sample: true,
+        date: 'Sample', desc: 'Deep pothole in the right lane — damages tires.',
+        lat: 43.6516, lng: -79.3790, photo: '/sample-reports/pothole.jpg' },
+      { id: 'sample-meter', type: 'meter', label: 'Parking meter not working', sample: true,
+        date: 'Sample', desc: 'Pay machine rejects cards and coins.',
+        lat: 43.6548, lng: -79.3860, photo: '/sample-reports/meter.jpg' },
+      { id: 'sample-road', type: 'sign', label: 'Road damage', sample: true,
+        date: 'Sample', desc: 'Cracked, uneven pavement near the curb.',
+        lat: 43.6490, lng: -79.3820, photo: '/sample-reports/road-damage.jpg' },
+      { id: 'sample-sign', type: 'sign', label: 'Faded / hidden sign', sample: true,
+        date: 'Sample', desc: 'Parking sign faded — rules unreadable.',
+        lat: 43.6570, lng: -79.3805, photo: '/sample-reports/faded-sign.jpg' }
+    ];
+    function drawSampleReports() {
+      DV_SAMPLE_REPORTS.forEach(function(r) { dropReportPin(r); });
+    }
+
     // Loads all saved reports from localStorage and draws pins on the map.
     // Called once after the map is ready.
     function loadReportsOnMap() {
       purgeOldReports(); // clean up old reports first
+      drawSampleReports(); // demo pins first (clearly tagged, not user data)
       var reports = safeGet(REPORTS_KEY) || [];
       reports.forEach(function(r) { dropReportPin(r); });
       renderReportCount();
@@ -11041,21 +11086,40 @@
       var list = document.getElementById('reports-list');
       if (!list) return;
       var reports = safeGet(REPORTS_KEY) || [];
-      if (!reports.length) { list.innerHTML = ''; return; }
+      // Note: we no longer early-return on zero reports — the SAMPLE examples
+      // below always render so first users see what a report looks like.
 
-      list.innerHTML =
-        '<div class="divider"></div>' +
-        reports.slice().reverse().map(function(r) {
-          return (
-            '<div class="reminder-card">' +
-              '<div class="reminder-info">' +
-                '<div class="reminder-ref">' + esc(r.label) + '</div>' +
-                '<div class="reminder-due">' + esc(r.date) + (r.desc ? ' · ' + esc(r.desc) : '') + '</div>' +
+      // Real user reports (deletable).
+      var realHtml = reports.slice().reverse().map(function(r) {
+        return (
+          '<div class="reminder-card">' +
+            '<div class="reminder-info">' +
+              '<div class="reminder-ref">' + esc(r.label) + '</div>' +
+              '<div class="reminder-due">' + esc(r.date) + (r.desc ? ' · ' + esc(r.desc) : '') + '</div>' +
+            '</div>' +
+            '<button class="reminder-delete" onclick="deleteReport(\'' + r.id + '\')" title="Delete report">&times;</button>' +
+          '</div>'
+        );
+      }).join('');
+
+      // Sample reports (clearly tagged, no delete — they're examples, not data).
+      var sampleHtml = DV_SAMPLE_REPORTS.map(function(r) {
+        return (
+          '<div class="reminder-card" style="opacity:0.92">' +
+            '<div class="reminder-info">' +
+              '<div class="reminder-ref">' +
+                '<span style="font-size:9px;font-weight:800;letter-spacing:1px;background:#E6E8EE;color:#6b7280;padding:2px 6px;border-radius:5px;margin-right:6px">SAMPLE</span>' +
+                esc(r.label) +
               '</div>' +
-              '<button class="reminder-delete" onclick="deleteReport(\'' + r.id + '\')" title="Delete report">&times;</button>' +
-            '</div>'
-          );
-        }).join('');
+              '<div class="reminder-due">' + esc(r.desc) + '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      var sampleHeader = '<div style="font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--text-tertiary,#999);text-transform:uppercase;margin:14px 0 8px">Examples — what reports look like</div>';
+
+      list.innerHTML = '<div class="divider"></div>' + realHtml + sampleHeader + sampleHtml;
     }
 
     // Deletes a single report from localStorage and re-renders the list.
