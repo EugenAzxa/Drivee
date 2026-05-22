@@ -5353,6 +5353,10 @@
       margin-top: 6px;
       line-height: 1.45;
     }
+    /* Reminders live behind the hero bell now, not on the dashboard.
+       Hide #reminders-card by default; only show it inside the focused view. */
+    .design-v2 #tab-dashboard #reminders-card { display: none; }
+
     /* When reminders-active, hide everything except the back button, heading, and #reminders-card */
     .design-v2 #tab-dashboard[data-reminders-active] > *:not(.dv2-rem-back):not(.dv2-rem-heading):not(#reminders-card) {
       display: none !important;
@@ -6818,17 +6822,11 @@
         </button>
       </div>
 
-      <!-- Open reminders (sand) -->
-      <div class="dv2-tab-hero dv2-section dv2-section-sand" id="dv2-reminders-section">
-        <span class="dv2-eyebrow">Deadlines · stay ahead</span>
-        <div class="dv2-section-head">
-          <span class="dv2-section-h">Open reminders</span>
-          <button class="dv2-section-more" id="dv2-rem-see-all" onclick="dv2OpenAllReminders()">SEE ALL · 0</button>
-        </div>
-        <div id="dv2-reminders-list" class="dv2-reminders-list">
-          <div class="dv2-rem-empty">You're all clear. No outstanding tickets — nice driving.</div>
-        </div>
-      </div>
+      <!-- Open reminders moved off the dashboard — now opened via the hero
+           bell (dv2OpenReminders → full "All reminders" focused view).
+           A hidden #dv2-rem-see-all stub remains so legacy count-update code
+           that targets it never throws. -->
+      <button id="dv2-rem-see-all" onclick="dv2OpenAllReminders()" hidden aria-hidden="true"></button>
 
       <!-- Quick actions (sky) -->
       <div class="dv2-tab-hero dv2-section dv2-section-sky">
