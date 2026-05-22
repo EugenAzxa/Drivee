@@ -11335,8 +11335,9 @@
         }
       }
       if (dv2Bell) {
-        // Show count of ALL active reminders (overdue + upcoming) so the bell
-        // is informative whenever there's something to look at, not only emergencies.
+        // Show count of ALL active reminders (overdue + upcoming). Only show the
+        // badge when there's something to see; the bell itself stays tappable at
+        // zero and opens the (empty-state) reminders view.
         var activeCount = reminders.length;
         if (activeCount > 0) {
           dv2Bell.textContent = activeCount > 9 ? '9+' : activeCount;
@@ -11345,6 +11346,15 @@
           dv2Bell.style.background = overdue > 0 ? 'var(--dv2-red)' : '#FF8C42';
         } else {
           dv2Bell.style.display = 'none';
+        }
+        // Keep the bell button's aria/title in sync with the real count.
+        var bellBtn = dv2Bell.closest('button');
+        if (bellBtn) {
+          var lbl = activeCount === 0 ? 'No reminders yet'
+                  : activeCount + ' reminder' + (activeCount === 1 ? '' : 's')
+                    + (overdue > 0 ? ' · ' + overdue + ' overdue' : '');
+          bellBtn.title = lbl;
+          bellBtn.setAttribute('aria-label', lbl);
         }
       }
 
@@ -11454,6 +11464,9 @@
       var dash = document.getElementById('tab-dashboard');
       if (!dash) return;
       dash.dataset.remindersActive = 'true';
+      // Make sure the list reflects current data, then update the heading counts.
+      if (typeof renderReminders === 'function') renderReminders();
+      dv2UpdateRemindersHeading();
       try { dash.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
       // Scroll the reminders card into view after the layout swap
@@ -11461,6 +11474,30 @@
         var card = document.getElementById('reminders-card');
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
+    }
+
+    // Fills the "All your reminders" heading with live numbers.
+    function dv2UpdateRemindersHeading() {
+      var subEl = document.querySelector('.dv2-rem-h-sub');
+      if (!subEl) return;
+      var reminders = (typeof safeGet === 'function' ? safeGet(REMINDERS_KEY) : null) || [];
+      if (reminders.length === 0) {
+        subEl.textContent = "No reminders yet — add one below so you never miss a deadline.";
+        return;
+      }
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var overdue = 0, dueToday = 0, upcoming = 0;
+      reminders.forEach(function(r) {
+        var d = (typeof parseLocalDate === 'function') ? parseLocalDate(r.dueDate) : new Date(r.dueDate);
+        d.setHours(0, 0, 0, 0);
+        if (d < today) overdue++; else if (d.getTime() === today.getTime()) dueToday++; else upcoming++;
+      });
+      var parts = [];
+      parts.push(reminders.length + ' total');
+      if (overdue > 0)  parts.push(overdue + ' overdue');
+      if (dueToday > 0) parts.push(dueToday + ' due today');
+      if (upcoming > 0) parts.push(upcoming + ' upcoming');
+      subEl.textContent = parts.join(' · ');
     }
     function dv2CloseAllReminders() {
       var dash = document.getElementById('tab-dashboard');
@@ -11526,21 +11563,17 @@
       }
     }
 
-    // ─── v2 bell tap → smooth-scroll to the visible reminders section + flash it ───
+    // ─── v2 bell tap → open the full "All reminders" focused view ───
+    // Previously this just scrolled to the inline section, which hides itself
+    // when empty — so at 0 reminders the bell appeared to do nothing. Opening
+    // the dedicated view always lands somewhere functional (it shows the
+    // "+ Add Reminder" button + empty state even with no reminders).
     function dv2OpenReminders() {
-      // Make sure we're on the dashboard tab first
-      if (typeof showTab === 'function') showTab('tab-dashboard');
-      // Find the reminders section (v2 sand block) — fall back to v1 reminders-card if not present
-      var target = document.getElementById('dv2-reminders-section')
-                || document.getElementById('reminders-card');
-      if (!target) return;
-      // Wait for tab switch to settle, then scroll
-      setTimeout(function() {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Brief highlight pulse so user clearly sees what the bell did
-        target.classList.add('dv2-flash');
-        setTimeout(function() { target.classList.remove('dv2-flash'); }, 1400);
-      }, 80);
+      if (typeof dv2OpenAllReminders === 'function') {
+        dv2OpenAllReminders();
+      } else if (typeof showTab === 'function') {
+        showTab('tab-dashboard');
+      }
     }
 
     // ─── v2 inline reminders (Open reminders section on dashboard) ───
