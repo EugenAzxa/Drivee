@@ -6429,6 +6429,7 @@
       <div class="profile-sheet-email" id="ps-email"></div>
       <div class="profile-sheet-row"><i class="fa-solid fa-car"></i><span id="ps-plate">No plate saved</span></div>
       <div class="profile-sheet-row"><i class="fa-solid fa-bell"></i><span id="ps-reminders">0 reminders</span></div>
+      <div class="profile-sheet-row"><i class="fa-solid fa-ticket"></i><span id="ps-scans">0 scanned tickets</span></div>
       <button class="profile-sheet-signout" onclick="signOutUser(); closeProfileSheet()">Sign Out</button>
     </div>
 
@@ -6473,6 +6474,17 @@
           <button class="btn btn-primary" style="flex:1" onclick="addCar()">Save Vehicle</button>
           <button class="btn btn-secondary" onclick="toggleAddCarForm()">Cancel</button>
         </div>
+      </div>
+
+      <!-- Scanned tickets — moved here from the dashboard. renderScanHistory()
+           targets these IDs, so the JS keeps working unchanged. -->
+      <div id="scan-history-card" hidden style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-weight:700;font-size:14px">🎫 Scanned Tickets</div>
+          <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px" onclick="safeSet('drivee_scans',[]);renderScanHistory()">Clear</button>
+        </div>
+        <div class="card-subtitle" style="margin-bottom:12px">Photos and extracted data from your scans</div>
+        <div id="scan-history-list"></div>
       </div>
     </div>
     <!-- Signed OUT view -->
@@ -7105,15 +7117,6 @@
 
 
       <!-- Scan History Card -->
-      <div class="card" id="scan-history-card" hidden>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-          <div class="card-title" style="margin-bottom:0">🎫 Scanned Tickets</div>
-          <button class="btn btn-secondary" style="padding:5px 10px;font-size:12px" onclick="safeSet('drivee_scans',[]);renderScanHistory()">Clear</button>
-        </div>
-        <div class="card-subtitle" style="margin-bottom:12px">Photos and extracted data from your scans</div>
-        <div id="scan-history-list"></div>
-      </div>
-
 
       <!-- Fine Reminders Card -->
       <div class="card" id="reminders-card">
@@ -13384,11 +13387,16 @@
         document.getElementById('ps-email').textContent     = email;
         document.getElementById('ps-plate').textContent     = plate || 'No plate saved';
         document.getElementById('ps-reminders').textContent = reminders + ' reminder' + (reminders === 1 ? '' : 's');
+        var scanCount = (safeGet(SCANS_KEY) || []).length;
+        var scanEl = document.getElementById('ps-scans');
+        if (scanEl) scanEl.textContent = scanCount + ' scanned ticket' + (scanCount === 1 ? '' : 's');
       } else {
         document.getElementById('ps-signed-in').style.display  = 'none';
         document.getElementById('ps-signed-out').style.display = 'block';
       }
       if (typeof dvRefreshNotifUI === 'function') dvRefreshNotifUI();
+      // Scans now live in the profile sheet — refresh the list each open.
+      if (typeof renderScanHistory === 'function') renderScanHistory();
       overlay.classList.add('open');
       sheet.classList.add('open');
     }
