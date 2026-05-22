@@ -1955,6 +1955,17 @@
       flex-shrink: 0;
       margin-top: 1px;
     }
+    /* Inline system-icon glyph shown in install steps so users recognise the
+       exact button to tap (Share box-with-arrow, Add-to-home-screen, 3-dot
+       menu, +). Inline SVG = sharp, no image files, no copyright concerns. */
+    .ob-glyph {
+      display: inline-flex; align-items: center; justify-content: center;
+      vertical-align: -5px; width: 22px; height: 22px;
+      border-radius: 6px; background: var(--blue);
+      color: #fff; margin: 0 3px; flex-shrink: 0;
+    }
+    .ob-glyph svg { width: 14px; height: 14px; }
+    .ob-glyph.plain { background: rgba(10,132,255,0.12); color: var(--blue); }
 
     /* Bottom navigation */
     .ob-bottom {
@@ -6539,16 +6550,24 @@
             </button>
           </div>
           <div class="ob-install-steps" id="ob-steps-ios">
-            <div class="ob-install-step"><div class="ob-step-num">1</div><div>Open this page in <strong>Safari</strong> (not Chrome)</div></div>
-            <div class="ob-install-step"><div class="ob-step-num">2</div><div>Tap the <strong>Share button</strong> at the bottom (box with arrow)</div></div>
-            <div class="ob-install-step"><div class="ob-step-num">3</div><div>Scroll down and tap <strong>"Add to Home Screen"</strong></div></div>
-            <div class="ob-install-step"><div class="ob-step-num">4</div><div>Tap <strong>Add</strong> — Drivee appears on your home screen!</div></div>
+            <div class="ob-install-step"><div class="ob-step-num">1</div><div>Open this page in <strong>Safari</strong>
+              <span class="ob-glyph plain" title="Safari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 10.5 10.5 8.5 15.5 13.5 13.5" fill="currentColor" stroke="none"/></svg></span>
+              (not Chrome)</div></div>
+            <div class="ob-install-step"><div class="ob-step-num">2</div><div>Tap the <strong>Share button</strong>
+              <span class="ob-glyph" title="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><polyline points="8 8 12 4 16 8"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg></span>
+              at the bottom of the screen</div></div>
+            <div class="ob-install-step"><div class="ob-step-num">3</div><div>Scroll down, tap <strong>"Add to Home Screen"</strong>
+              <span class="ob-glyph" title="Add to Home Screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span></div></div>
+            <div class="ob-install-step"><div class="ob-step-num">4</div><div>Tap <strong>Add</strong> (top right) — Drivee lands on your home screen! 🎉</div></div>
           </div>
           <div class="ob-install-steps" id="ob-steps-android" style="display:none">
             <div class="ob-install-step"><div class="ob-step-num">1</div><div>Open this page in <strong>Chrome</strong></div></div>
-            <div class="ob-install-step"><div class="ob-step-num">2</div><div>Tap the <strong>3-dot menu</strong> in the top right</div></div>
-            <div class="ob-install-step"><div class="ob-step-num">3</div><div>Tap <strong>"Add to Home screen"</strong></div></div>
-            <div class="ob-install-step"><div class="ob-step-num">4</div><div>Tap <strong>Add</strong> — Drivee is installed!</div></div>
+            <div class="ob-install-step"><div class="ob-step-num">2</div><div>Tap the <strong>menu</strong>
+              <span class="ob-glyph" title="Menu"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></span>
+              (3 dots, top right)</div></div>
+            <div class="ob-install-step"><div class="ob-step-num">3</div><div>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>
+              <span class="ob-glyph" title="Add to Home screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span></div></div>
+            <div class="ob-install-step"><div class="ob-step-num">4</div><div>Tap <strong>Add / Install</strong> — Drivee is installed! 🎉</div></div>
           </div>
         </div>
 
