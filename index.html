@@ -11046,17 +11046,17 @@
     // missing the pin still shows with its emoji.
     var DV_SAMPLE_REPORTS = [
       { id: 'sample-pothole', type: 'pothole', label: 'Pothole', sample: true,
-        date: 'Sample', desc: 'Deep pothole in the right lane — damages tires.',
-        lat: 43.6516, lng: -79.3790, photo: '/sample-reports/pothole.jpg' },
-      { id: 'sample-meter', type: 'meter', label: 'Parking meter not working', sample: true,
-        date: 'Sample', desc: 'Pay machine rejects cards and coins.',
-        lat: 43.6548, lng: -79.3860, photo: '/sample-reports/meter.jpg' },
-      { id: 'sample-road', type: 'sign', label: 'Road damage', sample: true,
-        date: 'Sample', desc: 'Cracked, uneven pavement near the curb.',
-        lat: 43.6490, lng: -79.3820, photo: '/sample-reports/road-damage.jpg' },
-      { id: 'sample-sign', type: 'sign', label: 'Faded / hidden sign', sample: true,
-        date: 'Sample', desc: 'Parking sign faded — rules unreadable.',
-        lat: 43.6570, lng: -79.3805, photo: '/sample-reports/faded-sign.jpg' }
+        date: 'Sample', desc: 'Large pothole in the road — Kingston Rd, east of Bellamy Rd.',
+        lat: 43.7305, lng: -79.2360, photo: '/sample-reports/pothole.jpg' },
+      { id: 'sample-road', type: 'pothole', label: 'Road damage / sinkhole', sample: true,
+        date: 'Sample', desc: 'Pavement collapsed into a hole — downtown.',
+        lat: 43.6510, lng: -79.3790, photo: '/sample-reports/road-damage.jpg' },
+      { id: 'sample-light', type: 'sign', label: 'Traffic light stuck', sample: true,
+        date: 'Sample', desc: 'Signal stuck on red — Yonge St underpass, downtown.',
+        lat: 43.6480, lng: -79.3800, photo: '/sample-reports/traffic-light.jpg' },
+      { id: 'sample-closure', type: 'sign', label: 'Road closure / construction', sample: true,
+        date: 'Sample', desc: 'Lane dug up for repairs — Finch area.',
+        lat: 43.7800, lng: -79.3500, photo: '/sample-reports/road-closure.jpg' }
     ];
     function drawSampleReports() {
       DV_SAMPLE_REPORTS.forEach(function(r) { dropReportPin(r); });

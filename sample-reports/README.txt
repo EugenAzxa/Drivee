@@ -3,10 +3,10 @@ Drivee — Sample community-report photos
 
 Drop FOUR photos in this folder with these EXACT names (lowercase, .jpg):
 
-  pothole.jpg        A pothole in the road
-  meter.jpg          A broken / out-of-order parking meter or pay machine
-  road-damage.jpg    Cracked or damaged pavement
-  faded-sign.jpg     A faded or hard-to-read parking sign
+  pothole.jpg         The pothole on Kingston Rd, east of Bellamy Rd
+  road-damage.jpg     The collapsed-pavement / sinkhole photo (downtown)
+  traffic-light.jpg   The stuck traffic light at the Yonge St underpass (downtown)
+  road-closure.jpg    The road-closure / construction dig photo (Finch area)
 
 Guidelines:
 - Use your own photos or royalty-free images (you own the rights).
