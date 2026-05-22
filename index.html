@@ -9640,6 +9640,7 @@
     // Synthetic intensity: distance-falloff from known enforcement hotspots.
     // ─────────────────────────────────────────────
     var DENSITY_HOTSPOTS = [
+      // ── Downtown core (highest enforcement) ──
       { lat: 43.6447, lng: -79.4012, w: 5.0 }, // King & Bathurst
       { lat: 43.6562, lng: -79.3805, w: 5.0 }, // Yonge & Dundas
       { lat: 43.6700, lng: -79.3886, w: 4.0 }, // Bay & Bloor
@@ -9647,7 +9648,32 @@
       { lat: 43.6515, lng: -79.3729, w: 3.5 }, // Adelaide & Yonge
       { lat: 43.6488, lng: -79.3960, w: 3.0 }, // Queen W & Spadina
       { lat: 43.6595, lng: -79.3717, w: 3.0 }, // Dundas E & Sherbourne
-      { lat: 43.6585, lng: -79.4006, w: 2.5 }  // College & Spadina
+      { lat: 43.6585, lng: -79.4006, w: 2.5 }, // College & Spadina
+      // ── Midtown / uptown Yonge corridor ──
+      { lat: 43.6726, lng: -79.3957, w: 3.0 }, // Yonge & Wellesley / The Annex edge
+      { lat: 43.6850, lng: -79.3995, w: 2.8 }, // Yonge & St Clair
+      { lat: 43.7045, lng: -79.3980, w: 2.8 }, // Yonge & Eglinton
+      { lat: 43.7256, lng: -79.4115, w: 2.2 }, // Yonge & Lawrence
+      { lat: 43.7615, lng: -79.4111, w: 2.6 }, // North York Centre (Yonge & Sheppard)
+      { lat: 43.7800, lng: -79.4150, w: 2.0 }, // Yonge & Finch
+      // ── West end ──
+      { lat: 43.6390, lng: -79.4205, w: 2.8 }, // Liberty Village / King W
+      { lat: 43.6490, lng: -79.4490, w: 2.2 }, // Roncesvalles / Parkdale
+      { lat: 43.6650, lng: -79.4360, w: 2.0 }, // Bloor & Dufferin
+      { lat: 43.6530, lng: -79.5100, w: 1.8 }, // The Queensway / Etobicoke
+      { lat: 43.6205, lng: -79.5130, w: 1.6 }, // Mimico / Lakeshore W
+      // ── East end ──
+      { lat: 43.6680, lng: -79.3520, w: 2.2 }, // Riverdale / Broadview
+      { lat: 43.6710, lng: -79.3270, w: 2.0 }, // Danforth & Greektown
+      { lat: 43.6710, lng: -79.2980, w: 1.8 }, // The Beaches (Queen E)
+      { lat: 43.6925, lng: -79.2870, w: 1.6 }, // Main & Danforth (GO)
+      // ── Scarborough ──
+      { lat: 43.7755, lng: -79.2575, w: 2.0 }, // Scarborough Town Centre
+      { lat: 43.7250, lng: -79.2300, w: 1.6 }, // Kingston Rd / Eglinton E
+      // ── North / northwest ──
+      { lat: 43.7560, lng: -79.4480, w: 1.8 }, // Yorkdale / Lawrence Heights
+      { lat: 43.7180, lng: -79.4640, w: 1.6 }, // Eglinton W / York
+      { lat: 43.7470, lng: -79.5290, w: 1.5 }  // Jane & Finch / Emery
     ];
 
     function densityIntensityAt(lat, lng) {
@@ -9680,10 +9706,12 @@
     function drawTicketDensityHeatmap() {
       if (!driveeMap || !ticketDensityLayer) return;
       ticketDensityLayer.clearLayers();
-      // Downtown bounds
-      var SOUTH = 43.633, NORTH = 43.690;
-      var WEST  = -79.428, EAST = -79.348;
-      var STEP  = 0.0035; // ~390m cells — fine enough to look like parcels, coarse enough to render fast
+      // City-wide bounds (Etobicoke → Scarborough, lakeshore → north of 401).
+      var SOUTH = 43.585, NORTH = 43.815;
+      var WEST  = -79.620, EAST = -79.130;
+      var STEP  = 0.006; // ~670m cells — coarser than downtown-only so the
+                         // city-wide grid still renders fast (low cells are
+                         // skipped by densityColor, so empty areas cost nothing)
       for (var lat = SOUTH; lat < NORTH; lat += STEP) {
         for (var lng = WEST; lng < EAST; lng += STEP) {
           var intensity = densityIntensityAt(lat + STEP/2, lng + STEP/2);
