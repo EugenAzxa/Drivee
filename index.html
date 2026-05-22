@@ -3617,10 +3617,18 @@
     }
 
     /* ─── v2 bottom nav (pill-btn) ─── */
+    /* White nav panel. The safe-area-inset-bottom is moved OFF the outer wrap
+       (where it rendered as a big empty white strip below the buttons) and
+       handled here so the white hugs the buttons with only a small home-bar
+       cushion — no large empty gap. */
     .design-v2 #bottom-nav-wrap {
       background: var(--dv2-paper);
       border-top: 1px solid var(--dv2-line);
       box-shadow: 0 -10px 24px -16px rgba(14,27,61,0.10);
+      padding-bottom: 0 !important;
+    }
+    .design-v2 #bottom-nav-inner {
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
     }
     .design-v2 #nav-pill {
       background: var(--dv2-paper);
@@ -5324,8 +5332,11 @@
       font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
       color: var(--dv2-blue-d);
       cursor: pointer;
-      margin: calc(env(safe-area-inset-top, 0px) + 14px) 0 14px 0;
+      /* Clear the iPhone status bar / Dynamic Island. 56px gives the button
+         room below the island so the label is never clipped to "Back to". */
+      margin: calc(env(safe-area-inset-top, 0px) + 56px) 0 14px 0;
       transition: background 0.15s;
+      position: relative; z-index: 2;
     }
     .design-v2 #tab-dashboard[data-scan-active] .dv2-scan-back:hover,
     .design-v2 #tab-dashboard[data-reminders-active] .dv2-rem-back:hover {
@@ -5498,8 +5509,11 @@
       font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
       color: var(--dv2-blue-d);
       cursor: pointer;
-      margin: calc(env(safe-area-inset-top, 0px) + 14px) 0 14px 0;
+      /* Clear the iPhone status bar / Dynamic Island. 56px gives the button
+         room below the island so the label is never clipped to "Back to". */
+      margin: calc(env(safe-area-inset-top, 0px) + 56px) 0 14px 0;
       transition: background 0.15s;
+      position: relative; z-index: 2;
     }
     .design-v2 #tab-guide[data-install-active] .dv2-install-back:hover {
       background: var(--dv2-blue-50);
@@ -11895,19 +11909,23 @@
           uid: (typeof _dvUserId === 'function') ? _dvUserId() : null
         }).then(function(res) {
           if (res && res.error) {
-            // 23505 = duplicate key (already saved) — that's fine
+            // 23505 = duplicate key (already saved) — that's fine, reminders work.
             if (res.error.code === '23505') {
               showToast('🔔 Reminders are on');
             } else {
-              showToast('Save failed: ' + (res.error.message || res.error.code || 'unknown'));
-              console.warn('Drivee push save error:', res.error);
+              // Any other DB error here (e.g. row-level-security on the
+              // push_subscriptions table) is a BACKGROUND save the user never
+              // triggered. Notifications still fire locally, so fail quietly —
+              // log it for us, but never alarm the user with a scary toast.
+              console.warn('Drivee push save error (silent):', res.error);
             }
           } else {
             showToast('🔔 Reminders on — saved to your account');
           }
           dvRefreshNotifUI();
         }, function(err) {
-          showToast('Save error: ' + (err && err.message ? err.message : 'network'));
+          // Network/other failure on a background save — log only, stay silent.
+          console.warn('Drivee push save network error (silent):', err);
         });
       }).catch(function(err) {
         showToast('Push setup failed: ' + (err && err.message ? err.message : err));
