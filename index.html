@@ -1840,6 +1840,52 @@
     .ob-emoji-orange { background: rgba(245,158,11,0.1); }
     .ob-emoji-teal   { background: rgba(14,165,233,0.1); }
 
+    /* ── Entrance animation: replays each time a slide becomes .is-active ──
+       Icon pops in, title + description rise up (staggered). The icon then
+       gently floats so the screen feels alive. */
+    .ob-slide .ob-emoji-wrap,
+    .ob-slide .ob-title,
+    .ob-slide .ob-desc,
+    .ob-slide .ob-install-tabs,
+    .ob-slide .ob-install-steps { opacity: 0; }
+
+    .ob-slide.is-active .ob-emoji-wrap {
+      opacity: 0;
+      animation: obPop 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.05s forwards,
+                 obFloat 3.4s ease-in-out 0.75s infinite;
+    }
+    .ob-slide.is-active .ob-title {
+      opacity: 0; animation: obRise 0.5s cubic-bezier(0.22,1,0.36,1) 0.18s forwards;
+    }
+    .ob-slide.is-active .ob-desc {
+      opacity: 0; animation: obRise 0.5s cubic-bezier(0.22,1,0.36,1) 0.28s forwards;
+    }
+    .ob-slide.is-active .ob-install-tabs {
+      opacity: 0; animation: obRise 0.5s cubic-bezier(0.22,1,0.36,1) 0.36s forwards;
+    }
+    .ob-slide.is-active .ob-install-steps {
+      opacity: 0; animation: obRise 0.5s cubic-bezier(0.22,1,0.36,1) 0.44s forwards;
+    }
+    @keyframes obPop {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes obRise {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes obFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-7px) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ob-slide .ob-emoji-wrap,
+      .ob-slide .ob-title,
+      .ob-slide .ob-desc,
+      .ob-slide .ob-install-tabs,
+      .ob-slide .ob-install-steps { opacity: 1 !important; animation: none !important; }
+    }
+
     .ob-title {
       font-size: 26px;
       font-weight: 700;
@@ -15414,6 +15460,13 @@
       obCurrent = index;
       // Move slides
       document.getElementById('ob-slides').style.transform = 'translateX(-' + (index * 100) + '%)';
+
+      // Replay the entrance animation on the slide that just became active.
+      var slides = document.querySelectorAll('#ob-slides .ob-slide');
+      slides.forEach(function(s, i) {
+        s.classList.remove('is-active');
+        if (i === index) { void s.offsetWidth; /* reflow to restart anim */ s.classList.add('is-active'); }
+      });
 
       // Update progress segments
       for (var i = 0; i < obTotal; i++) {
