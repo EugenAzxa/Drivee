@@ -773,3 +773,140 @@ page. If the redirect does not fire on desktop, open browser DevTools,
 check the Console tab for errors, and search MDN sessionStorage to
 revisit how that storage layer works.
 
+
+SESSION 9 — 21-22 May 2026
+----------------------------
+
+WHAT WAS BUILT
+
+1. Car Safety and Pre-Purchase Inspection page added to Services. A new svc-inspect
+   card lists Toronto inspection shops. Azcan Auto is the featured partner block
+   (blue gradient card, white text) with a live Google reviews link, a price range
+   of 80 to 120 dollars for a full car inspection, a green 5 percent off with Drivee
+   pill, a call script that says to mention Drivee for the discount, and a real tap
+   to call number 647-781-1199. Ten other shops render below as rows that each link
+   to their live Google rating. The how to check the car button sits at the top of
+   this card.
+
+2. How to check a car yourself sub-page added. Opened by a button inside the
+   inspection card, it is its own focused view with a back button that returns to
+   the inspection list. It has a deep blue hero header, an animated VIN match demo
+   that types a VIN into a car row and a papers row with a blue scan line then a
+   green VIN matches confirmation, a colour-tinted six-card checklist (oil leaks,
+   odometer, pedals, body, tires and rust, test drive), a Carfax and UVIP history
+   callout, and a play-button card linking to a YouTube pre-purchase guide. All
+   animations replay each time the page opens.
+
+3. Tow page upgraded with real complaint and contact info. Two tap to call buttons
+   were added (locate a towed vehicle at 416-808-6600, complain about a tow truck
+   operator at the Toronto Licensing Commission 416-392-3000) plus a written
+   complaint box with the full Toronto Police Parking Enforcement East mailing
+   address and what to include.
+
+4. Refined editorial finish applied to the Dashboard (colours kept the same).
+   Section headings got a blue accent tick and tighter serif sizing, uppercase mono
+   eyebrows were added above section titles, hairline rules separate the colour
+   sections, and the hero plus sections now fade up in a staggered sequence on load
+   (respects prefers-reduced-motion). Scoped to the dashboard only so the rest of
+   the app was untouched for review.
+
+5. Dashboard decluttered around reminders and scans. Scanned Tickets history was
+   moved off the dashboard into the profile sheet (the profile summary now shows a
+   scanned tickets count). The hero bell was made fully functional: tapping it now
+   opens the full All Reminders focused view (works even at zero reminders) with a
+   live heading showing total, overdue, due today, and upcoming counts, and an
+   accurate badge and tooltip. The inline Open Reminders dashboard section and the
+   inline reminders card were then removed from the normal dashboard since reminders
+   live behind the bell now.
+
+ALSO THIS SESSION (tooling, not the app)
+
+- Installed two Claude Code skills into .claude/skills/. frontend-design (single
+  skill, from the official claude-code repo) and superpowers (14 dev-workflow skills
+  from obra/superpowers, installed skills-only with no hooks so the whole folder can
+  be deleted cleanly with one command). These do not change the Drivee app itself.
+
+
+ISSUES TO CARRY FORWARD
+
+- Nothing is broken in the app. The render functions for the removed dashboard
+  elements safely no-op because they check for the element before touching it.
+- The two new skills will not appear or auto-trigger until Claude Code is reloaded
+  or restarted. They are installed correctly, just not loaded into this session.
+- Deploy status uncertain. Most of today's work was captured by auto-save commits,
+  and one manual commit (6da2e5f) pushed the editorial dashboard and inspection and
+  tow work to origin earlier in the session. The very last changes (scans moved to
+  profile, the bell reminders rework, removing reminders from the dashboard) should
+  be confirmed pushed to origin next session so drivee.ca has them. The final service
+  worker cache name is drivee-v2-2026-05-22-reminders-off-dash.
+- Azcan Auto address was not provided, so the Google Maps link is a name search
+  (Azcan Auto Toronto) rather than an exact pin. If the owner gives an address next
+  session, swap it in. The Google star rating shown is a generic five-star link, not
+  the real live number, by design.
+- No real iPhone testing was done on any of today's changes.
+
+
+PRD NOTES
+
+- The Car Safety and Pre-Purchase Inspection page, the how to check a car guide,
+  and the partner shop directory are all brand new and not in the PRD at all. The
+  PRD Services tab (section 3.6 to 3.10) lists payment portals, street checker, tow
+  finder, dispute builder, and US links only. The inspection feature is a new Services
+  surface that should be added to the PRD next session.
+- The tow page contact and complaint info extends PRD section 3.8 (Vehicle Towed)
+  which only specified the find-towed-car link and a fee warning. The real phone
+  numbers and mailing address go beyond the spec and are an improvement.
+- Moving Fine Reminders behind the hero bell changes PRD section 3.4 placement. The
+  PRD shows reminders as a dashboard feature. They still exist and work, just reached
+  via the bell now. The PRD layout note should be updated.
+- Moving scan history into the profile sheet continues the Session 7 declutter
+  pattern (profile and vehicles already live in the sheet). Consistent direction.
+- PRD still says dark mode and React Vite TypeScript. The app remains light mode
+  vanilla single-file JS. This long-standing divergence is still unaddressed in the PRD.
+
+
+LESSON ARC — WHERE WE ARE
+
+Part 1 Foundation: COMPLETE
+Part 2 Functionality: COMPLETE
+Part 3 Polish: COMPLETE (ongoing refinement)
+Part 4 Test: IN PROGRESS (real device testing still pending)
+Part 5 Backend: COMPLETE
+Part 6 Launch: IN PROGRESS (live on drivee.ca)
+
+
+NEXT SESSION TASKS
+
+1. Confirm all of today's changes are pushed to origin and live on drivee.ca, then
+   hard-refresh and verify the editorial dashboard, the bell reminders flow, scans
+   in the profile sheet, and the inspection and tow pages on a real iPhone.
+2. Decide whether to roll the refined editorial finish out to Services, Map, and
+   Guide tabs to match the dashboard.
+3. Get Azcan Auto's exact address and swap it into the Google Maps link.
+4. Update the PRD to add the inspection feature, the reminders-behind-bell change,
+   and the long-standing light-mode vanilla-JS reality.
+
+
+HOMEWORK SET THIS SESSION
+
+A 15 to 20 minute task to verify the dashboard and bell changes yourself, on the
+live site, the way a real user would.
+
+1. Open drivee.ca on your iPhone in Safari and fully close and reopen it once so
+   the new service worker cache loads (the version is reminders-off-dash).
+2. Look at the dashboard. Confirm you see the uppercase grey eyebrow labels above
+   the section titles, the small blue tick beside each title, and that the sections
+   gently slide up when the dashboard first loads.
+3. Confirm the old Open Reminders block is gone from the dashboard body.
+4. Tap the bell icon in the top of the blue hero. Confirm it opens the All Reminders
+   view with a back button, and that the subtitle shows real counts.
+5. Add one reminder from that view, go back, tap the bell again, and confirm the
+   count in the heading went up and the bell badge appears.
+6. Open the profile sheet (tap the profile circle) and confirm Scanned Tickets now
+   lives inside the sheet, not on the dashboard.
+
+Write down anything that looks wrong or did not match the above and bring it next
+session. If the dashboard still looks like the old version, the cache did not
+refresh. Search safari clear website data iphone and clear it for drivee.ca, then
+reopen.
+
