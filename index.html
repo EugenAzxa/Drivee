@@ -6866,57 +6866,26 @@
         </div>
       </div>
 
-      <!-- HERO CARD — greeting + stats + auth -->
-      <div class="hero-card">
-        <div class="hero-top">
-          <div>
-            <div class="hero-greeting">Hello, <span id="hero-name">Driver</span> 👋</div>
-            <div class="hero-tagline">Your Canadian Ticket Shield</div>
-          </div>
-          <div class="hero-logo-badge" id="hero-vehicle-badge">🚗</div>
+      <!-- OLD hero card removed (May 2026 declutter): greeting, stats, and the
+           second sign-in button all duplicated the new blue dv2-hero at the top
+           and the profile sheet. Sign-in now lives in the hero bell/profile.
+           Hidden legacy nodes kept below so older JS that references them by id
+           never throws. -->
+      <div style="display:none" aria-hidden="true">
+        <span id="hero-name"></span>
+        <span id="hero-reminders"></span>
+        <span id="hero-reports"></span>
+        <div id="auth-signout-state"></div>
+        <div id="auth-signin-state">
+          <span id="auth-avatar"></span>
+          <span id="auth-user-name"></span>
+          <span id="auth-user-email"></span>
         </div>
-        <div class="hero-divider"></div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-num" id="hero-reminders">0</div>
-            <div class="hero-stat-label">Reminders</div>
-          </div>
-          <div class="hero-stat-sep"></div>
-          <div class="hero-stat">
-            <div class="hero-stat-num" id="hero-reports">0</div>
-            <div class="hero-stat-label">Reports</div>
-          </div>
-          <div class="hero-stat-sep"></div>
-          <div class="hero-stat">
-            <div class="hero-stat-num">311</div>
-            <div class="hero-stat-label">Emergency</div>
-          </div>
-        </div>
-        <div class="hero-divider" style="margin-top:14px"></div>
-        <!-- Auth embedded in hero -->
-        <div id="auth-signout-state" style="margin-top:12px">
-          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:8px">☁️ Sync across devices — free, no password, no spam</div>
-          <button type="button" class="auth-send-btn" style="width:100%"
-                  onclick="dvOpenAuth('Sync your reminders', 'Sign in to keep your tickets across devices. Google or a email code — no password.')">
-            Sign in / Create account
-          </button>
-          <!-- Hidden legacy nodes so older references never error -->
-          <input type="hidden" id="auth-email-input" />
-          <div class="auth-error" id="auth-email-error" style="display:none"></div>
-          <div class="auth-sent-msg" id="auth-sent-msg" style="display:none"></div>
-        </div>
-        <div id="auth-signin-state" style="display:none;margin-top:12px" class="auth-signed-in">
-          <div class="auth-avatar" id="auth-avatar">U</div>
-          <div class="auth-user-info">
-            <div class="auth-user-name" id="auth-user-name">User</div>
-            <div class="auth-user-email" id="auth-user-email"></div>
-          </div>
-          <button class="auth-signout" onclick="signOutUser()">Sign out</button>
-        </div>
+        <input type="hidden" id="auth-email-input" />
+        <div id="auth-email-error"></div>
+        <div id="auth-sent-msg"></div>
+        <div id="free-day-banner"></div>
       </div>
-
-      <!-- Is Parking Free Today? -->
-      <div id="free-day-banner" style="display:none;border-radius:14px;padding:14px 16px;margin-bottom:12px;font-size:13px;text-align:center"></div>
 
       <!-- Daily "Did You Know?" tip — viral-share-optimised -->
       <div id="daily-tip-card" class="dv2-tip-card" data-tip-index="0">
@@ -6939,20 +6908,13 @@
         <div id="weekly-tip-text" style="display:none"></div>
       </div>
 
-      <!-- BENTO STATS -->
-      <div class="bento-row">
-        <div class="bento-card">
-          <div class="bento-value muted" id="stat-fines">0</div>
-          <div class="bento-label">Active Fines</div>
-        </div>
-        <div class="bento-card">
-          <div class="bento-value blue" id="stat-deadlines">0</div>
-          <div class="bento-label">Deadlines</div>
-        </div>
-        <div class="bento-card">
-          <div class="bento-value green" id="stat-saved">$0</div>
-          <div class="bento-label">Total Saved</div>
-        </div>
+      <!-- BENTO STATS removed (May 2026 declutter): Active Fines + Deadlines
+           duplicate the blue hero's BALANCE OWED / ACTIVE count at the top.
+           Hidden stubs kept so dashboard render code can still set them safely. -->
+      <div style="display:none" aria-hidden="true">
+        <span id="stat-fines">0</span>
+        <span id="stat-deadlines">0</span>
+        <span id="stat-saved">$0</span>
       </div>
 
       <!-- Profile completion prompt — hidden when profile is complete -->
