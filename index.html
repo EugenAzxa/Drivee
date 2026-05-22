@@ -11475,6 +11475,30 @@
 
     // Updates the hero card stats: first name, reminder count, report count.
     // Called on load and whenever reminders or reports change.
+    // ── Home-screen icon red badge ──────────────────────────────────────
+    // Shows a number on the installed Drivee icon for reminders that need
+    // attention (overdue + due today). Uses the Badging API — supported on
+    // installed PWAs (Android Chrome, desktop, and iOS 16.4+ when installed).
+    // Silently does nothing where unsupported, so it never errors.
+    function dvUpdateAppBadge() {
+      try {
+        if (!('setAppBadge' in navigator)) return;
+        var reminders = (typeof safeGet === 'function' ? safeGet(REMINDERS_KEY) : null) || [];
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var needAttention = 0;
+        reminders.forEach(function(r) {
+          var d = (typeof parseLocalDate === 'function') ? parseLocalDate(r.dueDate) : new Date(r.dueDate);
+          d.setHours(0, 0, 0, 0);
+          if (d <= today) needAttention++; // overdue or due today
+        });
+        if (needAttention > 0) {
+          navigator.setAppBadge(needAttention).catch(function(){});
+        } else if ('clearAppBadge' in navigator) {
+          navigator.clearAppBadge().catch(function(){});
+        }
+      } catch (e) { /* unsupported — ignore */ }
+    }
+
     function updateHeroCard() {
       var p = safeGet(PROFILE_KEY);
       var heroName = document.getElementById('hero-name');
@@ -11506,6 +11530,9 @@
       var sd = document.getElementById('stat-deadlines');
       if (sf) sf.textContent = overdue;
       if (sd) sd.textContent = upcoming;
+
+      // Keep the home-screen icon badge in sync with reminders that need attention.
+      dvUpdateAppBadge();
 
       // ─── v2 hero (deep-blue Premium) sync — only updates if v2 markup exists ───
       var dv2Name  = document.getElementById('dv2-name');
