@@ -4249,6 +4249,7 @@
     .design-v2 #tab-services[data-svc-active="early"]    #svc-early,
     .design-v2 #tab-services[data-svc-active="handicap"] #svc-handicap,
     .design-v2 #tab-services[data-svc-active="inspect"]  #svc-inspect,
+    .design-v2 #tab-services[data-svc-active="antitheft"] #svc-antitheft,
     .design-v2 #tab-services[data-svc-active="buyguide"] #svc-buyguide {
       display: block !important;
     }
@@ -7402,6 +7403,14 @@
           <div class="dv2-svc-tile-name">Car Inspection</div>
           <div class="dv2-svc-tile-desc">Safety &amp; pre-purchase</div>
         </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('antitheft')">
+          <div class="dv2-svc-tile-icon" style="background: rgba(225,71,61,0.12); color: var(--dv2-red);">
+            <!-- Lock / anti-theft icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Anti-Theft</div>
+          <div class="dv2-svc-tile-desc">Stop car theft</div>
+        </button>
         <button class="dv2-svc-tile dv2-svc-tile-pro" onclick="dv2SvcShow('early')">
           <div class="dv2-svc-tile-icon" style="background: linear-gradient(135deg, #2E64FF 0%, #6B4EE0 100%); color: white;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
@@ -8140,6 +8149,107 @@
             <span class="dv2-vid-s">A short walkthrough of exactly what to check — on YouTube</span>
           </span>
         </a>
+      </div>
+
+      <!-- ============================================================
+           Car Anti-Theft — why it matters + how to protect + Azcan installs
+      ============================================================ -->
+      <div class="card svc-card" id="svc-antitheft"
+           data-search="anti theft antitheft car stolen steal protect tracker immobilizer faraday tag lock club gps insurance azcan">
+        <div class="card-title">🔒 Car Anti-Theft Protection</div>
+        <div class="card-subtitle">Toronto is a car-theft hotspot. Protect your vehicle before it's gone.</div>
+
+        <!-- Why it matters -->
+        <div class="dv2-insp-intro">
+          Auto theft has <b>exploded across the GTA</b> — thieves can clone a key fob or hijack a car in under a minute, especially newer keyless models. If your car is stolen it isn't just the loss of the vehicle: you face an insurance claim, a higher deductible, weeks without a car, and — for many drivers — a <b>permanently higher premium</b>. A few preventive layers make your car a harder, slower target so thieves move on.
+        </div>
+
+        <!-- What happens if your car gets stolen -->
+        <div class="dv2-step"><span class="dv2-step-n">!</span><span class="dv2-step-t">What happens if it's stolen</span></div>
+        <div class="dv2-chk-grid">
+          <div class="dv2-chk c6">
+            <div class="dv2-chk-ico">📈</div>
+            <div class="dv2-chk-name">Insurance goes up</div>
+            <div class="dv2-chk-desc">A theft claim can raise your premium for years, and some insurers now refuse certain high-theft models without a tracker.</div>
+          </div>
+          <div class="dv2-chk c5">
+            <div class="dv2-chk-ico">💸</div>
+            <div class="dv2-chk-name">Deductible + gap</div>
+            <div class="dv2-chk-desc">You pay your deductible, and a payout may not cover what you still owe on financing.</div>
+          </div>
+          <div class="dv2-chk c2">
+            <div class="dv2-chk-ico">⏳</div>
+            <div class="dv2-chk-name">Weeks without a car</div>
+            <div class="dv2-chk-desc">Claims, police reports and replacement can take weeks — often without a rental.</div>
+          </div>
+          <div class="dv2-chk c1">
+            <div class="dv2-chk-ico">🪪</div>
+            <div class="dv2-chk-name">Your data is exposed</div>
+            <div class="dv2-chk-desc">Ownership, garage-door openers and address details often sit inside the stolen car.</div>
+          </div>
+        </div>
+
+        <!-- How to protect -->
+        <div class="dv2-step" style="margin-top:18px"><span class="dv2-step-n">✓</span><span class="dv2-step-t">How to protect your car</span></div>
+        <div class="dv2-chk-grid">
+          <div class="dv2-chk c4">
+            <div class="dv2-chk-ico">📡</div>
+            <div class="dv2-chk-name">GPS tracker</div>
+            <div class="dv2-chk-desc">A hidden tracker helps police recover the car fast and can lower your premium.</div>
+          </div>
+          <div class="dv2-chk c2">
+            <div class="dv2-chk-ico">🛑</div>
+            <div class="dv2-chk-name">Immobilizer</div>
+            <div class="dv2-chk-desc">An aftermarket immobilizer blocks the engine from starting without a secret step.</div>
+          </div>
+          <div class="dv2-chk c3">
+            <div class="dv2-chk-ico">🔑</div>
+            <div class="dv2-chk-name">Faraday pouch</div>
+            <div class="dv2-chk-desc">Store your key fob in a signal-blocking pouch so it can't be cloned from your hallway.</div>
+          </div>
+          <div class="dv2-chk c5">
+            <div class="dv2-chk-ico">🔒</div>
+            <div class="dv2-chk-name">Wheel / OBD lock</div>
+            <div class="dv2-chk-desc">A visible steering lock or locked OBD port slows thieves down — most give up.</div>
+          </div>
+        </div>
+
+        <div class="dv2-records" style="margin-top:14px">
+          <b>Park smart too:</b> well-lit spots, driveway nose-in, and never leave the fob near the front door. A layered setup (tracker + immobilizer + fob pouch) is what insurers like to see — and what actually deters theft.
+        </div>
+
+        <!-- Featured installer: Azcan Auto -->
+        <div class="dv2-step" style="margin-top:18px"><span class="dv2-step-n">★</span><span class="dv2-step-t">Get it installed</span></div>
+        <div class="dv2-insp-featured">
+          <span class="dv2-insp-badge">★ DRIVEE PARTNER</span>
+          <h3>Azcan Auto</h3>
+          <p>Professional anti-theft installs — GPS trackers, aftermarket immobilizers, and OBD-port protection. They'll recommend the right setup for your specific car and how thieves target it.</p>
+
+          <a class="dv2-insp-reviews" href="https://www.google.com/maps/search/?api=1&query=Azcan+Auto+Toronto" target="_blank" rel="noopener">
+            <span class="g">Google</span>
+            <span class="stars">★★★★★</span>
+            <u>See reviews →</u>
+          </a>
+
+          <div class="dv2-insp-script">
+            📞 Call <b>(647) 781-1199</b> and say <b>"I'm calling from Drivee"</b> to get your <b>5% discount</b>.
+          </div>
+
+          <div class="dv2-insp-actions">
+            <a class="dv2-insp-fbtn call" href="tel:+16477811199">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              Book by phone
+            </a>
+            <a class="dv2-insp-fbtn maps" href="https://www.google.com/maps/search/?api=1&query=Azcan+Auto+Toronto" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              View on Google ★
+            </a>
+          </div>
+        </div>
+
+        <div class="dv2-insp-disclaimer">
+          Anti-theft devices reduce risk but cannot guarantee a car won't be stolen. Always confirm pricing and what insurers in your area accept when you call.
+        </div>
       </div>
 
     </section>
