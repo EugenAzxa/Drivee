@@ -4278,6 +4278,38 @@
       margin-top: 14px; text-align: center;
     }
 
+    /* ─── Tow page: quick-call + complaint info ─── */
+    .dv2-tow-calls { display: grid; gap: 8px; margin-top: 14px; }
+    .dv2-tow-call {
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      border-radius: 14px; padding: 12px 14px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .dv2-tow-call:active { transform: scale(0.98); }
+    .dv2-tow-call-ic {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 11px;
+      background: var(--dv2-blue-50); display: grid; place-items: center; font-size: 18px;
+    }
+    .dv2-tow-call-tx { flex: 1; min-width: 0; }
+    .dv2-tow-call-t { display: block; font-weight: 800; font-size: 13px; color: var(--dv2-ink); }
+    .dv2-tow-call-s { display: block; font-size: 12px; color: var(--dv2-blue-d); font-weight: 700; margin-top: 1px; }
+    .dv2-tow-info {
+      background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 14px; padding: 14px 16px; margin-top: 12px;
+    }
+    .dv2-tow-info-h {
+      font-weight: 800; font-size: 13px; color: var(--dv2-ink); margin-bottom: 8px;
+    }
+    .dv2-tow-info p { font-size: 12px; line-height: 1.55; color: var(--dv2-ink2); margin: 0 0 8px; }
+    .dv2-tow-info p:last-child { margin-bottom: 0; }
+    .dv2-tow-info b { color: var(--dv2-ink); font-weight: 800; }
+    .dv2-tow-addr {
+      font-size: 12px; line-height: 1.6; color: var(--dv2-ink);
+      background: #fff; border: 1px solid var(--dv2-line);
+      border-radius: 10px; padding: 11px 13px; margin: 0 0 8px;
+    }
+
     /* ─── "How to check a car before buying" guide ─── */
     /* Entry button (lives inside the inspect card, opens the sub-page) */
     .dv2-buy-cta {
@@ -7280,7 +7312,7 @@
       </div>
 
       <!-- Vehicle Towed -->
-      <div class="card svc-card" id="svc-tow" data-search="vehicle towed impound tow storage police">
+      <div class="card svc-card" id="svc-tow" data-search="vehicle towed impound tow storage police complaint tow truck location 416-808-6600 licensing commission">
         <div class="card-title">Vehicle Towed?</div>
         <div class="card-subtitle" style="color: var(--warning);">⚠️ Storage fees start at $75/day. Act fast.</div>
         <a class="btn-gov" href="https://www.tps.ca/services/towing/" target="_blank" rel="noopener">
@@ -7291,6 +7323,38 @@
           <span><span class="gov-icon">🏙️</span>Toronto Towing &amp; Impound Info</span>
           <span class="gov-arrow">›</span>
         </a>
+
+        <!-- Quick-call key tow numbers -->
+        <div class="dv2-tow-calls">
+          <a class="dv2-tow-call" href="tel:+14168086600">
+            <span class="dv2-tow-call-ic">📍</span>
+            <span class="dv2-tow-call-tx">
+              <span class="dv2-tow-call-t">Locate a towed vehicle</span>
+              <span class="dv2-tow-call-s">Toronto Police · 416-808-6600</span>
+            </span>
+          </a>
+          <a class="dv2-tow-call" href="tel:+14163923000">
+            <span class="dv2-tow-call-ic">⚖️</span>
+            <span class="dv2-tow-call-tx">
+              <span class="dv2-tow-call-t">Complaint about a tow truck operator</span>
+              <span class="dv2-tow-call-s">Toronto Licensing Commission · 416-392-3000</span>
+            </span>
+          </a>
+        </div>
+
+        <!-- Formal written complaint info -->
+        <div class="dv2-tow-info">
+          <div class="dv2-tow-info-h">📝 Complaints about the towing itself</div>
+          <p>Complaints regarding the towing of vehicles must be submitted <b>in writing</b> to:</p>
+          <div class="dv2-tow-addr">
+            <b>Toronto Police Service — Parking Enforcement East</b><br>
+            40 College Street<br>
+            Toronto ON, M5G 2J3<br>
+            Attention: Unit Commander, Parking Enforcement East<br>
+            Contract Services Section
+          </div>
+          <p>Include a copy of the tag or notice, the nature of the complaint, and any receipts.</p>
+        </div>
       </div>
 
       <!-- Dispute Script Builder -->
