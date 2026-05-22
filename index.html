@@ -5377,6 +5377,112 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
+       SIGN READER — "Scan a parking sign, can I park here?"
+       CTA lives on the enforcement (mint) card; the result opens as a
+       dedicated focused view, same pattern as scan / reminders.
+    ═══════════════════════════════════════════════════════════════ */
+    /* The CTA button on the enforcement card */
+    .dv2-sign-cta {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      margin-top: 12px; text-align: left; cursor: pointer; border: 0;
+      background: linear-gradient(135deg, #0E1B3D, #1A2F5C);
+      color: #fff; border-radius: 16px; padding: 14px 16px;
+      box-shadow: 0 14px 30px -16px rgba(14,27,61,0.55);
+      transition: transform 0.15s ease;
+    }
+    .dv2-sign-cta:active { transform: scale(0.985); }
+    .dv2-sign-cta-ic {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px;
+      background: rgba(255,255,255,0.12); display: grid; place-items: center;
+    }
+    .dv2-sign-cta-ic svg { width: 20px; height: 20px; }
+    .dv2-sign-cta-tx { flex: 1; min-width: 0; }
+    .dv2-sign-cta-t { display: block; font-weight: 800; font-size: 14px; letter-spacing: -0.2px; }
+    .dv2-sign-cta-s { display: block; font-size: 12px; color: rgba(255,255,255,0.78); margin-top: 2px; }
+    .dv2-sign-cta-arrow { flex-shrink: 0; opacity: 0.7; }
+    .dv2-sign-cta-arrow svg { width: 18px; height: 18px; }
+
+    /* Focused-view back button — matches the scan/reminders ones */
+    .dv2-sign-back { display: none !important; }
+    .design-v2 #tab-dashboard[data-sign-active] .dv2-sign-back {
+      display: inline-flex !important;
+      align-items: center; gap: 8px;
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      border-radius: 12px; padding: 10px 14px;
+      font-family: var(--dv2-font); font-weight: 700; font-size: 13px;
+      color: var(--dv2-blue-d); cursor: pointer;
+      margin: calc(env(safe-area-inset-top, 0px) + 56px) 0 14px 0;
+      transition: background 0.15s; position: relative; z-index: 2;
+    }
+    .design-v2 #tab-dashboard[data-sign-active] .dv2-sign-back:hover { background: var(--dv2-blue-50); }
+
+    /* The view itself — hidden until sign-active */
+    .dv2-sign-view { display: none; }
+    .design-v2 #tab-dashboard[data-sign-active] .dv2-sign-view { display: block; }
+    .design-v2 #tab-dashboard[data-sign-active] > *:not(.dv2-sign-back):not(.dv2-sign-view) {
+      display: none !important;
+    }
+    .dv2-sign-heading { padding: 4px 0 18px; }
+    .dv2-sign-eyebrow {
+      font-family: var(--dv2-mono); font-size: 10px; letter-spacing: 1.8px;
+      font-weight: 800; color: var(--dv2-blue-d); margin-bottom: 8px;
+    }
+    .dv2-sign-h-title {
+      font-family: var(--dv2-serif); font-size: 30px; font-weight: 700;
+      letter-spacing: -0.7px; color: var(--dv2-ink); margin: 0; line-height: 1.1;
+    }
+    /* Verdict card — colour set by verdict class */
+    .dv2-sign-verdict {
+      border-radius: 18px; padding: 20px; margin-bottom: 14px; color: #fff;
+    }
+    .dv2-sign-verdict.yes    { background: linear-gradient(135deg, #1a9a52, #14793f); }
+    .dv2-sign-verdict.no     { background: linear-gradient(135deg, #d6443c, #ad2f28); }
+    .dv2-sign-verdict.maybe  { background: linear-gradient(135deg, #E89B22, #c47e12); }
+    .dv2-sign-verdict-badge {
+      font-family: var(--dv2-mono); font-size: 10px; letter-spacing: 1.6px;
+      font-weight: 800; opacity: 0.85; margin-bottom: 8px;
+    }
+    .dv2-sign-verdict-head {
+      font-family: var(--dv2-serif); font-size: 24px; font-weight: 700;
+      letter-spacing: -0.4px; line-height: 1.15; margin-bottom: 8px;
+    }
+    .dv2-sign-verdict-why { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,0.92); }
+    /* "What the sign says" decoded card */
+    .dv2-sign-decode {
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
+      border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    }
+    .dv2-sign-decode-h {
+      font-weight: 800; font-size: 13px; color: var(--dv2-ink); margin-bottom: 8px;
+    }
+    .dv2-sign-decode-body { font-size: 13px; line-height: 1.55; color: var(--dv2-ink2); white-space: pre-line; }
+    /* Always-verify safety note */
+    .dv2-sign-safety {
+      background: rgba(232,155,34,0.10); border: 1px solid rgba(232,155,34,0.30);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;
+      font-size: 12px; line-height: 1.5; color: var(--dv2-ink);
+    }
+    .dv2-sign-safety b { font-weight: 800; }
+    /* Scan-again button */
+    .dv2-sign-again {
+      width: 100%; border: 0; cursor: pointer;
+      background: var(--dv2-blue); color: #fff;
+      border-radius: 14px; padding: 14px;
+      font-family: var(--dv2-font); font-weight: 800; font-size: 14px;
+    }
+    /* Loading + error states */
+    .dv2-sign-loading, .dv2-sign-error {
+      text-align: center; padding: 30px 16px; color: var(--dv2-ink2);
+      font-size: 14px; line-height: 1.5;
+    }
+    .dv2-sign-loading .dv2-sign-spin {
+      display: inline-block; width: 30px; height: 30px; margin-bottom: 12px;
+      border: 3px solid var(--dv2-blue-50); border-top-color: var(--dv2-blue);
+      border-radius: 50%; animation: dvSignSpin 0.8s linear infinite;
+    }
+    @keyframes dvSignSpin { to { transform: rotate(360deg); } }
+
+    /* ═══════════════════════════════════════════════════════════════
        INSTALL — Add Drivee to home screen (Guide tab focused view)
        Same focused-view pattern as scan / reminders: a data attribute
        on #tab-guide reveals the install instructions and hides the rest.
@@ -6758,6 +6864,21 @@
         Back to dashboard
       </button>
 
+      <!-- Sign-scan back button (only visible in dedicated sign-scan mode) -->
+      <button class="dv2-sign-back" type="button" onclick="dvCloseSign()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to dashboard
+      </button>
+
+      <!-- Sign-scan focused view: the parking-sign verdict renders here -->
+      <div class="dv2-sign-view" id="dv2-sign-view">
+        <div class="dv2-sign-heading">
+          <div class="dv2-sign-eyebrow">SIGN READER · TORONTO</div>
+          <h2 class="dv2-sign-h-title">Can I park here?</h2>
+        </div>
+        <div id="dv2-sign-result"></div>
+      </div>
+
       <!-- All-Reminders heading (only in reminders mode) -->
       <div class="dv2-rem-heading">
         <h2 class="dv2-rem-h-title">All your reminders</h2>
@@ -6833,6 +6954,21 @@
             <div class="dv2-fp-sub" id="dv2-fp-sub"></div>
           </div>
           <svg class="dv2-fp-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <!-- Scan-a-sign: photograph a parking sign, AI says if you can park -->
+        <input type="file" id="sign-photo" accept="image/*" capture="environment" style="display:none" onchange="dvScanSign(this.files[0])" />
+        <button class="dv2-sign-cta" type="button" onclick="document.getElementById('sign-photo').click()">
+          <span class="dv2-sign-cta-ic">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M12 17v4"/><path d="M8 21h8"/><path d="m7 9 3 3 4-5"/></svg>
+          </span>
+          <span class="dv2-sign-cta-tx">
+            <span class="dv2-sign-cta-t">Scan a parking sign</span>
+            <span class="dv2-sign-cta-s">We read it and tell you: can you park here?</span>
+          </span>
+          <span class="dv2-sign-cta-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
         </button>
       </div>
 
@@ -9296,6 +9432,7 @@
         if (dash) {
           delete dash.dataset.scanActive;
           delete dash.dataset.remindersActive;
+          delete dash.dataset.signActive;
         }
       } else {
         // Leaving the dashboard? Clear focused-view modes too.
@@ -9303,6 +9440,7 @@
         if (dashEl) {
           delete dashEl.dataset.scanActive;
           delete dashEl.dataset.remindersActive;
+          delete dashEl.dataset.signActive;
         }
       }
       // Leaving the Guide tab? Clear install focused-view too.
@@ -11430,6 +11568,133 @@
       delete dash.dataset.scanActive;
       try { dash.scrollTop = 0; } catch (e) {}
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ─── Sign Reader: photograph a parking sign → "can I park here?" ───
+    function dvOpenSignView() {
+      if (typeof showTab === 'function') showTab('tab-dashboard');
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      dash.dataset.signActive = 'true';
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function dvCloseSign() {
+      var dash = document.getElementById('tab-dashboard');
+      if (!dash) return;
+      delete dash.dataset.signActive;
+      // Reset the file input so picking the same photo again still fires onchange.
+      var inp = document.getElementById('sign-photo');
+      if (inp) inp.value = '';
+      try { dash.scrollTop = 0; } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Entry point — fired by the file input's onchange on the enforcement card.
+    function dvScanSign(file) {
+      if (!file) return;
+      // Reset the input so picking the SAME photo again still re-triggers onchange.
+      var inpReset = document.getElementById('sign-photo');
+      if (inpReset) setTimeout(function(){ inpReset.value = ''; }, 0);
+      dvOpenSignView();
+      var box = document.getElementById('dv2-sign-result');
+      if (box) box.innerHTML =
+        '<div class="dv2-sign-loading"><span class="dv2-sign-spin"></span><br>Reading the sign…<br>This takes a few seconds.</div>';
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var base64 = e.target.result.split(',')[1];
+        var mediaType = (file.type && file.type.indexOf('image/') === 0) ? file.type : 'image/jpeg';
+        if (mediaType === 'image/heic' || mediaType === 'image/heif') mediaType = 'image/jpeg';
+
+        // Tell the model the current local time so its verdict reflects "now".
+        var now = new Date();
+        var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var nowStr = dayNames[now.getDay()] + ', ' +
+          now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+        var prompt =
+          'You are a Toronto parking-sign expert. The user photographed a parking or traffic sign and wants to know if they can legally park there RIGHT NOW.\n\n' +
+          'Current local time in Toronto: ' + nowStr + '.\n\n' +
+          'Read EVERY sign in the photo (signs are often stacked — read top to bottom). Decode Toronto conventions: a "P" with a red slash = no parking; a green "P" = permitted parking; time limits (e.g. "1 hour 8am-6pm Mon-Sat"); permit-only zones ("permit parking only"); rush-hour "no stopping / tow-away" windows; "no standing"; metered/pay-and-display; street-cleaning days; snow routes; disabled-permit-only; loading zones; fire routes.\n\n' +
+          'Then decide for the CURRENT time whether the user may park. Reply in this EXACT format, nothing else:\n' +
+          'VERDICT: [one of: YES, NO, CAUTION]\n' +
+          'HEADLINE: [a short plain-English answer, max 8 words, e.g. "Yes — free, max 2 hours" or "No — permit holders only"]\n' +
+          'WHY: [1-2 sentences explaining the verdict for the current time, referencing the time/day]\n' +
+          'SIGN: [bullet list of what each sign actually says, one rule per line starting with "- "]\n\n' +
+          'If the photo is NOT a parking/traffic sign, reply exactly: NOT_A_SIGN';
+
+        fetch('/api/claude', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 500,
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+                { type: 'text', text: prompt }
+              ]
+            }]
+          })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.error) { dvRenderSignError(data.error.message || 'AI error'); return; }
+          var text = (data.content && data.content[0]) ? data.content[0].text.trim() : '';
+          if (!text || text.indexOf('NOT_A_SIGN') !== -1) {
+            dvRenderSignError("That doesn't look like a parking sign. Try a clearer photo of the whole sign.");
+            return;
+          }
+          dvRenderSignVerdict(text);
+          if (typeof trackEvent === 'function') trackEvent('sign_scan', 'success');
+        })
+        .catch(function() { dvRenderSignError('Could not reach the AI — check your internet and try again.'); });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function dvSignField(text, key) {
+      var re = new RegExp(key + ':\\s*([\\s\\S]*?)(?:\\n[A-Z]+:|$)');
+      var m = text.match(re);
+      return m ? m[1].trim() : '';
+    }
+    function dvRenderSignVerdict(text) {
+      var box = document.getElementById('dv2-sign-result');
+      if (!box) return;
+      var verdict  = (dvSignField(text, 'VERDICT') || 'CAUTION').toUpperCase();
+      var headline = dvSignField(text, 'HEADLINE') || 'Check the sign carefully';
+      var why      = dvSignField(text, 'WHY') || '';
+      var sign     = dvSignField(text, 'SIGN') || '';
+
+      var cls = verdict.indexOf('YES') !== -1 ? 'yes'
+              : verdict.indexOf('NO') !== -1 ? 'no' : 'maybe';
+      var badge = cls === 'yes' ? '✅ YOU CAN PARK'
+                : cls === 'no' ? '⛔ DO NOT PARK' : '⚠️ PARK WITH CAUTION';
+
+      function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+      box.innerHTML =
+        '<div class="dv2-sign-verdict ' + cls + '">' +
+          '<div class="dv2-sign-verdict-badge">' + badge + '</div>' +
+          '<div class="dv2-sign-verdict-head">' + esc(headline) + '</div>' +
+          (why ? '<div class="dv2-sign-verdict-why">' + esc(why) + '</div>' : '') +
+        '</div>' +
+        (sign ?
+          '<div class="dv2-sign-decode">' +
+            '<div class="dv2-sign-decode-h">📋 What the sign says</div>' +
+            '<div class="dv2-sign-decode-body">' + esc(sign) + '</div>' +
+          '</div>' : '') +
+        '<div class="dv2-sign-safety">⚠️ <b>Always double-check the real sign.</b> Signs can be damaged, stacked, seasonal, or recently changed. This is guidance, not a guarantee — when in doubt, don\'t risk the ticket.</div>' +
+        '<button class="dv2-sign-again" type="button" onclick="document.getElementById(\'sign-photo\').click()">📷 Scan another sign</button>';
+    }
+    function dvRenderSignError(msg) {
+      var box = document.getElementById('dv2-sign-result');
+      if (!box) return;
+      box.innerHTML =
+        '<div class="dv2-sign-error">😕 ' + String(msg).replace(/</g,'&lt;') + '</div>' +
+        '<button class="dv2-sign-again" type="button" onclick="document.getElementById(\'sign-photo\').click()">📷 Try again</button>';
     }
 
     // ─── v2 dedicated "All Reminders" view (SEE ALL ·  N from the dashboard) ───

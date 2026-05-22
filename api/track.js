@@ -57,7 +57,7 @@ var ALLOWED_EVENTS = [
   'reminder_added', 'profile_saved', 'report_created',
   'magic_link_sent', 'gps_started', 'share_ticket',
   'dispute_generated', 'true_cost_calc', 'expert_contact',
-  'user_feedback'
+  'user_feedback', 'sign_scan'
 ];
 
 // Only these events trigger a Telegram notification — everything else just goes to Supabase
