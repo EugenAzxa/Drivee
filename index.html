@@ -9581,7 +9581,10 @@
         eventLayer   = L.layerGroup();                    // Phase C — added to match days
         heatLayer    = L.layerGroup();                    // Phase D — added when heat data loads
         enforcementLayer = L.layerGroup().addTo(driveeMap); // Parking-officer red zones, time-gated 8am-8pm
-        ticketDensityLayer = L.layerGroup().addTo(driveeMap); // Colorful ticket-density heatmap
+        // Ticket-density grid is OFF by default — the blocky coloured squares
+        // made the map look cluttered/pixelated. It stays in the layers control
+        // (top-right) so users can switch it on if they want it.
+        ticketDensityLayer = L.layerGroup(); // NOT added to map by default
 
         // Layer toggle control (top-right, below the theme button)
         if (hydrantCluster && bikeCluster && towCluster && reportCluster) {
@@ -9600,8 +9603,18 @@
         loadCommunityReports(); // load shared reports from Supabase
         drawZoneMarkers();  // draw hydrant / bike lane / tow zone markers
         drawEnforcementZones(); // pulsing red zones, only during 8am-8pm
-        drawTicketDensityHeatmap(); // colorful parcel-style heatmap of downtown ticket density
-        installDensityLegend(); // bottom-left legend for the heatmap colors
+        drawTicketDensityHeatmap(); // builds the grid into the (hidden) layer
+        // Legend + grid only appear when the user switches "Ticket density" on
+        // from the layers control. Keeps the default map clean.
+        driveeMap.on('overlayadd', function(e) {
+          if (e.layer === ticketDensityLayer) installDensityLegend();
+        });
+        driveeMap.on('overlayremove', function(e) {
+          if (e.layer === ticketDensityLayer && densityLegendControl) {
+            driveeMap.removeControl(densityLegendControl);
+            densityLegendControl = null;
+          }
+        });
         installOfficerCounter(); // live officer count floating top-left
         // Refresh every 60s so the counter feels live and zones come/go at 8am/8pm
         if (officerRefreshInterval) clearInterval(officerRefreshInterval);
