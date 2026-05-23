@@ -10491,28 +10491,61 @@
     // Falls back gracefully when no API key is set.
     // ===================================================
 
+    // Resize any photo to <= maxDim on its longest side, return as JPEG dataURL.
+    // Modern iPhone photos are 4000-6000px / 6-10 MB raw. Vercel rejects bodies
+    // over ~4.5 MB with HTTP 413, and Claude is just as accurate on smaller
+    // images — so we shrink BEFORE upload. Drops payload to ~200-300 KB.
+    function dvShrinkImage(file, maxDim, quality, callback) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var scale = Math.min(1, maxDim / Math.max(w, h));
+          var ow = Math.round(w * scale), oh = Math.round(h * scale);
+          var c = document.createElement('canvas');
+          c.width = ow; c.height = oh;
+          var ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, ow, oh);
+          URL.revokeObjectURL(url);
+          callback(c.toDataURL('image/jpeg', quality));
+        } catch (e) {
+          URL.revokeObjectURL(url);
+          callback(null); // signal failure; caller falls back to raw read
+        }
+      };
+      img.onerror = function() {
+        URL.revokeObjectURL(url);
+        callback(null);
+      };
+      img.src = url;
+    }
+
     // Core function — sends image to Claude Vision, calls onResult(text) or onError(msg)
     function scanTicketWithVision(file, onResult, onError) {
 
-      var reader = new FileReader();
-      // If reading the file fails (e.g. iCloud photo not downloaded yet,
-      // permission denied), surface a clear error instead of failing silently.
-      reader.onerror = function() {
-        onError('Could not read the photo — try selecting it again');
-      };
-      reader.onload = function(e) {
-        var dataUrl   = e.target.result;
-        var base64    = dataUrl.split(',')[1];
-        var mediaType = (file.type && file.type.startsWith('image/')) ? file.type : 'image/jpeg';
-        // HEIC: Claude doesn't accept it. We tell the API it's JPEG so it's at
-        // least worth trying, but iPhone HEIC photos may still fail — in which
-        // case the error message below tells the user what to do.
-        if (mediaType === 'image/heic' || mediaType === 'image/heif') mediaType = 'image/jpeg';
-        // Some image types Claude Vision genuinely won't accept — only the 4
-        // formats below are supported. Anything else gets coerced to JPEG.
-        if (['image/jpeg','image/png','image/gif','image/webp'].indexOf(mediaType) === -1) {
-          mediaType = 'image/jpeg';
+      // Shrink first so we don't hit Vercel's body-size limit (HTTP 413).
+      // If shrinking fails (e.g. HEIC the browser can't decode), fall back to
+      // the raw FileReader path — the API may still accept it.
+      dvShrinkImage(file, 1800, 0.85, function(shrunkDataUrl) {
+        if (shrunkDataUrl) {
+          continueWithDataUrl(shrunkDataUrl, 'image/jpeg');
+        } else {
+          // Fallback: read original bytes
+          var r = new FileReader();
+          r.onerror = function() { onError('Could not read the photo — try selecting it again'); };
+          r.onload = function(ev) {
+            var origType = (file.type && file.type.startsWith('image/')) ? file.type : 'image/jpeg';
+            if (origType === 'image/heic' || origType === 'image/heif') origType = 'image/jpeg';
+            if (['image/jpeg','image/png','image/gif','image/webp'].indexOf(origType) === -1) origType = 'image/jpeg';
+            continueWithDataUrl(ev.target.result, origType);
+          };
+          r.readAsDataURL(file);
         }
+      });
+
+      function continueWithDataUrl(dataUrl, mediaType) {
+        var base64 = dataUrl.split(',')[1];
 
         // 45s hard timeout so a hung request never leaves the user staring at
         // "reading your ticket…" forever. AbortController is widely supported.
@@ -10560,8 +10593,7 @@
             : 'Could not reach Claude — check your internet';
           onError(msg);
         });
-      };
-      reader.readAsDataURL(file);
+      } // end continueWithDataUrl
     }
 
     // Parse the structured Claude Vision reply into fields
