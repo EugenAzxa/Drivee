@@ -57,7 +57,7 @@ var ALLOWED_EVENTS = [
   'reminder_added', 'profile_saved', 'report_created',
   'magic_link_sent', 'gps_started', 'share_ticket',
   'dispute_generated', 'true_cost_calc', 'expert_contact',
-  'user_feedback', 'sign_scan'
+  'user_feedback', 'sign_scan', 'lawyer_lead'
 ];
 
 // Only these events trigger a Telegram notification — everything else just goes to Supabase
@@ -68,7 +68,8 @@ var TELEGRAM_EVENTS = [
   'dispute_generated',
   'expert_contact',
   'user_feedback',
-  'true_cost_calc'
+  'true_cost_calc',
+  'lawyer_lead'
 ];
 
 var ICONS = {
@@ -78,7 +79,8 @@ var ICONS = {
   'dispute_generated': '⚖️',
   'expert_contact':    '👨‍💼',
   'user_feedback':     '💬',
-  'true_cost_calc':    '🧮'
+  'true_cost_calc':    '🧮',
+  'lawyer_lead':       '🎯'
 };
 
 var LABELS = {
@@ -88,6 +90,7 @@ var LABELS = {
   'dispute_generated': 'Dispute script generated',
   'expert_contact':    'Expert contacted',
   'user_feedback':     'User left feedback',
+  'lawyer_lead':       'Paralegal lead created',
   'true_cost_calc':    'True Cost calculated'
 };
 
