@@ -8542,7 +8542,7 @@
            in-place verdict flow (verdict -> 3 choices -> matched firms ->
            lead form). The Dashboard scan-view is no longer routed here. -->
       <div class="dv2-tab-hero dv2-section dv2-section-paper">
-        <button class="dv2-scanner-cta" type="button" onclick="document.getElementById('legal-photo').click()">
+        <button class="dv2-scanner-cta" type="button" onclick="dvOpenLegalPicker()">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
             <span class="dv2-scanner-meta">AI VERDICT · ON THIS PAGE</span>
@@ -8565,8 +8565,13 @@
         <div class="ai-advisor-sub">Photo scan or describe — get instant verdict</div>
 
         <!-- Photo scan — Claude Vision reads the ticket directly -->
-        <input type="file" id="legal-photo" accept="image/*" style="display:none" onchange="scanLegalPhoto()" />
-        <button class="ai-advisor-photo-btn" onclick="document.getElementById('legal-photo').click()">
+        <!-- iOS Safari sometimes refuses to honour input.click() on a file
+             input with display:none. Use absolute-offscreen + opacity:0
+             instead so the input is interactable but invisible. capture
+             attribute removed so the user can pick from photo library too. -->
+        <input type="file" id="legal-photo" accept="image/*" onchange="scanLegalPhoto()"
+               style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;opacity:0;pointer-events:none" />
+        <button class="ai-advisor-photo-btn" onclick="dvOpenLegalPicker()">
           <i class="fa-solid fa-camera"></i> Scan Ticket Photo with AI
         </button>
         <div class="vision-scan-status" id="legal-scan-status"></div>
@@ -10749,6 +10754,24 @@
       var scans = (safeGet(SCANS_KEY) || []).filter(function(s) { return s.id !== id; });
       safeSet(SCANS_KEY, scans);
       renderScanHistory();
+    }
+
+    // Robustly opens the Legal-tab file picker. We were seeing "nothing happens"
+    // on some iOS Safari setups when the input had display:none and was clicked
+    // programmatically. The picker is now absolute-offscreen (interactable), and
+    // we also try focus() before click() — both help on Safari. Logs the tap so
+    // we can see in analytics that the button was pressed at all.
+    function dvOpenLegalPicker() {
+      if (typeof trackEvent === 'function') trackEvent('tab_click', 'legal-scan-tap');
+      var inp = document.getElementById('legal-photo');
+      if (!inp) {
+        if (typeof showToast === 'function') showToast('Scanner not ready — refresh the page');
+        return;
+      }
+      try { inp.focus(); } catch (e) {}
+      try { inp.click(); } catch (e) {
+        if (typeof showToast === 'function') showToast('Could not open photo picker — try the smaller scan button below.');
+      }
     }
 
     // ── Legal tab photo scan ──────────────────────────────
