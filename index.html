@@ -7119,9 +7119,15 @@
            V2 DASHBOARD SECTIONS — only visible when ?design=v2 is on
       ═══════════════════════════════════════════════════════════════ -->
 
-      <!-- Scanner CTA wrapped in a paper section so it aligns with the other sections -->
+      <!-- Scanner CTA. Now a <label for="ticket-photo">: a tap on the label IS
+           a tap on the input, opening the picker WITHIN the user-gesture
+           window (iOS Safari requirement). The onclick still flips the
+           dashboard into focused scan-view so the verdict UI lays out right
+           AFTER the picker opens. dv2OpenScan() retained for legacy callers. -->
       <div class="dv2-tab-hero dv2-section dv2-section-paper">
-        <button class="dv2-scanner-cta" type="button" id="dv2-scanner-cta" onclick="dv2OpenScan()">
+        <label class="dv2-scanner-cta" id="dv2-scanner-cta" for="ticket-photo"
+               style="display:block;cursor:pointer"
+               onclick="(function(){var d=document.getElementById('tab-dashboard');if(d)d.dataset.scanActive='true';})()">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
             <span class="dv2-scanner-meta">OCR + AI VISION</span>
@@ -7132,7 +7138,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>
             Scan ticket
           </div>
-        </button>
+        </label>
       </div>
 
       <!-- Free parking / Holidays status -->
@@ -7278,10 +7284,16 @@
         <div class="card-title">📸 AI Ticket Scanner</div>
         <div class="card-subtitle">Scan any ticket or fine — get verdict, payment link &amp; auto-reminder</div>
 
-        <input type="file" id="ticket-photo" accept="image/*" style="display:none" onchange="scanTicketPhoto()" />
-        <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="document.getElementById('ticket-photo').click()">
+        <!-- iOS Safari refuses to honour input.click() on a display:none file
+             input. Same label-for pattern that fixed the Legal-tab scanner:
+             input is absolute-offscreen 1x1 opacity:0 (interactable but
+             invisible), button is a <label for="ticket-photo"> so a tap on it
+             IS a tap on the input — no JS click() trick. -->
+        <input type="file" id="ticket-photo" accept="image/*" onchange="scanTicketPhoto()"
+               style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0" />
+        <label class="btn btn-primary" for="ticket-photo" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-bottom:12px;cursor:pointer">
           <i class="fa-solid fa-camera"></i> Scan Ticket Photo with AI
-        </button>
+        </label>
 
         <div id="scan-status" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.2);border-radius:12px;font-size:13px;color:var(--blue);text-align:center">
           🤖 Drivee is reading your ticket…
@@ -8546,7 +8558,7 @@
              open a file picker — a tap on the label IS a tap on the input,
              so iOS Safari, installed PWAs, and every browser honour it
              without any JS click() trick. -->
-        <label class="dv2-scanner-cta" for="legal-photo" style="display:block;cursor:pointer" onclick="if(typeof showToast==='function')showToast('✓ Tap received — opening photo picker…')">
+        <label class="dv2-scanner-cta" for="legal-photo" style="display:block;cursor:pointer">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
             <span class="dv2-scanner-meta">AI VERDICT · ON THIS PAGE</span>
