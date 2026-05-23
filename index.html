@@ -10473,18 +10473,34 @@
     function scanTicketWithVision(file, onResult, onError) {
 
       var reader = new FileReader();
+      // If reading the file fails (e.g. iCloud photo not downloaded yet,
+      // permission denied), surface a clear error instead of failing silently.
+      reader.onerror = function() {
+        onError('Could not read the photo — try selecting it again');
+      };
       reader.onload = function(e) {
         var dataUrl   = e.target.result;
         var base64    = dataUrl.split(',')[1];
         var mediaType = (file.type && file.type.startsWith('image/')) ? file.type : 'image/jpeg';
-        // HEIC not supported by Claude — treat as jpeg
+        // HEIC: Claude doesn't accept it. We tell the API it's JPEG so it's at
+        // least worth trying, but iPhone HEIC photos may still fail — in which
+        // case the error message below tells the user what to do.
         if (mediaType === 'image/heic' || mediaType === 'image/heif') mediaType = 'image/jpeg';
+        // Some image types Claude Vision genuinely won't accept — only the 4
+        // formats below are supported. Anything else gets coerced to JPEG.
+        if (['image/jpeg','image/png','image/gif','image/webp'].indexOf(mediaType) === -1) {
+          mediaType = 'image/jpeg';
+        }
+
+        // 45s hard timeout so a hung request never leaves the user staring at
+        // "reading your ticket…" forever. AbortController is widely supported.
+        var ctrl = (typeof AbortController === 'function') ? new AbortController() : null;
+        var timeoutId = ctrl ? setTimeout(function() { ctrl.abort(); }, 45000) : null;
 
         fetch('/api/claude', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
+          signal: ctrl ? ctrl.signal : undefined,
           body: JSON.stringify({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 500,
@@ -10497,8 +10513,16 @@
             }]
           })
         })
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+          if (timeoutId) clearTimeout(timeoutId);
+          if (!r.ok) {
+            // Surface server-side errors (400/500) instead of pretending success.
+            return r.text().then(function(t) { onError('Server error (' + r.status + ')'); });
+          }
+          return r.json();
+        })
         .then(function(data) {
+          if (!data) return;
           if (data.error) { onError(data.error.message || 'API error'); return; }
           var text = data.content && data.content[0] ? data.content[0].text.trim() : '';
           if (text === 'NOT_A_TICKET' || text.indexOf('NOT_A_TICKET') !== -1) {
@@ -10507,7 +10531,13 @@
             onResult(text);
           }
         })
-        .catch(function() { onError('Could not reach Claude — check your internet'); });
+        .catch(function(err) {
+          if (timeoutId) clearTimeout(timeoutId);
+          var msg = (err && err.name === 'AbortError')
+            ? 'Scan timed out — try again with a smaller/clearer photo'
+            : 'Could not reach Claude — check your internet';
+          onError(msg);
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -10723,41 +10753,89 @@
 
     // ── Legal tab photo scan ──────────────────────────────
     function scanLegalPhoto() {
-      var file = document.getElementById('legal-photo').files[0];
+      var input = document.getElementById('legal-photo');
+      var file = input && input.files ? input.files[0] : null;
       if (!file) return;
+      // Reset the input so picking the SAME photo again still re-triggers onchange.
+      setTimeout(function() { try { input.value = ''; } catch (e) {} }, 0);
+
       var status = document.getElementById('legal-scan-status');
-      status.className = 'vision-scan-status';
-      status.style.display = 'block';
-      status.textContent = '🤖 Claude is reading your ticket…';
+      var verdictBox = document.getElementById('legal-verdict-output');
+      // Show a clear loading state in BOTH the status line and the verdict box,
+      // so the user always sees something happening even if the status line is
+      // scrolled out of view.
+      if (status) {
+        status.className = 'vision-scan-status';
+        status.style.display = 'block';
+        status.textContent = '🤖 Claude is reading your ticket…';
+      }
+      if (verdictBox) {
+        verdictBox.innerHTML =
+          '<div class="dv-lv-card dv-lv-mod">' +
+            '<div class="dv-lv-eyebrow">SCANNING</div>' +
+            '<div class="dv-lv-headline">Reading your ticket…</div>' +
+            '<div class="dv-lv-reason">This usually takes 5–10 seconds. Keep this tab open.</div>' +
+          '</div>';
+        try { verdictBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      }
+
+      // Telemetry: count every scan attempt so we can see drop-offs.
+      if (typeof trackEvent === 'function') trackEvent('scan_ticket', 'legal-tab');
 
       scanTicketWithVision(file,
         function(text) {
-          var p = parseVisionReply(text);
-          // Fill the textarea with a human summary
-          var lines = [];
-          if (p.amount) lines.push('Fine: $' + p.amount);
-          if (p.ref)    lines.push('Ref: ' + p.ref);
-          if (p.plate && p.plate !== 'unknown') lines.push('Plate: ' + p.plate);
-          if (p.type)   lines.push('Type: ' + p.type);
-          if (p.province && p.province !== 'UNKNOWN') lines.push('Province: ' + p.province);
-          if (p.date && p.date !== 'unknown') lines.push('Date: ' + p.date);
-          if (p.due  && p.due  !== 'unknown') lines.push('Due: ' + p.due);
-          if (p.advice) lines.push('\n' + p.advice);
-          document.getElementById('legal-textarea').value = lines.join('\n');
-          // Auto-fill cross-app data
-          autoFillPlate(p.plate);
-          autoAddReminder(p.ref, p.due);
-          makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); });
-          status.className = 'vision-scan-status done';
-          status.textContent = '✅ Ticket scanned — pick your next step below.';
-          // Stash the scan so the verdict flow + lead form can use it.
-          window._lastLegalScan = p;
-          // Render the Legal verdict UI in-place (verdict + 3-choice row).
-          dvRenderLegalVerdict(p);
+          try {
+            var p = parseVisionReply(text);
+            // Fill the textarea with a human summary
+            var lines = [];
+            if (p.amount) lines.push('Fine: $' + p.amount);
+            if (p.ref)    lines.push('Ref: ' + p.ref);
+            if (p.plate && p.plate !== 'unknown') lines.push('Plate: ' + p.plate);
+            if (p.type)   lines.push('Type: ' + p.type);
+            if (p.province && p.province !== 'UNKNOWN') lines.push('Province: ' + p.province);
+            if (p.date && p.date !== 'unknown') lines.push('Date: ' + p.date);
+            if (p.due  && p.due  !== 'unknown') lines.push('Due: ' + p.due);
+            if (p.advice) lines.push('\n' + p.advice);
+            var ta = document.getElementById('legal-textarea');
+            if (ta) ta.value = lines.join('\n');
+            // Auto-fill cross-app data — wrapped in try so a single helper failure
+            // never aborts the whole verdict render.
+            try { autoFillPlate(p.plate); } catch (e) {}
+            try { autoAddReminder(p.ref, p.due); } catch (e) {}
+            try { makeThumbnail(file, function(thumb) { saveScanToHistory(p, thumb); }); } catch (e) {}
+            if (status) {
+              status.className = 'vision-scan-status done';
+              status.textContent = '✅ Ticket scanned — pick your next step below.';
+            }
+            window._lastLegalScan = p;
+            dvRenderLegalVerdict(p);
+            if (typeof trackEvent === 'function') trackEvent('scan_success', 'legal-tab');
+          } catch (e) {
+            // Defensive: if the success handler itself throws, surface it loudly.
+            if (verdictBox) {
+              verdictBox.innerHTML =
+                '<div class="dv-lv-card dv-lv-weak">' +
+                  '<div class="dv-lv-eyebrow">SOMETHING WENT WRONG</div>' +
+                  '<div class="dv-lv-headline">We read your ticket but couldn\'t show the verdict</div>' +
+                  '<div class="dv-lv-reason">' + dvEscape(e.message || String(e)) + '</div>' +
+                  '<div class="dv-lv-reason" style="margin-top:8px">Try a clearer photo, or scan again.</div>' +
+                '</div>';
+            }
+          }
         },
         function(err) {
-          status.className = 'vision-scan-status error';
-          status.textContent = '⚠️ ' + err;
+          if (status) {
+            status.className = 'vision-scan-status error';
+            status.textContent = '⚠️ ' + err;
+          }
+          if (verdictBox) {
+            verdictBox.innerHTML =
+              '<div class="dv-lv-card dv-lv-weak">' +
+                '<div class="dv-lv-eyebrow">SCAN FAILED</div>' +
+                '<div class="dv-lv-headline">' + dvEscape(err) + '</div>' +
+                '<div class="dv-lv-reason">Common fixes: brighter light, hold steady, get the whole ticket in frame. Then tap "Scan for verdict" again.</div>' +
+              '</div>';
+          }
         }
       );
     }
