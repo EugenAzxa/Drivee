@@ -8575,21 +8575,24 @@
       <h1 class="page-title" style="margin-bottom:14px">Legal</h1>
 
       <!-- AI Ticket Advisor — blue gradient hero -->
+      <!-- File input + scan status + verdict-output sit OUTSIDE .ai-advisor-hero
+           because the v2 design hides .ai-advisor-hero on Legal. If the verdict
+           were inside that hidden container, the user's scan would succeed but
+           the result would never appear (this was the real root cause of
+           "scan not showing the result"). -->
+      <input type="file" id="legal-photo" accept="image/*" onchange="scanLegalPhoto()"
+             style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0" />
+      <div class="vision-scan-status" id="legal-scan-status"></div>
+      <div id="legal-verdict-output"></div>
+
       <div class="ai-advisor-hero">
         <div class="ai-advisor-icon"><i class="fa-solid fa-brain"></i></div>
         <div class="ai-advisor-title">AI Ticket Advisor</div>
         <div class="ai-advisor-sub">Photo scan or describe — get instant verdict</div>
 
-        <!-- Photo scan — Claude Vision reads the ticket directly -->
-        <!-- iOS Safari refuses to honour input.click() on a hidden file input.
-             It must be in the DOM, sized 1x1, and INTERACTABLE (no
-             pointer-events:none). Visually invisible via opacity:0. -->
-        <input type="file" id="legal-photo" accept="image/*" onchange="scanLegalPhoto()"
-               style="position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;margin:0" />
         <label class="ai-advisor-photo-btn" for="legal-photo" style="cursor:pointer">
           <i class="fa-solid fa-camera"></i> Scan Ticket Photo with AI
         </label>
-        <div class="vision-scan-status" id="legal-scan-status"></div>
 
         <div class="ai-advisor-input-wrap">
           <textarea id="legal-textarea" class="ai-advisor-input" rows="2" placeholder="Or describe your ticket / violation…"></textarea>
@@ -8597,7 +8600,6 @@
         <button class="btn ai-advisor-btn" onclick="analyseTicketFromLegal()">
           <i class="fa-solid fa-sparkles"></i> Analyze My Ticket
         </button>
-        <div id="legal-verdict-output"></div>
         <div style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:10px">ⓘ AI assistance only — not legal advice. Consult a licensed paralegal or lawyer for your specific case.</div>
       </div>
 
