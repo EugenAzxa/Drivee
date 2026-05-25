@@ -3007,9 +3007,20 @@
     }
     .dv-lv-firm:active { transform: scale(0.99); }
     .dv-lv-firm:hover  { border-color: var(--blue, #2563EB); box-shadow: 0 8px 22px -14px rgba(37,99,235,0.40); }
-    .dv-lv-firm-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .dv-lv-firm-name { font-weight: 800; font-size: 15.5px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
-    .dv-lv-firm-arrow { font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; line-height: 1; }
+    .dv-lv-firm-top { display: flex; align-items: center; gap: 10px; }
+    .dv-lv-firm-name { font-weight: 800; font-size: 15.5px; color: var(--text-primary, #111); letter-spacing: -0.2px; flex: 1; min-width: 0; }
+    .dv-lv-firm-arrow { font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; line-height: 1; flex-shrink: 0; }
+    /* Small "★ Google" chip — signals reviews exist, no number claimed. */
+    .dv-lv-firm-google {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.2px;
+      color: #5a6075;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid var(--border, #d6d2c4);
+      padding: 4px 8px; border-radius: 999px;
+    }
+    .dv-lv-firm-google-star { color: #FBBC05; font-size: 12px; line-height: 1; }
     .dv-lv-firm-claim {
       margin-top: 6px;
       font-size: 13px; line-height: 1.45; color: var(--text-primary, #111);
@@ -3084,6 +3095,38 @@
       display: grid; place-items: center;
       background: rgba(31,171,107,0.14); color: #157a40;
       border-radius: 50%; font-size: 11px; font-weight: 800;
+    }
+
+    /* Real Google reviews link — opens Google Maps for this firm. */
+    .dv-lv-firm-reviews {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; margin: 0 0 14px;
+      text-decoration: none;
+      background: linear-gradient(135deg, #fffdf6, #fff7e0);
+      border: 1px solid #f5d97a;
+      border-radius: 14px; padding: 14px 16px;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .dv-lv-firm-reviews:hover  { box-shadow: 0 10px 24px -14px rgba(180,140,0,0.40); }
+    .dv-lv-firm-reviews:active { transform: scale(0.985); }
+    .dv-lv-firm-reviews-ic {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: #FBBC05; color: #5a3a00;
+      font-size: 20px; font-weight: 900;
+    }
+    .dv-lv-firm-reviews-tx { flex: 1; min-width: 0; }
+    .dv-lv-firm-reviews-t  {
+      display: block; font-weight: 800; font-size: 14px;
+      color: var(--text-primary, #111); letter-spacing: -0.2px;
+    }
+    .dv-lv-firm-reviews-s  {
+      display: block; font-size: 12px; color: #8a6d22;
+      margin-top: 2px;
+    }
+    .dv-lv-firm-reviews-arrow {
+      flex-shrink: 0; font-size: 18px; color: #b07514;
+      font-weight: 800;
     }
 
     /* ──── Lead form ──── */
@@ -11487,6 +11530,9 @@
           '<button class="dv-lv-firm" type="button" onclick="dvLegalShowFirmDetail(' + i + ')">' +
             '<div class="dv-lv-firm-top">' +
               '<div class="dv-lv-firm-name">' + dvEscape(f.name) + '</div>' +
+              '<span class="dv-lv-firm-google" title="Reviews on Google">' +
+                '<span class="dv-lv-firm-google-star">★</span> Google' +
+              '</span>' +
               '<div class="dv-lv-firm-arrow">›</div>' +
             '</div>' +
             (info.claim ? '<div class="dv-lv-firm-claim">' + dvEscape(info.claim) + '</div>' : '') +
@@ -11530,6 +11576,18 @@
           (f.price ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Pricing</span><span class="dv-lv-firm-fact-v">' + dvEscape(f.price) + '</span></div>' : '') +
         '</div>' +
         (perksHtml ? '<ul class="dv-lv-firm-perks-list">' + perksHtml + '</ul>' : '') +
+        // Live Google reviews — opens Google Maps in a new tab with a search
+        // for this firm so the user sees real, current reviews. No API needed,
+        // self-correcting (firm fixes service → reviews update on Google).
+        '<a class="dv-lv-firm-reviews" href="https://www.google.com/maps/search/?api=1&query=' +
+          encodeURIComponent(f.name + ' Toronto') + '" target="_blank" rel="noopener">' +
+          '<span class="dv-lv-firm-reviews-ic">★</span>' +
+          '<span class="dv-lv-firm-reviews-tx">' +
+            '<span class="dv-lv-firm-reviews-t">Read real Google reviews</span>' +
+            '<span class="dv-lv-firm-reviews-s">Opens Google Maps — fresh and unfiltered</span>' +
+          '</span>' +
+          '<span class="dv-lv-firm-reviews-arrow">↗</span>' +
+        '</a>' +
         '<button class="dv-lv-submit" type="button" onclick="dvLegalPickFirm(' + idx + ')">' +
           'Continue → free case review with ' + dvEscape(f.short) +
         '</button>' +
