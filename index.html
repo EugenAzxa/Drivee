@@ -2997,19 +2997,94 @@
       color: var(--text-primary, #111); margin: 0 0 16px;
       line-height: 1.2;
     }
-    .dv-lv-firms { display: grid; gap: 10px; }
+    .dv-lv-firms { display: grid; gap: 12px; }
     .dv-lv-firm {
-      display: grid; grid-template-columns: 1fr auto; column-gap: 10px;
-      align-items: center; text-align: left;
+      display: block; width: 100%; text-align: left;
       background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
-      border-radius: 14px; padding: 14px 16px; cursor: pointer;
-      font-family: inherit; transition: transform .12s ease, border-color .12s ease;
+      border-radius: 16px; padding: 16px; cursor: pointer;
+      font-family: inherit;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
     }
-    .dv-lv-firm:active { transform: scale(0.985); }
-    .dv-lv-firm:hover  { border-color: var(--blue, #2563EB); }
-    .dv-lv-firm-name { font-weight: 800; font-size: 15px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
-    .dv-lv-firm-meta { font-size: 12px; color: var(--text-secondary, #666); margin-top: 3px; grid-column: 1; }
-    .dv-lv-firm-arrow { grid-column: 2; grid-row: span 2; font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; }
+    .dv-lv-firm:active { transform: scale(0.99); }
+    .dv-lv-firm:hover  { border-color: var(--blue, #2563EB); box-shadow: 0 8px 22px -14px rgba(37,99,235,0.40); }
+    .dv-lv-firm-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .dv-lv-firm-name { font-weight: 800; font-size: 15.5px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
+    .dv-lv-firm-arrow { font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; line-height: 1; }
+    .dv-lv-firm-claim {
+      margin-top: 6px;
+      font-size: 13px; line-height: 1.45; color: var(--text-primary, #111);
+      font-weight: 600;
+    }
+    .dv-lv-firm-perks {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 10px;
+    }
+    .dv-lv-firm-perk {
+      display: inline-flex; align-items: center;
+      background: rgba(37,99,235,0.08);
+      color: var(--blue, #2563EB);
+      font-size: 11px; font-weight: 700;
+      padding: 4px 9px; border-radius: 999px;
+      letter-spacing: 0.1px;
+    }
+    .dv-lv-firm-meta {
+      font-size: 12px; color: var(--text-secondary, #666);
+      margin-top: 10px;
+    }
+
+    /* ──── Firm detail step (between list and lead form) ──── */
+    .dv-lv-firm-est {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(31,171,107,0.10);
+      border: 1px solid rgba(31,171,107,0.30);
+      color: #157a40;
+      font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+      margin: 0 0 14px;
+    }
+    .dv-lv-firm-claim-big {
+      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      border: 1px solid rgba(232,155,34,0.30);
+      border-radius: 14px; padding: 14px 16px;
+      margin: 0 0 16px;
+      font-size: 15px; line-height: 1.5; font-weight: 700;
+      color: var(--text-primary, #111);
+      font-style: italic;
+    }
+    .dv-lv-firm-facts {
+      display: grid; gap: 12px;
+      background: var(--surface, #fff);
+      border: 1px solid var(--border, #d6d2c4);
+      border-radius: 14px; padding: 14px 16px;
+      margin: 0 0 16px;
+    }
+    .dv-lv-firm-fact {
+      display: grid; grid-template-columns: 110px 1fr; gap: 12px;
+      align-items: baseline;
+    }
+    .dv-lv-firm-fact-l {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      letter-spacing: 1.4px; font-weight: 800;
+      color: var(--text-secondary, #666); text-transform: uppercase;
+    }
+    .dv-lv-firm-fact-v {
+      font-size: 13.5px; line-height: 1.5; color: var(--text-primary, #111);
+    }
+    .dv-lv-firm-perks-list {
+      list-style: none; padding: 0; margin: 0 0 18px;
+      display: grid; gap: 8px;
+    }
+    .dv-lv-firm-perks-list li {
+      position: relative; padding-left: 24px;
+      font-size: 14px; line-height: 1.5; color: var(--text-primary, #111);
+    }
+    .dv-lv-firm-perks-list li::before {
+      content: '✓'; position: absolute; left: 0; top: 0;
+      width: 18px; height: 18px;
+      display: grid; place-items: center;
+      background: rgba(31,171,107,0.14); color: #157a40;
+      border-radius: 50%; font-size: 11px; font-weight: 800;
+    }
 
     /* ──── Lead form ──── */
     .dv-lv-ticket-pill {
@@ -11333,7 +11408,50 @@
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
     }
 
-    // ── Pre-filtered firm list (reuses the existing firm-card DOM) ──
+    // ── Verified facts about each firm, pulled directly from their public
+    // websites. Anything in `claim` is the firm's own claim (in quotes when
+    // shown) — we do NOT present these as Drivee-verified statistics. The
+    // rest (founded, team, area) are stated facts from their site.
+    // Keyed by the firm's contact email so we can look up by that. ──
+    var DV_FIRM_INFO = {
+      'info@xcopper.com': {
+        founded: null, founded_label: 'Authorized by the Law Society of Ontario',
+        claim: '300,000+ tickets and criminal charges handled',
+        team: 'Former police officers, criminal defence lawyers and licensed paralegals',
+        area: 'ON · AB · QC · NY',
+        perks: ['Free quote', 'Attends court for you', 'Lawyers + paralegals']
+      },
+      'info@x-cops.ca': {
+        founded: null, founded_label: '20+ years fighting traffic & DUI charges',
+        claim: '"98% success rate in court"',
+        team: 'Former police officers (12+ yrs service) + seasoned prosecutors',
+        area: 'Toronto · GTA',
+        perks: ['Free consultation', 'Open until 9pm', 'Weekend / after-hours meetings']
+      },
+      'toronto@pointts.com': {
+        founded: 1984, founded_label: 'Canadian-owned since 1984',
+        claim: '25+ licensed paralegals with 30+ years courtroom experience',
+        team: 'Former police officers, prosecutors and traffic court Justices',
+        area: '17 offices across ON, AB & MB',
+        perks: ['Free consultation', 'Founded 1984', 'National coverage']
+      },
+      'info@ontariotraffictickets.com': {
+        founded: null, founded_label: 'Licensed Ontario paralegals',
+        claim: 'Toronto-based ticket-defence specialists',
+        team: 'Licensed paralegals',
+        area: 'Ontario · Toronto-based',
+        perks: ['Free consultation', 'Licensed paralegals', 'Speeding / red light / parking / HOV']
+      },
+      'info@hwy-law.com': {
+        founded: 1998, founded_label: 'Established 1998',
+        claim: '"80% of our clients are repeat or referrals · thousands of motorists defended"',
+        team: 'Paralegal firm, members of the Law Society of Ontario',
+        area: 'Toronto · Vaughan · Ontario',
+        perks: ['Free consultation', 'Est. 1998', 'Repeat-client focused']
+      }
+    };
+
+    // ── Pre-filtered firm list — now with trust signals ──
     // Renders into the focused-page container #dv-scan-result-view.
     function dvRenderMatchedFirms(tag) {
       var box = document.getElementById('dv-scan-result-view');
@@ -11352,7 +11470,8 @@
           name: nameEl ? nameEl.textContent.trim() : m[2],
           email: m[1],
           short: m[2],
-          price: priceEl ? priceEl.textContent.trim() : ''
+          price: priceEl ? priceEl.textContent.trim() : '',
+          info: DV_FIRM_INFO[m[1]] || null
         });
       });
       if (firms.length === 0) {
@@ -11360,11 +11479,20 @@
         return dvRenderMatchedFirms('all');
       }
       var rowsHtml = firms.map(function(f, i) {
-        return '<button class="dv-lv-firm" type="button" onclick="dvLegalPickFirm(' + i + ')">' +
-          '<div class="dv-lv-firm-name">' + dvEscape(f.name) + '</div>' +
-          '<div class="dv-lv-firm-meta">' + dvEscape(f.price) + ' · Free consultation</div>' +
-          '<div class="dv-lv-firm-arrow">→</div>' +
-        '</button>';
+        var info = f.info || {};
+        var perks = (info.perks || []).slice(0, 3).map(function(p) {
+          return '<span class="dv-lv-firm-perk">' + dvEscape(p) + '</span>';
+        }).join('');
+        return '' +
+          '<button class="dv-lv-firm" type="button" onclick="dvLegalShowFirmDetail(' + i + ')">' +
+            '<div class="dv-lv-firm-top">' +
+              '<div class="dv-lv-firm-name">' + dvEscape(f.name) + '</div>' +
+              '<div class="dv-lv-firm-arrow">›</div>' +
+            '</div>' +
+            (info.claim ? '<div class="dv-lv-firm-claim">' + dvEscape(info.claim) + '</div>' : '') +
+            (perks ? '<div class="dv-lv-firm-perks">' + perks + '</div>' : '') +
+            '<div class="dv-lv-firm-meta">' + dvEscape(f.price) + ' · Free consultation</div>' +
+          '</button>';
       }).join('');
       window._dvMatchedFirms = firms;
 
@@ -11374,6 +11502,38 @@
         '<h3 class="dv-lv-h">Pick a paralegal — free case review</h3>' +
         '<div class="dv-lv-firms">' + rowsHtml + '</div>' +
         '<div class="dv-lv-trust">🔒 Free consultation. We forward your info to the firm you choose — never to anyone else.</div>';
+    }
+
+    // ── Firm detail step — shown after a user taps a firm tile, before the
+    // lead form. Lets the user see the full trust pitch (founded, team,
+    // claims, charges they handle), then choose to continue. ──
+    function dvLegalShowFirmDetail(idx) {
+      var firms = window._dvMatchedFirms || [];
+      var f = firms[idx];
+      if (!f) return;
+      var box = document.getElementById('dv-scan-result-view');
+      if (!box) return;
+      var info = f.info || {};
+      var perksHtml = (info.perks || []).map(function(p) {
+        return '<li>' + dvEscape(p) + '</li>';
+      }).join('');
+
+      box.innerHTML =
+        '<button class="dv-lv-back" type="button" onclick="dvLegalChooseHire()">‹ Back to firms</button>' +
+        '<div class="dv-lv-eyebrow" style="margin:10px 0 6px;color:var(--dv2-blue-d,#1A3FB8)">FREE CASE REVIEW · DRIVEE PARTNER</div>' +
+        '<h3 class="dv-lv-h">' + dvEscape(f.name) + '</h3>' +
+        (info.founded_label ? '<div class="dv-lv-firm-est">✓ ' + dvEscape(info.founded_label) + '</div>' : '') +
+        (info.claim ? '<div class="dv-lv-firm-claim-big">' + dvEscape(info.claim) + '</div>' : '') +
+        '<div class="dv-lv-firm-facts">' +
+          (info.team ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Team</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.team) + '</span></div>' : '') +
+          (info.area ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Service area</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.area) + '</span></div>' : '') +
+          (f.price ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Pricing</span><span class="dv-lv-firm-fact-v">' + dvEscape(f.price) + '</span></div>' : '') +
+        '</div>' +
+        (perksHtml ? '<ul class="dv-lv-firm-perks-list">' + perksHtml + '</ul>' : '') +
+        '<button class="dv-lv-submit" type="button" onclick="dvLegalPickFirm(' + idx + ')">' +
+          'Continue → free case review with ' + dvEscape(f.short) +
+        '</button>' +
+        '<div class="dv-lv-trust">🔒 Quoted lines marked in italics are the firm\'s own public claims. We forward your info to this firm only.</div>';
     }
 
     // ── Lead form ──
