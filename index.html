@@ -5536,19 +5536,20 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       LEGAL → HIRE A PARALEGAL — dedicated focused view
-       When #tab-legal has data-hire-active, hide everything else on the
-       Legal tab and show only the back button + #dv-hire-view (firm list,
-       lead form, sent confirmation). Fixes the in-place flow that was
-       getting layout-stuck between the verdict card and the firm cards.
+       LEGAL → SCAN-RESULT — dedicated focused page
+       When #tab-legal has data-scan-result-active, hide everything else on
+       the Legal tab and show only the back button + #dv-scan-result-view
+       (verdict, 3 choices, firm list, lead form, sent confirmation).
+       Fixes the in-place flow that was getting layout-stuck inside the
+       Legal tab between the firm chips above and the firm cards below.
     ═══════════════════════════════════════════════════════════════ */
-    .dv-hire-back { display: none !important; }
-    #dv-hire-view { display: none; }
-    #tab-legal[data-hire-active] > *:not(.dv-hire-back):not(#dv-hire-view) {
+    .dv-scan-result-back { display: none !important; }
+    #dv-scan-result-view { display: none; }
+    #tab-legal[data-scan-result-active] > *:not(.dv-scan-result-back):not(#dv-scan-result-view) {
       display: none !important;
     }
-    #tab-legal[data-hire-active] #dv-hire-view { display: block; }
-    #tab-legal[data-hire-active] .dv-hire-back {
+    #tab-legal[data-scan-result-active] #dv-scan-result-view { display: block; }
+    #tab-legal[data-scan-result-active] .dv-scan-result-back {
       display: inline-flex !important;
       align-items: center; gap: 8px;
       background: #fff; border: 1px solid rgba(14,27,61,0.10);
@@ -5559,7 +5560,7 @@
       transition: background 0.15s;
       position: relative; z-index: 2;
     }
-    #tab-legal[data-hire-active] .dv-hire-back:hover { background: var(--dv2-blue-50, #EAF0FF); }
+    #tab-legal[data-scan-result-active] .dv-scan-result-back:hover { background: var(--dv2-blue-50, #EAF0FF); }
 
     /* Dedicated "All your reminders" view */
     .dv2-rem-heading { display: none; }
@@ -8575,15 +8576,19 @@
     ================================================ -->
     <section class="tab-section" id="tab-legal">
 
-      <!-- Back button for the focused Hire-paralegal view. Hidden until
-           #tab-legal has data-hire-active="true". -->
-      <button class="dv-hire-back" type="button" onclick="dvCloseHire()">
+      <!-- Back button for the focused Scan-Result view (verdict + 3 choices
+           + firm list + lead form). Hidden until #tab-legal has
+           data-scan-result-active="true". -->
+      <button class="dv-scan-result-back" type="button" onclick="dvCloseScanResult()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Back to verdict
+        Back to Legal
       </button>
 
-      <!-- Focused-view container: firm list + lead form + sent confirmation -->
-      <div id="dv-hire-view"></div>
+      <!-- Focused-view container: verdict + 3 choices + firm list + lead form
+           + sent confirmation. The whole post-scan flow lives here, on its
+           own clean full-height page (no clutter from the firm cards/chips
+           that sit on the Legal tab itself). -->
+      <div id="dv-scan-result-view"></div>
 
       <!-- V2 hero (deep-blue) — only visible when ?design=v2 is active -->
       <div class="dv2-tab-hero dv2-hero-simple">
@@ -9825,10 +9830,10 @@
           delete dashEl.dataset.signActive;
         }
       }
-      // Leaving the Legal tab? Clear the Hire focused-view too.
+      // Leaving the Legal tab? Clear the scan-result focused-view too.
       if (tabId !== 'tab-legal') {
         var legalEl = document.getElementById('tab-legal');
-        if (legalEl) delete legalEl.dataset.hireActive;
+        if (legalEl) delete legalEl.dataset.scanResultActive;
       }
       // Leaving the Guide tab? Clear install focused-view too.
       if (tabId !== 'tab-guide') {
@@ -10882,23 +10887,23 @@
       setTimeout(function() { try { input.value = ''; } catch (e) {} }, 0);
 
       var status = document.getElementById('legal-scan-status');
-      var verdictBox = document.getElementById('legal-verdict-output');
-      // Show a clear loading state in BOTH the status line and the verdict box,
-      // so the user always sees something happening even if the status line is
-      // scrolled out of view.
+      // The whole post-scan UI (verdict, choices, firms, form) opens on its
+      // own focused page now. Open it immediately so the loading state and the
+      // result both show on a clean page, not inline among firm chips/cards.
+      dvOpenScanResult();
+      var resultBox = document.getElementById('dv-scan-result-view');
       if (status) {
         status.className = 'vision-scan-status';
         status.style.display = 'block';
         status.textContent = '🤖 Claude is reading your ticket…';
       }
-      if (verdictBox) {
-        verdictBox.innerHTML =
+      if (resultBox) {
+        resultBox.innerHTML =
           '<div class="dv-lv-card dv-lv-mod">' +
             '<div class="dv-lv-eyebrow">SCANNING</div>' +
             '<div class="dv-lv-headline">Reading your ticket…</div>' +
-            '<div class="dv-lv-reason">This usually takes 5–10 seconds. Keep this tab open.</div>' +
+            '<div class="dv-lv-reason">This usually takes 5–10 seconds. Keep the app open.</div>' +
           '</div>';
-        try { verdictBox.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
       }
 
       // Telemetry: count every scan attempt so we can see drop-offs.
@@ -10934,8 +10939,8 @@
             if (typeof trackEvent === 'function') trackEvent('scan_success', 'legal-tab');
           } catch (e) {
             // Defensive: if the success handler itself throws, surface it loudly.
-            if (verdictBox) {
-              verdictBox.innerHTML =
+            if (resultBox) {
+              resultBox.innerHTML =
                 '<div class="dv-lv-card dv-lv-weak">' +
                   '<div class="dv-lv-eyebrow">SOMETHING WENT WRONG</div>' +
                   '<div class="dv-lv-headline">We read your ticket but couldn\'t show the verdict</div>' +
@@ -10950,8 +10955,8 @@
             status.className = 'vision-scan-status error';
             status.textContent = '⚠️ ' + err;
           }
-          if (verdictBox) {
-            verdictBox.innerHTML =
+          if (resultBox) {
+            resultBox.innerHTML =
               '<div class="dv-lv-card dv-lv-weak">' +
                 '<div class="dv-lv-eyebrow">SCAN FAILED</div>' +
                 '<div class="dv-lv-headline">' + dvEscape(err) + '</div>' +
@@ -11001,9 +11006,26 @@
       return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    // Renders verdict card + 3-choice row inside #legal-verdict-output.
+    // Opens the dedicated Scan-Result focused page. The whole post-scan UI
+    // (verdict, 3 choices, firm list, lead form, sent confirmation) renders
+    // into #dv-scan-result-view on this page so it never gets layout-stuck
+    // among the firm chips/cards that sit on the Legal tab itself.
+    function dvOpenScanResult() {
+      var legal = document.getElementById('tab-legal');
+      if (legal) legal.dataset.scanResultActive = 'true';
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+    }
+    function dvCloseScanResult() {
+      var legal = document.getElementById('tab-legal');
+      if (legal) delete legal.dataset.scanResultActive;
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+    }
+
+    // Renders verdict card + 3-choice row inside the focused #dv-scan-result-view.
     function dvRenderLegalVerdict(p) {
-      var box = document.getElementById('legal-verdict-output');
+      // Make sure the focused page is open (in case the caller hasn't already).
+      dvOpenScanResult();
+      var box = document.getElementById('dv-scan-result-view');
       if (!box) return;
       var v = dvLegalVerdictFor(p);
       var label = (p.type || 'ticket').toString().replace(/_/g, ' ');
@@ -11040,19 +11062,15 @@
             '<div class="dv-lv-c-sub">Free case review · matched firms</div>' +
           '</button>' +
         '</div>';
-      // Scroll the verdict into view smoothly so it doesn't sit below the fold.
-      try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     }
 
     // ── 3-choice handlers ──
     function dvLegalChoosePay() {
       var p = window._lastLegalScan || {};
-      // Reuse the existing payment-portal router if it's there.
       if (typeof getPaymentUrl === 'function') {
         var url = getPaymentUrl(p);
         if (url) { window.open(url, '_blank', 'noopener'); return; }
       }
-      // Fallback: Ontario pay-ticket portal.
       window.open('https://www.ontario.ca/page/pay-fine', '_blank', 'noopener');
     }
     function dvLegalChooseFight() {
@@ -11064,30 +11082,19 @@
       }, 120);
       if (typeof trackEvent === 'function') trackEvent('dispute_generated', 'opened-from-legal-verdict');
     }
-    // Opens the dedicated focused page for hiring a paralegal. Everything else
-    // on the Legal tab is hidden by the data-hire-active CSS, so the firm list
-    // + lead form sits on a clean, full-height page (the old inline flow was
-    // getting layout-stuck between the verdict and the firm cards below).
+    // Renders the matched firm list into the already-open Scan-Result page.
+    // The page stays open; just the content changes.
     function dvLegalChooseHire() {
-      var legal = document.getElementById('tab-legal');
-      if (legal) legal.dataset.hireActive = 'true';
       var p = window._lastLegalScan || {};
       var v = dvLegalVerdictFor(p);
       dvRenderMatchedFirms(v.firmTag);
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
     }
-    // Closes the Hire focused page — back to the verdict view.
-    function dvCloseHire() {
-      var legal = document.getElementById('tab-legal');
-      if (legal) delete legal.dataset.hireActive;
-      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
-    }
 
     // ── Pre-filtered firm list (reuses the existing firm-card DOM) ──
-    // Renders into the focused-page container #dv-hire-view (NOT the in-page
-    // #legal-verdict-output anymore).
+    // Renders into the focused-page container #dv-scan-result-view.
     function dvRenderMatchedFirms(tag) {
-      var box = document.getElementById('dv-hire-view');
+      var box = document.getElementById('dv-scan-result-view');
       if (!box) return;
       // Pull live firm data out of the existing cards so it's always in sync.
       var firms = [];
@@ -11120,7 +11127,8 @@
       window._dvMatchedFirms = firms;
 
       box.innerHTML =
-        '<div class="dv-lv-eyebrow" style="margin:0 0 6px;color:var(--dv2-blue-d,#1A3FB8)">MATCHED FOR YOUR TICKET</div>' +
+        '<button class="dv-lv-back" type="button" onclick="dvRenderLegalVerdict(window._lastLegalScan||{})">‹ Back to verdict</button>' +
+        '<div class="dv-lv-eyebrow" style="margin:10px 0 6px;color:var(--dv2-blue-d,#1A3FB8)">MATCHED FOR YOUR TICKET</div>' +
         '<h3 class="dv-lv-h">Pick a paralegal — free case review</h3>' +
         '<div class="dv-lv-firms">' + rowsHtml + '</div>' +
         '<div class="dv-lv-trust">🔒 Free consultation. We forward your info to the firm you choose — never to anyone else.</div>';
@@ -11131,7 +11139,7 @@
       var firms = window._dvMatchedFirms || [];
       var f = firms[idx];
       if (!f) return;
-      var box = document.getElementById('dv-hire-view');
+      var box = document.getElementById('dv-scan-result-view');
       if (!box) return;
       var p = window._lastLegalScan || {};
       var profile = (typeof safeGet === 'function') ? (safeGet(PROFILE_KEY) || {}) : {};
@@ -11215,7 +11223,7 @@
 
       // 3) Show a friendly confirmation on the focused Hire page. The page-level
       // "Back to verdict" button at the top closes the focused view.
-      var box = document.getElementById('dv-hire-view');
+      var box = document.getElementById('dv-scan-result-view');
       if (box) {
         box.innerHTML =
           '<div class="dv-lv-card dv-lv-strong">' +
@@ -11223,7 +11231,7 @@
             '<div class="dv-lv-headline">Your request is on its way to ' + dvEscape(lead.firm.short) + '</div>' +
             '<div class="dv-lv-reason">Your mail app just opened with the message pre-filled — hit Send if it hasn\'t already gone. The firm will call you at the time you chose. We logged your lead so we can check in if you don\'t hear back.</div>' +
           '</div>' +
-          '<button class="dv-lv-back" type="button" onclick="dvCloseHire()" style="margin-top:14px">‹ Done — back to verdict</button>';
+          '<button class="dv-lv-back" type="button" onclick="dvCloseScanResult()" style="margin-top:14px">‹ Done — back to Legal</button>';
       }
     }
 
