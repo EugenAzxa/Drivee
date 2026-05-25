@@ -3008,8 +3008,17 @@
     .dv-lv-firm:active { transform: scale(0.99); }
     .dv-lv-firm:hover  { border-color: var(--blue, #2563EB); box-shadow: 0 8px 22px -14px rgba(37,99,235,0.40); }
     .dv-lv-firm-top { display: flex; align-items: center; gap: 10px; }
+    /* Scales icon chip in front of the firm name — signals "law firm" at a glance. */
+    .dv-lv-firm-icon {
+      flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: rgba(37,99,235,0.10);
+      font-size: 17px; line-height: 1;
+    }
     .dv-lv-firm-name { font-weight: 800; font-size: 15.5px; color: var(--text-primary, #111); letter-spacing: -0.2px; flex: 1; min-width: 0; }
     .dv-lv-firm-arrow { font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; line-height: 1; flex-shrink: 0; }
+    .dv-lv-firm-claim-ic { font-size: 13px; margin-right: 2px; opacity: 0.7; }
     /* Small "★ Google" chip — signals reviews exist, no number claimed. */
     .dv-lv-firm-google {
       flex-shrink: 0;
@@ -3054,13 +3063,24 @@
       margin: 0 0 14px;
     }
     .dv-lv-firm-claim-big {
+      position: relative;
       background: linear-gradient(135deg, #fff7e6, #ffefd1);
       border: 1px solid rgba(232,155,34,0.30);
-      border-radius: 14px; padding: 14px 16px;
+      border-radius: 14px; padding: 14px 16px 14px 50px;
       margin: 0 0 16px;
       font-size: 15px; line-height: 1.5; font-weight: 700;
       color: var(--text-primary, #111);
       font-style: italic;
+    }
+    .dv-lv-firm-claim-big-ic {
+      position: absolute; left: 14px; top: 12px;
+      font-size: 22px; line-height: 1;
+      font-style: normal;
+    }
+    /* Scales icon next to the firm name on detail page */
+    .dv-lv-h-icon {
+      display: inline-block; margin-right: 6px;
+      font-size: 22px; vertical-align: -3px;
     }
     .dv-lv-firm-facts {
       display: grid; gap: 12px;
@@ -11529,15 +11549,16 @@
         return '' +
           '<button class="dv-lv-firm" type="button" onclick="dvLegalShowFirmDetail(' + i + ')">' +
             '<div class="dv-lv-firm-top">' +
+              '<span class="dv-lv-firm-icon" aria-hidden="true">⚖️</span>' +
               '<div class="dv-lv-firm-name">' + dvEscape(f.name) + '</div>' +
               '<span class="dv-lv-firm-google" title="Reviews on Google">' +
                 '<span class="dv-lv-firm-google-star">★</span> Google' +
               '</span>' +
               '<div class="dv-lv-firm-arrow">›</div>' +
             '</div>' +
-            (info.claim ? '<div class="dv-lv-firm-claim">' + dvEscape(info.claim) + '</div>' : '') +
+            (info.claim ? '<div class="dv-lv-firm-claim"><span class="dv-lv-firm-claim-ic">💬</span> ' + dvEscape(info.claim) + '</div>' : '') +
             (perks ? '<div class="dv-lv-firm-perks">' + perks + '</div>' : '') +
-            '<div class="dv-lv-firm-meta">' + dvEscape(f.price) + ' · Free consultation</div>' +
+            '<div class="dv-lv-firm-meta">💵 ' + dvEscape(f.price) + ' · ✅ Free consultation</div>' +
           '</button>';
       }).join('');
       window._dvMatchedFirms = firms;
@@ -11567,13 +11588,13 @@
       box.innerHTML =
         '<button class="dv-lv-back" type="button" onclick="dvLegalChooseHire()">‹ Back to firms</button>' +
         '<div class="dv-lv-eyebrow" style="margin:10px 0 6px;color:var(--dv2-blue-d,#1A3FB8)">FREE CASE REVIEW · DRIVEE PARTNER</div>' +
-        '<h3 class="dv-lv-h">' + dvEscape(f.name) + '</h3>' +
+        '<h3 class="dv-lv-h"><span class="dv-lv-h-icon">⚖️</span> ' + dvEscape(f.name) + '</h3>' +
         (info.founded_label ? '<div class="dv-lv-firm-est">✓ ' + dvEscape(info.founded_label) + '</div>' : '') +
-        (info.claim ? '<div class="dv-lv-firm-claim-big">' + dvEscape(info.claim) + '</div>' : '') +
+        (info.claim ? '<div class="dv-lv-firm-claim-big"><span class="dv-lv-firm-claim-big-ic">💬</span>' + dvEscape(info.claim) + '</div>' : '') +
         '<div class="dv-lv-firm-facts">' +
-          (info.team ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Team</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.team) + '</span></div>' : '') +
-          (info.area ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Service area</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.area) + '</span></div>' : '') +
-          (f.price ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">Pricing</span><span class="dv-lv-firm-fact-v">' + dvEscape(f.price) + '</span></div>' : '') +
+          (info.team ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">👥 Team</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.team) + '</span></div>' : '') +
+          (info.area ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">📍 Service area</span><span class="dv-lv-firm-fact-v">' + dvEscape(info.area) + '</span></div>' : '') +
+          (f.price ? '<div class="dv-lv-firm-fact"><span class="dv-lv-firm-fact-l">💵 Pricing</span><span class="dv-lv-firm-fact-v">' + dvEscape(f.price) + '</span></div>' : '') +
         '</div>' +
         (perksHtml ? '<ul class="dv-lv-firm-perks-list">' + perksHtml + '</ul>' : '') +
         // Live Google reviews — opens Google Maps in a new tab with a search
