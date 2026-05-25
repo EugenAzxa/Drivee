@@ -2854,119 +2854,163 @@
        LEGAL VERDICT FLOW (.dv-lv-*) — Scan → categorical verdict → 3-choice
        → matched firms → lead form. Lives inside #legal-verdict-output.
     ═══════════════════════════════════════════════════════════════ */
+    /* ──── Verdict card: full-width hero with strong gradient + serif headline ──── */
     .dv-lv-card {
-      border-radius: 16px; padding: 18px;
-      margin-top: 4px; animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
+      position: relative; overflow: hidden;
+      border-radius: 22px; padding: 24px 22px;
+      margin: 0 0 22px;
+      color: #fff;
+      box-shadow: 0 22px 44px -22px rgba(14,27,61,0.30);
+      animation: dvLvIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
     }
-    .dv-lv-strong { background: rgba(31,171,107,0.10); border: 1px solid rgba(31,171,107,0.30); }
-    .dv-lv-mod    { background: rgba(232,155,34,0.10); border: 1px solid rgba(232,155,34,0.30); }
-    .dv-lv-weak   { background: rgba(225,71,61,0.10);  border: 1px solid rgba(225,71,61,0.30);  }
+    @keyframes dvLvIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    /* Three verdict colourways — green/amber/red traffic-light system. */
+    .dv-lv-strong { background: linear-gradient(135deg, #1FAB6B, #157a40); }
+    .dv-lv-mod    { background: linear-gradient(135deg, #E89B22, #B07514); }
+    .dv-lv-weak   { background: linear-gradient(135deg, #E1473D, #AD2F28); }
+    /* Decorative glow blob top-right */
+    .dv-lv-card::before {
+      content: ""; position: absolute;
+      top: -40px; right: -40px; width: 180px; height: 180px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(255,255,255,0.20), rgba(255,255,255,0) 70%);
+      pointer-events: none;
+    }
     .dv-lv-eyebrow {
+      position: relative;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px; letter-spacing: 1.6px; font-weight: 800;
-      color: var(--text-secondary, #666); margin-bottom: 6px; text-transform: uppercase;
+      font-size: 10px; letter-spacing: 2px; font-weight: 800;
+      color: rgba(255,255,255,0.85); margin-bottom: 14px; text-transform: uppercase;
     }
-    .dv-lv-card.dv-lv-strong .dv-lv-eyebrow { color: #157a40; }
-    .dv-lv-card.dv-lv-mod    .dv-lv-eyebrow { color: #b07514; }
-    .dv-lv-card.dv-lv-weak   .dv-lv-eyebrow { color: #ad2f28; }
     .dv-lv-headline {
-      font-size: 18px; font-weight: 800; letter-spacing: -0.3px;
-      color: var(--text-primary, #111); margin-bottom: 6px; line-height: 1.25;
+      position: relative;
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
+      color: #fff; margin-bottom: 10px; line-height: 1.15;
     }
-    .dv-lv-reason { font-size: 13px; line-height: 1.5; color: var(--text-secondary, #666); }
+    .dv-lv-reason {
+      position: relative;
+      font-size: 14px; line-height: 1.55;
+      color: rgba(255,255,255,0.92);
+    }
     .dv-lv-aiquote {
-      margin-top: 10px; padding: 10px 12px; border-radius: 10px;
-      background: rgba(255,255,255,0.55); font-size: 13px; line-height: 1.5;
-      color: var(--text-primary, #111);
+      position: relative;
+      margin-top: 16px; padding: 12px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 13px; line-height: 1.55; color: #fff;
     }
 
-    /* 3-choice decision row */
-    .dv-lv-choices { display: grid; gap: 10px; }
+    /* "What do you want to do?" eyebrow inside the focused page */
+    #dv-scan-result-view > .dv-lv-eyebrow,
+    .dv-lv-section-head {
+      color: var(--text-secondary, #666);
+      margin: 22px 0 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase;
+    }
+
+    /* ──── 3-choice decision row — improved hierarchy ──── */
+    .dv-lv-choices { display: grid; gap: 12px; }
     .dv-lv-choice {
-      display: grid; grid-template-columns: 38px 1fr; column-gap: 12px;
+      display: grid; grid-template-columns: 46px 1fr 22px; column-gap: 14px;
       align-items: center; text-align: left;
-      background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
-      border-radius: 14px; padding: 14px; cursor: pointer;
-      font-family: inherit; transition: transform .12s ease, border-color .12s ease;
+      background: var(--surface, #fff);
+      border: 1px solid var(--border, #d6d2c4);
+      border-radius: 16px; padding: 16px;
+      cursor: pointer; font-family: inherit;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
     }
     .dv-lv-choice:active { transform: scale(0.985); }
     .dv-lv-c-emoji {
-      width: 38px; height: 38px; border-radius: 10px;
-      display: grid; place-items: center; font-size: 20px;
-      background: rgba(10,132,255,0.10); grid-row: span 2;
+      width: 46px; height: 46px; border-radius: 13px;
+      display: grid; place-items: center; font-size: 22px;
+      background: rgba(10,132,255,0.10);
+      grid-row: span 2;
     }
-    .dv-lv-choice.fight .dv-lv-c-emoji { background: rgba(31,171,107,0.12); }
-    /* "Hire a paralegal" is the primary action — make it solid brand blue
-       so it stands above the other two choices visually. */
+    .dv-lv-choice.fight .dv-lv-c-emoji { background: rgba(31,171,107,0.14); }
+    .dv-lv-c-title { font-weight: 800; font-size: 15px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
+    .dv-lv-c-sub   { font-size: 12.5px; color: var(--text-secondary, #666); margin-top: 3px; line-height: 1.4; }
+    .dv-lv-c-arrow { grid-column: 3; grid-row: span 2; font-size: 22px; color: var(--text-tertiary, #999); font-weight: 700; }
+
+    /* Hire a paralegal — primary action, brand blue gradient */
     .dv-lv-choice.hire {
       background: linear-gradient(135deg, #2E64FF, #1A3FB8) !important;
       color: #fff !important;
       border: 0 !important;
-      box-shadow: 0 14px 30px -16px rgba(26,63,184,0.55);
+      box-shadow: 0 18px 36px -16px rgba(26,63,184,0.55);
     }
     .dv-lv-choice.hire .dv-lv-c-emoji  { background: rgba(255,255,255,0.18); }
     .dv-lv-choice.hire .dv-lv-c-title  { color: #fff; }
     .dv-lv-choice.hire .dv-lv-c-sub    { color: rgba(255,255,255,0.85); }
-    .dv-lv-c-title { font-weight: 800; font-size: 14px; color: var(--text-primary, #111); }
-    .dv-lv-c-sub   { font-size: 12px; color: var(--text-secondary, #666); margin-top: 2px; }
+    .dv-lv-choice.hire .dv-lv-c-arrow  { color: rgba(255,255,255,0.85); }
 
-    /* Matched-firm list */
+    /* ──── Matched-firm list — cleaner layout, bigger tap target ──── */
     .dv-lv-back {
       background: none; border: 0; cursor: pointer;
       font-family: inherit; font-weight: 700; font-size: 13px;
-      color: var(--blue, #2563EB); padding: 4px 0;
+      color: var(--blue, #2563EB); padding: 8px 0 14px 0;
+      display: inline-flex; align-items: center; gap: 6px;
     }
     .dv-lv-h {
-      font-size: 20px; font-weight: 800; letter-spacing: -0.4px;
-      color: var(--text-primary, #111); margin: 0 0 12px;
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-size: 24px; font-weight: 700; letter-spacing: -0.4px;
+      color: var(--text-primary, #111); margin: 0 0 16px;
+      line-height: 1.2;
     }
     .dv-lv-firms { display: grid; gap: 10px; }
     .dv-lv-firm {
       display: grid; grid-template-columns: 1fr auto; column-gap: 10px;
       align-items: center; text-align: left;
       background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
-      border-radius: 12px; padding: 12px 14px; cursor: pointer;
+      border-radius: 14px; padding: 14px 16px; cursor: pointer;
       font-family: inherit; transition: transform .12s ease, border-color .12s ease;
     }
     .dv-lv-firm:active { transform: scale(0.985); }
     .dv-lv-firm:hover  { border-color: var(--blue, #2563EB); }
-    .dv-lv-firm-name { font-weight: 800; font-size: 14px; color: var(--text-primary, #111); }
-    .dv-lv-firm-meta { font-size: 12px; color: var(--text-secondary, #666); margin-top: 2px; grid-column: 1; }
+    .dv-lv-firm-name { font-weight: 800; font-size: 15px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
+    .dv-lv-firm-meta { font-size: 12px; color: var(--text-secondary, #666); margin-top: 3px; grid-column: 1; }
     .dv-lv-firm-arrow { grid-column: 2; grid-row: span 2; font-size: 22px; color: var(--blue, #2563EB); font-weight: 800; }
 
-    /* Lead form */
+    /* ──── Lead form ──── */
     .dv-lv-ticket-pill {
       background: rgba(31,171,107,0.10); border: 1px solid rgba(31,171,107,0.30);
-      border-radius: 12px; padding: 10px 12px; margin: 0 0 14px;
-      font-size: 13px; color: var(--text-primary, #111); line-height: 1.5;
+      border-radius: 14px; padding: 14px 16px; margin: 0 0 18px;
+      font-size: 13px; color: var(--text-primary, #111); line-height: 1.55;
     }
     .dv-lv-ticket-pill-line {
       display: block; font-family: 'JetBrains Mono', monospace;
-      font-size: 12px; color: var(--text-secondary, #666); margin-top: 3px;
+      font-size: 12px; color: var(--text-secondary, #666); margin-top: 4px;
     }
-    .dv-lv-form { display: grid; gap: 12px; }
-    .dv-lv-field { display: grid; gap: 5px; }
+    .dv-lv-form { display: grid; gap: 16px; }
+    .dv-lv-field { display: grid; gap: 6px; }
     .dv-lv-field > span {
       font-family: 'JetBrains Mono', monospace; font-size: 10px;
       letter-spacing: 1.4px; font-weight: 800; color: var(--text-secondary, #666);
       text-transform: uppercase;
     }
     .dv-lv-field input {
-      width: 100%; padding: 12px 13px; font-size: 15px; font-family: inherit;
+      width: 100%; padding: 14px 14px; font-size: 16px; font-family: inherit;
       background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
-      border-radius: 10px; color: var(--text-primary, #111);
+      border-radius: 12px; color: var(--text-primary, #111);
+      transition: border-color .15s ease, box-shadow .15s ease;
     }
-    .dv-lv-field input:focus { outline: 2px solid rgba(37,99,235,0.30); border-color: var(--blue, #2563EB); }
+    .dv-lv-field input:focus {
+      outline: none; border-color: var(--blue, #2563EB);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.18);
+    }
     .dv-lv-time-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .dv-lv-time-options label {
-      position: relative; cursor: pointer;
-    }
+    .dv-lv-time-options label { position: relative; cursor: pointer; }
     .dv-lv-time-options input { position: absolute; opacity: 0; pointer-events: none; }
     .dv-lv-time-options span {
       display: block; text-align: center;
       background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
-      border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700;
+      border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 700;
       color: var(--text-primary, #111);
+      transition: all .15s ease;
     }
     .dv-lv-time-options input:checked + span {
       background: rgba(37,99,235,0.10); border-color: var(--blue, #2563EB);
@@ -2975,14 +3019,33 @@
     .dv-lv-submit {
       width: 100%; border: 0; cursor: pointer;
       background: linear-gradient(135deg, #2E64FF, #1A3FB8); color: #fff;
-      border-radius: 12px; padding: 14px; font-family: inherit;
+      border-radius: 14px; padding: 16px; font-family: inherit;
       font-weight: 800; font-size: 15px; letter-spacing: -0.2px;
-      box-shadow: 0 14px 30px -16px rgba(26,63,184,0.55);
+      box-shadow: 0 18px 36px -16px rgba(26,63,184,0.55);
+      transition: transform .12s ease;
     }
+    .dv-lv-submit:active { transform: scale(0.98); }
     .dv-lv-trust {
-      font-size: 11px; line-height: 1.5; color: var(--text-secondary, #666);
-      text-align: center; margin-top: 12px;
+      font-size: 11px; line-height: 1.55; color: var(--text-secondary, #666);
+      text-align: center; margin-top: 14px;
     }
+
+    /* ──── "Resume last scan" button on Legal home ──── */
+    .dv-lv-resume {
+      display: flex; align-items: center; gap: 14px;
+      width: 100%; margin: 14px 0 4px;
+      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      border: 1px solid rgba(232,155,34,0.35);
+      border-radius: 16px; padding: 14px 16px;
+      cursor: pointer; font-family: inherit;
+      transition: transform .12s ease;
+    }
+    .dv-lv-resume:active { transform: scale(0.985); }
+    .dv-lv-resume-ic { font-size: 24px; flex-shrink: 0; }
+    .dv-lv-resume-tx { flex: 1; min-width: 0; text-align: left; }
+    .dv-lv-resume-t  { display: block; font-weight: 800; font-size: 14px; color: var(--text-primary, #111); }
+    .dv-lv-resume-s  { display: block; font-size: 12px; color: var(--text-secondary, #666); margin-top: 2px; }
+    .dv-lv-resume-arrow { font-size: 20px; color: #b07514; font-weight: 800; }
 
     /* ─── Loss-aversion CTA shown under the verdict for signed-out users ─── */
     .dv2-loss-cta {
@@ -8599,6 +8662,18 @@
         <div class="dv2-hsimple-meta">AI VERDICT · TORONTO LAW</div>
       </div>
 
+      <!-- "Resume last scan" — shown only when a previous scan is saved so the
+           user can return to their verdict after going to a payment portal. -->
+      <button class="dv-lv-resume" id="dv-lv-resume" type="button"
+              style="display:none" onclick="dvResumeLastScan()">
+        <span class="dv-lv-resume-ic">📋</span>
+        <span class="dv-lv-resume-tx">
+          <span class="dv-lv-resume-t">Your last scan is saved</span>
+          <span class="dv-lv-resume-s">Tap to return to the verdict + options</span>
+        </span>
+        <span class="dv-lv-resume-arrow">→</span>
+      </button>
+
       <!-- V2 Legal AI Scanner — gradient CTA. Opens the Legal-tab photo picker
            (#legal-photo) so the scan stays ON THIS TAB and triggers the new
            in-place verdict flow (verdict -> 3 choices -> matched firms ->
@@ -9834,6 +9909,9 @@
       if (tabId !== 'tab-legal') {
         var legalEl = document.getElementById('tab-legal');
         if (legalEl) delete legalEl.dataset.scanResultActive;
+      } else if (typeof dvUpdateLegalResumeButton === 'function') {
+        // Entering Legal — show "Resume last scan" if a saved scan exists.
+        dvUpdateLegalResumeButton();
       }
       // Leaving the Guide tab? Clear install focused-view too.
       if (tabId !== 'tab-guide') {
@@ -10935,6 +11013,9 @@
               status.textContent = '✅ Ticket scanned — pick your next step below.';
             }
             window._lastLegalScan = p;
+            // Persist so the verdict survives a refresh, app re-open, or a
+            // round-trip to the payment portal in another tab.
+            try { if (typeof safeSet === 'function') safeSet('drivee_last_legal_scan', p); } catch (e) {}
             dvRenderLegalVerdict(p);
             if (typeof trackEvent === 'function') trackEvent('scan_success', 'legal-tab');
           } catch (e) {
@@ -11018,7 +11099,37 @@
     function dvCloseScanResult() {
       var legal = document.getElementById('tab-legal');
       if (legal) delete legal.dataset.scanResultActive;
+      // Show the "Resume last scan" button so the user can come back to it.
+      dvUpdateLegalResumeButton();
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) {}
+    }
+
+    // Re-opens the focused page with the last scan's verdict — used after a
+    // round-trip to the payment portal or any time the user closed the page.
+    function dvResumeLastScan() {
+      var p = window._lastLegalScan;
+      if (!p) {
+        // Try loading from storage in case the page was refreshed.
+        try { if (typeof safeGet === 'function') p = safeGet('drivee_last_legal_scan'); } catch (e) {}
+        if (p) window._lastLegalScan = p;
+      }
+      if (!p) {
+        if (typeof showToast === 'function') showToast('No saved scan — scan a ticket first.');
+        return;
+      }
+      dvRenderLegalVerdict(p);
+    }
+
+    // Shows/hides the "Resume last scan" button on the Legal tab based on
+    // whether there's a saved scan. Called whenever the Legal tab is shown.
+    function dvUpdateLegalResumeButton() {
+      var btn = document.getElementById('dv-lv-resume');
+      if (!btn) return;
+      var has = !!window._lastLegalScan;
+      if (!has) {
+        try { has = !!(typeof safeGet === 'function' && safeGet('drivee_last_legal_scan')); } catch (e) {}
+      }
+      btn.style.display = has ? 'flex' : 'none';
     }
 
     // Renders verdict card + 3-choice row inside the focused #dv-scan-result-view.
@@ -11044,22 +11155,25 @@
           '<div class="dv-lv-reason">' + dvEscape(reason) + '</div>' +
           (p.advice ? '<div class="dv-lv-aiquote">🤖 ' + dvEscape(p.advice) + '</div>' : '') +
         '</div>' +
-        '<div class="dv-lv-eyebrow" style="margin:18px 0 8px;color:var(--dv2-blue-d,#1A3FB8)">WHAT DO YOU WANT TO DO?</div>' +
+        '<div class="dv-lv-section-head">WHAT DO YOU WANT TO DO?</div>' +
         '<div class="dv-lv-choices">' +
-          '<button class="dv-lv-choice pay" type="button" onclick="dvLegalChoosePay()">' +
-            '<div class="dv-lv-c-emoji">💳</div>' +
-            '<div class="dv-lv-c-title">Pay it</div>' +
-            '<div class="dv-lv-c-sub">Settle now and move on</div>' +
-          '</button>' +
-          '<button class="dv-lv-choice fight" type="button" onclick="dvLegalChooseFight()">' +
-            '<div class="dv-lv-c-emoji">✊</div>' +
-            '<div class="dv-lv-c-title">Fight it yourself</div>' +
-            '<div class="dv-lv-c-sub">Free dispute letter</div>' +
-          '</button>' +
           '<button class="dv-lv-choice hire" type="button" onclick="dvLegalChooseHire()">' +
             '<div class="dv-lv-c-emoji">⚖️</div>' +
             '<div class="dv-lv-c-title">Hire a paralegal ★</div>' +
             '<div class="dv-lv-c-sub">Free case review · matched firms</div>' +
+            '<div class="dv-lv-c-arrow">›</div>' +
+          '</button>' +
+          '<button class="dv-lv-choice fight" type="button" onclick="dvLegalChooseFight()">' +
+            '<div class="dv-lv-c-emoji">✊</div>' +
+            '<div class="dv-lv-c-title">Fight it yourself</div>' +
+            '<div class="dv-lv-c-sub">Free dispute letter — open guided form</div>' +
+            '<div class="dv-lv-c-arrow">›</div>' +
+          '</button>' +
+          '<button class="dv-lv-choice pay" type="button" onclick="dvLegalChoosePay()">' +
+            '<div class="dv-lv-c-emoji">💳</div>' +
+            '<div class="dv-lv-c-title">Pay it</div>' +
+            '<div class="dv-lv-c-sub">Settle now — opens the right payment portal</div>' +
+            '<div class="dv-lv-c-arrow">›</div>' +
           '</button>' +
         '</div>';
     }
@@ -11067,9 +11181,19 @@
     // ── 3-choice handlers ──
     function dvLegalChoosePay() {
       var p = window._lastLegalScan || {};
+      // getPaymentUrl expects (type, province, municipality) — not the whole
+      // scan object. Bug previously dropped users on the generic Ontario page.
       if (typeof getPaymentUrl === 'function') {
-        var url = getPaymentUrl(p);
-        if (url) { window.open(url, '_blank', 'noopener'); return; }
+        var url = getPaymentUrl(p.type, p.province, p.municipality);
+        if (url) {
+          // Open in a new tab so the focused scan-result page (and verdict)
+          // stays intact when the user comes back.
+          window.open(url, '_blank', 'noopener');
+          if (typeof showToast === 'function') {
+            showToast('Opening payment portal — your scan is saved');
+          }
+          return;
+        }
       }
       window.open('https://www.ontario.ca/page/pay-fine', '_blank', 'noopener');
     }
@@ -16095,6 +16219,11 @@
         renderCars();         // Render saved vehicles on startup
         renderReminders();    // Render any saved reminders on startup
         renderScanHistory();  // Render ticket scan history on startup
+        // Restore last Legal scan so verdict survives a refresh / payment-portal trip
+        try {
+          var lls = (typeof safeGet === 'function') ? safeGet('drivee_last_legal_scan') : null;
+          if (lls) window._lastLegalScan = lls;
+        } catch (e) {}
         renderDemerits();     // Render demerit points tracker on startup
         renderRenewals();     // Render renewal reminders on startup
         updateTowWindowState();                       // Initial tow-window pulse check
