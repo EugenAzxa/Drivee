@@ -2904,6 +2904,40 @@
       font-size: 13px; line-height: 1.55; color: #fff;
     }
 
+    /* ──── "By the numbers" cost breakdown block ──── */
+    .dv-lv-numbers {
+      background: var(--surface, #fff);
+      border: 1px solid var(--border, #d6d2c4);
+      border-radius: 16px; padding: 6px 16px;
+      margin: 0 0 8px;
+    }
+    .dv-lv-num-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--border, #d6d2c4);
+      font-size: 14px; color: var(--text-primary, #111);
+    }
+    .dv-lv-num-row:last-child { border-bottom: 0; }
+    .dv-lv-num-row > span:first-child { color: var(--text-secondary, #666); }
+    .dv-lv-num-row .mono {
+      font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    }
+    .dv-lv-num-row.total {
+      border-top: 2px solid var(--text-primary, #111);
+      border-bottom: 0; padding-top: 14px;
+      font-weight: 800;
+    }
+    .dv-lv-num-row.total > span:first-child { color: var(--text-primary, #111); }
+    .dv-lv-num-row.total .mono { font-size: 18px; color: #E1473D; }
+    .dv-lv-num-save {
+      background: rgba(31,171,107,0.10);
+      border: 1px solid rgba(31,171,107,0.30);
+      border-radius: 12px; padding: 12px 14px;
+      margin: 12px 0 4px;
+      font-size: 13px; line-height: 1.55; color: var(--text-primary, #111);
+    }
+    .dv-lv-num-save b { font-weight: 800; color: #157a40; }
+
     /* "What do you want to do?" eyebrow inside the focused page */
     #dv-scan-result-view > .dv-lv-eyebrow,
     .dv-lv-section-head {
@@ -2913,11 +2947,12 @@
       font-size: 10px; letter-spacing: 2px; font-weight: 800; text-transform: uppercase;
     }
 
-    /* ──── 3-choice decision row — improved hierarchy ──── */
+    /* ──── 3-choice decision row — flex layout (was buggy as a 3-col grid:
+       the subtitle landed in the narrow arrow column and wrapped per-letter). */
     .dv-lv-choices { display: grid; gap: 12px; }
     .dv-lv-choice {
-      display: grid; grid-template-columns: 46px 1fr 22px; column-gap: 14px;
-      align-items: center; text-align: left;
+      display: flex; align-items: center; gap: 14px;
+      width: 100%; text-align: left;
       background: var(--surface, #fff);
       border: 1px solid var(--border, #d6d2c4);
       border-radius: 16px; padding: 16px;
@@ -2926,15 +2961,16 @@
     }
     .dv-lv-choice:active { transform: scale(0.985); }
     .dv-lv-c-emoji {
+      flex-shrink: 0;
       width: 46px; height: 46px; border-radius: 13px;
       display: grid; place-items: center; font-size: 22px;
       background: rgba(10,132,255,0.10);
-      grid-row: span 2;
     }
     .dv-lv-choice.fight .dv-lv-c-emoji { background: rgba(31,171,107,0.14); }
-    .dv-lv-c-title { font-weight: 800; font-size: 15px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
-    .dv-lv-c-sub   { font-size: 12.5px; color: var(--text-secondary, #666); margin-top: 3px; line-height: 1.4; }
-    .dv-lv-c-arrow { grid-column: 3; grid-row: span 2; font-size: 22px; color: var(--text-tertiary, #999); font-weight: 700; }
+    .dv-lv-c-body  { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .dv-lv-c-title { display: block; font-weight: 800; font-size: 15px; color: var(--text-primary, #111); letter-spacing: -0.2px; }
+    .dv-lv-c-sub   { display: block; font-size: 12.5px; color: var(--text-secondary, #666); margin-top: 3px; line-height: 1.4; }
+    .dv-lv-c-arrow { flex-shrink: 0; font-size: 22px; color: var(--text-tertiary, #999); font-weight: 700; line-height: 1; }
 
     /* Hire a paralegal — primary action, brand blue gradient */
     .dv-lv-choice.hire {
@@ -10723,7 +10759,7 @@
           if (timeoutId) clearTimeout(timeoutId);
           var msg = (err && err.name === 'AbortError')
             ? 'Scan timed out — try again with a smaller/clearer photo'
-            : 'Could not reach Claude — check your internet';
+            : 'Could not reach Drivee — check your internet';
           onError(msg);
         });
       } // end continueWithDataUrl
@@ -10973,7 +11009,7 @@
       if (status) {
         status.className = 'vision-scan-status';
         status.style.display = 'block';
-        status.textContent = '🤖 Claude is reading your ticket…';
+        status.textContent = '🤖 Drivee is reading your ticket…';
       }
       if (resultBox) {
         resultBox.innerHTML =
@@ -11132,6 +11168,78 @@
       btn.style.display = has ? 'flex' : 'none';
     }
 
+    // Best-match TCC_DATA entry for a scanned type. The scan returns a short
+    // slug like "distracted" / "speeding" / "redlight"; TCC_DATA uses richer
+    // keys like speeding_mid / redlight_camera. This maps sensibly.
+    function dvScanToTccKey(p) {
+      var t = (p && p.type ? String(p.type).toLowerCase() : '');
+      var amt = Number(p && p.amount) || 0;
+      if (t === 'speeding') {
+        // Use amount to guess severity. Distracted/careless surcharges are
+        // very different; speeding ranges by fine size roughly: <$120 = low,
+        // $120-300 = mid, >$300 = high.
+        if (amt > 300) return 'speeding_high';
+        if (amt > 120) return 'speeding_mid';
+        return 'speeding_low';
+      }
+      if (t === 'redlight' || t === 'camera') return 'redlight_camera';
+      if (t === 'stunt')      return 'speeding_stunt';
+      if (t === 'stop_sign' || t === 'stopsign') return 'stop_sign';
+      if (t === 'school_bus') return 'school_bus';
+      if (t === 'careless')   return 'careless';
+      if (t === 'distracted') return 'distracted';
+      if (t === 'seatbelt')   return 'seatbelt';
+      if (t === 'hov')        return 'hov';
+      if (t === 'no_insurance' || t === 'insurance') return 'no_insurance';
+      if (t === 'parking')    return 'parking';
+      return null;
+    }
+
+    // Builds the "By the numbers — true cost" reasoning block. Real numbers
+    // pulled from TCC_DATA so they match the True Cost calculator on Services.
+    function dvLegalCostBreakdown(p) {
+      try {
+        var key = dvScanToTccKey(p);
+        if (!key || typeof TCC_DATA === 'undefined' || !TCC_DATA[key]) return '';
+        var d = TCC_DATA[key];
+        var fine = Number(p.amount) || 0;
+        var insuranceTotal = (d.insuranceYears || 0) * (d.insurancePerYear || 0);
+        var trueCost = fine + insuranceTotal;
+        if (trueCost <= 0) return ''; // parking / camera — nothing meaningful to show
+        var paralegalLow = 200, paralegalHigh = 700;
+        var savedLow  = Math.max(0, trueCost - paralegalHigh);
+        var savedHigh = Math.max(0, trueCost - paralegalLow);
+
+        var rows = '';
+        if (fine > 0) {
+          rows += '<div class="dv-lv-num-row"><span>Fine</span><span class="mono">$' + fine.toLocaleString() + '</span></div>';
+        }
+        if (d.points > 0) {
+          rows += '<div class="dv-lv-num-row"><span>' + d.points + ' demerit points</span><span class="mono">' + d.insuranceYears + ' yrs on record</span></div>';
+        }
+        if (insuranceTotal > 0) {
+          rows += '<div class="dv-lv-num-row"><span>Insurance over ' + d.insuranceYears + ' yrs (~$' + d.insurancePerYear + '/yr)</span><span class="mono">+$' + insuranceTotal.toLocaleString() + '</span></div>';
+        }
+        rows += '<div class="dv-lv-num-row total"><span>True cost if you just pay</span><span class="mono">$' + trueCost.toLocaleString() + '</span></div>';
+
+        var saveLine = '';
+        if (insuranceTotal > 0 && savedHigh > 0) {
+          saveLine =
+            '<div class="dv-lv-num-save">' +
+              '💡 A paralegal ($' + paralegalLow + '–$' + paralegalHigh + ') can often plead this down to a no-points equivalent. ' +
+              'Best case you keep <b>$' + savedLow.toLocaleString() + '–$' + savedHigh.toLocaleString() + '</b> vs. paying as-is.' +
+            '</div>';
+        }
+
+        return '' +
+          '<div class="dv-lv-section-head">BY THE NUMBERS</div>' +
+          '<div class="dv-lv-numbers">' +
+            rows +
+            saveLine +
+          '</div>';
+      } catch (e) { return ''; }
+    }
+
     // Renders verdict card + 3-choice row inside the focused #dv-scan-result-view.
     function dvRenderLegalVerdict(p) {
       // Make sure the focused page is open (in case the caller hasn't already).
@@ -11155,25 +11263,32 @@
           '<div class="dv-lv-reason">' + dvEscape(reason) + '</div>' +
           (p.advice ? '<div class="dv-lv-aiquote">🤖 ' + dvEscape(p.advice) + '</div>' : '') +
         '</div>' +
+        dvLegalCostBreakdown(p) +
         '<div class="dv-lv-section-head">WHAT DO YOU WANT TO DO?</div>' +
         '<div class="dv-lv-choices">' +
           '<button class="dv-lv-choice hire" type="button" onclick="dvLegalChooseHire()">' +
-            '<div class="dv-lv-c-emoji">⚖️</div>' +
-            '<div class="dv-lv-c-title">Hire a paralegal ★</div>' +
-            '<div class="dv-lv-c-sub">Free case review · matched firms</div>' +
-            '<div class="dv-lv-c-arrow">›</div>' +
+            '<span class="dv-lv-c-emoji">⚖️</span>' +
+            '<span class="dv-lv-c-body">' +
+              '<span class="dv-lv-c-title">Hire a paralegal ★</span>' +
+              '<span class="dv-lv-c-sub">Free case review · matched firms</span>' +
+            '</span>' +
+            '<span class="dv-lv-c-arrow">›</span>' +
           '</button>' +
           '<button class="dv-lv-choice fight" type="button" onclick="dvLegalChooseFight()">' +
-            '<div class="dv-lv-c-emoji">✊</div>' +
-            '<div class="dv-lv-c-title">Fight it yourself</div>' +
-            '<div class="dv-lv-c-sub">Free dispute letter — open guided form</div>' +
-            '<div class="dv-lv-c-arrow">›</div>' +
+            '<span class="dv-lv-c-emoji">✊</span>' +
+            '<span class="dv-lv-c-body">' +
+              '<span class="dv-lv-c-title">Fight it yourself</span>' +
+              '<span class="dv-lv-c-sub">Early Resolution — guided request to the prosecutor</span>' +
+            '</span>' +
+            '<span class="dv-lv-c-arrow">›</span>' +
           '</button>' +
           '<button class="dv-lv-choice pay" type="button" onclick="dvLegalChoosePay()">' +
-            '<div class="dv-lv-c-emoji">💳</div>' +
-            '<div class="dv-lv-c-title">Pay it</div>' +
-            '<div class="dv-lv-c-sub">Settle now — opens the right payment portal</div>' +
-            '<div class="dv-lv-c-arrow">›</div>' +
+            '<span class="dv-lv-c-emoji">💳</span>' +
+            '<span class="dv-lv-c-body">' +
+              '<span class="dv-lv-c-title">Pay it</span>' +
+              '<span class="dv-lv-c-sub">Settle now — opens the right payment portal</span>' +
+            '</span>' +
+            '<span class="dv-lv-c-arrow">›</span>' +
           '</button>' +
         '</div>';
     }
@@ -11198,13 +11313,16 @@
       window.open('https://www.ontario.ca/page/pay-fine', '_blank', 'noopener');
     }
     function dvLegalChooseFight() {
-      // Opens the existing free dispute-script builder on Services.
-      if (typeof showTab === 'function') showTab('tab-services');
-      setTimeout(function() {
-        var el = document.getElementById('svc-dispute');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 120);
-      if (typeof trackEvent === 'function') trackEvent('dispute_generated', 'opened-from-legal-verdict');
+      // Opens the existing Early Resolution wizard on the Services tab. This
+      // is the proper "fight it yourself" path — it writes a request to the
+      // prosecutor (the formal first step), unlike the older dispute script
+      // builder which only generated a generic letter.
+      if (typeof dv2OpenEarlyResolution === 'function') {
+        dv2OpenEarlyResolution();
+      } else if (typeof showTab === 'function') {
+        showTab('tab-services');
+      }
+      if (typeof trackEvent === 'function') trackEvent('dispute_generated', 'er-from-legal-verdict');
     }
     // Renders the matched firm list into the already-open Scan-Result page.
     // The page stays open; just the content changes.
