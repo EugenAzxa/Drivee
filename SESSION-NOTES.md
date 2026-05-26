@@ -910,3 +910,207 @@ session. If the dashboard still looks like the old version, the cache did not
 refresh. Search safari clear website data iphone and clear it for drivee.ca, then
 reopen.
 
+
+SESSION 10 — 22-25 May 2026
+-----------------------------
+
+WHAT WAS BUILT
+
+The biggest session of the project. The whole Legal tab was rebuilt into a
+real lawyer pipeline, plus several Services additions and a wave of polish.
+
+1. New Sign Reader feature (Dashboard enforcement card). Tap "Scan a parking
+   sign," photograph any Toronto sign, and the AI returns a colour-coded
+   verdict (YES green / NO red / CAUTION amber) for the current local time
+   based on the rules on the sign. Includes a decoded "what the sign says"
+   list and an always-verify safety note.
+
+2. Services tab grew three new pages: Car Anti-Theft (with Azcan Auto as the
+   featured installer, partner pitch, GTA-theft-explainer, 5 percent off
+   script, real phone), the swap of USA Links and Car Inspection in the
+   tile order, and the Tow page got real complaint contacts (two tap-to-call
+   numbers plus the formal mailing address for written complaints).
+
+3. Onboarding polish for first-time users. Each slide now animates in
+   (spring pop on the icon, staggered text rise, gentle float). Slide 5
+   gained inline glyph icons next to each install step (Safari, Share box-
+   with-up-arrow, Add-to-Home-Screen square, Android 3-dot menu) so users
+   recognise the exact button to tap on their phone.
+
+4. Map gained the city-wide ticket-density layer (was downtown-only). 20
+   real enforcement hotspots beyond the core: Yonge corridor from St Clair
+   to Finch, Liberty Village, Roncesvalles, Danforth, the Beaches,
+   Scarborough Town Centre, Yorkdale, Jane and Finch. Off by default and
+   toggleable from the layers control so the default map stays clean. Tile
+   tuning kept the cell count fast on mobile.
+
+5. Home-screen icon red badge (Badging API). When a user has overdue or due-
+   today reminders, a red number appears on the Drivee app icon on their
+   home screen. Real OS-level pull-back-to-the-app signal, allowed on
+   installed PWAs (Android, desktop, iOS 16.4+).
+
+6. The Legal tab was completely rebuilt into a real lawyer pipeline. Scan
+   for verdict now opens a dedicated focused page (data-scan-result-active)
+   that shows: a full-bleed gradient verdict hero with serif headline, the
+   AI's plain-English advice in a frosted-glass quote, a "By the numbers"
+   cost breakdown table calibrated to the actual scanned ticket using the
+   same TCC_DATA as the True Cost calculator, and three colour-weighted
+   choice buttons. Hire (primary, blue gradient) opens matched firms
+   pre-filtered by ticket type. Tapping a firm opens a firm-detail page
+   with a green "Established" badge, an italic quoted claim from the firm's
+   own site, a facts table (Team, Service area, Pricing), bullet perks, and
+   a Read-Live-Google-Reviews link button that opens Google Maps for that
+   firm. Continue opens the lead form (name, phone, best time to call),
+   which on submit logs a lawyer_lead event to Telegram and Supabase and
+   opens the user's mail app pre-filled to the firm. The whole pipeline
+   lives on the dedicated page so the design no longer collides with the
+   firm chips and recommended-firms section. Trust signals are real, pulled
+   from each firm's public site (xcopper, x-cops, pointts, hwy-law). The
+   blocked OTT site used conservative defaults.
+
+7. Two real backend-class bugs surfaced and got fixed end-to-end. The
+   Dashboard ticket scanner was silently failing on iPhone because iOS
+   Safari refuses to honour input.click() on hidden file inputs that have
+   pointer-events:none or display:none. Converted every scanner trigger
+   (Dashboard, Legal big CTA, Legal small button) to <label for="input">
+   which iOS honours by spec. Then a second silent failure: iPhone photos
+   at full resolution were exceeding Vercel's body-size limit and returning
+   HTTP 413. Added a canvas-based dvShrinkImage helper that resizes to max
+   1800px and JPEGs at 0.85 quality before upload, dropping payloads from
+   roughly 10 MB to roughly 250 KB. Scans also added a 45-second
+   AbortController timeout and clear error surfacing into the verdict box.
+
+8. Several smaller polish items: Pay button bug fixed (was calling
+   getPaymentUrl with the whole scan object instead of unpacking it, so it
+   always fell back to the generic Ontario page; now routes correctly to
+   Toronto, BC, QC, 407 ETR, etc.). Scan now persists to localStorage so a
+   Pay-portal round trip never loses the verdict; a "Your last scan is
+   saved" amber CTA appears at the top of Legal to resume. The Fight-it-
+   yourself button now opens the Early Resolution wizard on Services, not
+   the older dispute-script builder. User-visible "Claude" strings renamed
+   to "Drivee." Map tiles upgraded to retina so the basemap no longer looks
+   pixelated. The Calculator quick-action now scrolls straight to the True
+   Cost card. Four sample community reports added to the map with real
+   photos compressed from 7.8 MB total to about 555 KB (pothole on Kingston
+   Road, downtown sinkhole, Yonge underpass stuck traffic light, Finch road
+   closure). The Quick Actions tiles were renamed: Free parking to Parking,
+   Late-fee timer to Calculator, Hotspots to GPS Guardian.
+
+ALSO THIS SESSION
+
+- Verified live deploys via curl + cache-bust checks every time the user
+  reported a phone-side problem, several times tracing the root cause to a
+  stale service-worker cache rather than the code. Final cache name on
+  origin is drivee-v2-2026-05-25-firm-icons.
+
+
+ISSUES TO CARRY FORWARD
+
+- Nothing is broken in the code. Every script parses, every onclick
+  resolves, every CSS class referenced exists.
+- Repeated PWA cache staleness on the user's iPhone made the same testing
+  loop happen several times (push, "I see no change", verify live, ask the
+  user to clear). For next session the testing protocol should default to
+  private/incognito mode first so cache is never a variable.
+- One pre-existing data mismatch noticed during the lawyer pipeline build:
+  the firm card labelled "Toronto Traffic Law" actually emails X-COPS via
+  contactLawyer. Did not touch it because it was out of scope. Worth a
+  quick name/email reconciliation in a future session.
+- ontariotraffictickets.com returned HTTP 403 to WebFetch, so the OTT firm
+  trust block uses conservative defaults rather than verified facts. If
+  Andrew or anyone gets reachable copy from that site, swap it in.
+- Real iPhone testing of the lawyer pipeline end-to-end (scan, verdict,
+  pick firm, fill form, hit Send and see Telegram lead arrive) is the next
+  user-side verification step.
+
+
+PRD NOTES
+
+- The Legal tab in the PRD (Tab 4, sections 3.15 to 3.17) describes an AI
+  Ticket Advisor that returns a four-verdict system (Urgent / Serious /
+  Contest / Minor) and a static directory of 8 law firms. The shipped
+  version replaces this with a categorical chance (Strong / Moderate /
+  Weak) plus a full pipeline: verdict + cost breakdown + 3 choices + firm
+  detail step + lead form + lead capture to Telegram + Supabase. This is a
+  significant extension and the PRD should be updated to reflect it.
+- The Sign Reader feature on the Dashboard is entirely new and not in the
+  PRD. It uses Claude Vision and a time-of-day prompt to read parking
+  signs. Worth adding as a new section under Dashboard.
+- Car Anti-Theft is a new Services page not in the PRD. The PRD Services
+  list (sections 3.6 to 3.10) does not include Car Inspection, Car Anti-
+  Theft, or Handicap Permit either, all of which are now live in Services.
+- The map ticket-density heatmap and the Sample community reports are not
+  in the PRD. Both shipped this session and last respectively.
+- The home-screen icon badge (Badging API) is not in the PRD's notification
+  spec but extends section 3.2 in a useful direction.
+- Long-standing divergence still unaddressed in the PRD: the app remains
+  light-mode vanilla single-file JS, not dark-mode React-Vite-TypeScript as
+  the PRD specifies.
+
+
+LESSON ARC — WHERE WE ARE
+
+Part 1 Foundation: COMPLETE
+Part 2 Functionality: COMPLETE (and well beyond the original PRD scope)
+Part 3 Polish: COMPLETE (ongoing iterative refinement)
+Part 4 Test: IN PROGRESS (real iPhone validation per release is the loop)
+Part 5 Backend: COMPLETE
+Part 6 Launch: IN PROGRESS (live on drivee.ca, monetisation pipeline live)
+
+
+NEXT SESSION TASKS
+
+1. Verify the lawyer pipeline end-to-end on a real iPhone, in
+   private/incognito mode first to eliminate the cache variable. Scan a
+   ticket, see the verdict + cost breakdown, tap Hire, tap a firm, read
+   the trust info, tap the Google reviews link, fill the form, hit Send,
+   and check Telegram for the lead arrival.
+2. Get Azcan Auto's real street address (still pending from session 9) and
+   swap it into both the Inspection and Anti-Theft Google Maps links.
+3. Reconcile the Toronto Traffic Law / X-COPS name-email mismatch on the
+   firm card.
+4. Update the PRD to reflect Sign Reader, the new Services pages (Car
+   Inspection, Anti-Theft, Handicap, Early Resolution wizard), the rebuilt
+   Legal pipeline with cost breakdown and lead capture, the map density
+   heatmap, the home-screen badge, and the vanilla-JS reality.
+5. If the lawyer pipeline gets real leads, decide on referral agreements
+   with the 8 firms so Drivee can move from open-the-mail-app to server-
+   side lead delivery in v2.
+
+
+HOMEWORK SET THIS SESSION
+
+A 15 to 20 minute task to test the lawyer pipeline end-to-end the way a
+real first user would. Cache has been the single biggest source of false-
+alarm bug reports this session, so this homework deliberately starts in
+private mode to remove that variable.
+
+1. Open Safari (or Chrome) on your iPhone and open a private/incognito tab.
+2. Type drivee.ca and go.
+3. Tap Legal in the bottom nav.
+4. Tap the big blue "Scan for verdict" button and pick a real ticket photo
+   from your photos.
+5. The focused result page should open. Wait roughly 5 to 10 seconds. You
+   should see a coloured verdict hero, a By-the-Numbers cost breakdown
+   table with real numbers, and three choice buttons with Hire on top
+   (blue), then Fight, then Pay.
+6. Tap "Hire a paralegal." You should see matched firms with a scales icon,
+   a one-line claim, perk pills, and a small star Google chip.
+7. Tap any firm. The detail page should show a green Established badge (on
+   firms that have a founding year), an amber italic-quoted claim block, a
+   facts table with Team / Service area / Pricing, a perks bullet list,
+   and a yellow "Read real Google reviews" link button.
+8. Tap "Read real Google reviews" and confirm Google Maps opens in a new
+   tab with that firm.
+9. Go back to the detail page, tap Continue, fill the form, and tap Send.
+   Your mail app should open pre-filled. Check Telegram a few seconds
+   later for the lawyer_lead notification.
+
+Write down anything that looks wrong, or any step that did not happen as
+described, and bring it to next session. If something is missing on
+production but you see it in private mode, the cache is fine and the
+deploy is the issue; if private mode also misses it, then it is a real
+code bug.
+
+
+
