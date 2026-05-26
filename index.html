@@ -3833,6 +3833,78 @@
     .dv2-hero { display: none; }
     .design-v2 .dv2-hero { display: block; }
 
+    /* ──── Welcome card for first-time users ────
+       Personal greeting from Evgenka with a transparent-PNG portrait on the
+       left and the Scan CTA + Skip on the right. Hidden by default; shown by
+       dvUpdateWelcomeCard() only when no scans, no reminders, not skipped. */
+    .dv-welcome {
+      display: none;
+      align-items: stretch;
+      gap: 14px;
+      margin: 14px 0 18px;
+      padding: 16px 16px 18px;
+      background: linear-gradient(135deg, #ffffff, #f4f7ff);
+      border: 1px solid rgba(46,100,255,0.20);
+      border-radius: 20px;
+      box-shadow: 0 16px 36px -22px rgba(26,63,184,0.30);
+      position: relative;
+      animation: dvWelcomeIn .55s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes dvWelcomeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dv-welcome-photo {
+      flex-shrink: 0;
+      width: 110px;
+      align-self: flex-end;
+      object-fit: contain;
+      object-position: bottom center;
+      /* The photo is a full-body cutout — letting it hang to the bottom
+         and align there keeps the head proportional to the card height. */
+      margin-bottom: -18px; /* let the feet sit just past the card edge */
+    }
+    .dv-welcome-text {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 8px;
+      padding: 4px 0;
+    }
+    .dv-welcome-title {
+      font-family: 'IBM Plex Serif', Georgia, serif;
+      font-size: 22px; font-weight: 700; letter-spacing: -0.4px;
+      color: var(--text-primary, #0E1B3D); line-height: 1.15;
+    }
+    .dv-welcome-body {
+      font-size: 13.5px; line-height: 1.5;
+      color: var(--text-secondary, #4F5A7A);
+    }
+    .dv-welcome-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; cursor: pointer;
+      background: linear-gradient(135deg, #2E64FF, #1A3FB8);
+      color: #fff; font-family: inherit;
+      font-weight: 800; font-size: 14px; letter-spacing: -0.2px;
+      border: 0; border-radius: 12px;
+      padding: 12px 16px; margin-top: 4px;
+      box-shadow: 0 14px 28px -14px rgba(26,63,184,0.55);
+      transition: transform .12s ease;
+    }
+    .dv-welcome-btn:active { transform: scale(0.985); }
+    .dv-welcome-skip {
+      background: none; border: 0; cursor: pointer;
+      color: var(--text-secondary, #6b7280);
+      font-family: inherit; font-size: 12.5px; font-weight: 700;
+      padding: 6px 0; margin-top: 2px;
+      text-align: left;
+    }
+    .dv-welcome-skip:hover { color: var(--text-primary, #0E1B3D); }
+    /* Very small screens — drop the photo a touch so the text isn't squeezed. */
+    @media (max-width: 360px) {
+      .dv-welcome-photo { width: 92px; }
+      .dv-welcome-title { font-size: 19px; }
+    }
+
     /* When v2 is on, dashboard gets a soft blue page background */
     .design-v2 #tab-dashboard {
       background: var(--dv2-bg);
@@ -7391,6 +7463,24 @@
       <!-- ═══════════════════════════════════════════════════════════════
            V2 DASHBOARD SECTIONS — only visible when ?design=v2 is on
       ═══════════════════════════════════════════════════════════════ -->
+
+      <!-- Welcome card — shows only for first-time users (no scans, no
+           reminders, not previously skipped). Personal greeting from Evgenka
+           to convert new visitors into their first scan. Auto-hides the
+           moment they scan / add a reminder / tap Skip. Hidden by default;
+           dvUpdateWelcomeCard() flips display:flex when first-run is true. -->
+      <div id="dv-welcome-card" class="dv-welcome" style="display:none">
+        <img class="dv-welcome-photo" src="/welcome-evgenka.png" alt="Evgenka — Drivee"/>
+        <div class="dv-welcome-text">
+          <div class="dv-welcome-title">Hi, I'm Evgenka <span aria-hidden="true">👋</span></div>
+          <div class="dv-welcome-body">Snap your first ticket — I'll tell you if you should pay or fight it.</div>
+          <label class="dv-welcome-btn" for="ticket-photo"
+                 onclick="dvWelcomeOnScan()">
+            <span aria-hidden="true">📸</span> Scan ticket
+          </label>
+          <button class="dv-welcome-skip" type="button" onclick="dvWelcomeSkip()">Skip for now</button>
+        </div>
+      </div>
 
       <!-- Scanner CTA. Now a <label for="ticket-photo">: a tap on the label IS
            a tap on the input, opening the picker WITHIN the user-gesture
@@ -11045,6 +11135,7 @@
       addReminderToSupabase(ref, due, reminder.id);
       renderReminders();
       updateHeroCard();
+      if (typeof dvUpdateWelcomeCard === 'function') dvUpdateWelcomeCard();
       trackEvent('reminder_added', ref + ' due ' + due);
       showToast('🔔 Reminder added: ' + ref + ' due ' + formatDate(due));
       // Auto-prompt to save to phone calendar for push notifications
@@ -11074,6 +11165,8 @@
     function renderScanHistory() {
       var el   = document.getElementById('scan-history-list');
       var card = document.getElementById('scan-history-card');
+      // Keep the welcome card in sync — whether there are scans now or not.
+      if (typeof dvUpdateWelcomeCard === 'function') dvUpdateWelcomeCard();
       if (!el) return;
       var scans = safeGet(SCANS_KEY) || [];
       if (scans.length === 0) {
@@ -12758,6 +12851,41 @@
           navigator.clearAppBadge().catch(function(){});
         }
       } catch (e) { /* unsupported — ignore */ }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // WELCOME CARD — personal greeting shown only to first-time users.
+    // Shows when: no scans saved + no reminders saved + not previously
+    // skipped. Hides forever when: user scans, adds a reminder, or taps Skip.
+    // ──────────────────────────────────────────────────────────────────────
+    var WELCOME_SKIPPED_KEY = 'drivee_welcome_skipped';
+
+    function dvWelcomeShouldShow() {
+      try {
+        if (safeGet(WELCOME_SKIPPED_KEY)) return false;
+        var scans     = safeGet(SCANS_KEY)     || [];
+        var reminders = safeGet(REMINDERS_KEY) || [];
+        return scans.length === 0 && reminders.length === 0;
+      } catch (e) { return false; }
+    }
+
+    function dvUpdateWelcomeCard() {
+      var el = document.getElementById('dv-welcome-card');
+      if (!el) return;
+      el.style.display = dvWelcomeShouldShow() ? 'flex' : 'none';
+    }
+
+    // Tapping the Scan button dismisses the welcome regardless of whether
+    // the user actually picks a photo — they've started the flow, so the
+    // card has done its job. (renderScanHistory will also hide it once a
+    // scan saves, as a defence in depth.)
+    function dvWelcomeOnScan() {
+      try { safeSet(WELCOME_SKIPPED_KEY, true); } catch (e) {}
+      dvUpdateWelcomeCard();
+    }
+    function dvWelcomeSkip() {
+      try { safeSet(WELCOME_SKIPPED_KEY, true); } catch (e) {}
+      dvUpdateWelcomeCard();
     }
 
     function updateHeroCard() {
