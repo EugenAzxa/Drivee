@@ -4819,6 +4819,77 @@
       border-radius: 10px; padding: 11px 13px; margin: 0 0 8px;
     }
 
+    /* ─── Delivery Zone explainer (inside Street Parking Checker card) ─── */
+    .dv-dz-card {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #f4f7ff, #ffffff);
+      border: 1px solid rgba(46,100,255,0.18);
+      border-radius: 14px;
+      padding: 14px 16px 12px;
+    }
+    .dv-dz-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .dv-dz-ic {
+      flex-shrink: 0; width: 30px; height: 30px;
+      display: grid; place-items: center;
+      background: rgba(46,100,255,0.12); color: var(--dv2-blue-d, #1A3FB8);
+      border-radius: 8px; font-size: 17px;
+    }
+    .dv-dz-title {
+      font-weight: 800; font-size: 14.5px; letter-spacing: -0.2px;
+      color: var(--text-primary, #0E1B3D);
+    }
+    .dv-dz-p {
+      font-size: 13px; line-height: 1.55;
+      color: var(--text-secondary, #4F5A7A);
+      margin: 0 0 10px;
+    }
+    .dv-dz-p b { color: var(--text-primary, #0E1B3D); font-weight: 700; }
+    .dv-dz-row {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 12.5px; line-height: 1.5;
+      color: var(--text-primary, #0E1B3D);
+    }
+    .dv-dz-row + .dv-dz-row { margin-top: 6px; }
+    .dv-dz-row b { font-weight: 800; }
+    .dv-dz-yes {
+      background: rgba(31,171,107,0.10);
+      border: 1px solid rgba(31,171,107,0.25);
+    }
+    .dv-dz-no {
+      background: rgba(225,71,61,0.08);
+      border: 1px solid rgba(225,71,61,0.22);
+    }
+    .dv-dz-row-ic { flex-shrink: 0; font-size: 15px; line-height: 1.4; }
+    .dv-dz-note {
+      margin-top: 10px;
+      font-size: 11.5px; line-height: 1.5;
+      color: var(--text-tertiary, #6b7280);
+    }
+    /* Compact version shown inside the Free Streets sheet (Map / Dashboard) */
+    .dv-dz-mini {
+      margin-top: 18px;
+      background: rgba(225,71,61,0.06);
+      border: 1px solid rgba(225,71,61,0.22);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .dv-dz-mini-head {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 13px; letter-spacing: -0.2px;
+      color: var(--text-primary, #0E1B3D);
+      margin-bottom: 6px;
+    }
+    .dv-dz-mini-body {
+      font-size: 12.5px; line-height: 1.5;
+      color: var(--text-secondary, #4F5A7A);
+    }
+    .dv-dz-mini-body b { font-weight: 800; color: #ad2f28; }
+
     /* ─── "How to check a car before buying" guide ─── */
     /* Entry button (lives inside the inspect card, opens the sub-page) */
     .dv2-buy-cta {
@@ -7493,7 +7564,7 @@
                onclick="(function(){var d=document.getElementById('tab-dashboard');if(d)d.dataset.scanActive='true';})()">
           <div class="dv2-scanner-row">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3L12 3Z"/></svg>
-            <span class="dv2-scanner-meta">OCR + AI VISION</span>
+            <span class="dv2-scanner-meta">AI READS YOUR TICKET · 8 SECONDS</span>
           </div>
           <div class="dv2-scanner-title">Snap the ticket. We read it.</div>
           <div class="dv2-scanner-sub">From paper to filed reminder in 60 seconds.</div>
@@ -8039,7 +8110,7 @@
       </div>
 
       <!-- Street Parking Checker -->
-      <div class="card svc-card" id="svc-streets" data-search="street parking checker rates hours tow enforcement free">
+      <div class="card svc-card" id="svc-streets" data-search="street parking checker rates hours tow enforcement free delivery zone 20 minutes courier loading">
         <div class="card-title">Street Parking Checker</div>
         <div class="card-subtitle">Rates, enforcement hours, and tow warnings</div>
         <div class="input-group">
@@ -8049,6 +8120,41 @@
         <!-- Matching suggestions -->
         <div id="street-suggestions"></div>
         <div id="street-output"></div>
+
+        <!-- Delivery Zone explainer — common Toronto sign drivers misread.
+             We do NOT advertise this as free parking. We explain what the
+             sign actually means so users don't get ticketed assuming it is. -->
+        <div class="dv-dz-card">
+          <div class="dv-dz-head">
+            <span class="dv-dz-ic">🅿️</span>
+            <span class="dv-dz-title">What about “20 min Delivery Zone” signs?</span>
+          </div>
+          <p class="dv-dz-p">
+            That green-P sign with “20 min Delivery Zone” is a <b>courier loading zone</b>.
+            By Toronto bylaw it's for vehicles actively making a delivery — picking up or
+            dropping off goods — with a 20-minute maximum.
+          </p>
+          <div class="dv-dz-row dv-dz-yes">
+            <span class="dv-dz-row-ic">✅</span>
+            <span>
+              <b>OK if you're delivering something.</b> Dropping a package, picking up
+              an order, helping a friend move a box. Park, finish your stop, leave within
+              20 minutes.
+            </span>
+          </div>
+          <div class="dv-dz-row dv-dz-no">
+            <span class="dv-dz-row-ic">⛔</span>
+            <span>
+              <b>Not free parking.</b> Don't use it to grab coffee, run errands, or
+              leave your car for the day. Parking enforcement does ticket these zones —
+              especially weekdays during the day.
+            </span>
+          </div>
+          <div class="dv-dz-note">
+            ℹ️ This is a summary of City of Toronto rules. When in doubt, read the
+            full sign — there may be extra restrictions (rush hour, by-permit, etc.).
+          </div>
+        </div>
       </div>
 
       <!-- Vehicle Towed -->
@@ -14397,6 +14503,16 @@
           html += dvFreeRow(s, 'soon');
         });
       }
+      // Delivery Zone tip — mini version of the Street Checker explainer so
+      // users on the Map / Dashboard who open the free-streets sheet also see
+      // it. Links them to the full breakdown on Services if they want more.
+      html +=
+        '<div class="dv-dz-mini">' +
+          '<div class="dv-dz-mini-head"><span>🅿️</span> What about “20 min Delivery Zone” signs?</div>' +
+          '<div class="dv-dz-mini-body">' +
+            '<b>Not free parking</b> — they\'re for couriers and quick deliveries (drop a package, help a friend move a box) with a 20-min limit. Park there for coffee or errands and you can be ticketed.' +
+          '</div>' +
+        '</div>';
       list.innerHTML = html;
       ov.classList.add('open');
     }
