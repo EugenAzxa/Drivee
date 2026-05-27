@@ -608,6 +608,52 @@
     }
     .zone-marker-tow { width: 14px; height: 14px; }
 
+    /* ── Green P lot pin ── distinctive green-on-white "P" so users
+       immediately recognise Toronto Parking Authority lots. */
+    .dv-gp-pin {
+      width: 26px; height: 26px;
+      background: #fff;
+      border: 2px solid #1FAB6B;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 900; font-size: 14px;
+      color: #1FAB6B;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.20);
+    }
+    /* Green P lot popup */
+    .dv-gp-pop { font-family: 'Inter', sans-serif; min-width: 200px; }
+    .dv-gp-pop-title  { font-weight: 800; font-size: 14px; color: #0E1B3D; margin-bottom: 4px; line-height: 1.25; }
+    .dv-gp-pop-meta   { font-size: 11.5px; color: #6b7280; margin-bottom: 8px; }
+    .dv-gp-pop-rate   { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: #1FAB6B; margin-bottom: 10px; }
+    .dv-gp-pop-rate-year { color: #9ca3af; font-weight: 600; font-size: 11px; }
+    .dv-gp-calc {
+      background: #f4f7ff; border: 1px solid rgba(46,100,255,0.15);
+      border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
+    }
+    .dv-gp-calc-h {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      letter-spacing: 1.4px; font-weight: 800;
+      color: #4F5A7A; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .dv-gp-calc-row {
+      display: flex; justify-content: space-between;
+      font-size: 12.5px; padding: 3px 0;
+      color: #0E1B3D;
+    }
+    .dv-gp-calc-row span:last-child { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+    .dv-gp-calc-note {
+      font-size: 10.5px; line-height: 1.45; color: #9ca3af;
+      margin-top: 6px; font-style: italic;
+    }
+    .dv-gp-pop-cta {
+      display: block; text-align: center;
+      background: #1FAB6B; color: #fff;
+      font-weight: 800; font-size: 12.5px;
+      padding: 9px 12px; border-radius: 8px;
+      text-decoration: none;
+    }
+
     /* Tow zone pulse — only when an active rush-hour tow window is happening */
     @keyframes towMarkerPulse {
       0%, 100% { transform: scale(1);   box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
@@ -10347,6 +10393,7 @@
     var eventLayer     = null;  // LayerGroup for Match Day overlays (populated in Phase C)
     var heatLayer      = null;  // LayerGroup for predictive heatmap (populated in Phase D)
     var reportCluster  = null;  // marker cluster — community reports
+    var greenPCluster  = null;  // marker cluster — Green P off-street paid lots (252)
     var lightTileLayer = null;  // CARTO Voyager (default day)
     var darkTileLayer  = null;  // CARTO Dark Matter (night)
     var MAP_THEME_KEY  = 'drivee_map_theme';
@@ -10399,10 +10446,15 @@
           bikeCluster    = L.markerClusterGroup(Object.assign({ maxClusterRadius: 45 }, clusterOpts));
           towCluster     = L.markerClusterGroup(Object.assign({ maxClusterRadius: 45 }, clusterOpts));
           reportCluster  = L.markerClusterGroup(Object.assign({ maxClusterRadius: 35 }, clusterOpts));
-          driveeMap.addLayer(hydrantCluster);
-          driveeMap.addLayer(bikeCluster);
+          // Green P off-street lots — the primary parking layer. ON by default
+          // because finding paid parking is the user's most common need.
+          greenPCluster  = L.markerClusterGroup(Object.assign({ maxClusterRadius: 50 }, clusterOpts));
+          // Hydrants + bike lanes were on by default — too cluttered. Keep them
+          // available in the layer toggle (top-right) so power users / GPS
+          // Guardian still benefit, but the default map is now parking-first.
           driveeMap.addLayer(towCluster);
           driveeMap.addLayer(reportCluster);
+          driveeMap.addLayer(greenPCluster);
         }
         // Plain layer groups for non-marker overlays (polylines, heat). Created now, populated in later phases.
         streetsLayer = L.layerGroup().addTo(driveeMap);   // Phase A2
@@ -10414,14 +10466,17 @@
         // (top-right) so users can switch it on if they want it.
         ticketDensityLayer = L.layerGroup(); // NOT added to map by default
 
-        // Layer toggle control (top-right, below the theme button)
-        if (hydrantCluster && bikeCluster && towCluster && reportCluster) {
+        // Layer toggle control (top-right, below the theme button).
+        // Green P first — it's the default-on parking layer. Hydrants and
+        // bike lanes are off by default but still available via the toggle.
+        if (hydrantCluster && bikeCluster && towCluster && reportCluster && greenPCluster) {
           var overlays = {
+            '🅿️ Green P lots':   greenPCluster,
+            '⚠️ Tow Zones':      towCluster,
+            '📍 Reports':        reportCluster,
             '🔥 Ticket density': ticketDensityLayer,
             '🚒 Hydrants':       hydrantCluster,
-            '🚲 Bike Lanes':     bikeCluster,
-            '⚠️ Tow Zones':      towCluster,
-            '📍 Reports':        reportCluster
+            '🚲 Bike Lanes':     bikeCluster
           };
           L.control.layers(null, overlays, { position: 'topright', collapsed: true }).addTo(driveeMap);
         }
@@ -10430,6 +10485,7 @@
         loadReportsOnMap(); // draw any saved community report pins
         loadCommunityReports(); // load shared reports from Supabase
         drawZoneMarkers();  // draw hydrant / bike lane / tow zone markers
+        drawGreenPMarkers(); // populate Green P paid lots
         drawEnforcementZones(); // pulsing red zones, only during 8am-8pm
         drawTicketDensityHeatmap(); // builds the grid into the (hidden) layer
         // Legend + grid only appear when the user switches "Ticket density" on
@@ -10697,6 +10753,79 @@
         } else {
           marker.addTo(driveeMap);
         }
+      });
+    }
+
+    // ── Green P off-street lots on the map ──
+    // 252 paid-parking lots from Toronto Open Data (green-p-parking, 2019
+    // snapshot). Each marker shows: address, lot type, capacity, listed rate
+    // (with the "2019 vintage — verify live" caveat), and a small per-lot
+    // calculator for 2 / 4 / 8-hour stays. Tapping "Verify on Green P" opens
+    // the lot's live greenp.com page so the user can see today's actual rate.
+    function dvGreenPHalfHourRate(rateStr) {
+      // Returns a Number (e.g. 2.50) if the rate parses as "$X.YY / Half Hour"
+      // or "$X.YY / Hour", normalised to the half-hour value. Returns null otherwise.
+      if (!rateStr) return null;
+      var m = rateStr.match(/\$([0-9]+(?:\.[0-9]+)?)\s*\/\s*(half\s*hour|hour)/i);
+      if (!m) return null;
+      var amt = parseFloat(m[1]);
+      if (!isFinite(amt) || amt < 0) return null;
+      var per = m[2].toLowerCase();
+      // Normalise to per-half-hour so 2 hrs = ×4, 4 hrs = ×8, etc.
+      return /half/.test(per) ? amt : amt / 2;
+    }
+    function dvGreenPCostFor(rateStr, hours) {
+      var hh = dvGreenPHalfHourRate(rateStr);
+      if (hh == null || hh === 0) return null;
+      return Math.round(hh * hours * 2 * 100) / 100; // $X.XX
+    }
+    function dvGreenPPopupHtml(lot) {
+      function esc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+      var addr   = esc(lot.a || 'Green P lot');
+      var type   = esc(lot.t || '');
+      var cap    = lot.cap ? esc(lot.cap) + ' spots' : '';
+      var rate   = esc(lot.r || '');
+      var url    = lot.u ? esc(lot.u) : 'https://parking.greenp.com/';
+      var hh     = dvGreenPHalfHourRate(lot.r);
+      var calcHtml = '';
+      if (hh != null && hh > 0) {
+        var c2 = dvGreenPCostFor(lot.r, 2);
+        var c4 = dvGreenPCostFor(lot.r, 4);
+        var c8 = dvGreenPCostFor(lot.r, 8);
+        calcHtml =
+          '<div class="dv-gp-calc">' +
+            '<div class="dv-gp-calc-h">Estimated cost</div>' +
+            '<div class="dv-gp-calc-row"><span>2 hours</span><span>~$' + c2.toFixed(2) + '</span></div>' +
+            '<div class="dv-gp-calc-row"><span>4 hours</span><span>~$' + c4.toFixed(2) + '</span></div>' +
+            '<div class="dv-gp-calc-row"><span>8 hours</span><span>~$' + c8.toFixed(2) + '</span></div>' +
+            '<div class="dv-gp-calc-note">Using 2019 rate. Caps and evening flats not included — verify live.</div>' +
+          '</div>';
+      } else if ((lot.r || '').indexOf('0.00') !== -1) {
+        calcHtml = '<div class="dv-gp-calc-note">Listed as $0.00 in the 2019 dataset (may be permit-only, seasonal, or rezoned). Verify on Green P before parking.</div>';
+      }
+      return '' +
+        '<div class="dv-gp-pop">' +
+          '<div class="dv-gp-pop-title">🅿️ ' + addr + '</div>' +
+          '<div class="dv-gp-pop-meta">' + [type, cap].filter(Boolean).join(' · ') + '</div>' +
+          (rate ? '<div class="dv-gp-pop-rate">' + rate + ' <span class="dv-gp-pop-rate-year">(2019)</span></div>' : '') +
+          calcHtml +
+          '<a class="dv-gp-pop-cta" href="' + url + '" target="_blank" rel="noopener">Verify live rate on Green P →</a>' +
+        '</div>';
+    }
+    function drawGreenPMarkers() {
+      if (!driveeMap || !greenPCluster || typeof window.GREENP_LOTS === 'undefined') return;
+      var icon = L.divIcon({
+        className: '',
+        html: '<div class="dv-gp-pin" aria-label="Green P parking lot">P</div>',
+        iconSize:   [26, 26],
+        iconAnchor: [13, 13],
+        popupAnchor: [0, -12]
+      });
+      window.GREENP_LOTS.forEach(function(lot) {
+        if (typeof lot.lat !== 'number' || typeof lot.lng !== 'number') return;
+        var marker = L.marker([lot.lat, lot.lng], { icon: icon, title: lot.a || 'Green P lot' })
+          .bindPopup(dvGreenPPopupHtml(lot), { maxWidth: 260, minWidth: 220 });
+        greenPCluster.addLayer(marker);
       });
     }
 
