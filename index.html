@@ -10409,7 +10409,10 @@
           center: [43.6532, -79.3832], // Toronto
           zoom: 15,
           zoomControl: true,
-          attributionControl: false
+          attributionControl: false,
+          // Render vector overlays (enforcement circles, density grid) on a
+          // canvas instead of one SVG node each — far smoother zoom/pan.
+          preferCanvas: true
         });
 
         // Two CARTO tile themes — Voyager (day) + Dark Matter (night). Toggle via control.
@@ -10440,7 +10443,18 @@
 
         // ── Layer architecture (Phase A1) ──
         // Five distinct layer groups, each toggleable independently.
-        var clusterOpts = { showCoverageOnHover: false, spiderfyOnMaxZoom: true, disableClusteringAtZoom: 17 };
+        // Perf options shared by all clusters:
+        //  - chunkedLoading: add markers in batches so a big layer never
+        //    blocks the main thread (kills the zoom jank with 252 Green P lots)
+        //  - removeOutsideVisibleBounds: keep only near-viewport markers in the
+        //    DOM; the rest are detached, so zoom recalcs touch far fewer nodes
+        var clusterOpts = {
+          showCoverageOnHover: false,
+          spiderfyOnMaxZoom: true,
+          disableClusteringAtZoom: 18,
+          chunkedLoading: true,
+          removeOutsideVisibleBounds: true
+        };
         if (typeof L.markerClusterGroup === 'function') {
           hydrantCluster = L.markerClusterGroup(Object.assign({ maxClusterRadius: 45 }, clusterOpts));
           bikeCluster    = L.markerClusterGroup(Object.assign({ maxClusterRadius: 45 }, clusterOpts));
@@ -10448,7 +10462,8 @@
           reportCluster  = L.markerClusterGroup(Object.assign({ maxClusterRadius: 35 }, clusterOpts));
           // Green P off-street lots — the primary parking layer. ON by default
           // because finding paid parking is the user's most common need.
-          greenPCluster  = L.markerClusterGroup(Object.assign({ maxClusterRadius: 50 }, clusterOpts));
+          // Stays clustered until zoom 18 so we never paint 252 DOM pins at once.
+          greenPCluster  = L.markerClusterGroup(Object.assign({ maxClusterRadius: 60 }, clusterOpts));
           // Hydrants + bike lanes were on by default — too cluttered. Keep them
           // available in the layer toggle (top-right) so power users / GPS
           // Guardian still benefit, but the default map is now parking-first.
