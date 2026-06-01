@@ -1113,4 +1113,186 @@ deploy is the issue; if private mode also misses it, then it is a real
 code bug.
 
 
+SESSION 11 — 25 May to 1 June 2026
+-----------------------------------
+
+WHAT WAS BUILT
+
+A personality session. The app and the marketing site both gained a real
+human face this week, the Map became parking-first, and several copy /
+trust tweaks landed across the Legal flow.
+
+1. Welcome card for first-time users on the Dashboard. A friendly card with
+   a transparent-PNG portrait of Evgenka on the left and a serif "Hi, I'm
+   Evgenka" greeting on the right, plus a big blue Scan ticket button and a
+   small Skip link. Shows only when: zero saved scans AND zero saved
+   reminders AND not previously dismissed. Auto-hides forever the moment
+   the user scans a ticket, adds a reminder, taps Skip, or even taps Scan.
+   The 2 MB original PNG was resized via sharp to 74 KB while keeping
+   transparency.
+
+2. Desktop landing got two personal sections. A "Why we built Drivee"
+   founder block right after the video (worried Evgenka with a stack of
+   yellow tickets, mono kicker, serif title, two paragraphs in Evgenka's
+   voice, ending with a mono "— Evgenka, developer" signature). And an
+   emotional payoff block right before the footer (happy Evgenka holding a
+   ticket plus a phone showing PAID, "From 'I owe what?!' to handled."
+   plus an Open the app CTA). Both sections use the existing two-column
+   site grid, stack on small screens, and have subtle radial glows behind
+   each cutout (blue under the worried photo, green under the happy one).
+   Copy was revised mid-session from "I" to "we" and "founder" to
+   "developer" except for the warm "Hi, I'm Evgenka" greeting. Both source
+   photos (3.9 MB and 2 MB) were resized via sharp to 245 KB and 139 KB.
+
+3. Honest delivery-zone explainer in the Street Parking Checker on
+   Services. A two-row explainer block (green check: OK if you're
+   delivering, red ban: not for coffee or daily storage) plus a compact
+   version inside the Free Streets slide-up sheet so users on the Map and
+   Dashboard see it too. Backed by the actual City of Toronto courier-
+   vehicle bylaw and the Ontario Trucking Association write-up. The card
+   deliberately does NOT list delivery zones as free parking locations —
+   that would mislead users into tickets.
+
+4. Map became parking-first. The 252 Green P off-street lots are now ON
+   the map as distinctive green-on-white "P" cluster pins by default. Tap
+   any pin to see a popup with the address, lot type, capacity, the listed
+   rate stamped "(2019)" so users know it's not live, and a per-lot cost
+   calculator showing estimated cost for 2 / 4 / 8 hours. A big green
+   "Verify live rate on Green P →" button opens the lot's own greenp.com
+   page so today's actual price is one tap away. Fire hydrants and bike
+   lanes were moved off the default map (still available via the top-right
+   layer toggle — GPS Guardian still consumes the data behind the scenes).
+   After zoom lag was reported, fixed by enabling chunkedLoading and
+   removeOutsideVisibleBounds on all clusters, bumping the Green P
+   uncluster threshold from zoom 17 to 18, and adding preferCanvas:true to
+   the map so vector overlays render on canvas instead of one SVG node per
+   shape.
+
+5. Two small but meaningful rename touches in the Legal flow. The Early
+   Resolution kicker line "AI EUGEN" became "DRIVEE AI" so the AI feature
+   reads as a Drivee feature, not a personal label. The Dashboard scanner
+   kicker "OCR + AI VISION" became "AI READS YOUR TICKET · 8 SECONDS" so a
+   normal driver actually understands what's happening. Kept the real
+   human "Evgen — Drivee Expert" card on the True Cost calculator
+   untouched because the real phone number there is a stronger trust
+   signal than a generic label.
+
+ALSO THIS SESSION
+
+- Three new image assets shipped to the repo: welcome-evgenka.png (74 KB),
+  founder-evgenka.png (245 KB), founder-evgenka-happy.png (139 KB). All
+  resized from much larger originals via the locally-installed sharp
+  module.
+- Final live cache name on origin is drivee-v2-2026-05-28-map-perf.
+- Recurring iPhone PWA cache staleness from prior sessions resurfaced once
+  during the welcome-card test cycle; standard incognito-mode test path
+  resolved it.
+
+
+ISSUES TO CARRY FORWARD
+
+- Nothing is broken. Every script parses, every onclick resolves, the
+  Green P calculator math has been verified against all 252 lot rate
+  formats (every one parses cleanly as $X / Half Hour).
+- The Green P lot rates remain a 2019 City Open Data snapshot. Marked
+  clearly with "(2019)" and the verify-live link in every popup so users
+  are never misled, but a future session could try the Toronto Open Data
+  CKAN feed for a refreshed dump. Toronto themselves don't publish a live
+  rate API, so the verify-live-link pattern is likely the honest ceiling
+  unless we partner with Green P directly.
+- The Toronto Traffic Law / X-COPS firm card name-email mismatch flagged
+  in session 9 is still untouched, by deliberate choice (out of scope).
+  Worth a tidy in a future session.
+- ontariotraffictickets.com still returned 403 to WebFetch when we
+  visited firm sites last session, so OTT still uses conservative
+  defaults. Andrew or anyone with browser access could grab their public
+  facts and we can swap them in.
+- PRD remains substantially out of date — see section below.
+
+
+PRD NOTES
+
+The PRD genuinely needs an update next session. Everything built this week
+is missing from it:
+
+- The Dashboard welcome card for first-time users is not described in any
+  PRD section.
+- The Desktop landing page exists as a top-level surface that the PRD
+  does not mention at all. Today's founder-story and emotional-payoff
+  sections live there.
+- The Delivery Zone explainer is a new defensive UX pattern (telling
+  users NOT to park somewhere) that fits Drivee's value but is not in any
+  PRD section.
+- The Green P lots on the Map with per-lot cost calculator extends PRD
+  section 3.7 (Street Parking Checker) significantly, but on the Map tab,
+  not Services.
+- The honest "(2019) rate, verify live" framing across the calculator is
+  a Drivee design principle worth capturing in the PRD's tone section.
+- Long-standing reality still unaddressed in the PRD: light-mode vanilla
+  single-file JS, not dark-mode React-Vite-TypeScript.
+
+
+LESSON ARC — WHERE WE ARE
+
+Part 1 Foundation: COMPLETE
+Part 2 Functionality: COMPLETE
+Part 3 Polish: COMPLETE (continuing iteration)
+Part 4 Test: IN PROGRESS (cache hygiene now baked into the test loop)
+Part 5 Backend: COMPLETE
+Part 6 Launch: IN PROGRESS (Drivee.ca live with personality + parking-first
+        map)
+Part 7 PRD reconciliation: NEW — should be tackled next session
+
+
+NEXT SESSION TASKS
+
+1. Update PRD.md to capture: welcome card, desktop landing page, founder
+   story sections, delivery-zone explainer, Green P map markers with
+   cost calculator, the rebuilt Legal pipeline (still missing since session
+   10), Sign Reader, Anti-Theft and Inspection Services pages, home-screen
+   icon badge, and the long-standing light-mode vanilla-JS reality.
+2. Real-iPhone end-to-end test of the welcome card, Map Green P pins
+   (especially the zoom performance fix), and the desktop landing on a
+   real laptop in private mode.
+3. Reconcile the Toronto Traffic Law / X-COPS firm card name-email
+   mismatch.
+4. Try the Toronto Open Data CKAN feed for a fresher Green P rate dump,
+   or at least time-stamp the dataset version surfaced to users.
+5. If ontariotraffictickets.com is reachable from Andrew's machine, grab
+   their public facts and swap into the firm trust info.
+
+
+HOMEWORK SET THIS SESSION
+
+A 15 to 20 minute task to test the new map performance and the welcome
+card from a real new-user perspective. Mostly map work — that was the
+biggest user-visible change this week.
+
+1. Open drivee.ca in a private/incognito tab on your iPhone Safari (so
+   you count as a fresh first-time user with no cache).
+2. On the Dashboard you should see the new Evgenka welcome card right
+   under the blue hero. Tap the Scan ticket button and confirm the photo
+   picker opens. Cancel out of the picker for now.
+3. Reload the page (still in private). The welcome card should now be
+   gone permanently — that confirms the Skip-on-Scan logic worked.
+4. Tap the Map tab. You should see green-and-white "P" pin clusters
+   spread across Toronto (mostly downtown). Pinch to zoom in slowly. The
+   zoom should feel smooth — pins should not lag, jump, or stutter. If
+   the zoom is still laggy on your device, write down which zoom level
+   it starts feeling rough at and bring that number to next session.
+5. Tap any "P" pin and confirm you see the address, the rate stamped
+   "(2019)", the 2 / 4 / 8 hour cost calculator, and a "Verify live rate
+   on Green P" button at the bottom. Tap the button and confirm
+   greenp.com opens in a new tab.
+6. Top-right corner of the map → tap the layer-toggle icon. Hydrants and
+   Bike Lanes should appear in the list but be unchecked. Switch on
+   Hydrants and confirm they appear; switch them off again.
+
+If anything looks wrong, write down the exact step and what you saw, and
+bring it to next session. If something is missing on production but you
+see it in private mode, the cache is fine and the deploy is the issue; if
+private mode also misses it, then it is a real code bug.
+
+
+
 
