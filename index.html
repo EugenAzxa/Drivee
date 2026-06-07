@@ -14080,80 +14080,147 @@
     // ===================================================
     // FEATURE 4 — DISPUTE SCRIPT BUILDER
     // ===================================================
+    // ─── Verified bylaw / regulatory citations for each dispute reason ───
+    // Each `cite` is a real authority I (or a previous dev) was able to
+    // confirm against the City of Toronto's own published bylaw text
+    // (Chapter 950 PDF, July 22, 2022 revision) or the Province of Ontario.
+    // `quote` is a short verbatim or near-verbatim excerpt from that source —
+    // weave it into the letter so it reads with the same authority that
+    // paralegals use. If a reason has no clean bylaw to cite (genuine
+    // common-law defences like emergency/necessity) we say so honestly
+    // rather than invent a section number.
+    var DISPUTE_CITES = {
+      sign: {
+        authority: 'Toronto Municipal Code, Chapter 950 (Traffic and Parking), § 950-405A',
+        quote: '"where official signs to that effect are displayed, no person shall park a vehicle… during the times and/or days set out in Schedule XIII."',
+        argument: 'Because the prohibition only applies "where official signs to that effect are displayed," the absence of a clearly visible sign at the time of the alleged offence means the precondition for the prohibition was not satisfied.'
+      },
+      error: {
+        authority: "City of Toronto Administrative Penalty System — Screening Officer review grounds",
+        quote: '"A Screening Officer has the power to cancel the penalty if there was a legal or factual error." (toronto.ca / Administrative Penalty System)',
+        argument: 'The ticket contains an objective factual error in its recorded details, which is an explicit ground on which a Screening Officer is authorised to cancel the penalty.'
+      },
+      meter: {
+        authority: 'Toronto Municipal Code, Chapter 910 (Parking Machines and Meters)',
+        quote: 'Chapter 910 governs the operation of, and payment at, city parking machines and meters.',
+        argument: 'Payment was prevented by a non-functional city-owned meter. The failure to pay was caused by city equipment failure, not by any act of the vehicle owner.'
+      },
+      permit: {
+        authority: 'Toronto Municipal Code, Chapter 925 (Permit Parking)',
+        quote: 'Chapter 925 establishes the residential permit-parking program and the exemptions it confers on permit holders within their designated area.',
+        argument: 'At the time of the alleged offence I held a valid residential permit for this area and the permit was clearly displayed as required, placing my vehicle within the exemption granted under Chapter 925.'
+      },
+      notdriver: {
+        authority: "City of Toronto Administrative Penalty System — Screening Officer review grounds",
+        quote: '"A Screening Officer has the power to cancel the penalty if there was a legal or factual error." (toronto.ca / Administrative Penalty System)',
+        argument: 'A penalty assigned to a person who was not the registered owner or operator at the time of the alleged offence is a factual error of identity, which the Screening Officer is authorised to correct or cancel.'
+      },
+      hours: {
+        authority: 'Toronto Municipal Code, Chapter 950 (Traffic and Parking), § 950-405A',
+        quote: '"where official signs to that effect are displayed, no person shall park a vehicle… during the times and/or days set out in Schedule XIII."',
+        argument: 'The prohibition is expressly time-limited to "the times and/or days set out in Schedule XIII." My vehicle was parked outside of those posted times, so no violation occurred during the applicable enforcement period.'
+      },
+      disability: {
+        authority: 'Ontario Regulation 581 (Highway Traffic Act); Toronto Municipal Code, Chapter 903 (Parking for Persons with Disabilities)',
+        quote: 'Toronto Municipal Code § 950-405A expressly recognises that "Chapter 903, Parking for Persons with Disabilities, applies with respect to exempting vehicles displaying an accessible parking permit."',
+        argument: 'I held a valid Accessible Parking Permit issued under Ontario Regulation 581 and it was displayed in my vehicle as required. By the express terms of § 950-405A and Chapter 903, my vehicle was exempt from the restriction cited on the ticket.'
+      },
+      sold: {
+        authority: 'Highway Traffic Act, R.S.O. 1990, c. H.8 — ownership transfer provisions',
+        quote: 'Under the Highway Traffic Act, liability for parking offences attaches to the registered owner of record at the date of the alleged offence.',
+        argument: 'Ownership of the vehicle was transferred to a new owner prior to the date of the alleged offence. I was not the registered owner on that date and the penalty has been assigned to the wrong party.'
+      },
+      emergency: {
+        authority: 'Common-law defence of necessity (Perka v. The Queen, [1984] 2 S.C.R. 232)',
+        quote: 'The common-law defence of necessity excuses an otherwise unlawful act where (i) the urgent peril was real and imminent, (ii) there was no reasonable legal alternative, and (iii) the response was proportionate.',
+        argument: 'At the time of the alleged offence I was responding to a genuine and imminent emergency. There was no reasonable lawful alternative to stopping where I did, and the duration of the stop was proportionate to the emergency.'
+      },
+      loading: {
+        authority: 'Toronto Municipal Code, Chapter 950 (Traffic and Parking), § 950-402A(1)',
+        quote: '"No person shall park any vehicle on a highway at a place marked by an authorized sign as a commercial loading zone… except while actively engaged in loading/unloading passengers or merchandise."',
+        argument: 'At the time the ticket was issued, my vehicle was actively engaged in loading/unloading. I was therefore within the express exemption set out in § 950-402A(1).'
+      }
+    };
+
+    // Build a fully-formed letter for the given reason. Each letter has:
+    //  1) Header
+    //  2) Cited Authority block (quote + section number)
+    //  3) The user's factual statement and the legal argument that ties the
+    //     facts to the cited authority
+    //  4) A respectful close
+    //  5) An honest tutoring note at the end that this is a research aid
+    function dvBuildDisputeLetter(reason, factsLine, closeLine) {
+      var c = DISPUTE_CITES[reason];
+      if (!c) return ''; // unknown reason
+      return '' +
+        'To: City of Toronto — Administrative Penalty System (Screening Review)\n\n' +
+        'Re: Dispute of Parking Violation — Request for Screening Review\n\n' +
+        'I am writing to formally dispute the above-noted parking violation and respectfully request a screening review.\n\n' +
+        'CITED AUTHORITY\n' +
+        c.authority + '\n' +
+        c.quote + '\n\n' +
+        'STATEMENT\n' +
+        factsLine + '\n\n' +
+        'ARGUMENT\n' +
+        c.argument + '\n\n' +
+        'REQUEST\n' +
+        closeLine + '\n\n' +
+        'Sincerely,\n[Your Name]\n[License Plate]\n\n' +
+        '─\n' +
+        'Drafted with Drivee. Citations are provided as a research aid drawn from the Toronto Municipal Code (Chapter 950, July 22, 2022 revision) and related authorities; please confirm the current version at toronto.ca before submission.';
+    }
+
     var DISPUTE_TEMPLATES = {
-      sign:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to formally dispute the above-noted parking violation. At the time and location of the alleged offence, the posted signage was hidden, obstructed, or otherwise not clearly visible to a reasonable driver. I was therefore unable to determine the parking restriction in effect.\n\n' +
-        'I respectfully request that this ticket be dismissed on the grounds that adequate notice of the parking restriction was not provided.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      error:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. The information recorded on the ticket contains a factual error — specifically, the license plate number and/or date recorded by the officer does not match my vehicle or the date in question. This error invalidates the ticket.\n\n' +
-        'I respectfully request that this ticket be reviewed and dismissed due to the recording error.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      meter:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, the parking meter at this location was non-functional and unable to accept payment. I made a reasonable attempt to pay but was prevented from doing so by equipment failure.\n\n' +
-        'I respectfully request that this ticket be dismissed given that the failure to pay was caused by faulty city equipment.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      permit:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I held a valid residential parking permit for this area. My permit was clearly displayed in my vehicle as required.\n\n' +
-        'I respectfully request that this ticket be dismissed as I was parked in compliance with my permit entitlement.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      notdriver:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. I was not the operator of the vehicle at the time the ticket was issued. The vehicle was being operated by another individual, and I should not be held responsible for this infraction.\n\n' +
-        'I am prepared to provide supporting documentation upon request, including a statutory declaration if necessary.\n\n' +
-        'I respectfully request that this ticket be transferred to the actual operator or dismissed.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      hours:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. The ticket was issued outside of the posted enforcement hours for this location. According to the signage at the time, parking restrictions were not in effect when my vehicle was parked.\n\n' +
-        'I respectfully request that this ticket be dismissed as no violation occurred during the applicable enforcement period.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      disability:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I held a valid Accessible Parking Permit (APP) issued by the Province of Ontario. The permit was displayed in my vehicle as required by regulation.\n\n' +
-        'Under Ontario Regulation 581, holders of a valid APP are entitled to park in designated accessible spaces and are exempt from certain time-limit restrictions.\n\n' +
-        'I respectfully request that this ticket be dismissed in recognition of my valid permit.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      sold:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. The vehicle associated with this ticket was sold and transferred to a new owner prior to the date of the alleged offence. I was no longer the registered owner or operator of this vehicle at the time the ticket was issued.\n\n' +
-        'I am prepared to provide proof of sale, including the bill of sale and/or UVIP transfer documentation.\n\n' +
-        'I respectfully request that this ticket be dismissed or redirected to the current owner.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      emergency:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. At the time of the alleged offence, I was dealing with a genuine emergency situation that required me to park my vehicle immediately. The circumstances left me with no reasonable alternative.\n\n' +
-        'I am prepared to provide supporting documentation of the emergency upon request.\n\n' +
-        'I respectfully request that this ticket be dismissed given the extenuating circumstances.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]',
-
-      loading:
-        'To: Toronto Parking Authority\n\n' +
-        'Re: Dispute of Parking Violation\n\n' +
-        'I am writing to dispute the above-noted parking violation. At the time the ticket was issued, I was actively loading or unloading goods from my vehicle. I was present at the vehicle and the stop was temporary and necessary for the purpose of loading/unloading as permitted under the City of Toronto Municipal Code.\n\n' +
-        'I respectfully request that this ticket be dismissed as my vehicle was stopped for a permitted purpose.\n\n' +
-        'Sincerely,\n[Your Name]\n[License Plate]'
+      sign: dvBuildDisputeLetter(
+        'sign',
+        'At the time and location of the alleged offence, the posted signage was hidden, obstructed, or otherwise not clearly visible to a reasonable driver. I was therefore unable to determine the parking restriction in effect.',
+        'I respectfully request that this ticket be cancelled on the basis that the precondition of clearly displayed official signage was not satisfied.'
+      ),
+      error: dvBuildDisputeLetter(
+        'error',
+        'The information recorded on the ticket contains a factual error — specifically, the license plate number and/or date recorded by the officer does not match my vehicle or the date in question.',
+        'I respectfully request that this ticket be cancelled on the ground of factual error.'
+      ),
+      meter: dvBuildDisputeLetter(
+        'meter',
+        'At the time of the alleged offence, the parking meter at this location was non-functional and unable to accept payment. I made a reasonable attempt to pay but was prevented from doing so by equipment failure.',
+        'I respectfully request that this ticket be cancelled given that the failure to pay was caused by faulty city equipment.'
+      ),
+      permit: dvBuildDisputeLetter(
+        'permit',
+        'At the time of the alleged offence, I held a valid residential parking permit for this area. My permit was clearly displayed in my vehicle as required.',
+        'I respectfully request that this ticket be cancelled in recognition of my valid permit entitlement.'
+      ),
+      notdriver: dvBuildDisputeLetter(
+        'notdriver',
+        'I was not the operator of the vehicle, nor in some cases the registered owner of record, at the time the ticket was issued. I am prepared to provide supporting documentation, including a statutory declaration if necessary.',
+        'I respectfully request that this ticket be cancelled, or in the alternative re-issued to the actually responsible party.'
+      ),
+      hours: dvBuildDisputeLetter(
+        'hours',
+        'The ticket was issued outside of the posted enforcement times for this location. According to the signage at the time, parking restrictions were not in effect when my vehicle was parked.',
+        'I respectfully request that this ticket be cancelled, as no violation occurred during the applicable enforcement period.'
+      ),
+      disability: dvBuildDisputeLetter(
+        'disability',
+        'At the time of the alleged offence I held a valid Accessible Parking Permit issued by the Province of Ontario, and the permit was displayed in my vehicle as required by regulation.',
+        'I respectfully request that this ticket be cancelled in recognition of my valid permit.'
+      ),
+      sold: dvBuildDisputeLetter(
+        'sold',
+        'The vehicle associated with this ticket was sold and transferred to a new owner prior to the date of the alleged offence. I am prepared to provide proof of sale, including the bill of sale and/or UVIP transfer documentation.',
+        'I respectfully request that this ticket be cancelled, or in the alternative redirected to the current registered owner.'
+      ),
+      emergency: dvBuildDisputeLetter(
+        'emergency',
+        'At the time of the alleged offence, I was responding to a genuine and imminent emergency that required me to stop my vehicle. I am prepared to provide supporting documentation of the emergency upon request.',
+        'I respectfully request that this ticket be cancelled given the extenuating circumstances.'
+      ),
+      loading: dvBuildDisputeLetter(
+        'loading',
+        'At the time the ticket was issued, I was actively loading or unloading goods or passengers from my vehicle. I was present at the vehicle and the stop was temporary and necessary for that purpose.',
+        'I respectfully request that this ticket be cancelled, as my vehicle was within the express loading-zone exemption.'
+      )
     };
 
     function generateScript() {
