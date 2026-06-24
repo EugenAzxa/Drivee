@@ -1,0 +1,11 @@
+# Drivee — robots.txt
+# Allow all crawlers full access to the public site.
+# The analytics dashboards are gated by app-side auth, not robots rules.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /analytics.html
+Disallow: /analytics-forecast.html
+
+Sitemap: https://drivee.ca/sitemap.xml
