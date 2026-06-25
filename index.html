@@ -9090,6 +9090,120 @@
           });
         }
 
+        // ─── DEMO MODE ───────────────────────────────────────────────
+        // No real API calls. Each captured photo resolves into a prepared
+        // example result after a short spinner delay, so the UI plays
+        // through end-to-end without backend cost. Swap MOCK_RESULTS for
+        // a real /api/safety-precheck fetch when wiring this up live.
+        var MOCK_RESULTS = {
+          tires: {
+            area: 'tires', verdict: 'caution', confidence: 0.78,
+            findings: [
+              'Front tire tread measures approximately 3 mm',
+              'Slight uneven wear on the outer edge — possible alignment issue',
+              'No sidewall damage visible'
+            ],
+            estimated_repair_cost_cad: { low: 280, high: 420 },
+            image_quality_ok: true, retake_reason: null
+          },
+          rust: {
+            area: 'rust', verdict: 'pass', confidence: 0.84,
+            findings: [
+              'Light surface rust on the rocker panel',
+              'No perforation or structural rust observed'
+            ],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          lights: {
+            area: 'lights', verdict: 'pass', confidence: 0.91,
+            findings: ['Both headlights intact and aligned', 'Lenses clear, no cracks'],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          windshield: {
+            area: 'windshield', verdict: 'fail', confidence: 0.88,
+            findings: [
+              'Crack approximately 40 cm across the driver wiper sweep',
+              'Likely exceeds Ontario SSC tolerance — replacement recommended'
+            ],
+            estimated_repair_cost_cad: { low: 450, high: 800 },
+            image_quality_ok: true, retake_reason: null
+          },
+          dashboard: {
+            area: 'dashboard', verdict: 'pass', confidence: 0.86,
+            findings: ['No active warning lights illuminated', 'All indicators show normal operation'],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          brakes: {
+            area: 'brakes', verdict: 'caution', confidence: 0.74,
+            findings: [
+              'Outer pad thickness approximately 4 mm',
+              'Rotor shows light scoring but no deep grooves',
+              'Recommend replacement within ~6,000 km'
+            ],
+            estimated_repair_cost_cad: { low: 180, high: 320 },
+            image_quality_ok: true, retake_reason: null
+          },
+          exhaust: {
+            area: 'exhaust', verdict: 'pass', confidence: 0.82,
+            findings: ['Muffler appears intact, no visible rust holes', 'Connections look secure'],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          odometer: {
+            area: 'odometer', verdict: 'pass', confidence: 0.95,
+            findings: ['Odometer reads 87,432 km', 'Display is clear and legible'],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          interior: {
+            area: 'interior', verdict: 'pass', confidence: 0.83,
+            findings: [
+              'Both front seatbelts retract properly',
+              'Seats appear securely anchored',
+              'No visible dashboard damage'
+            ],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          },
+          engine: {
+            area: 'engine', verdict: 'caution', confidence: 0.71,
+            findings: [
+              'Minor oil weep visible at the valve cover gasket',
+              'Belts appear in serviceable condition',
+              'Battery terminals show light corrosion'
+            ],
+            estimated_repair_cost_cad: { low: 120, high: 240 },
+            image_quality_ok: true, retake_reason: null
+          },
+          body: {
+            area: 'body', verdict: 'pass', confidence: 0.80,
+            findings: [
+              'No structural panel damage observed',
+              'Mirrors intact and properly mounted',
+              'Bumper covers fitted correctly'
+            ],
+            estimated_repair_cost_cad: { low: 0, high: 0 },
+            image_quality_ok: true, retake_reason: null
+          }
+        };
+
+        function mockAnalyze(areaKey) {
+          return new Promise(function(resolve) {
+            // 900–1400ms feels like a real model call without being annoying.
+            var delay = 900 + Math.floor(Math.random() * 500);
+            setTimeout(function() {
+              resolve(MOCK_RESULTS[areaKey] || {
+                area: areaKey, verdict: 'unknown', confidence: 0, findings: [],
+                estimated_repair_cost_cad: { low: 0, high: 0 },
+                image_quality_ok: true, retake_reason: null
+              });
+            }, delay);
+          });
+        }
+
         window.dvPCPhotoChosen = async function(evt) {
           var file = evt.target.files && evt.target.files[0];
           if (!file) return;
@@ -9105,56 +9219,18 @@
             $('dv2-pc-retake').hidden = true;
 
             var area = SAFETY_AREAS[state.idx];
-            var resp = await fetch('/api/safety-precheck', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ area: area.key, image_base64: img.base64, media_type: 'image/jpeg' })
-            });
-            var result = await resp.json();
+            var result = await mockAnalyze(area.key);
             $('dv2-pc-analyzing').hidden = true;
 
-            if (!resp.ok || result.error) {
-              state.lastResult = null;
-              $('dv2-pc-retake').hidden = false;
-              $('dv2-pc-retake-reason').textContent =
-                (result && result.error) || 'The inspector couldn’t read this photo. Retake or skip.';
-              return;
-            }
-
             state.lastResult = result;
-            if (result.image_quality_ok === false) {
-              $('dv2-pc-retake').hidden = false;
-              $('dv2-pc-retake-reason').textContent =
-                result.retake_reason || 'Image quality was too low to assess. Retake for a better read.';
-              return;
-            }
-
-            // Good photo — record, upload in background, move on.
             state.results.push(Object.assign({ label: area.label, skipped: false }, result));
-            uploadPhotoBg(img.dataUrl, area.key);
             advance();
           } catch (err) {
             $('dv2-pc-analyzing').hidden = true;
             $('dv2-pc-retake').hidden = false;
-            $('dv2-pc-retake-reason').textContent = 'Couldn’t reach the inspector. Check your connection and retake.';
+            $('dv2-pc-retake-reason').textContent = 'Could not read the photo. Try again.';
           }
         };
-
-        // Best-effort upload to Supabase Storage. Silently no-ops if the
-        // user isn’t signed in or the bucket isn’t set up yet.
-        async function uploadPhotoBg(dataUrl, areaKey) {
-          if (!window.db || !window.db.storage) return;
-          try {
-            var user = await window.db.auth.getUser();
-            var uid  = user && user.data && user.data.user && user.data.user.id;
-            if (!uid) return;
-            var path = uid + '/' + state.reportId + '/' + areaKey + '.jpg';
-            var blob = await (await fetch(dataUrl)).blob();
-            await window.db.storage.from('safety-photos').upload(path, blob, {
-              contentType: 'image/jpeg', upsert: true
-            });
-          } catch (e) { /* silent — report still works without storage */ }
-        }
 
         function finishReport() {
           setStep('report');
@@ -9215,34 +9291,8 @@
             '</div>';
           }).join('');
 
-          saveReportBg({
-            overallKey: overallKey || 'partial',
-            totalLow: totalLow, totalHigh: totalHigh,
-            counts: counts, results: state.results
-          });
-        }
-
-        async function saveReportBg(report) {
-          if (!window.db) return;
-          try {
-            var user = await window.db.auth.getUser();
-            var uid  = user && user.data && user.data.user && user.data.user.id;
-            if (!uid) return;
-            var overall = report.overallKey === 'pass'    ? 'likely_pass' :
-                          report.overallKey === 'caution' ? 'needs_work'  :
-                          report.overallKey === 'fail'    ? 'likely_fail' : 'partial';
-            await window.db.from('safety_reports').insert({
-              user_id: uid,
-              overall_verdict: overall,
-              pass_count:    report.counts.pass,
-              caution_count: report.counts.caution,
-              fail_count:    report.counts.fail,
-              unknown_count: report.counts.unknown + report.counts.skipped,
-              total_cost_low:  report.totalLow,
-              total_cost_high: report.totalHigh,
-              areas: report.results
-            });
-          } catch (e) { /* silent — UI already rendered the report */ }
+          // Demo mode: no backend persistence — the report is shown but
+          // nothing is saved. Wire saveReportBg + Supabase here when going live.
         }
 
         function esc(s) {
