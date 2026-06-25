@@ -8744,74 +8744,126 @@
           padding: 12px 14px; border-radius: 0 8px 8px 0;
           margin: 14px 0;
         }
-        #svc-precheck .dv2-pc-progress { margin-bottom: 14px; }
-        #svc-precheck .dv2-pc-progress-track {
-          height: 6px; background: rgba(11,20,48,0.08); border-radius: 999px; overflow: hidden;
+        /* Picker grid */
+        #svc-precheck .dv2-pc-grid-head { text-align: center; margin-bottom: 14px; }
+        #svc-precheck .dv2-pc-grid-title {
+          font-size: 17px; font-weight: 700; color: var(--ink, #0B1430);
         }
-        #svc-precheck .dv2-pc-progress-fill {
-          height: 100%; background: linear-gradient(90deg, #2E64FF, #6B4EE0);
-          border-radius: 999px; width: 0%; transition: width 0.3s ease;
+        #svc-precheck .dv2-pc-grid-sub {
+          font-size: 13px; color: var(--text-secondary, #4A5267);
+          margin-top: 4px; line-height: 1.5;
         }
-        #svc-precheck .dv2-pc-progress-text {
-          font-size: 12px; font-weight: 600; color: var(--text-secondary, #4A5267);
-          margin-top: 6px; text-align: center;
+        #svc-precheck .dv2-pc-area-grid {
+          display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+          margin-bottom: 16px;
         }
-        #svc-precheck .dv2-pc-progress-text b { color: var(--ink, #0B1430); }
-
-        #svc-precheck .dv2-pc-frame {
+        #svc-precheck .dv2-pc-area-tile {
           position: relative;
-          background: #0E1B3D;
-          border-radius: 14px;
-          aspect-ratio: 4/3;
-          margin: 12px 0 14px;
-          overflow: hidden;
-          display: flex; align-items: center; justify-content: center;
+          display: flex; flex-direction: column; align-items: flex-start;
+          padding: 14px 14px 12px;
+          background: white;
+          border: 1px solid rgba(11,20,48,0.08);
+          border-radius: 12px;
+          cursor: pointer;
+          transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+          text-align: left;
+          font-family: inherit;
+          width: 100%;
         }
-        #svc-precheck .dv2-pc-frame-overlay {
-          position: absolute; inset: 0;
-          display: flex; align-items: center; justify-content: center;
-          pointer-events: none;
+        #svc-precheck .dv2-pc-area-tile:hover,
+        #svc-precheck .dv2-pc-area-tile:focus-visible {
+          border-color: #2E64FF; transform: translateY(-1px);
         }
-        #svc-precheck .dv2-pc-frame-overlay svg { width: 70%; height: 70%; opacity: 0.55; }
-        #svc-precheck .dv2-pc-preview { position: absolute; inset: 0; }
-        #svc-precheck .dv2-pc-preview img { width: 100%; height: 100%; object-fit: cover; }
+        #svc-precheck .dv2-pc-area-tile-icon { font-size: 24px; margin-bottom: 6px; line-height: 1; }
+        #svc-precheck .dv2-pc-area-tile-name {
+          font-size: 14px; font-weight: 700; color: var(--ink, #0B1430);
+          line-height: 1.25;
+        }
+        #svc-precheck .dv2-pc-area-tile-status {
+          font-size: 10px; font-weight: 800; color: var(--text-secondary, #4A5267);
+          text-transform: uppercase; letter-spacing: 1px;
+          margin-top: 4px;
+        }
+        #svc-precheck .dv2-pc-area-tile.done {
+          background: rgba(31,171,107,0.06);
+          border-color: rgba(31,171,107,0.30);
+        }
+        #svc-precheck .dv2-pc-area-tile.done .dv2-pc-area-tile-status { color: #0F7A48; }
+        #svc-precheck .dv2-pc-area-tile.done.caution {
+          background: rgba(232,155,34,0.07);
+          border-color: rgba(232,155,34,0.32);
+        }
+        #svc-precheck .dv2-pc-area-tile.done.caution .dv2-pc-area-tile-status { color: #8A5A12; }
+        #svc-precheck .dv2-pc-area-tile.done.fail {
+          background: rgba(225,71,61,0.07);
+          border-color: rgba(225,71,61,0.32);
+        }
+        #svc-precheck .dv2-pc-area-tile.done.fail .dv2-pc-area-tile-status { color: #B0271E; }
 
-        #svc-precheck .dv2-pc-instruction {
-          font-size: 15px; line-height: 1.45; color: var(--ink, #0B1430);
-          font-weight: 600; text-align: center;
-          margin-bottom: 14px;
+        #svc-precheck .dv2-pc-area-tile-dot {
+          position: absolute; top: 14px; right: 14px;
+          width: 12px; height: 12px; border-radius: 50%;
+          background: rgba(11,20,48,0.10);
         }
-        #svc-precheck .dv2-pc-actions {
-          display: flex; flex-direction: column; gap: 8px;
-        }
-        #svc-precheck .dv2-pc-cancel {
-          margin-top: 16px; width: 100%; font-size: 12px; opacity: 0.7;
-        }
+        #svc-precheck .dv2-pc-area-tile.done.pass    .dv2-pc-area-tile-dot { background: #1FAB6B; box-shadow: 0 0 0 3px rgba(31,171,107,0.20); }
+        #svc-precheck .dv2-pc-area-tile.done.caution .dv2-pc-area-tile-dot { background: #E89B22; box-shadow: 0 0 0 3px rgba(232,155,34,0.20); }
+        #svc-precheck .dv2-pc-area-tile.done.fail    .dv2-pc-area-tile-dot { background: #E1473D; box-shadow: 0 0 0 3px rgba(225,71,61,0.20); }
 
-        #svc-precheck .dv2-pc-analyzing {
-          text-align: center; padding: 28px 12px;
-          font-size: 14px; color: var(--text-secondary, #4A5267);
+        #svc-precheck .dv2-pc-grid-foot { display: flex; flex-direction: column; gap: 8px; }
+        #svc-precheck .dv2-pc-grid-progress {
+          font-size: 12px; color: var(--text-secondary, #4A5267);
+          text-align: center; margin-bottom: 4px;
+          font-weight: 600;
+        }
+        #svc-precheck .dv2-pc-grid-progress span { color: var(--ink, #0B1430); font-weight: 800; }
+
+        /* Capture animation overlay */
+        #svc-precheck .dv2-pc-capture-modal {
+          position: fixed; inset: 0; z-index: 9999;
+          background: rgba(11,20,48,0.78);
+          display: flex; align-items: center; justify-content: center;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          animation: dvPCFadeIn 0.2s ease;
+        }
+        @keyframes dvPCFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #svc-precheck .dv2-pc-capture-modal-inner {
+          background: white; border-radius: 18px;
+          padding: 32px 28px 28px;
+          text-align: center;
+          width: min(280px, calc(100% - 48px));
+          animation: dvPCPopIn 0.32s cubic-bezier(.2,.9,.3,1.2);
+        }
+        @keyframes dvPCPopIn {
+          from { transform: scale(0.82); opacity: 0; }
+          to   { transform: scale(1);    opacity: 1; }
+        }
+        #svc-precheck .dv2-pc-capture-icon {
+          font-size: 44px; margin-bottom: 10px; line-height: 1;
+          animation: dvPCIconBounce 1.2s ease-in-out infinite;
+          display: inline-block;
+        }
+        @keyframes dvPCIconBounce {
+          0%, 100% { transform: translateY(0); }
+          50%      { transform: translateY(-4px); }
+        }
+        #svc-precheck .dv2-pc-capture-area-name {
+          font-size: 17px; font-weight: 700; color: var(--ink, #0B1430);
+          margin-bottom: 18px;
+        }
+        #svc-precheck .dv2-pc-capture-status {
+          margin-top: 14px;
+          font-size: 13px; color: var(--text-secondary, #4A5267);
         }
         #svc-precheck .dv2-pc-spinner {
           width: 36px; height: 36px;
           border: 3px solid rgba(46,100,255,0.18);
           border-top-color: #2E64FF;
           border-radius: 50%;
-          margin: 0 auto 12px;
+          margin: 0 auto;
           animation: dvPCSpin 0.9s linear infinite;
         }
         @keyframes dvPCSpin { to { transform: rotate(360deg); } }
-
-        #svc-precheck .dv2-pc-retake {
-          padding: 14px;
-          background: rgba(232,155,34,0.10);
-          border-radius: 12px;
-          margin: 12px 0;
-        }
-        #svc-precheck .dv2-pc-retake-warn {
-          font-size: 14px; color: #6B4310; margin-bottom: 10px; font-weight: 600;
-        }
-        #svc-precheck .dv2-pc-retake .btn { width: 100%; margin-top: 6px; }
 
         /* Report screen */
         #svc-precheck .dv2-pc-report-header {
@@ -8898,40 +8950,35 @@
           <button class="btn btn-ghost" onclick="dv2SvcGrid()" style="width:100%;margin-top:8px">Back to services</button>
         </div>
 
-        <!-- ─── Step: capture (one area at a time) ─── -->
+        <!-- ─── Step: capture (area picker grid) ─── -->
         <div class="dv2-pc-step" data-step="capture">
-          <div class="dv2-pc-progress">
-            <div class="dv2-pc-progress-track"><div id="dv2-pc-progress-bar" class="dv2-pc-progress-fill"></div></div>
-            <div class="dv2-pc-progress-text">Step <b><span id="dv2-pc-step-n">1</span></b> of <b><span id="dv2-pc-step-total">11</span></b> · <b id="dv2-pc-area-label">Tires</b></div>
+          <div class="dv2-pc-grid-head">
+            <div class="dv2-pc-grid-title">Tap an area to photograph</div>
+            <div class="dv2-pc-grid-sub">Do them in any order. When you're done, tap "See report" — anything you skipped will be marked unknown.</div>
           </div>
 
-          <div class="dv2-pc-frame">
-            <div id="dv2-pc-frame-overlay" class="dv2-pc-frame-overlay"></div>
-            <div id="dv2-pc-preview" class="dv2-pc-preview" hidden><img id="dv2-pc-preview-img" alt="" /></div>
+          <div id="dv2-pc-area-grid" class="dv2-pc-area-grid"><!-- tiles injected by JS --></div>
+
+          <div class="dv2-pc-grid-foot">
+            <div class="dv2-pc-grid-progress">
+              <span id="dv2-pc-grid-progress-n">0</span> of <span id="dv2-pc-grid-progress-total">11</span> areas photographed
+            </div>
+            <button id="dv2-pc-finish-btn" class="btn btn-primary" onclick="dvPCFinish()" style="width:100%">See report →</button>
+            <button class="btn btn-ghost" onclick="dvPCCancel()" style="width:100%">Cancel</button>
           </div>
 
-          <div id="dv2-pc-instruction" class="dv2-pc-instruction">Photograph the tread of one front tire, close-up.</div>
+          <!-- Hidden file input — triggered programmatically by dvPCPickArea -->
+          <input type="file" id="dv2-pc-photo" accept="image/*" capture="environment" onchange="dvPCPhotoChosen(event)" style="display:none" />
 
-          <div id="dv2-pc-capture-actions" class="dv2-pc-actions">
-            <input type="file" id="dv2-pc-photo" accept="image/*" capture="environment" onchange="dvPCPhotoChosen(event)" style="display:none" />
-            <label for="dv2-pc-photo" class="btn btn-primary" style="cursor:pointer;width:100%">
-              <i class="fa-solid fa-camera"></i> Take photo
-            </label>
-            <button class="btn btn-ghost" onclick="dvPCSkip()" style="width:100%">Skip this step</button>
+          <!-- Capture animation overlay — shown while the photo is being "analyzed" -->
+          <div id="dv2-pc-capture-modal" class="dv2-pc-capture-modal" hidden>
+            <div class="dv2-pc-capture-modal-inner">
+              <div id="dv2-pc-cap-icon" class="dv2-pc-capture-icon">🛞</div>
+              <div id="dv2-pc-cap-name" class="dv2-pc-capture-area-name">Tires</div>
+              <div class="dv2-pc-spinner"></div>
+              <div id="dv2-pc-cap-status" class="dv2-pc-capture-status">Analyzing your photo…</div>
+            </div>
           </div>
-
-          <div id="dv2-pc-analyzing" class="dv2-pc-analyzing" hidden>
-            <div class="dv2-pc-spinner"></div>
-            <div>Analyzing your photo…</div>
-          </div>
-
-          <div id="dv2-pc-retake" class="dv2-pc-retake" hidden>
-            <div class="dv2-pc-retake-warn">⚠️ <span id="dv2-pc-retake-reason"></span></div>
-            <button class="btn btn-primary" onclick="dvPCRetake()">Retake</button>
-            <button class="btn btn-ghost" onclick="dvPCKeepAnyway()">Keep this photo anyway</button>
-          </div>
-
-          <button class="btn btn-ghost dv2-pc-cancel" onclick="dvPCCancel()">Cancel inspection</button>
         </div>
 
         <!-- ─── Step: report ─── -->
@@ -8961,46 +9008,18 @@
       // keep them in sync when adding a new area.
       (function() {
         var SAFETY_AREAS = [
-          { key: 'tires',      label: 'Tires',
-            instruction: 'Photograph the tread of one front tire, close-up.',
-            overlay: 'circle' },
-          { key: 'rust',       label: 'Rust / Underbody',
-            instruction: 'Photograph the underside near a wheel well or rocker panel.',
-            overlay: 'rect' },
-          { key: 'lights',     label: 'Lights',
-            instruction: 'Photograph the headlights or rear lights from the front or rear of the car.',
-            overlay: 'rect-wide' },
-          { key: 'windshield', label: 'Windshield',
-            instruction: 'Stand in front of the car and photograph the full windshield.',
-            overlay: 'rect-wide' },
-          { key: 'dashboard',  label: 'Dashboard Warning Lights',
-            instruction: 'Turn the ignition ON (do not start the engine). Photograph the dashboard cluster.',
-            overlay: 'rect' },
-          { key: 'brakes',     label: 'Brakes',
-            instruction: 'Photograph one front brake — pad and rotor visible through the wheel spokes.',
-            overlay: 'circle' },
-          { key: 'exhaust',    label: 'Exhaust',
-            instruction: 'Photograph the muffler and exhaust pipe at the rear of the car.',
-            overlay: 'rect' },
-          { key: 'odometer',   label: 'Odometer',
-            instruction: 'Photograph the odometer reading clearly (ignition ON).',
-            overlay: 'rect-wide' },
-          { key: 'interior',   label: 'Interior / Seats',
-            instruction: 'Photograph the front seats and seatbelts.',
-            overlay: 'rect' },
-          { key: 'engine',     label: 'Engine Bay',
-            instruction: 'Open the hood. Photograph the engine bay from the front.',
-            overlay: 'rect-wide' },
-          { key: 'body',       label: 'Body Walk-around',
-            instruction: 'Photograph the full driver-side profile of the car.',
-            overlay: 'rect-wide' }
+          { key: 'tires',      label: 'Tires',           icon: '🛞', instruction: 'Photograph the tread of one front tire, close-up.' },
+          { key: 'rust',       label: 'Rust / Underbody', icon: '🔩', instruction: 'Photograph the underside near a wheel well or rocker panel.' },
+          { key: 'lights',     label: 'Lights',          icon: '💡', instruction: 'Photograph the headlights or rear lights.' },
+          { key: 'windshield', label: 'Windshield',      icon: '🪟', instruction: 'Stand in front of the car and photograph the full windshield.' },
+          { key: 'dashboard',  label: 'Dashboard Lights',icon: '⚠️', instruction: 'Turn ignition ON (do not start the engine). Photograph the dashboard cluster.' },
+          { key: 'brakes',     label: 'Brakes',          icon: '🛑', instruction: 'Photograph one front brake — pad and rotor visible through the wheel spokes.' },
+          { key: 'exhaust',    label: 'Exhaust',         icon: '💨', instruction: 'Photograph the muffler and exhaust pipe at the rear.' },
+          { key: 'odometer',   label: 'Odometer',        icon: '🔢', instruction: 'Photograph the odometer reading clearly (ignition ON).' },
+          { key: 'interior',   label: 'Interior / Seats',icon: '🪑', instruction: 'Photograph the front seats and seatbelts.' },
+          { key: 'engine',     label: 'Engine Bay',      icon: '🔧', instruction: 'Open the hood. Photograph the engine bay from the front.' },
+          { key: 'body',       label: 'Body Walk-around',icon: '🚗', instruction: 'Photograph the full driver-side profile of the car.' }
         ];
-
-        var OVERLAY_SVG = {
-          'circle':    '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3"/></svg>',
-          'rect':      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><rect x="14" y="14" width="72" height="72" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3" rx="6"/></svg>',
-          'rect-wide': '<svg viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet"><rect x="5" y="8" width="90" height="44" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3" rx="6"/></svg>'
-        };
 
         var state = null;
         function $(id) { return document.getElementById(id); }
@@ -9009,60 +9028,63 @@
 
         function reset() {
           state = {
-            idx: 0,
-            results: [],
-            lastDataUrl: null,
-            lastResult: null,
+            currentArea: null,    // area key currently being captured
+            captured: {},          // { tires: {verdict,...}, rust: {...}, ... }
             reportId: 'r' + Date.now()
           };
         }
 
-        window.dvPCStart   = function() { reset(); setStep('capture'); renderArea(); };
+        window.dvPCStart   = function() { reset(); setStep('capture'); renderGrid(); };
         window.dvPCCancel  = function() { reset(); setStep('intro'); };
         window.dvPCRestart = function() { reset(); setStep('intro'); };
         window.dvPCDone    = function() { reset(); setStep('intro'); if (typeof dv2SvcGrid === 'function') dv2SvcGrid(); };
 
-        function renderArea() {
-          var area = SAFETY_AREAS[state.idx];
-          $('dv2-pc-step-n').textContent     = state.idx + 1;
-          $('dv2-pc-step-total').textContent = SAFETY_AREAS.length;
-          $('dv2-pc-area-label').textContent = area.label;
-          $('dv2-pc-instruction').textContent = area.instruction;
-          $('dv2-pc-progress-bar').style.width = Math.round((state.idx / SAFETY_AREAS.length) * 100) + '%';
-          $('dv2-pc-frame-overlay').innerHTML = OVERLAY_SVG[area.overlay] || OVERLAY_SVG['rect'];
-          $('dv2-pc-preview').hidden = true;
-          $('dv2-pc-analyzing').hidden = true;
-          $('dv2-pc-retake').hidden = true;
-          $('dv2-pc-capture-actions').style.display = 'flex';
-          $('dv2-pc-photo').value = '';
-          state.lastDataUrl = null;
-          state.lastResult  = null;
+        function renderGrid() {
+          var done = Object.keys(state.captured).length;
+          $('dv2-pc-grid-progress-n').textContent = done;
+          $('dv2-pc-grid-progress-total').textContent = SAFETY_AREAS.length;
+
+          var grid = $('dv2-pc-area-grid');
+          grid.innerHTML = SAFETY_AREAS.map(function(area) {
+            var r = state.captured[area.key];
+            var doneCls = '', status = 'Tap to photograph';
+            if (r) {
+              status = r.verdict === 'pass'    ? 'Looks good' :
+                       r.verdict === 'caution' ? 'Caution'    :
+                       r.verdict === 'fail'    ? 'Needs fix'  :
+                       'Captured';
+              doneCls = ' done ' + (r.verdict || 'pass');
+            }
+            return '<button type="button" class="dv2-pc-area-tile' + doneCls + '" onclick="dvPCPickArea(\'' + area.key + '\')">' +
+              '<span class="dv2-pc-area-tile-dot"></span>' +
+              '<span class="dv2-pc-area-tile-icon">' + area.icon + '</span>' +
+              '<span class="dv2-pc-area-tile-name">' + area.label + '</span>' +
+              '<span class="dv2-pc-area-tile-status">' + status + '</span>' +
+            '</button>';
+          }).join('');
         }
 
-        window.dvPCSkip = function() {
-          var area = SAFETY_AREAS[state.idx];
-          state.results.push({
-            area: area.key, label: area.label, skipped: true,
-            verdict: 'unknown', confidence: 0, findings: [],
-            estimated_repair_cost_cad: { low: 0, high: 0 }
+        // Click on an area tile → triggers the camera for that specific area.
+        window.dvPCPickArea = function(key) {
+          state.currentArea = key;
+          $('dv2-pc-photo').value = ''; // allow re-picking same file
+          $('dv2-pc-photo').click();
+        };
+
+        window.dvPCFinish = function() {
+          // Build the results list — captured areas + skipped placeholders for the rest.
+          var results = SAFETY_AREAS.map(function(area) {
+            var r = state.captured[area.key];
+            if (r) return Object.assign({ label: area.label, skipped: false }, r);
+            return {
+              area: area.key, label: area.label, skipped: true,
+              verdict: 'unknown', confidence: 0, findings: [],
+              estimated_repair_cost_cad: { low: 0, high: 0 }
+            };
           });
-          advance();
+          state.results = results;
+          finishReport();
         };
-
-        window.dvPCRetake = function() { renderArea(); };
-
-        window.dvPCKeepAnyway = function() {
-          if (!state.lastResult) { advance(); return; }
-          var area = SAFETY_AREAS[state.idx];
-          state.results.push(Object.assign({ label: area.label, skipped: false }, state.lastResult));
-          advance();
-        };
-
-        function advance() {
-          state.idx++;
-          if (state.idx >= SAFETY_AREAS.length) finishReport();
-          else renderArea();
-        }
 
         // Resize via canvas; returns { dataUrl, base64 }.
         function fileToBase64(file, maxDim) {
@@ -9206,29 +9228,35 @@
 
         window.dvPCPhotoChosen = async function(evt) {
           var file = evt.target.files && evt.target.files[0];
-          if (!file) return;
+          if (!file || !state.currentArea) return;
+          var area = SAFETY_AREAS.filter(function(a) { return a.key === state.currentArea; })[0];
+          if (!area) return;
+
+          // Show the capture-animation modal (icon bounce + spinner)
+          $('dv2-pc-cap-icon').textContent  = area.icon;
+          $('dv2-pc-cap-name').textContent  = area.label;
+          $('dv2-pc-cap-status').textContent = 'Analyzing your photo…';
+          $('dv2-pc-capture-modal').hidden = false;
+
           try {
-            var img = await fileToBase64(file, 1280);
-            state.lastDataUrl = img.dataUrl;
-
-            $('dv2-pc-preview-img').src = img.dataUrl;
-            $('dv2-pc-preview').hidden = false;
-            $('dv2-pc-frame-overlay').innerHTML = '';
-            $('dv2-pc-capture-actions').style.display = 'none';
-            $('dv2-pc-analyzing').hidden = false;
-            $('dv2-pc-retake').hidden = true;
-
-            var area = SAFETY_AREAS[state.idx];
+            // We still process the file so the demo feels like a real capture,
+            // but the result comes from the prepared MOCK_RESULTS table.
+            await fileToBase64(file, 1280);
             var result = await mockAnalyze(area.key);
-            $('dv2-pc-analyzing').hidden = true;
+            state.captured[area.key] = result;
 
-            state.lastResult = result;
-            state.results.push(Object.assign({ label: area.label, skipped: false }, result));
-            advance();
+            // Brief "done" beat before closing the modal
+            $('dv2-pc-cap-status').textContent =
+              result.verdict === 'pass'    ? '🟢 Looks good' :
+              result.verdict === 'caution' ? '🟡 Caution noted' :
+              result.verdict === 'fail'    ? '🔴 Needs attention' :
+                                             'Captured';
+            setTimeout(function() {
+              $('dv2-pc-capture-modal').hidden = true;
+              renderGrid();
+            }, 700);
           } catch (err) {
-            $('dv2-pc-analyzing').hidden = true;
-            $('dv2-pc-retake').hidden = false;
-            $('dv2-pc-retake-reason').textContent = 'Could not read the photo. Try again.';
+            $('dv2-pc-capture-modal').hidden = true;
           }
         };
 
