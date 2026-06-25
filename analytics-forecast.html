@@ -696,25 +696,17 @@
       { key: 'Firefox',       count:   15 }
     ],
     dailyTrend: (function() {
-      // 14-day window — matches the section header "Daily trend · last 14 days".
-      // Earlier this was 60 days and the chart wrapped into two rows; cutting
-      // to 14 also makes the page snappier (fewer DOM bars to render).
+      // Hand-tuned 14-day scrappy growth: quiet early days, a couple of dips
+      // for weekends, a few sparks, and a climb into the last few days.
+      // Index 0 = oldest, 13 = today.
+      var counts = [120, 95, 180, 240, 310, 285, 410, 380, 220, 195, 540, 610, 580, 720];
       var trend = [];
       var DAYS  = 14;
       var today = new Date();
       for (var i = DAYS - 1; i >= 0; i--) {
-        var d = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
-        // Soft growth curve across the window, plateauing in the most recent days
-        var t = (DAYS - i) / DAYS;
-        var s = 1 / (1 + Math.exp(-8 * (t - 0.55)));
-        var base = Math.round(450 + s * 300);
-        // Mild day-of-week pattern (weekends a bit lower)
-        var day = d.getDay();
-        var dow = (day === 0 || day === 6) ? 0.82 : 1.05;
-        // Stable deterministic jitter from the date so the page never shuffles
-        var seed = d.getDate() * 13 + d.getMonth() * 7;
-        var jitter = 0.92 + ((seed % 17) / 100);
-        trend.push({ date: d.toISOString().slice(0,10), count: Math.max(0, Math.round(base * dow * jitter)) });
+        var d   = new Date(today.getTime() - i * 24 * 60 * 60 * 1000);
+        var idx = DAYS - 1 - i;
+        trend.push({ date: d.toISOString().slice(0,10), count: counts[idx] });
       }
       return trend;
     })(),
