@@ -613,29 +613,29 @@
     fetchCapped: false,
     // Daily active users / window snapshots
     users: {
-      today:    84,
-      last7d:   412,
-      last30d:  1180,
-      last60d:  1840,
-      allTime:  2150,
-      triedTotal: 2150,
-      appOpens: 9460
+      today:    48,
+      last7d:   240,
+      last30d:  720,
+      last60d:  1100,
+      allTime:  1450,
+      triedTotal: 1450,
+      appOpens: 5410
     },
     // Total event counts
     totals: {
-      today:    1245,
-      last7d:   6890,
-      last30d:  22150,
-      last60d:  36400,
-      allTime:  41280
+      today:    720,
+      last7d:   4000,
+      last30d:  12700,
+      last60d:  21000,
+      allTime:  23500
     },
     // Email signups / waiting list
     signups: {
       totalEmails: 249,
-      today:    7,
-      last7d:   49,
-      last30d:  148,
-      last60d:  208,
+      today:    3,
+      last7d:   18,
+      last30d:  75,
+      last60d:  150,
       recent: [
         { email: 'a.kennedy@gmail.com',  source: 'main',     attempts: 1, firstAt: new Date(Date.now() -    2 * 60 * 60 * 1000).toISOString() },
         { email: 'mleung@outlook.com',   source: 'loss-cta', attempts: 1, firstAt: new Date(Date.now() -    5 * 60 * 60 * 1000).toISOString() },
@@ -707,7 +707,7 @@
         // Soft growth curve across the window, plateauing in the most recent days
         var t = (DAYS - i) / DAYS;
         var s = 1 / (1 + Math.exp(-8 * (t - 0.55)));
-        var base = Math.round(900 + s * 600);
+        var base = Math.round(450 + s * 300);
         // Mild day-of-week pattern (weekends a bit lower)
         var day = d.getDay();
         var dow = (day === 0 || day === 6) ? 0.82 : 1.05;
