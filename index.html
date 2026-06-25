@@ -8824,6 +8824,111 @@
         }
         #svc-precheck .dv2-pc-grid-progress span { color: var(--ink, #0B1430); font-weight: 800; }
 
+        /* ─── How-to modal (shown before camera) ─── */
+        #svc-precheck .dv2-pc-howto-modal {
+          position: fixed; inset: 0; z-index: 9998;
+          background: rgba(11,20,48,0.78);
+          display: flex; align-items: center; justify-content: center;
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          animation: dvPCFadeIn 0.2s ease;
+        }
+        #svc-precheck .dv2-pc-howto-modal[hidden] { display: none !important; }
+        #svc-precheck .dv2-pc-howto-inner {
+          background: white; border-radius: 18px;
+          padding: 28px 24px 22px;
+          width: min(340px, calc(100% - 32px));
+          text-align: center;
+          position: relative;
+          animation: dvPCPopIn 0.32s cubic-bezier(.2,.9,.3,1.2);
+        }
+
+        /* Visual stage — area emoji centered, dashed focus frame pulsing
+           around it, animated corner brackets, and a camera emoji
+           swinging in from the corner. */
+        #svc-precheck .dv2-pc-howto-visual {
+          position: relative;
+          height: 150px;
+          display: flex; align-items: center; justify-content: center;
+          margin-bottom: 14px;
+        }
+        #svc-precheck .dv2-pc-howto-area-icon {
+          font-size: 64px; line-height: 1;
+          position: relative; z-index: 2;
+          animation: dvPCHowtoIconPulse 2s ease-in-out infinite;
+        }
+        @keyframes dvPCHowtoIconPulse {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.08); }
+        }
+        #svc-precheck .dv2-pc-howto-frame {
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 120px; height: 120px;
+          margin: -60px 0 0 -60px;
+          border: 2px dashed #2E64FF;
+          border-radius: 14px;
+          z-index: 1;
+          animation: dvPCHowtoFramePulse 2.2s ease-in-out infinite;
+        }
+        @keyframes dvPCHowtoFramePulse {
+          0%, 100% { transform: scale(1);    opacity: 0.55; }
+          50%      { transform: scale(1.12); opacity: 1; }
+        }
+        #svc-precheck .dv2-pc-howto-corners {
+          position: absolute;
+          top: 50%; left: 50%;
+          width: 140px; height: 140px;
+          margin: -70px 0 0 -70px;
+          z-index: 0;
+          pointer-events: none;
+        }
+        #svc-precheck .dv2-pc-howto-corners .c {
+          position: absolute;
+          width: 18px; height: 18px;
+          border: 2.5px solid #2E64FF;
+          opacity: 0.6;
+          animation: dvPCHowtoCornerPulse 1.6s ease-in-out infinite;
+        }
+        #svc-precheck .dv2-pc-howto-corners .c-tl { top: 0; left: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 4px; }
+        #svc-precheck .dv2-pc-howto-corners .c-tr { top: 0; right: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 4px; }
+        #svc-precheck .dv2-pc-howto-corners .c-bl { bottom: 0; left: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 4px; }
+        #svc-precheck .dv2-pc-howto-corners .c-br { bottom: 0; right: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 4px; }
+        @keyframes dvPCHowtoCornerPulse {
+          0%, 100% { opacity: 0.4; }
+          50%      { opacity: 1; }
+        }
+        #svc-precheck .dv2-pc-howto-camera {
+          position: absolute;
+          right: 22%; bottom: 6px;
+          font-size: 30px;
+          z-index: 3;
+          animation: dvPCHowtoCamera 2.4s ease-in-out infinite;
+          transform-origin: center;
+        }
+        @keyframes dvPCHowtoCamera {
+          0%, 100% { transform: translate(0, 0) rotate(-10deg); }
+          50%      { transform: translate(-6px, -8px) rotate(10deg); }
+        }
+
+        #svc-precheck .dv2-pc-howto-area-name {
+          font-size: 22px; font-weight: 700;
+          color: var(--ink, #0B1430);
+          margin-bottom: 8px;
+        }
+        #svc-precheck .dv2-pc-howto-instruction {
+          font-size: 14px; line-height: 1.5;
+          color: var(--text-secondary, #4A5267);
+          margin-bottom: 12px;
+        }
+        #svc-precheck .dv2-pc-howto-hint {
+          font-size: 12.5px; line-height: 1.55;
+          background: rgba(46,100,255,0.08);
+          color: #1B45C2;
+          padding: 10px 12px;
+          border-radius: 10px;
+          text-align: left;
+        }
+
         /* Capture animation overlay */
         #svc-precheck .dv2-pc-capture-modal {
           position: fixed; inset: 0; z-index: 9999;
@@ -8999,6 +9104,38 @@
           <!-- Hidden file input — triggered programmatically by dvPCPickArea -->
           <input type="file" id="dv2-pc-photo" accept="image/*" capture="environment" onchange="dvPCPhotoChosen(event)" style="display:none" />
 
+          <!-- How-to modal — shown when user taps a tile, BEFORE the camera opens.
+               Animated visual + instruction + hint + Open-camera / Use-example / Cancel. -->
+          <div id="dv2-pc-howto-modal" class="dv2-pc-howto-modal" hidden>
+            <div class="dv2-pc-howto-inner">
+              <button class="dv2-pc-modal-close" type="button" onclick="dvPCCloseHowto()" aria-label="Close">×</button>
+
+              <div class="dv2-pc-howto-visual">
+                <div class="dv2-pc-howto-frame"></div>
+                <div id="dv2-pc-howto-icon" class="dv2-pc-howto-area-icon">🪟</div>
+                <div class="dv2-pc-howto-camera">📷</div>
+                <div class="dv2-pc-howto-corners">
+                  <span class="c c-tl"></span><span class="c c-tr"></span>
+                  <span class="c c-bl"></span><span class="c c-br"></span>
+                </div>
+              </div>
+
+              <div id="dv2-pc-howto-name" class="dv2-pc-howto-area-name">Windshield</div>
+              <div id="dv2-pc-howto-instruction" class="dv2-pc-howto-instruction">Stand in front of the car and photograph the full windshield.</div>
+              <div id="dv2-pc-howto-hint" class="dv2-pc-howto-hint">💡 Crack over 30 cm or any chip in the driver wiper sweep = fail.</div>
+
+              <button class="btn btn-primary" type="button" onclick="dvPCStartCapture()" style="width:100%;margin-top:18px">
+                <i class="fa-solid fa-camera"></i>&nbsp; Open camera
+              </button>
+              <button class="btn btn-ghost" type="button" onclick="dvPCUseExampleResult()" style="width:100%;margin-top:6px;font-size:13px">
+                Use example result instead
+              </button>
+              <button class="btn btn-ghost" type="button" onclick="dvPCCloseHowto()" style="width:100%;margin-top:2px;font-size:13px;opacity:0.7">
+                Back
+              </button>
+            </div>
+          </div>
+
           <!-- Capture animation overlay — shown while the photo is being "analyzed" -->
           <div id="dv2-pc-capture-modal" class="dv2-pc-capture-modal" hidden>
             <div class="dv2-pc-capture-modal-inner">
@@ -9118,11 +9255,36 @@
           }).join('');
         }
 
-        // Click on an area tile → triggers the camera for that specific area.
+        // Click on an area tile → show the "how to take this picture" modal
+        // first, with an animated visual, the instruction, and a hint. From
+        // there the user can either Open the camera, use the example result,
+        // or back out.
         window.dvPCPickArea = function(key) {
+          var area = SAFETY_AREAS.filter(function(a) { return a.key === key; })[0];
+          if (!area) return;
           state.currentArea = key;
-          $('dv2-pc-photo').value = ''; // allow re-picking same file
+          $('dv2-pc-howto-icon').textContent       = area.icon;
+          $('dv2-pc-howto-name').textContent       = area.label;
+          $('dv2-pc-howto-instruction').textContent = area.instruction;
+          $('dv2-pc-howto-hint').textContent       = '💡 ' + (area.hint || '');
+          _showHowtoModal();
+        };
+
+        // "Open camera" button — closes the how-to and triggers the file input.
+        window.dvPCStartCapture = function() {
+          dvPCCloseHowto();
+          $('dv2-pc-photo').value = ''; // allow re-picking the same file
           $('dv2-pc-photo').click();
+        };
+
+        // "Use example result instead" — marks the current area done with its
+        // prepared mock result, skipping the camera entirely. Useful for
+        // demoing the report screen without taking 11 photos.
+        window.dvPCUseExampleResult = function() {
+          if (!state.currentArea) { dvPCCloseHowto(); return; }
+          state.captured[state.currentArea] = MOCK_RESULTS[state.currentArea];
+          dvPCCloseHowto();
+          renderGrid();
         };
 
         window.dvPCFinish = function() {
@@ -9151,27 +9313,30 @@
         };
 
         // Always dismissible — also wired to the X and "Cancel" buttons inside
-        // the modal, plus a safety auto-close so the user is never stuck.
+        // each modal, plus a safety auto-close for the capture modal so the
+        // user is never stuck.
         var _captureModalTimer = null;
-        function _showCaptureModal() {
-          var m = $('dv2-pc-capture-modal');
+        function _setModal(id, show) {
+          var m = $(id);
           if (!m) return;
-          m.hidden = false;
-          m.style.display = 'flex'; // explicit — guards against [hidden] specificity issues
+          m.hidden = !show;
+          m.style.display = show ? 'flex' : 'none';
         }
+        function _showHowtoModal()   { _setModal('dv2-pc-howto-modal',   true);  }
+        window.dvPCCloseHowto = function() { _setModal('dv2-pc-howto-modal', false); };
+
+        function _showCaptureModal() { _setModal('dv2-pc-capture-modal', true);  }
         window.dvPCCloseModal = function() {
           if (_captureModalTimer) { clearTimeout(_captureModalTimer); _captureModalTimer = null; }
-          var m = $('dv2-pc-capture-modal');
-          if (m) {
-            m.hidden = true;
-            m.style.display = 'none'; // explicit — same reason as above
-          }
+          _setModal('dv2-pc-capture-modal', false);
         };
+
         document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') {
-            var m = document.getElementById('dv2-pc-capture-modal');
-            if (m && !m.hidden) dvPCCloseModal();
-          }
+          if (e.key !== 'Escape') return;
+          var cap = document.getElementById('dv2-pc-capture-modal');
+          if (cap && !cap.hidden) { dvPCCloseModal(); return; }
+          var how = document.getElementById('dv2-pc-howto-modal');
+          if (how && !how.hidden) { dvPCCloseHowto(); }
         });
 
         // Resize via canvas; returns { dataUrl, base64 }.
