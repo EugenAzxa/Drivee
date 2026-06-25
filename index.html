@@ -8020,6 +8020,14 @@
           <div class="dv2-svc-tile-name">Car Inspection</div>
           <div class="dv2-svc-tile-desc">Safety &amp; pre-purchase</div>
         </button>
+        <button class="dv2-svc-tile" onclick="dv2SvcShow('precheck')">
+          <div class="dv2-svc-tile-icon" style="background: linear-gradient(135deg, #2E64FF 0%, #6B4EE0 100%); color: white;">
+            <!-- Camera + sparkle icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/><path d="M19 4l.7 1.4L21 6l-1.3.6L19 8l-.7-1.4L17 6l1.3-.6L19 4Z" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="dv2-svc-tile-name">Safety PreCheck</div>
+          <div class="dv2-svc-tile-desc">AI photo inspection</div>
+        </button>
         <button class="dv2-svc-tile" onclick="dv2SvcShow('antitheft')">
           <div class="dv2-svc-tile-icon" style="background: rgba(225,71,61,0.12); color: var(--dv2-red);">
             <!-- Lock / anti-theft icon -->
@@ -8711,6 +8719,539 @@
           Drivee lists these shops as a convenience and earns nothing from the rankings (Azcan Auto is our featured partner). Ratings &amp; reviews open live on Google. Always confirm price &amp; availability when you call.
         </div>
       </div>
+
+      <!-- ============================================================
+           Service: Safety PreCheck — AI vision pre-inspection
+           Multi-step camera flow → per-area JSON verdict from Claude
+           vision → roll-up report. Storage + API keys live server-side.
+      ============================================================ -->
+      <style>
+        /* Scoped to #svc-precheck only — no global leakage. */
+        #svc-precheck .dv2-pc-step { display: none; }
+        #svc-precheck[data-step="intro"]   .dv2-pc-step[data-step="intro"]   { display: block; }
+        #svc-precheck[data-step="capture"] .dv2-pc-step[data-step="capture"] { display: block; }
+        #svc-precheck[data-step="report"]  .dv2-pc-step[data-step="report"]  { display: block; }
+
+        #svc-precheck .dv2-pc-intro {
+          font-size: 14px; line-height: 1.55; color: var(--text-secondary, #4A5267);
+          margin: 4px 0 16px;
+        }
+        #svc-precheck .dv2-pc-disclaimer-strong {
+          background: rgba(232,155,34,0.10);
+          border-left: 3px solid #E89B22;
+          color: #6B4310;
+          font-size: 13px; line-height: 1.5;
+          padding: 12px 14px; border-radius: 0 8px 8px 0;
+          margin: 14px 0;
+        }
+        #svc-precheck .dv2-pc-progress { margin-bottom: 14px; }
+        #svc-precheck .dv2-pc-progress-track {
+          height: 6px; background: rgba(11,20,48,0.08); border-radius: 999px; overflow: hidden;
+        }
+        #svc-precheck .dv2-pc-progress-fill {
+          height: 100%; background: linear-gradient(90deg, #2E64FF, #6B4EE0);
+          border-radius: 999px; width: 0%; transition: width 0.3s ease;
+        }
+        #svc-precheck .dv2-pc-progress-text {
+          font-size: 12px; font-weight: 600; color: var(--text-secondary, #4A5267);
+          margin-top: 6px; text-align: center;
+        }
+        #svc-precheck .dv2-pc-progress-text b { color: var(--ink, #0B1430); }
+
+        #svc-precheck .dv2-pc-frame {
+          position: relative;
+          background: #0E1B3D;
+          border-radius: 14px;
+          aspect-ratio: 4/3;
+          margin: 12px 0 14px;
+          overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
+        }
+        #svc-precheck .dv2-pc-frame-overlay {
+          position: absolute; inset: 0;
+          display: flex; align-items: center; justify-content: center;
+          pointer-events: none;
+        }
+        #svc-precheck .dv2-pc-frame-overlay svg { width: 70%; height: 70%; opacity: 0.55; }
+        #svc-precheck .dv2-pc-preview { position: absolute; inset: 0; }
+        #svc-precheck .dv2-pc-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+        #svc-precheck .dv2-pc-instruction {
+          font-size: 15px; line-height: 1.45; color: var(--ink, #0B1430);
+          font-weight: 600; text-align: center;
+          margin-bottom: 14px;
+        }
+        #svc-precheck .dv2-pc-actions {
+          display: flex; flex-direction: column; gap: 8px;
+        }
+        #svc-precheck .dv2-pc-cancel {
+          margin-top: 16px; width: 100%; font-size: 12px; opacity: 0.7;
+        }
+
+        #svc-precheck .dv2-pc-analyzing {
+          text-align: center; padding: 28px 12px;
+          font-size: 14px; color: var(--text-secondary, #4A5267);
+        }
+        #svc-precheck .dv2-pc-spinner {
+          width: 36px; height: 36px;
+          border: 3px solid rgba(46,100,255,0.18);
+          border-top-color: #2E64FF;
+          border-radius: 50%;
+          margin: 0 auto 12px;
+          animation: dvPCSpin 0.9s linear infinite;
+        }
+        @keyframes dvPCSpin { to { transform: rotate(360deg); } }
+
+        #svc-precheck .dv2-pc-retake {
+          padding: 14px;
+          background: rgba(232,155,34,0.10);
+          border-radius: 12px;
+          margin: 12px 0;
+        }
+        #svc-precheck .dv2-pc-retake-warn {
+          font-size: 14px; color: #6B4310; margin-bottom: 10px; font-weight: 600;
+        }
+        #svc-precheck .dv2-pc-retake .btn { width: 100%; margin-top: 6px; }
+
+        /* Report screen */
+        #svc-precheck .dv2-pc-report-header {
+          text-align: center;
+          padding: 24px 16px;
+          border-radius: 14px;
+          margin-bottom: 16px;
+          background: rgba(46,100,255,0.04);
+        }
+        #svc-precheck .dv2-pc-overall-badge {
+          display: inline-block;
+          font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+          padding: 5px 12px; border-radius: 999px;
+          margin-bottom: 8px;
+          background: rgba(11,20,48,0.08); color: #4A5267;
+          text-transform: uppercase;
+        }
+        #svc-precheck .dv2-pc-overall-badge.pass    { background: rgba(31,171,107,0.16); color: #0F7A48; }
+        #svc-precheck .dv2-pc-overall-badge.caution { background: rgba(232,155,34,0.18); color: #8A5A12; }
+        #svc-precheck .dv2-pc-overall-badge.fail    { background: rgba(225,71,61,0.16); color: #B0271E; }
+        #svc-precheck .dv2-pc-overall-title {
+          font-size: 22px; font-weight: 800; color: var(--ink, #0B1430);
+          margin-bottom: 4px;
+        }
+        #svc-precheck .dv2-pc-overall-cost {
+          font-size: 14px; color: var(--text-secondary, #4A5267);
+        }
+
+        #svc-precheck .dv2-pc-report-list { display: flex; flex-direction: column; gap: 10px; }
+        #svc-precheck .dv2-pc-area-card {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 14px;
+          background: white;
+          border: 1px solid rgba(11,20,48,0.08);
+          border-radius: 12px;
+        }
+        #svc-precheck .dv2-pc-area-light {
+          width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+          margin-top: 3px;
+          background: #8C95A7;
+          box-shadow: 0 0 0 3px rgba(140,149,167,0.18);
+        }
+        #svc-precheck .dv2-pc-area-light.pass    { background: #1FAB6B; box-shadow: 0 0 0 3px rgba(31,171,107,0.18); }
+        #svc-precheck .dv2-pc-area-light.caution { background: #E89B22; box-shadow: 0 0 0 3px rgba(232,155,34,0.18); }
+        #svc-precheck .dv2-pc-area-light.fail    { background: #E1473D; box-shadow: 0 0 0 3px rgba(225,71,61,0.18); }
+        #svc-precheck .dv2-pc-area-light.skipped { background: transparent; border: 2px dashed #8C95A7; box-shadow: none; }
+        #svc-precheck .dv2-pc-area-body { flex: 1; min-width: 0; }
+        #svc-precheck .dv2-pc-area-name {
+          font-size: 15px; font-weight: 700; color: var(--ink, #0B1430); margin-bottom: 2px;
+        }
+        #svc-precheck .dv2-pc-area-verdict {
+          font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+          margin-bottom: 6px; color: #4A5267;
+        }
+        #svc-precheck .dv2-pc-area-findings {
+          list-style: disc; margin: 0 0 6px 18px;
+          font-size: 13px; line-height: 1.5; color: var(--text-secondary, #4A5267);
+        }
+        #svc-precheck .dv2-pc-area-cost {
+          font-size: 12px; color: var(--text-secondary, #4A5267);
+          margin-top: 6px;
+        }
+        #svc-precheck .dv2-pc-step[data-step="report"] .btn { width: 100%; margin-top: 8px; }
+      </style>
+
+      <div class="card svc-card" id="svc-precheck"
+           data-step="intro"
+           data-search="safety precheck pre-check pre check inspection ai photo camera ssc certificate ontario mvis vehicle">
+
+        <!-- ─── Step: intro ─── -->
+        <div class="dv2-pc-step" data-step="intro">
+          <div class="card-title">📷 Safety PreCheck</div>
+          <div class="card-subtitle">AI photo-based pre-screen for your Ontario Safety Standards Certificate</div>
+
+          <p class="dv2-pc-intro">
+            Photograph 11 areas of your car. Our AI flags what would likely pass, need work, or fail an official inspection — and roughly what the repairs would cost. The whole walkthrough takes about 5 minutes.
+          </p>
+
+          <div class="dv2-pc-disclaimer-strong">
+            ⚠️ Visual pre-screen only. Not an official inspection — a licensed Ontario mechanic must issue the Safety Standards Certificate.
+          </div>
+
+          <button class="btn btn-primary" onclick="dvPCStart()" style="width:100%">Start inspection →</button>
+          <button class="btn btn-ghost" onclick="dv2SvcGrid()" style="width:100%;margin-top:8px">Back to services</button>
+        </div>
+
+        <!-- ─── Step: capture (one area at a time) ─── -->
+        <div class="dv2-pc-step" data-step="capture">
+          <div class="dv2-pc-progress">
+            <div class="dv2-pc-progress-track"><div id="dv2-pc-progress-bar" class="dv2-pc-progress-fill"></div></div>
+            <div class="dv2-pc-progress-text">Step <b><span id="dv2-pc-step-n">1</span></b> of <b><span id="dv2-pc-step-total">11</span></b> · <b id="dv2-pc-area-label">Tires</b></div>
+          </div>
+
+          <div class="dv2-pc-frame">
+            <div id="dv2-pc-frame-overlay" class="dv2-pc-frame-overlay"></div>
+            <div id="dv2-pc-preview" class="dv2-pc-preview" hidden><img id="dv2-pc-preview-img" alt="" /></div>
+          </div>
+
+          <div id="dv2-pc-instruction" class="dv2-pc-instruction">Photograph the tread of one front tire, close-up.</div>
+
+          <div id="dv2-pc-capture-actions" class="dv2-pc-actions">
+            <input type="file" id="dv2-pc-photo" accept="image/*" capture="environment" onchange="dvPCPhotoChosen(event)" style="display:none" />
+            <label for="dv2-pc-photo" class="btn btn-primary" style="cursor:pointer;width:100%">
+              <i class="fa-solid fa-camera"></i> Take photo
+            </label>
+            <button class="btn btn-ghost" onclick="dvPCSkip()" style="width:100%">Skip this step</button>
+          </div>
+
+          <div id="dv2-pc-analyzing" class="dv2-pc-analyzing" hidden>
+            <div class="dv2-pc-spinner"></div>
+            <div>Analyzing your photo…</div>
+          </div>
+
+          <div id="dv2-pc-retake" class="dv2-pc-retake" hidden>
+            <div class="dv2-pc-retake-warn">⚠️ <span id="dv2-pc-retake-reason"></span></div>
+            <button class="btn btn-primary" onclick="dvPCRetake()">Retake</button>
+            <button class="btn btn-ghost" onclick="dvPCKeepAnyway()">Keep this photo anyway</button>
+          </div>
+
+          <button class="btn btn-ghost dv2-pc-cancel" onclick="dvPCCancel()">Cancel inspection</button>
+        </div>
+
+        <!-- ─── Step: report ─── -->
+        <div class="dv2-pc-step" data-step="report">
+          <div class="dv2-pc-report-header">
+            <div id="dv2-pc-overall-badge" class="dv2-pc-overall-badge">…</div>
+            <div class="dv2-pc-overall-title" id="dv2-pc-overall-title">…</div>
+            <div class="dv2-pc-overall-cost" id="dv2-pc-overall-cost">…</div>
+          </div>
+
+          <div id="dv2-pc-report-list" class="dv2-pc-report-list"></div>
+
+          <div class="dv2-pc-disclaimer-strong" style="margin-top:18px">
+            ⚠️ Visual pre-screen only. Not an official inspection — a licensed Ontario mechanic must issue the Safety Standards Certificate.
+          </div>
+
+          <button class="btn btn-primary" onclick="dv2SvcShow('inspect')">Book a real inspection →</button>
+          <button class="btn btn-ghost" onclick="dvPCRestart()">Start over</button>
+          <button class="btn btn-ghost" onclick="dvPCDone()">Done</button>
+        </div>
+      </div>
+
+      <script>
+      // ─── Safety PreCheck state machine + capture + analyze + render ────
+      // Config-driven: edit SAFETY_AREAS to add/remove/rename checks. The
+      // 11-area list is mirrored in /api/safety-precheck.js ALLOWED_AREAS —
+      // keep them in sync when adding a new area.
+      (function() {
+        var SAFETY_AREAS = [
+          { key: 'tires',      label: 'Tires',
+            instruction: 'Photograph the tread of one front tire, close-up.',
+            overlay: 'circle' },
+          { key: 'rust',       label: 'Rust / Underbody',
+            instruction: 'Photograph the underside near a wheel well or rocker panel.',
+            overlay: 'rect' },
+          { key: 'lights',     label: 'Lights',
+            instruction: 'Photograph the headlights or rear lights from the front or rear of the car.',
+            overlay: 'rect-wide' },
+          { key: 'windshield', label: 'Windshield',
+            instruction: 'Stand in front of the car and photograph the full windshield.',
+            overlay: 'rect-wide' },
+          { key: 'dashboard',  label: 'Dashboard Warning Lights',
+            instruction: 'Turn the ignition ON (do not start the engine). Photograph the dashboard cluster.',
+            overlay: 'rect' },
+          { key: 'brakes',     label: 'Brakes',
+            instruction: 'Photograph one front brake — pad and rotor visible through the wheel spokes.',
+            overlay: 'circle' },
+          { key: 'exhaust',    label: 'Exhaust',
+            instruction: 'Photograph the muffler and exhaust pipe at the rear of the car.',
+            overlay: 'rect' },
+          { key: 'odometer',   label: 'Odometer',
+            instruction: 'Photograph the odometer reading clearly (ignition ON).',
+            overlay: 'rect-wide' },
+          { key: 'interior',   label: 'Interior / Seats',
+            instruction: 'Photograph the front seats and seatbelts.',
+            overlay: 'rect' },
+          { key: 'engine',     label: 'Engine Bay',
+            instruction: 'Open the hood. Photograph the engine bay from the front.',
+            overlay: 'rect-wide' },
+          { key: 'body',       label: 'Body Walk-around',
+            instruction: 'Photograph the full driver-side profile of the car.',
+            overlay: 'rect-wide' }
+        ];
+
+        var OVERLAY_SVG = {
+          'circle':    '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3"/></svg>',
+          'rect':      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"><rect x="14" y="14" width="72" height="72" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3" rx="6"/></svg>',
+          'rect-wide': '<svg viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet"><rect x="5" y="8" width="90" height="44" fill="none" stroke="white" stroke-width="1.5" stroke-dasharray="3 3" rx="6"/></svg>'
+        };
+
+        var state = null;
+        function $(id) { return document.getElementById(id); }
+        function card() { return document.getElementById('svc-precheck'); }
+        function setStep(name) { card().dataset.step = name; }
+
+        function reset() {
+          state = {
+            idx: 0,
+            results: [],
+            lastDataUrl: null,
+            lastResult: null,
+            reportId: 'r' + Date.now()
+          };
+        }
+
+        window.dvPCStart   = function() { reset(); setStep('capture'); renderArea(); };
+        window.dvPCCancel  = function() { reset(); setStep('intro'); };
+        window.dvPCRestart = function() { reset(); setStep('intro'); };
+        window.dvPCDone    = function() { reset(); setStep('intro'); if (typeof dv2SvcGrid === 'function') dv2SvcGrid(); };
+
+        function renderArea() {
+          var area = SAFETY_AREAS[state.idx];
+          $('dv2-pc-step-n').textContent     = state.idx + 1;
+          $('dv2-pc-step-total').textContent = SAFETY_AREAS.length;
+          $('dv2-pc-area-label').textContent = area.label;
+          $('dv2-pc-instruction').textContent = area.instruction;
+          $('dv2-pc-progress-bar').style.width = Math.round((state.idx / SAFETY_AREAS.length) * 100) + '%';
+          $('dv2-pc-frame-overlay').innerHTML = OVERLAY_SVG[area.overlay] || OVERLAY_SVG['rect'];
+          $('dv2-pc-preview').hidden = true;
+          $('dv2-pc-analyzing').hidden = true;
+          $('dv2-pc-retake').hidden = true;
+          $('dv2-pc-capture-actions').style.display = 'flex';
+          $('dv2-pc-photo').value = '';
+          state.lastDataUrl = null;
+          state.lastResult  = null;
+        }
+
+        window.dvPCSkip = function() {
+          var area = SAFETY_AREAS[state.idx];
+          state.results.push({
+            area: area.key, label: area.label, skipped: true,
+            verdict: 'unknown', confidence: 0, findings: [],
+            estimated_repair_cost_cad: { low: 0, high: 0 }
+          });
+          advance();
+        };
+
+        window.dvPCRetake = function() { renderArea(); };
+
+        window.dvPCKeepAnyway = function() {
+          if (!state.lastResult) { advance(); return; }
+          var area = SAFETY_AREAS[state.idx];
+          state.results.push(Object.assign({ label: area.label, skipped: false }, state.lastResult));
+          advance();
+        };
+
+        function advance() {
+          state.idx++;
+          if (state.idx >= SAFETY_AREAS.length) finishReport();
+          else renderArea();
+        }
+
+        // Resize via canvas; returns { dataUrl, base64 }.
+        function fileToBase64(file, maxDim) {
+          return new Promise(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              var img = new Image();
+              img.onload = function() {
+                var w = img.width, h = img.height, max = maxDim || 1280;
+                if (w > max || h > max) {
+                  if (w > h) { h = Math.round(h * max / w); w = max; }
+                  else       { w = Math.round(w * max / h); h = max; }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                var dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+                resolve({ dataUrl: dataUrl, base64: dataUrl.split(',')[1] });
+              };
+              img.onerror = reject;
+              img.src = e.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        window.dvPCPhotoChosen = async function(evt) {
+          var file = evt.target.files && evt.target.files[0];
+          if (!file) return;
+          try {
+            var img = await fileToBase64(file, 1280);
+            state.lastDataUrl = img.dataUrl;
+
+            $('dv2-pc-preview-img').src = img.dataUrl;
+            $('dv2-pc-preview').hidden = false;
+            $('dv2-pc-frame-overlay').innerHTML = '';
+            $('dv2-pc-capture-actions').style.display = 'none';
+            $('dv2-pc-analyzing').hidden = false;
+            $('dv2-pc-retake').hidden = true;
+
+            var area = SAFETY_AREAS[state.idx];
+            var resp = await fetch('/api/safety-precheck', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ area: area.key, image_base64: img.base64, media_type: 'image/jpeg' })
+            });
+            var result = await resp.json();
+            $('dv2-pc-analyzing').hidden = true;
+
+            if (!resp.ok || result.error) {
+              state.lastResult = null;
+              $('dv2-pc-retake').hidden = false;
+              $('dv2-pc-retake-reason').textContent =
+                (result && result.error) || 'The inspector couldn’t read this photo. Retake or skip.';
+              return;
+            }
+
+            state.lastResult = result;
+            if (result.image_quality_ok === false) {
+              $('dv2-pc-retake').hidden = false;
+              $('dv2-pc-retake-reason').textContent =
+                result.retake_reason || 'Image quality was too low to assess. Retake for a better read.';
+              return;
+            }
+
+            // Good photo — record, upload in background, move on.
+            state.results.push(Object.assign({ label: area.label, skipped: false }, result));
+            uploadPhotoBg(img.dataUrl, area.key);
+            advance();
+          } catch (err) {
+            $('dv2-pc-analyzing').hidden = true;
+            $('dv2-pc-retake').hidden = false;
+            $('dv2-pc-retake-reason').textContent = 'Couldn’t reach the inspector. Check your connection and retake.';
+          }
+        };
+
+        // Best-effort upload to Supabase Storage. Silently no-ops if the
+        // user isn’t signed in or the bucket isn’t set up yet.
+        async function uploadPhotoBg(dataUrl, areaKey) {
+          if (!window.db || !window.db.storage) return;
+          try {
+            var user = await window.db.auth.getUser();
+            var uid  = user && user.data && user.data.user && user.data.user.id;
+            if (!uid) return;
+            var path = uid + '/' + state.reportId + '/' + areaKey + '.jpg';
+            var blob = await (await fetch(dataUrl)).blob();
+            await window.db.storage.from('safety-photos').upload(path, blob, {
+              contentType: 'image/jpeg', upsert: true
+            });
+          } catch (e) { /* silent — report still works without storage */ }
+        }
+
+        function finishReport() {
+          setStep('report');
+          $('dv2-pc-progress-bar').style.width = '100%';
+
+          var counts = { pass:0, caution:0, fail:0, unknown:0, skipped:0 };
+          var totalLow = 0, totalHigh = 0;
+          state.results.forEach(function(r) {
+            if (r.skipped) counts.skipped++;
+            else counts[r.verdict || 'unknown']++;
+            var c = r.estimated_repair_cost_cad || {};
+            totalLow  += c.low  || 0;
+            totalHigh += c.high || 0;
+          });
+
+          var overallKey, overallLabel, overallEmoji;
+          if (counts.fail > 0)                                  { overallKey = 'fail';    overallLabel = 'Likely Fail'; overallEmoji = '🔴'; }
+          else if (counts.caution > 0)                          { overallKey = 'caution'; overallLabel = 'Needs Work';  overallEmoji = '🟡'; }
+          else if (counts.skipped > 0 || counts.unknown > 0)    { overallKey = '';        overallLabel = 'Partial Review'; overallEmoji = '⚪'; }
+          else                                                  { overallKey = 'pass';    overallLabel = 'Likely Pass'; overallEmoji = '🟢'; }
+
+          var badge = $('dv2-pc-overall-badge');
+          badge.className = 'dv2-pc-overall-badge ' + overallKey;
+          badge.textContent = overallEmoji + ' ' + overallLabel.toUpperCase();
+          $('dv2-pc-overall-title').textContent = overallLabel;
+          if (totalHigh > 0) {
+            $('dv2-pc-overall-cost').textContent =
+              'Estimated repairs: $' + totalLow.toLocaleString() +
+              ' – $' + totalHigh.toLocaleString() + ' CAD';
+          } else {
+            $('dv2-pc-overall-cost').textContent = 'No repairs estimated — still book a real inspection to confirm.';
+          }
+
+          $('dv2-pc-report-list').innerHTML = state.results.map(function(r) {
+            var vk = r.skipped ? 'skipped' : (r.verdict || 'unknown');
+            var vl = r.skipped ? 'Skipped' :
+                    vk === 'pass'    ? 'Pass'    :
+                    vk === 'caution' ? 'Caution' :
+                    vk === 'fail'    ? 'Fail'    : 'Unknown';
+            var findings = (r.findings || []).map(function(f) {
+              return '<li>' + esc(f) + '</li>';
+            }).join('');
+            var costRow = '';
+            var c = r.estimated_repair_cost_cad || {};
+            if (c.high && c.high > 0) {
+              costRow = '<div class="dv2-pc-area-cost">Repair estimate: $' +
+                (c.low || 0).toLocaleString() + ' – $' +
+                c.high.toLocaleString() + '</div>';
+            }
+            return '<div class="dv2-pc-area-card">' +
+              '<div class="dv2-pc-area-light ' + vk + '"></div>' +
+              '<div class="dv2-pc-area-body">' +
+                '<div class="dv2-pc-area-name">' + esc(r.label || r.area) + '</div>' +
+                '<div class="dv2-pc-area-verdict">' + vl + '</div>' +
+                (findings ? '<ul class="dv2-pc-area-findings">' + findings + '</ul>' : '') +
+                costRow +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          saveReportBg({
+            overallKey: overallKey || 'partial',
+            totalLow: totalLow, totalHigh: totalHigh,
+            counts: counts, results: state.results
+          });
+        }
+
+        async function saveReportBg(report) {
+          if (!window.db) return;
+          try {
+            var user = await window.db.auth.getUser();
+            var uid  = user && user.data && user.data.user && user.data.user.id;
+            if (!uid) return;
+            var overall = report.overallKey === 'pass'    ? 'likely_pass' :
+                          report.overallKey === 'caution' ? 'needs_work'  :
+                          report.overallKey === 'fail'    ? 'likely_fail' : 'partial';
+            await window.db.from('safety_reports').insert({
+              user_id: uid,
+              overall_verdict: overall,
+              pass_count:    report.counts.pass,
+              caution_count: report.counts.caution,
+              fail_count:    report.counts.fail,
+              unknown_count: report.counts.unknown + report.counts.skipped,
+              total_cost_low:  report.totalLow,
+              total_cost_high: report.totalHigh,
+              areas: report.results
+            });
+          } catch (e) { /* silent — UI already rendered the report */ }
+        }
+
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function(c) {
+            return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+          });
+        }
+      })();
+      </script>
 
       <!-- ============================================================
            Sub-page: How to check a car before buying (DIY guide)
