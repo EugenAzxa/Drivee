@@ -8836,10 +8836,26 @@
         @keyframes dvPCFadeIn { from { opacity: 0; } to { opacity: 1; } }
         #svc-precheck .dv2-pc-capture-modal-inner {
           background: white; border-radius: 18px;
-          padding: 32px 28px 28px;
+          padding: 32px 28px 22px;
           text-align: center;
-          width: min(280px, calc(100% - 48px));
+          width: min(300px, calc(100% - 48px));
           animation: dvPCPopIn 0.32s cubic-bezier(.2,.9,.3,1.2);
+          position: relative;
+        }
+        #svc-precheck .dv2-pc-modal-close {
+          position: absolute; top: 10px; right: 10px;
+          background: transparent; border: 0;
+          width: 32px; height: 32px;
+          font-size: 22px; line-height: 1;
+          color: var(--text-secondary, #4A5267);
+          cursor: pointer;
+          border-radius: 50%;
+          transition: background 0.15s;
+        }
+        #svc-precheck .dv2-pc-modal-close:hover { background: rgba(11,20,48,0.06); color: var(--ink, #0B1430); }
+        #svc-precheck .dv2-pc-modal-cancel {
+          width: 100%; margin-top: 18px;
+          font-size: 13px;
         }
         @keyframes dvPCPopIn {
           from { transform: scale(0.82); opacity: 0; }
@@ -8971,6 +8987,7 @@
               <span id="dv2-pc-grid-progress-n">0</span> of <span id="dv2-pc-grid-progress-total">11</span> areas photographed
             </div>
             <button id="dv2-pc-finish-btn" class="btn btn-primary" onclick="dvPCFinish()" style="width:100%">See report →</button>
+            <button class="btn btn-ghost" onclick="dvPCFillDemo()" style="width:100%">Fill with demo data (skip photos)</button>
             <button class="btn btn-ghost" onclick="dvPCCancel()" style="width:100%">Cancel</button>
           </div>
 
@@ -8980,10 +8997,12 @@
           <!-- Capture animation overlay — shown while the photo is being "analyzed" -->
           <div id="dv2-pc-capture-modal" class="dv2-pc-capture-modal" hidden>
             <div class="dv2-pc-capture-modal-inner">
+              <button class="dv2-pc-modal-close" type="button" onclick="dvPCCloseModal()" aria-label="Close">×</button>
               <div id="dv2-pc-cap-icon" class="dv2-pc-capture-icon">🛞</div>
               <div id="dv2-pc-cap-name" class="dv2-pc-capture-area-name">Tires</div>
               <div class="dv2-pc-spinner"></div>
               <div id="dv2-pc-cap-status" class="dv2-pc-capture-status">Analyzing your photo…</div>
+              <button class="btn btn-ghost dv2-pc-modal-cancel" type="button" onclick="dvPCCloseModal()">Cancel</button>
             </div>
           </div>
         </div>
@@ -9115,6 +9134,31 @@
           state.results = results;
           finishReport();
         };
+
+        // Demo shortcut: populate every area with its prepared example
+        // result and jump to the report — no photos needed.
+        window.dvPCFillDemo = function() {
+          SAFETY_AREAS.forEach(function(area) {
+            state.captured[area.key] = MOCK_RESULTS[area.key];
+          });
+          renderGrid();
+          dvPCFinish();
+        };
+
+        // Always dismissible — also wired to the X and "Cancel" buttons inside
+        // the modal, plus a safety auto-close so the user is never stuck.
+        var _captureModalTimer = null;
+        window.dvPCCloseModal = function() {
+          if (_captureModalTimer) { clearTimeout(_captureModalTimer); _captureModalTimer = null; }
+          var m = $('dv2-pc-capture-modal');
+          if (m) m.hidden = true;
+        };
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            var m = document.getElementById('dv2-pc-capture-modal');
+            if (m && !m.hidden) dvPCCloseModal();
+          }
+        });
 
         // Resize via canvas; returns { dataUrl, base64 }.
         function fileToBase64(file, maxDim) {
@@ -9268,6 +9312,19 @@
           $('dv2-pc-cap-status').textContent = 'Analyzing your photo…';
           $('dv2-pc-capture-modal').hidden = false;
 
+          // Safety net: if anything stalls (corrupt image, slow file reader,
+          // user backgrounds the tab mid-capture), the modal auto-closes
+          // after 5s instead of trapping the user on a spinner forever.
+          if (_captureModalTimer) clearTimeout(_captureModalTimer);
+          _captureModalTimer = setTimeout(function() {
+            $('dv2-pc-capture-modal').hidden = true;
+            // Use the example result anyway so the area is marked done
+            if (!state.captured[area.key]) {
+              state.captured[area.key] = MOCK_RESULTS[area.key];
+              renderGrid();
+            }
+          }, 5000);
+
           try {
             // We still process the file so the demo feels like a real capture,
             // but the result comes from the prepared MOCK_RESULTS table.
@@ -9282,11 +9339,14 @@
               result.verdict === 'fail'    ? '🔴 Needs attention' :
                                              'Captured';
             setTimeout(function() {
-              $('dv2-pc-capture-modal').hidden = true;
+              dvPCCloseModal();
               renderGrid();
             }, 700);
           } catch (err) {
-            $('dv2-pc-capture-modal').hidden = true;
+            dvPCCloseModal();
+            // Fall back to the prepared example so the area still records
+            state.captured[area.key] = MOCK_RESULTS[area.key];
+            renderGrid();
           }
         };
 
