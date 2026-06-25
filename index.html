@@ -8780,10 +8780,16 @@
           font-size: 14px; font-weight: 700; color: var(--ink, #0B1430);
           line-height: 1.25;
         }
+        #svc-precheck .dv2-pc-area-tile-hint {
+          font-size: 11.5px; line-height: 1.4;
+          color: var(--text-secondary, #4A5267);
+          margin-top: 4px;
+          font-weight: 500;
+        }
         #svc-precheck .dv2-pc-area-tile-status {
           font-size: 10px; font-weight: 800; color: var(--text-secondary, #4A5267);
           text-transform: uppercase; letter-spacing: 1px;
-          margin-top: 4px;
+          margin-top: 8px;
         }
         #svc-precheck .dv2-pc-area-tile.done {
           background: rgba(31,171,107,0.06);
@@ -9009,17 +9015,39 @@
       // keep them in sync when adding a new area.
       (function() {
         var SAFETY_AREAS = [
-          { key: 'tires',      label: 'Tires',           icon: '🛞', instruction: 'Photograph the tread of one front tire, close-up.' },
-          { key: 'rust',       label: 'Rust / Underbody', icon: '🔩', instruction: 'Photograph the underside near a wheel well or rocker panel.' },
-          { key: 'lights',     label: 'Lights',          icon: '💡', instruction: 'Photograph the headlights or rear lights.' },
-          { key: 'windshield', label: 'Windshield',      icon: '🪟', instruction: 'Stand in front of the car and photograph the full windshield.' },
-          { key: 'dashboard',  label: 'Dashboard Lights',icon: '⚠️', instruction: 'Turn ignition ON (do not start the engine). Photograph the dashboard cluster.' },
-          { key: 'brakes',     label: 'Brakes',          icon: '🛑', instruction: 'Photograph one front brake — pad and rotor visible through the wheel spokes.' },
-          { key: 'exhaust',    label: 'Exhaust',         icon: '💨', instruction: 'Photograph the muffler and exhaust pipe at the rear.' },
-          { key: 'odometer',   label: 'Odometer',        icon: '🔢', instruction: 'Photograph the odometer reading clearly (ignition ON).' },
-          { key: 'interior',   label: 'Interior / Seats',icon: '🪑', instruction: 'Photograph the front seats and seatbelts.' },
-          { key: 'engine',     label: 'Engine Bay',      icon: '🔧', instruction: 'Open the hood. Photograph the engine bay from the front.' },
-          { key: 'body',       label: 'Body Walk-around',icon: '🚗', instruction: 'Photograph the full driver-side profile of the car.' }
+          { key: 'tires',      label: 'Tires',           icon: '🛞',
+            instruction: 'Photograph the tread of one front tire, close-up.',
+            hint: 'Tread under 1.5 mm = fail. We also flag uneven wear and sidewall cracks.' },
+          { key: 'rust',       label: 'Rust / Underbody', icon: '🔩',
+            instruction: 'Photograph the underside near a wheel well or rocker panel.',
+            hint: 'Surface rust is OK. Holes through metal near suspension or brake lines = fail.' },
+          { key: 'lights',     label: 'Lights',          icon: '💡',
+            instruction: 'Photograph the headlights or rear lights.',
+            hint: 'All bulbs lit, lenses uncracked. Missing plate light alone fails the SSC.' },
+          { key: 'windshield', label: 'Windshield',      icon: '🪟',
+            instruction: 'Stand in front of the car and photograph the full windshield.',
+            hint: 'Crack over 30 cm or any chip in the driver wiper sweep = fail.' },
+          { key: 'dashboard',  label: 'Dashboard Lights',icon: '⚠️',
+            instruction: 'Turn ignition ON (do not start the engine). Photograph the dashboard cluster.',
+            hint: 'Airbag, ABS, or brake warning lights illuminated = automatic fail.' },
+          { key: 'brakes',     label: 'Brakes',          icon: '🛑',
+            instruction: 'Photograph one front brake — pad and rotor visible through the wheel spokes.',
+            hint: 'Pads under 3 mm or rotors with deep scoring = caution. Torn hoses = fail.' },
+          { key: 'exhaust',    label: 'Exhaust',         icon: '💨',
+            instruction: 'Photograph the muffler and exhaust pipe at the rear.',
+            hint: 'Black soot can mean oil burn. Blue or white smoke usually means engine trouble.' },
+          { key: 'odometer',   label: 'Odometer',        icon: '🔢',
+            instruction: 'Photograph the odometer reading clearly (ignition ON).',
+            hint: 'We read the kilometres for the report — make sure the number is sharp.' },
+          { key: 'interior',   label: 'Interior / Seats',icon: '🪑',
+            instruction: 'Photograph the front seats and seatbelts.',
+            hint: 'Seatbelts must retract smoothly. Loose or unbolted seats = fail.' },
+          { key: 'engine',     label: 'Engine Bay',      icon: '🔧',
+            instruction: 'Open the hood. Photograph the engine bay from the front.',
+            hint: 'We check for leaks at gaskets, frayed belts, missing battery hold-down.' },
+          { key: 'body',       label: 'Body Walk-around',icon: '🚗',
+            instruction: 'Photograph the full driver-side profile of the car.',
+            hint: 'Sharp edges, missing bumper covers, or broken mirrors = fail.' }
         ];
 
         var state = null;
@@ -9060,6 +9088,7 @@
               '<span class="dv2-pc-area-tile-dot"></span>' +
               '<span class="dv2-pc-area-tile-icon">' + area.icon + '</span>' +
               '<span class="dv2-pc-area-tile-name">' + area.label + '</span>' +
+              '<span class="dv2-pc-area-tile-hint">' + (area.hint || '') + '</span>' +
               '<span class="dv2-pc-area-tile-status">' + status + '</span>' +
             '</button>';
           }).join('');
