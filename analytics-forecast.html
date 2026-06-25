@@ -613,7 +613,7 @@
     fetchCapped: false,
     // Daily active users / window snapshots
     users: {
-      today:    48,
+      today:    14,
       last7d:   240,
       last30d:  720,
       last60d:  1100,
@@ -623,7 +623,7 @@
     },
     // Total event counts
     totals: {
-      today:    720,
+      today:    35,
       last7d:   4000,
       last30d:  12700,
       last60d:  21000,
@@ -699,7 +699,7 @@
       // Hand-tuned 14-day scrappy growth: quiet early days, a couple of dips
       // for weekends, a few sparks, and a climb into the last few days.
       // Index 0 = oldest, 13 = today.
-      var counts = [8, 12, 95, 180, 240, 285, 410, 15, 220, 195, 540, 610, 580, 30];
+      var counts = [8, 12, 60, 140, 280, 450, 680, 820, 540, 380, 220, 140, 80, 30];
       var trend = [];
       var DAYS  = 14;
       var today = new Date();
