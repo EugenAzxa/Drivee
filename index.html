@@ -8833,6 +8833,11 @@
           -webkit-backdrop-filter: blur(8px);
           animation: dvPCFadeIn 0.2s ease;
         }
+        /* CRITICAL: the [hidden] attribute alone is outranked by the
+           display:flex above (specificity 1,1,0 vs 0,1,0 for [hidden]),
+           so without this rule Cancel/X/Escape "hide" the modal but
+           it stays visible. */
+        #svc-precheck .dv2-pc-capture-modal[hidden] { display: none !important; }
         @keyframes dvPCFadeIn { from { opacity: 0; } to { opacity: 1; } }
         #svc-precheck .dv2-pc-capture-modal-inner {
           background: white; border-radius: 18px;
@@ -9148,10 +9153,19 @@
         // Always dismissible — also wired to the X and "Cancel" buttons inside
         // the modal, plus a safety auto-close so the user is never stuck.
         var _captureModalTimer = null;
+        function _showCaptureModal() {
+          var m = $('dv2-pc-capture-modal');
+          if (!m) return;
+          m.hidden = false;
+          m.style.display = 'flex'; // explicit — guards against [hidden] specificity issues
+        }
         window.dvPCCloseModal = function() {
           if (_captureModalTimer) { clearTimeout(_captureModalTimer); _captureModalTimer = null; }
           var m = $('dv2-pc-capture-modal');
-          if (m) m.hidden = true;
+          if (m) {
+            m.hidden = true;
+            m.style.display = 'none'; // explicit — same reason as above
+          }
         };
         document.addEventListener('keydown', function(e) {
           if (e.key === 'Escape') {
@@ -9310,14 +9324,14 @@
           $('dv2-pc-cap-icon').textContent  = area.icon;
           $('dv2-pc-cap-name').textContent  = area.label;
           $('dv2-pc-cap-status').textContent = 'Analyzing your photo…';
-          $('dv2-pc-capture-modal').hidden = false;
+          _showCaptureModal();
 
           // Safety net: if anything stalls (corrupt image, slow file reader,
           // user backgrounds the tab mid-capture), the modal auto-closes
           // after 5s instead of trapping the user on a spinner forever.
           if (_captureModalTimer) clearTimeout(_captureModalTimer);
           _captureModalTimer = setTimeout(function() {
-            $('dv2-pc-capture-modal').hidden = true;
+            dvPCCloseModal();
             // Use the example result anyway so the area is marked done
             if (!state.captured[area.key]) {
               state.captured[area.key] = MOCK_RESULTS[area.key];
