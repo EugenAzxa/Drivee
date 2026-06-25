@@ -608,6 +608,35 @@
   // This page is a forecast/target mockup. No Supabase fetch. All numbers
   // below are hardcoded targets used in pitch materials and design previews.
   // Real production numbers live on /analytics.html which IS Supabase-backed.
+  // ─── Auto-growth ─────────────────────────────────────────────────
+  // Baseline snapshot taken 2026-06-25: 1,450 cumulative users, 249
+  // emails. Each subsequent day ticks both up by a deterministic 1-3
+  // (typically 2-3, occasionally 1) so the dashboard grows slowly
+  // between manual edits. Increments are date-seeded — same number for
+  // everyone viewing on the same day, no random shuffling.
+  function _dayInc(date, salt) {
+    var d = new Date(date);
+    var seed = ((d.getUTCFullYear() * 31) + ((d.getUTCMonth() + 1) * 17) + d.getUTCDate()) * salt;
+    var v = ((seed % 10) + 10) % 10;
+    if (v < 2) return 1;
+    if (v < 6) return 2;
+    return 3;
+  }
+  function _growth(baseDate, salt) {
+    var base = new Date(baseDate + 'T00:00:00Z');
+    var now  = new Date(); now.setUTCHours(0,0,0,0);
+    var days = Math.max(0, Math.round((now.getTime() - base.getTime()) / 86400000));
+    var total = 0;
+    for (var i = 1; i <= days; i++) {
+      total += _dayInc(new Date(base.getTime() + i * 86400000), salt);
+    }
+    return total;
+  }
+  var _GROWTH_BASE   = '2026-06-25';
+  var _USERS_GROWTH  = _growth(_GROWTH_BASE,  7);
+  var _EMAILS_GROWTH = _growth(_GROWTH_BASE, 13);
+  var _TODAY_EMAILS  = _dayInc(new Date(), 13);
+
   var FORECAST_DATA = {
     coverageDays: 60,
     fetchCapped: false,
@@ -617,8 +646,8 @@
       last7d:   240,
       last30d:  720,
       last60d:  1100,
-      allTime:  1450,
-      triedTotal: 1450,
+      allTime:  1450 + _USERS_GROWTH,
+      triedTotal: 1450 + _USERS_GROWTH,
       appOpens: 5410
     },
     // Total event counts
@@ -631,8 +660,8 @@
     },
     // Email signups / waiting list
     signups: {
-      totalEmails: 249,
-      today:    3,
+      totalEmails: 249 + _EMAILS_GROWTH,
+      today:    _TODAY_EMAILS,
       last7d:   18,
       last30d:  75,
       last60d:  150,
