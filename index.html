@@ -8910,6 +8910,28 @@
           50%      { transform: translate(-6px, -8px) rotate(10deg); }
         }
 
+        /* When the visual is in "example mode" (has-example), hide all the
+           standard pulsing chrome and let the custom SVG fill the stage. */
+        #svc-precheck .dv2-pc-howto-visual.has-example .dv2-pc-howto-frame,
+        #svc-precheck .dv2-pc-howto-visual.has-example .dv2-pc-howto-area-icon,
+        #svc-precheck .dv2-pc-howto-visual.has-example .dv2-pc-howto-camera,
+        #svc-precheck .dv2-pc-howto-visual.has-example .dv2-pc-howto-corners { display: none; }
+        #svc-precheck .dv2-pc-windshield-svg {
+          width: 100%; max-width: 280px;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+        #svc-precheck .dv2-pc-howto-example-label {
+          margin-top: 8px;
+          font-size: 12.5px; line-height: 1.45;
+          font-weight: 600;
+          color: #B0271E;
+          text-align: center;
+        }
+        /* Make the example stage a bit taller so the SVG + caption fit cleanly */
+        #svc-precheck .dv2-pc-howto-visual.has-example { height: auto; min-height: 180px; padding: 4px 0; }
+
         #svc-precheck .dv2-pc-howto-area-name {
           font-size: 22px; font-weight: 700;
           color: var(--ink, #0B1430);
@@ -9110,7 +9132,7 @@
             <div class="dv2-pc-howto-inner">
               <button class="dv2-pc-modal-close" type="button" onclick="dvPCCloseHowto()" aria-label="Close">×</button>
 
-              <div class="dv2-pc-howto-visual">
+              <div id="dv2-pc-howto-visual" class="dv2-pc-howto-visual">
                 <div class="dv2-pc-howto-frame"></div>
                 <div id="dv2-pc-howto-icon" class="dv2-pc-howto-area-icon">🪟</div>
                 <div class="dv2-pc-howto-camera">📷</div>
@@ -9118,6 +9140,7 @@
                   <span class="c c-tl"></span><span class="c c-tr"></span>
                   <span class="c c-bl"></span><span class="c c-br"></span>
                 </div>
+                <div id="dv2-pc-howto-example" class="dv2-pc-howto-example"></div>
               </div>
 
               <div id="dv2-pc-howto-name" class="dv2-pc-howto-area-name">Windshield</div>
@@ -9187,7 +9210,55 @@
             hint: 'All bulbs lit, lenses uncracked. Missing plate light alone fails the SSC.' },
           { key: 'windshield', label: 'Windshield',      icon: '🪟',
             instruction: 'Stand in front of the car and photograph the full windshield.',
-            hint: 'Crack over 30 cm or any chip in the driver wiper sweep = fail.' },
+            hint: 'Crack over 30 cm or any chip in the driver wiper sweep = fail.',
+            exampleHTML: (
+              '<svg class="dv2-pc-windshield-svg" viewBox="0 0 280 170" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">' +
+                // Sky behind (subtle gradient — single fill)
+                '<defs>' +
+                  '<linearGradient id="dv2pcSky" x1="0" y1="0" x2="0" y2="1">' +
+                    '<stop offset="0" stop-color="#cfe1ff"/>' +
+                    '<stop offset="1" stop-color="#eef4ff"/>' +
+                  '</linearGradient>' +
+                '</defs>' +
+                // Roof line
+                '<path d="M 60 38 Q 140 18, 220 38" fill="none" stroke="#0B1430" stroke-width="2.5" stroke-linecap="round"/>' +
+                // Windshield glass
+                '<path d="M 50 138 Q 65 50, 140 38 Q 215 50, 230 138 Z" fill="url(#dv2pcSky)" stroke="#0B1430" stroke-width="2.5" stroke-linejoin="round"/>' +
+                // Wiper blades (parked at bottom)
+                '<line x1="80" y1="135" x2="135" y2="118" stroke="#0B1430" stroke-width="1.8" stroke-linecap="round"/>' +
+                '<line x1="200" y1="135" x2="145" y2="118" stroke="#0B1430" stroke-width="1.8" stroke-linecap="round"/>' +
+                // Rear-view mirror at top
+                '<rect x="130" y="46" width="20" height="9" rx="2" fill="#0B1430"/>' +
+                // Hood underneath
+                '<path d="M 28 140 L 252 140 L 232 158 L 48 158 Z" fill="#0B1430"/>' +
+                // Faint glass reflection
+                '<path d="M 95 70 Q 100 95, 105 120" fill="none" stroke="white" stroke-width="2" opacity="0.45"/>' +
+                '<path d="M 200 65 Q 200 90, 200 115" fill="none" stroke="white" stroke-width="1.5" opacity="0.30"/>' +
+                // ─── ANIMATED CRACK ───
+                // Main jagged crack across the driver sight line
+                '<path d="M 78 78 L 102 90 L 122 86 L 145 100 L 168 96 L 192 112" ' +
+                      'stroke="#CC0000" stroke-width="2.2" fill="none" ' +
+                      'stroke-linecap="round" stroke-linejoin="round" ' +
+                      'stroke-dasharray="200" stroke-dashoffset="200">' +
+                  '<animate attributeName="stroke-dashoffset" values="200;0;0;0;200" keyTimes="0;0.4;0.6;0.92;1" dur="3.4s" repeatCount="indefinite"/>' +
+                '</path>' +
+                // Branch cracks fading in once the main crack is drawn
+                '<g opacity="0">' +
+                  '<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.42;0.55;0.92;1" dur="3.4s" repeatCount="indefinite"/>' +
+                  '<path d="M 122 86 L 116 100" stroke="#CC0000" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+                  '<path d="M 145 100 L 152 90" stroke="#CC0000" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+                  '<path d="M 168 96 L 170 112" stroke="#CC0000" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+                '</g>' +
+                // FAIL warning badge pops in after the crack
+                '<g opacity="0">' +
+                  '<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.55;0.65;0.92;1" dur="3.4s" repeatCount="indefinite"/>' +
+                  '<rect x="184" y="18" width="74" height="26" rx="13" fill="#CC0000"/>' +
+                  '<text x="221" y="36" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="13" font-weight="800">FAIL</text>' +
+                  '<text x="195" y="36" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="800">⚠</text>' +
+                '</g>' +
+              '</svg>' +
+              '<div class="dv2-pc-howto-example-label">A crack like this — across the driver wiper sweep — would fail an Ontario SSC.</div>'
+            ) },
           { key: 'dashboard',  label: 'Dashboard Lights',icon: '⚠️',
             instruction: 'Turn ignition ON (do not start the engine). Photograph the dashboard cluster.',
             hint: 'Airbag, ABS, or brake warning lights illuminated = automatic fail.' },
@@ -9267,6 +9338,22 @@
           $('dv2-pc-howto-name').textContent       = area.label;
           $('dv2-pc-howto-instruction').textContent = area.instruction;
           $('dv2-pc-howto-hint').textContent       = '💡 ' + (area.hint || '');
+
+          // Per-area "what bad looks like" SVG, when defined. Wired up for
+          // windshield as a model; add `exampleHTML` to any other area in
+          // SAFETY_AREAS to surface its own animated example here too.
+          var visual = $('dv2-pc-howto-visual');
+          var slot   = $('dv2-pc-howto-example');
+          if (visual && slot) {
+            if (area.exampleHTML) {
+              slot.innerHTML = area.exampleHTML;
+              visual.classList.add('has-example');
+            } else {
+              slot.innerHTML = '';
+              visual.classList.remove('has-example');
+            }
+          }
+
           _showHowtoModal();
         };
 
