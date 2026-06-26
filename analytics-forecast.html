@@ -637,6 +637,60 @@
   var _EMAILS_GROWTH = _growth(_GROWTH_BASE, 13);
   var _TODAY_EMAILS  = _dayInc(new Date(), 13);
 
+  // ─── Recent-signups picker ───────────────────────────────────────
+  // The recent-signups feed used to be a hardcoded list, so the same
+  // 6 emails ("a.kennedy" etc.) sat at the top forever. Now we pick
+  // 6 from a larger pool keyed off today's UTC date — fresh roster
+  // every day, deterministic for everyone viewing on the same day.
+  var _SIGNUP_POOL = [
+    { user: 'm.leung',   provider: 'outlook.com', source: 'main' },
+    { user: 'ravi.s',    provider: 'yahoo.ca',    source: 'sheet' },
+    { user: 'tina.w',    provider: 'gmail.com',   source: 'google' },
+    { user: 'd.brown',   provider: 'hotmail.com', source: 'main' },
+    { user: 'priya.k',   provider: 'gmail.com',   source: 'code' },
+    { user: 's.chen',    provider: 'outlook.com', source: 'main' },
+    { user: 'jordan.m',  provider: 'gmail.com',   source: 'google' },
+    { user: 'f.alves',   provider: 'hotmail.com', source: 'main' },
+    { user: 'e.garcia',  provider: 'gmail.com',   source: 'loss-cta' },
+    { user: 't.okafor',  provider: 'outlook.com', source: 'sheet' },
+    { user: 'mira.b',    provider: 'gmail.com',   source: 'google' },
+    { user: 'd.huang',   provider: 'outlook.com', source: 'main' },
+    { user: 'yusuf.r',   provider: 'gmail.com',   source: 'code' },
+    { user: 'l.murphy',  provider: 'hotmail.com', source: 'main' },
+    { user: 'a.sharma',  provider: 'gmail.com',   source: 'main' },
+    { user: 'chen.h',    provider: 'yahoo.ca',    source: 'google-start' },
+    { user: 'nina.p',    provider: 'outlook.com', source: 'main' },
+    { user: 'omar.d',    provider: 'gmail.com',   source: 'loss-cta' },
+    { user: 'kate.s',    provider: 'gmail.com',   source: 'google' },
+    { user: 'raj.p',     provider: 'hotmail.com', source: 'main' },
+    { user: 'emily.l',   provider: 'gmail.com',   source: 'sheet' },
+    { user: 'ben.k',     provider: 'outlook.com', source: 'code' },
+    { user: 'amir.s',    provider: 'gmail.com',   source: 'main' }
+  ];
+  function _pickDailySignups(date) {
+    var d = new Date(date);
+    var seed = ((d.getUTCFullYear() * 31) + ((d.getUTCMonth() + 1) * 17) + d.getUTCDate()) * 13;
+    var taken = {}, picked = [];
+    for (var i = 0; picked.length < 6 && i < _SIGNUP_POOL.length * 3; i++) {
+      var idx = (((seed + i * 7) % _SIGNUP_POOL.length) + _SIGNUP_POOL.length) % _SIGNUP_POOL.length;
+      if (taken[idx]) continue;
+      taken[idx] = 1;
+      picked.push(_SIGNUP_POOL[idx]);
+    }
+    // Stagger the timestamps so the feed reads naturally over the last ~2 days
+    var hours = [2, 5, 11, 20, 36, 53];
+    var now = Date.now();
+    return picked.map(function(p, i) {
+      return {
+        email: p.user + '@' + p.provider,
+        source: p.source,
+        attempts: (i === 4) ? 2 : 1,
+        firstAt: new Date(now - hours[i] * 60 * 60 * 1000).toISOString()
+      };
+    });
+  }
+  var _RECENT_SIGNUPS = _pickDailySignups(new Date());
+
   var FORECAST_DATA = {
     coverageDays: 60,
     fetchCapped: false,
@@ -665,14 +719,7 @@
       last7d:   18,
       last30d:  75,
       last60d:  150,
-      recent: [
-        { email: 'a.kennedy@gmail.com',  source: 'main',     attempts: 1, firstAt: new Date(Date.now() -    2 * 60 * 60 * 1000).toISOString() },
-        { email: 'mleung@outlook.com',   source: 'loss-cta', attempts: 1, firstAt: new Date(Date.now() -    5 * 60 * 60 * 1000).toISOString() },
-        { email: 'ravi.s@yahoo.ca',      source: 'sheet',    attempts: 1, firstAt: new Date(Date.now() -   11 * 60 * 60 * 1000).toISOString() },
-        { email: 'tina.w@gmail.com',     source: 'google',   attempts: 1, firstAt: new Date(Date.now() -   20 * 60 * 60 * 1000).toISOString() },
-        { email: 'd.brown@hotmail.com',  source: 'main',     attempts: 2, firstAt: new Date(Date.now() - 1*24 * 60 * 60 * 1000).toISOString() },
-        { email: 'priya.k@gmail.com',    source: 'code',     attempts: 1, firstAt: new Date(Date.now() - 2*24 * 60 * 60 * 1000).toISOString() }
-      ]
+      recent: _RECENT_SIGNUPS
     },
     sessions: { total: 4280, avg: 162, median: 124, longest: 1840 },
     auth:     { authedSessions: 1830, anonSessions: 2450 },
@@ -750,7 +797,7 @@
         { event: 'scan_success',      meta: 'parking · Toronto',         authed: true,  city: 'Toronto',     device: 'iPhone',  browser: 'Safari (iOS)' },
         { event: 'lawyer_lead',       meta: 'OTT Legal · evening',       authed: true,  city: 'Toronto',     device: 'iPhone',  browser: 'Safari (iOS)' },
         { event: 'reminder_added',    meta: 'TPA-481923 due 2026-06-22', authed: false, city: 'Mississauga', device: 'Android', browser: 'Chrome Mobile' },
-        { event: 'magic_link_sent',   meta: 'a.kennedy@gmail.com',       authed: false, city: 'Toronto',     device: 'iPhone',  browser: 'Safari (iOS)' },
+        { event: 'magic_link_sent',   meta: (_RECENT_SIGNUPS[0] && _RECENT_SIGNUPS[0].email) || '', authed: false, city: 'Toronto',     device: 'iPhone',  browser: 'Safari (iOS)' },
         { event: 'dispute_generated', meta: 'hours',                     authed: true,  city: 'Toronto',     device: 'Desktop', browser: 'Chrome' },
         { event: 'scan_ticket',       meta: 'distracted',                authed: false, city: 'North York',  device: 'iPhone',  browser: 'Safari (iOS)' },
         { event: 'app_open',          meta: '',                          authed: false, city: 'Toronto',     device: 'Android', browser: 'Chrome Mobile' },
