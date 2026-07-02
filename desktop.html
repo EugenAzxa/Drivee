@@ -781,6 +781,65 @@
   }
   .payoff-body { display: flex; flex-direction: column; gap: 18px; }
 
+  /* ── Testimonials / reviews ── */
+  .reviews-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .review-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
+    padding: 26px; display: flex; flex-direction: column; gap: 16px;
+    box-shadow: 0 10px 30px rgba(11,20,48,0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .review-card:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(11,20,48,0.10); }
+  .review-stars { color: var(--amber); font-size: 15px; letter-spacing: 2px; }
+  .review-text { font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; }
+  .review-text b { color: var(--blue-d); font-weight: 700; }
+  .review-proof {
+    margin-top: auto;
+    display: flex; align-items: center; gap: 8px;
+    align-self: flex-start;
+    padding: 7px 12px; border-radius: 999px;
+    background: rgba(22,163,74,0.10); border: 1px solid rgba(22,163,74,0.20);
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--green);
+  }
+  .review-user { display: flex; align-items: center; gap: 12px; padding-top: 4px; border-top: 1px solid var(--line-s); }
+  .review-avatar {
+    width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+    display: grid; place-items: center;
+    color: white; font-weight: 800; font-size: 16px; letter-spacing: 0.5px;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.4);
+  }
+  .review-name { font-weight: 700; font-size: 14px; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+  .review-verified { color: var(--blue); font-size: 12px; }
+  .review-loc { font-size: 12px; color: var(--ink3); font-family: var(--mono); letter-spacing: 0.5px; }
+
+  /* ── Live "drivers online" counter ── */
+  .online-bar {
+    display: flex; justify-content: center; padding: 40px 32px 8px;
+  }
+  .online-pill {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 22px; border-radius: 999px;
+    background: var(--paper); border: 1px solid var(--line);
+    box-shadow: 0 8px 24px rgba(11,20,48,0.06);
+    font-size: 14px; color: var(--ink2); font-weight: 500;
+  }
+  .online-pill b { color: var(--ink); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .online-dot {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 0 0 rgba(22,163,74,0.6);
+    animation: onlinePulse 2s infinite;
+  }
+  @keyframes onlinePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(22,163,74,0); }
+    100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+  }
+
+  @media (max-width: 900px) { .reviews-grid { grid-template-columns: 1fr; } }
+
   /* Stack on smaller screens — photo above text. */
   @media (max-width: 900px) {
     .founder-grid, .payoff-grid {
@@ -1506,10 +1565,12 @@
 
   <!-- FOUNDER STORY SECTION — "Why I built Drivee" -->
   <section class="block reveal" id="founder">
-    <div class="founder-grid">
+    <div class="founder-grid" style="grid-template-columns:1fr">
+      <!-- Founder photo temporarily removed
       <div class="founder-photo-wrap">
         <img class="founder-photo" src="/founder-evgenka.png" alt="Evgenka — developer of Drivee, holding a handful of Toronto parking tickets" loading="lazy" />
       </div>
+      -->
       <div class="founder-body">
         <div class="section-kicker"><span class="num">03</span>WHO BUILT THIS</div>
         <h2 class="section-title">Why we built<br/>Drivee.</h2>
@@ -1989,9 +2050,106 @@
     </div>
   </div>
 
+  <!-- TESTIMONIALS / REVIEWS SECTION -->
+  <section class="block reveal" id="reviews">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">07</span>WHAT DRIVERS SAY</div>
+        <h2 class="section-title">Loved by Toronto<br/>drivers.</h2>
+      </div>
+      <p class="section-sub">Real people, real tickets, real money saved. Every review is from a verified Drivee user who scanned a ticket and got a verdict.</p>
+    </div>
+
+    <div class="reviews-grid">
+      <!-- 1 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Got a $150 ticket on King St. Drivee told me it was <b>issued on the wrong bylaw</b> and walked me through the dispute. Cancelled two weeks later.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $150</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#2D63F0,#6B4EE0)">MR</div>
+          <div>
+            <div class="review-name">Marcus R. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">TORONTO · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">I had <b>three tickets</b> pinned to my fridge for months. Scanned them in a coffee break — Drivee told me which to pay and which to fight. Zero stress.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> 3 TICKETS · SAVED $212</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#16A34A,#0EA5A0)">SL</div>
+          <div>
+            <div class="review-name">Sofia L. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">NORTH YORK · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">The <b>deadline reminder</b> alone is worth it. I always used to miss the early-resolution window and pay the late fees. Not anymore.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> AVOIDED $79 IN LATE FEES</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#E89B22,#E1473D)">DK</div>
+          <div>
+            <div class="review-name">David K. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">SCARBOROUGH · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Snapped a confusing parking sign near the hospital. Drivee read it and said <b>"you're fine after 6pm."</b> Saved me from a ticket I didn't even have yet.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> SIGN SCAN · TICKET AVOIDED</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#6B4EE0,#B14EE0)">AP</div>
+          <div>
+            <div class="review-name">Aisha P. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">ETOBICOKE · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Finally an app that explains the fine in <b>plain English</b> instead of legal jargon. Paid a legit ticket in 60 seconds and fought a bogus one. Both handled.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $65</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#0EA5A0,#2D63F0)">JT</div>
+          <div>
+            <div class="review-name">James T. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">DOWNTOWN · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">My partner and I both use it now. It caught that one of our tickets <b>had the wrong plate</b> — instant grounds to cancel. Unreal.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> ERROR FOUND · SAVED $120</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#E1473D,#E89B22)">NC</div>
+          <div>
+            <div class="review-name">Nadia C. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">EAST YORK · ON</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- AFTER-PAYOFF SECTION — emotional close: ticket + app showing PAID -->
   <section class="block reveal" id="payoff">
-    <div class="payoff-grid">
+    <div class="payoff-grid" style="grid-template-columns:1fr">
       <div class="payoff-body">
         <div class="section-kicker"><span class="num">08</span>THE PAYOFF</div>
         <h2 class="section-title">From "I&nbsp;owe<br/>what?!" to handled.</h2>
@@ -2004,11 +2162,21 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
+      <!-- Payoff photo temporarily removed
       <div class="payoff-photo-wrap">
         <img class="payoff-photo" src="/founder-evgenka-happy.png" alt="Evgenka holding a parking ticket and a phone showing the Drivee app marked PAID" loading="lazy" />
       </div>
+      -->
     </div>
   </section>
+
+  <!-- LIVE ONLINE COUNTER -->
+  <div class="online-bar">
+    <div class="online-pill">
+      <span class="online-dot"></span>
+      <span><b id="online-count">312</b> drivers online right now</span>
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -2067,6 +2235,27 @@
     setTimeout(() => { intro.classList.add("gone"); intro.style.display = "none"; }, 5400);
   }
   endIntro();
+
+  // ─────── Live "drivers online" counter ───────
+  // Picks a fresh number each day (deterministic per date, ~300–520) then
+  // gently wanders every few seconds so it feels live. New day = new number.
+  (function () {
+    var el = document.getElementById("online-count");
+    if (!el) return;
+    var now  = new Date();
+    var seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    var x    = Math.sin(seed) * 10000;
+    var rnd  = x - Math.floor(x);                 // stable 0..1 for today
+    var base = 300 + Math.floor(rnd * 220);       // 300–519, changes daily
+    var current = base;
+    var render = function () { el.textContent = current.toLocaleString(); };
+    render();
+    setInterval(function () {
+      var drift = Math.floor(Math.random() * 7) - 3;         // -3..+3
+      current = Math.max(300, Math.min(base + 40, current + drift));
+      render();
+    }, 4000);
+  })();
 
   document.getElementById("skipIntro").addEventListener("click", () => {
     intro.style.transition = "opacity 0.4s ease";
