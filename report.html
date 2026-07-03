@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Drivee Report — 2016 Dodge Grand Caravan · VIN 2C4RDGBGXGR217456</title>
-<meta name="description" content="Free Drivee vehicle history report for a 2016 Dodge Grand Caravan (VIN 2C4RDGBGXGR217456): mileage graph, owners, service records, accident check, and VIN decode."/>
+<title>Drivee Report — Free VIN Check & Vehicle History</title>
+<meta name="description" content="Check any VIN free: make, model, engine, open recalls and market value. See a full Drivee vehicle history report — mileage graph, owners, service records, 3D view."/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Drivee"/>
-<meta property="og:title" content="Drivee Report — 2016 Dodge Grand Caravan"/>
-<meta property="og:description" content="A clean, modern vehicle history report. Mileage graph, owners timeline, service records, accident check."/>
+<meta property="og:title" content="Drivee Report — Free VIN Check & Vehicle History"/>
+<meta property="og:description" content="Paste a VIN, get the vehicle's identity, open recalls and value — free. Full history report with mileage graph, owners and service records."/>
 <meta property="og:url" content="https://drivee.ca/report.html"/>
 <link rel="canonical" href="https://drivee.ca/report.html"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
   :root {
     --bg: #EEF2FB;
@@ -27,14 +28,15 @@
     --line-s: rgba(11,20,48,0.05);
     --blue: #2D63F0;
     --blue-d: #1B45C2;
+    --blue-50: #EAF0FD;
     --green: #16A34A;
     --amber: #E89B22;
     --red: #E1473D;
     --font: 'Plus Jakarta Sans', system-ui, sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, monospace;
-    --serif: 'IBM Plex Serif', Georgia, serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   html, body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; }
 
@@ -42,7 +44,7 @@
   nav.top {
     position: sticky; top: 0; z-index: 50;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 32px; background: rgba(238,242,251,0.82);
+    padding: 16px 32px; background: rgba(238,242,251,0.85);
     backdrop-filter: blur(12px); border-bottom: 1px solid var(--line);
   }
   nav.top .brand { font-size: 22px; font-weight: 800; letter-spacing: -1px; text-decoration: none; }
@@ -53,134 +55,190 @@
   nav.top .cta { padding: 10px 18px; background: var(--ink); color: white; border-radius: 999px; font-size: 14px; font-weight: 700; text-decoration: none; }
 
   main { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
-  .block { padding: 64px 0; }
+  .block { padding: 72px 0 8px; }
   .section-kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--blue); }
-  .section-title { margin-top: 12px; font-size: 40px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.05; }
-  .section-sub { margin-top: 12px; font-size: 16px; color: var(--ink2); line-height: 1.55; max-width: 620px; }
-
+  .section-title { margin-top: 12px; font-size: 42px; font-weight: 800; letter-spacing: -1.6px; line-height: 1.02; }
+  .section-sub { margin-top: 14px; font-size: 16px; color: var(--ink2); line-height: 1.6; max-width: 640px; }
   .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 10px 30px rgba(11,20,48,0.05); }
 
-  /* ── Hero ── */
-  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
-  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: var(--blue-50, #EAF0FD); color: var(--blue-d); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-  .hero h1 { margin-top: 18px; font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
-  .vin-row { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+  /* ══════════ FREE VIN CHECK (hero) ══════════ */
+  .checker-hero { padding: 64px 0 24px; text-align: center; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--blue-50); color: var(--blue-d); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; }
+  .checker-hero h1 { margin-top: 20px; font-size: 60px; font-weight: 800; letter-spacing: -2.5px; line-height: 0.98; }
+  .checker-hero h1 em { font-style: normal; color: var(--blue); }
+  .checker-hero .sub { margin: 18px auto 0; font-size: 17px; color: var(--ink2); max-width: 560px; line-height: 1.6; }
+
+  .vin-form { margin: 32px auto 0; max-width: 640px; display: flex; gap: 10px; padding: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 44px rgba(11,20,48,0.10); }
+  .vin-form input {
+    flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+    font-family: var(--mono); font-size: 16px; font-weight: 600; letter-spacing: 1.5px;
+    color: var(--ink); padding: 12px 14px; text-transform: uppercase;
+  }
+  .vin-form input::placeholder { color: var(--ink3); letter-spacing: 1px; font-weight: 500; }
+  .vin-form button {
+    border: none; cursor: pointer; padding: 14px 26px; border-radius: 12px;
+    background: var(--ink); color: #fff; font-family: var(--font); font-size: 15px; font-weight: 800;
+  }
+  .vin-form button:disabled { opacity: 0.5; cursor: wait; }
+  .vin-try { margin-top: 14px; font-size: 13px; color: var(--ink3); }
+  .vin-try a { color: var(--blue-d); font-weight: 700; cursor: pointer; text-decoration: none; font-family: var(--mono); font-size: 12px; }
+  .vin-error { margin: 14px auto 0; max-width: 640px; display: none; padding: 12px 18px; border-radius: 12px; background: rgba(225,71,61,0.10); border: 1px solid rgba(225,71,61,0.25); color: #9c2a22; font-size: 14px; font-weight: 600; }
+
+  /* results */
+  #vin-results { display: none; margin-top: 40px; text-align: left; }
+  .res-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .res-head .found { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  .res-head .found .ok { color: var(--green); }
+  .res-vin { font-family: var(--mono); font-size: 12px; color: var(--ink3); letter-spacing: 1px; }
+  .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .res-card { padding: 22px; }
+  .res-card h4 { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 800; margin-bottom: 14px; }
+  .res-card h4 .free-tag { margin-left: auto; padding: 3px 8px; border-radius: 999px; background: rgba(22,163,74,0.12); color: var(--green); font-size: 10px; }
+  .res-row { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+  .res-row:last-child { border-bottom: none; }
+  .res-row .k { color: var(--ink3); flex-shrink: 0; } .res-row .v { font-weight: 700; text-align: right; }
+  .recall-item { padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .recall-item:last-child { border-bottom: none; }
+  .recall-item b { display: block; font-size: 13px; }
+  .recall-item span { color: var(--ink2); display: block; margin-top: 2px; line-height: 1.45; }
+  .recall-none { padding: 20px 0; text-align: center; color: var(--green); font-weight: 700; font-size: 14px; }
+  .value-big { font-size: 34px; font-weight: 800; letter-spacing: -1px; margin: 6px 0 2px; }
+  .value-note { font-size: 12px; color: var(--ink3); line-height: 1.5; margin-top: 10px; }
+  .value-bar { margin-top: 14px; height: 8px; border-radius: 999px; background: var(--bg2); position: relative; overflow: hidden; }
+  .value-bar i { position: absolute; left: 18%; right: 18%; top: 0; bottom: 0; background: linear-gradient(90deg,#7fa4f7,var(--blue)); border-radius: 999px; }
+
+  /* locked tier */
+  .locked-wrap { margin-top: 18px; }
+  .locked-title { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; font-size: 17px; font-weight: 800; }
+  .locked-title .tag { padding: 4px 10px; border-radius: 999px; background: rgba(232,155,34,0.14); color: #96610a; font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+  .locked-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .locked-card { position: relative; padding: 18px; overflow: hidden; }
+  .locked-card .lc-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; }
+  .locked-card .lc-found { margin-top: 6px; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+  .lc-found.has { color: var(--red); }
+  .lc-found.none { color: var(--ink3); }
+  .locked-card .lc-blur { margin-top: 12px; filter: blur(5px); user-select: none; pointer-events: none; }
+  .locked-card .lc-blur div { height: 9px; border-radius: 4px; background: var(--bg2); margin: 7px 0; }
+  .locked-card .lc-blur div:nth-child(2) { width: 82%; } .locked-card .lc-blur div:nth-child(3) { width: 64%; }
+  .locked-card .lock-ic { position: absolute; right: 14px; top: 14px; font-size: 13px; opacity: 0.75; }
+  .unlock-bar { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 22px 26px; border-radius: 18px; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; }
+  .unlock-bar .txt b { font-size: 17px; } .unlock-bar .txt p { margin-top: 4px; font-size: 13px; color: rgba(255,255,255,0.65); }
+  .unlock-bar a { padding: 13px 24px; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; font-size: 14px; text-decoration: none; white-space: nowrap; }
+
+  /* ══════════ SAMPLE REPORT ══════════ */
+  .divider { margin: 72px 0 0; border: none; border-top: 1px solid var(--line); }
+
+  .rep-hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 44px; align-items: center; padding: 40px 0 8px; }
+  .rep-hero h2 { font-size: 46px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-top: 16px; }
+  .vin-row { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px 22px; }
   .vin-row .kv { font-size: 13px; color: var(--ink3); font-family: var(--mono); letter-spacing: 0.5px; }
   .vin-row .kv b { color: var(--ink); font-weight: 700; }
-  .verdict { margin-top: 26px; display: inline-flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 14px; background: rgba(22,163,74,0.10); border: 1px solid rgba(22,163,74,0.22); }
-  .verdict .ic { width: 34px; height: 34px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 18px; flex-shrink: 0; }
+  .verdict { margin-top: 24px; display: inline-flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 14px; background: rgba(22,163,74,0.10); border: 1px solid rgba(22,163,74,0.22); }
+  .verdict .ic { width: 34px; height: 34px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 17px; flex-shrink: 0; }
   .verdict .txt b { display: block; font-size: 15px; color: var(--green); }
   .verdict .txt span { font-size: 13px; color: var(--ink2); }
 
-  /* ── 3D van viewer ── */
-  .viewer { position: relative; height: 360px; border-radius: 24px; background: radial-gradient(120% 120% at 50% 20%, #fff 0%, #E9EEFA 70%, #DCE4F4 100%); border: 1px solid var(--line); overflow: hidden; perspective: 1300px; cursor: grab; user-select: none; box-shadow: 0 20px 50px rgba(11,20,48,0.08); }
-  .viewer:active { cursor: grabbing; }
-  .viewer .hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--ink3); z-index: 5; background: rgba(255,255,255,0.7); padding: 5px 12px; border-radius: 999px; }
-  .viewer .badge360 { position: absolute; top: 14px; right: 14px; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--ink); background: rgba(255,255,255,0.85); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; z-index: 5; }
-  .stage { position: absolute; inset: 0; display: grid; place-items: center; transform-style: preserve-3d; }
-  .car { position: relative; transform-style: preserve-3d; transform: rotateX(-12deg) rotateY(0deg); transition: transform 0.05s linear; }
-  .car .face { position: absolute; }
-  /* dimensions: length(X)=300 height(Y)=112 width(Z)=132 ; wheelbase floats above shadow */
-  .f-right, .f-left { width: 300px; height: 112px; left: -150px; top: -56px; background: linear-gradient(180deg,#E5352B 0%, #C9271E 62%, #A81d16 100%); border-radius: 34px 46px 30px 30px; box-shadow: inset 0 3px 0 rgba(255,255,255,0.22), inset 0 -10px 22px rgba(0,0,0,0.28); }
-  .f-right { transform: translateZ(66px); }
-  .f-left  { transform: translateZ(-66px) rotateY(180deg); }
-  .f-front, .f-back { width: 132px; height: 112px; left: -66px; top: -56px; background: linear-gradient(180deg,#E5352B, #B4201A); border-radius: 30px; }
-  .f-front { transform: translateX(150px) rotateY(90deg); box-shadow: inset 0 -8px 20px rgba(0,0,0,0.25); }
-  .f-back  { transform: translateX(-150px) rotateY(-90deg); box-shadow: inset 0 -8px 20px rgba(0,0,0,0.25); }
-  .f-top   { width: 300px; height: 132px; left: -150px; top: -66px; background: linear-gradient(180deg,#EE4238,#D22C22); border-radius: 40px; transform: translateY(-56px) rotateX(90deg); box-shadow: inset 0 0 26px rgba(0,0,0,0.18); }
-  .f-bottom{ width: 300px; height: 132px; left: -150px; top: -66px; background: #3a0f0c; border-radius: 40px; transform: translateY(56px) rotateX(90deg); }
-  /* glass greenhouse drawn on the side faces */
-  .glass { position: absolute; top: 12px; height: 40px; border-radius: 12px 12px 8px 8px; background: linear-gradient(180deg,#1b2740,#38507a); box-shadow: inset 0 2px 6px rgba(255,255,255,0.18); }
-  .g1 { left: 40px; width: 66px; } .g2 { left: 116px; width: 60px; } .g3 { left: 182px; width: 74px; }
-  .windshield { position: absolute; top: 12px; left: 8px; width: 26px; height: 40px; border-radius: 12px 6px 6px 10px; background: linear-gradient(180deg,#22314f,#42597f); }
-  .light { position: absolute; width: 20px; height: 16px; border-radius: 6px; bottom: 20px; }
-  .head { left: 8px; background: radial-gradient(circle at 40% 40%, #fff, #cfe0ff); }
-  .tail { right: 8px; background: radial-gradient(circle at 40% 40%, #ff8a80, #c62828); }
-  .wheel { position: absolute; width: 58px; height: 58px; border-radius: 50%; background: radial-gradient(circle at 50% 50%, #4a4f5a 0 30%, #15181d 34%, #0b0d10 70%); box-shadow: 0 0 0 3px #05070a; top: 40px; }
-  .wheel::after { content:""; position:absolute; inset: 20px; border-radius: 50%; background: radial-gradient(circle,#9aa3b2,#5b6270); }
-  .wheel.fr { left: 32px; transform: translateZ(70px); } .wheel.br { right: 32px; transform: translateZ(70px); }
-  .wheel.fl { left: 32px; transform: translateZ(-70px); } .wheel.bl { right: 32px; transform: translateZ(-70px); }
-  .car-shadow { position: absolute; left: 50%; top: 74%; width: 340px; height: 60px; transform: translate(-50%,0); background: radial-gradient(ellipse at center, rgba(11,20,48,0.28), rgba(11,20,48,0) 70%); filter: blur(3px); z-index: 0; }
+  .mv-wrap { position: relative; }
+  model-viewer {
+    width: 100%; height: 420px; border-radius: 24px;
+    background: radial-gradient(120% 120% at 50% 18%, #ffffff 0%, #E9EEFA 68%, #dbe3f3 100%);
+    border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(11,20,48,0.10);
+    --poster-color: transparent;
+  }
+  .mv-badge { position: absolute; top: 14px; right: 14px; z-index: 3; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 1px; background: rgba(255,255,255,0.88); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; }
+  .mv-hint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 3; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--ink3); background: rgba(255,255,255,0.8); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
 
-  /* ── Summary tiles ── */
-  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  /* summary tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 28px; }
   .tile { padding: 20px; }
-  .tile .lbl { display:flex; align-items:center; gap:8px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--ink3); font-weight: 700; text-transform: uppercase; }
-  .tile .val { margin-top: 10px; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-  .tile .dot { width: 8px; height: 8px; border-radius: 50%; display:inline-block; }
-  .dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); }
+  .tile .lbl { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--ink3); font-weight: 700; text-transform: uppercase; }
+  .tile .val { margin-top: 9px; font-size: 23px; font-weight: 800; letter-spacing: -0.5px; }
   .tile .sub { margin-top: 4px; font-size: 12px; color: var(--ink2); }
+  .sdot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .sdot-g { background: var(--green); } .sdot-a { background: var(--amber); } .sdot-r { background: var(--red); }
 
-  /* ── Mileage chart ── */
-  .chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-  .chart-head .big { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
-  .chart-head .meta { font-family: var(--mono); font-size: 11px; letter-spacing: 1px; color: var(--ink3); font-weight: 700; }
+  /* chart */
+  .chart-card { padding: 26px 26px 18px; margin-top: 24px; }
+  .chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .chart-head .meta { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink3); font-weight: 700; }
+  .chart-head .big { font-size: 34px; font-weight: 800; letter-spacing: -1px; margin-top: 4px; }
+  .chart-head .avg { margin-top: 4px; font-size: 13px; color: var(--ink2); }
+  .chart-right { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+  .clean-pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: rgba(22,163,74,0.10); color: var(--green); border: 1px solid rgba(22,163,74,0.22); font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
   .unit-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--bg2); }
   .unit-toggle button { border: none; background: transparent; padding: 8px 18px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--ink2); cursor: pointer; }
   .unit-toggle button.on { background: var(--ink); color: #fff; }
-  .chart-wrap { padding: 24px; }
-  .chart-wrap svg { width: 100%; height: auto; display: block; }
-  .clean-pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: rgba(22,163,74,0.10); color: var(--green); border: 1px solid rgba(22,163,74,0.22); font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
+  #chart { position: relative; margin-top: 10px; }
+  #chart svg { width: 100%; height: auto; display: block; }
+  .chart-tip {
+    position: absolute; display: none; pointer-events: none; z-index: 5;
+    background: var(--ink); color: #fff; border-radius: 10px; padding: 8px 12px;
+    font-size: 12px; line-height: 1.5; white-space: nowrap; transform: translate(-50%, -110%);
+    box-shadow: 0 8px 20px rgba(11,20,48,0.3);
+  }
+  .chart-tip b { font-family: var(--mono); font-size: 12px; }
+  .chart-tip span { color: rgba(255,255,255,0.65); font-size: 11px; display: block; }
 
-  /* ── Owners timeline ── */
-  .owners { position: relative; padding-left: 8px; }
-  .owner { display: grid; grid-template-columns: 190px 1fr; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
+  /* owners */
+  .owners { margin-top: 24px; padding: 8px 28px; }
+  .owner { display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
   .owner:first-child { border-top: none; }
-  .owner .when { }
-  .owner .badge { display:inline-flex; align-items:center; gap:8px; font-weight: 800; font-size: 17px; }
-  .owner .badge .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color:#fff; display:grid; place-items:center; font-size: 13px; }
-  .owner .dates { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink2); letter-spacing: 0.3px; }
-  .owner .facts { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-  .chip { padding: 6px 12px; border-radius: 999px; background: var(--bg2); font-size: 13px; font-weight: 600; color: var(--ink); }
+  .owner .badge { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+  .owner .badge .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; flex-shrink: 0; }
+  .owner .dates { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+  .owner .facts { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
+  .chip { padding: 6px 12px; border-radius: 999px; background: var(--bg2); font-size: 13px; font-weight: 600; }
   .chip.warn { background: rgba(232,155,34,0.14); color: #96610a; }
-  .chip.blue { background: #EAF0FD; color: var(--blue-d); }
-  .owner .note { flex-basis: 100%; margin-top: 4px; font-size: 13px; color: var(--ink2); line-height: 1.5; }
+  .chip.blue { background: var(--blue-50); color: var(--blue-d); }
+  .owner .note { flex-basis: 100%; margin-top: 2px; font-size: 13px; color: var(--ink2); line-height: 1.55; }
 
-  /* ── Service history ── */
-  .svc-list { max-height: 460px; overflow: auto; }
-  .svc { display: grid; grid-template-columns: 120px 90px 1fr; gap: 16px; padding: 16px 6px; border-bottom: 1px solid var(--line-s); font-size: 14px; }
-  .svc .date { font-family: var(--mono); font-size: 12px; color: var(--ink2); font-weight: 700; }
-  .svc .mi { font-family: var(--mono); font-size: 12px; color: var(--ink3); }
-  .svc .who { font-weight: 700; }
+  /* service */
+  .svc-card { margin-top: 24px; padding: 12px 26px; }
+  .svc-list { max-height: 440px; overflow: auto; }
+  .svc { display: grid; grid-template-columns: 110px 92px 1fr; gap: 16px; padding: 15px 4px; border-bottom: 1px solid var(--line-s); }
+  .svc:last-child { border-bottom: none; }
+  .svc .date, .svc .mi { font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .svc .date { color: var(--ink2); font-weight: 700; } .svc .mi { color: var(--ink3); }
+  .svc .who { font-weight: 700; font-size: 14px; }
   .svc .what { color: var(--ink2); font-size: 13px; margin-top: 2px; }
 
-  /* ── Specs ── */
-  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  /* specs */
+  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
   .spec-card { padding: 24px; }
-  .spec-card h4 { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 800; margin-bottom: 14px; }
-  .spec-row { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
-  .spec-row:last-child { border-bottom: none; }
-  .spec-row .k { color: var(--ink3); } .spec-row .v { font-weight: 700; text-align: right; }
+  .spec-card h4 { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 800; margin-bottom: 12px; }
 
-  /* ── VIN lookup ── */
-  .lookup { padding: 28px; }
-  .lookup .row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line-s); }
+  /* internet lookup rows */
+  .lookup { padding: 16px 28px; margin-top: 24px; }
+  .lookup .row { display: flex; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--line-s); }
   .lookup .row:last-child { border-bottom: none; }
-  .lookup .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; font-size: 15px; }
-  .ic-g { background: rgba(22,163,74,0.12); } .ic-b { background: #EAF0FD; } .ic-a { background: rgba(232,155,34,0.14); }
-  .lookup .row b { font-size: 14px; } .lookup .row p { font-size: 13px; color: var(--ink2); margin-top: 3px; line-height: 1.5; }
+  .lookup .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; font-size: 14px; }
+  .ic-g { background: rgba(22,163,74,0.12); } .ic-b { background: var(--blue-50); } .ic-a { background: rgba(232,155,34,0.14); }
+  .lookup .row b { font-size: 14px; } .lookup .row p { font-size: 13px; color: var(--ink2); margin-top: 3px; line-height: 1.55; }
   .lookup a { color: var(--blue-d); font-weight: 700; text-decoration: none; }
 
-  /* ── CTA ── */
-  .cta-block { padding: 48px; text-align: center; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; border-radius: 24px; }
-  .cta-block h2 { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
+  .cta-block { margin: 72px 0; padding: 52px 40px; text-align: center; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; border-radius: 24px; }
+  .cta-block h2 { font-size: 36px; font-weight: 800; letter-spacing: -1.2px; }
   .cta-block p { margin-top: 12px; color: rgba(255,255,255,0.72); font-size: 16px; }
-  .cta-block a { display: inline-flex; margin-top: 24px; padding: 14px 26px; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; text-decoration: none; }
+  .cta-block a { display: inline-flex; margin-top: 26px; padding: 14px 28px; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; text-decoration: none; }
 
-  footer { max-width: 1240px; margin: 0 auto; padding: 48px 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; color: var(--ink3); font-family: var(--mono); font-size: 12px; letter-spacing: 0.5px; }
+  footer { max-width: 1240px; margin: 0 auto; padding: 40px 32px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; color: var(--ink3); font-family: var(--mono); font-size: 12px; }
   footer .brand { font-family: var(--font); font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -1px; }
   footer .brand .dot { color: var(--blue); }
-  .disclaimer { max-width: 1240px; margin: 0 auto; padding: 0 32px 48px; font-size: 12px; color: var(--ink3); line-height: 1.6; }
+  .disclaimer { max-width: 1240px; margin: 0 auto; padding: 0 32px 40px; font-size: 12px; color: var(--ink3); line-height: 1.65; }
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     nav.top .links { display: none; }
-    .hero { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 40px; }
+    .checker-hero h1 { font-size: 42px; }
+    .res-grid { grid-template-columns: 1fr; }
+    .locked-grid { grid-template-columns: 1fr 1fr; }
+    .rep-hero { grid-template-columns: 1fr; }
+    .rep-hero h2 { font-size: 36px; }
     .tiles { grid-template-columns: 1fr 1fr; }
     .owner { grid-template-columns: 1fr; gap: 12px; }
     .specs { grid-template-columns: 1fr; }
-    .svc { grid-template-columns: 90px 1fr; } .svc .mi { display: none; }
-    .section-title { font-size: 30px; }
+    .svc { grid-template-columns: 92px 1fr; } .svc .mi { display: none; }
+    .section-title { font-size: 32px; }
+    model-viewer { height: 320px; }
   }
 </style>
 </head>
@@ -198,78 +256,122 @@
   </nav>
 
   <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div>
-        <span class="hero-badge">◆ DRIVEE REPORT · VEHICLE HISTORY</span>
-        <h1>2016 Dodge<br/>Grand Caravan</h1>
-        <div class="vin-row">
-          <span class="kv">VIN <b>2C4RDGBGXGR217456</b></span>
-          <span class="kv">COLOR <b>Red</b></span>
-          <span class="kv">MILEAGE <b>102,049 mi</b></span>
-          <span class="kv">LAST IN <b>Ontario 🇨🇦</b></span>
+
+    <!-- ══════════ FREE VIN CHECKER ══════════ -->
+    <section class="checker-hero" id="check">
+      <span class="hero-badge">◆ DRIVEE REPORT · FREE VIN CHECK</span>
+      <h1>Every used car<br/>has a <em>story.</em></h1>
+      <p class="sub">Paste any VIN. We instantly pull the vehicle's identity, open safety recalls and an estimated market value — free, no sign-up.</p>
+
+      <form class="vin-form" id="vin-form" onsubmit="return runVin(event)">
+        <input id="vin-input" placeholder="ENTER 17-CHARACTER VIN…" maxlength="17" autocomplete="off" spellcheck="false"/>
+        <button id="vin-btn" type="submit">Check VIN — free</button>
+      </form>
+      <div class="vin-try">Try the sample: <a onclick="document.getElementById('vin-input').value='2C4RDGBGXGR217456'; runVin();">2C4RDGBGXGR217456</a></div>
+      <div class="vin-error" id="vin-error"></div>
+
+      <!-- RESULTS -->
+      <div id="vin-results">
+        <div class="res-head">
+          <div class="found">✓ <span class="ok">We found this vehicle</span> — <span id="res-title"></span></div>
+          <div class="res-vin" id="res-vin"></div>
         </div>
-        <div class="verdict">
-          <div class="ic">✓</div>
-          <div class="txt">
-            <b>Looks clean — no accidents, no odometer rollback</b>
-            <span>5 owners · 25 service records · title guaranteed no problem</span>
+
+        <div class="res-grid">
+          <div class="res-card card">
+            <h4>🚗 IDENTITY <span class="free-tag">FREE</span></h4>
+            <div id="res-identity"></div>
+          </div>
+          <div class="res-card card">
+            <h4>⚠️ OPEN SAFETY RECALLS <span class="free-tag">FREE</span></h4>
+            <div id="res-recalls"></div>
+          </div>
+          <div class="res-card card">
+            <h4>💰 ESTIMATED VALUE <span class="free-tag">FREE</span></h4>
+            <div id="res-value"></div>
+          </div>
+        </div>
+
+        <!-- LOCKED TIER -->
+        <div class="locked-wrap">
+          <div class="locked-title">Full history report <span class="tag">🔒 LOCKED</span></div>
+          <div class="locked-grid" id="locked-grid"></div>
+          <div class="unlock-bar">
+            <div class="txt">
+              <b>Unlock the full Drivee Report</b>
+              <p>Accident history · lien check · odometer readings · previous owners · theft records — everything in one report.</p>
+            </div>
+            <a href="/?app=1">Unlock full report →</a>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="viewer" id="viewer">
-        <span class="badge360">360°</span>
-        <div class="car-shadow"></div>
-        <div class="stage">
-          <div class="car" id="car">
-            <div class="face f-bottom"></div>
-            <div class="face f-top"></div>
-            <div class="face f-front"><div class="windshield"></div><div class="light head"></div></div>
-            <div class="face f-back"><div class="light tail" style="right:8px"></div></div>
-            <div class="face f-left">
-              <div class="glass g1"></div><div class="glass g2"></div><div class="glass g3"></div>
-              <div class="light head"></div><div class="light tail"></div>
+    <hr class="divider"/>
+
+    <!-- ══════════ SAMPLE REPORT ══════════ -->
+    <section class="block" id="sample">
+      <div class="section-kicker">SAMPLE · WHAT A FULL REPORT LOOKS LIKE</div>
+
+      <div class="rep-hero">
+        <div>
+          <h2>2016 Dodge<br/>Grand Caravan</h2>
+          <div class="vin-row">
+            <span class="kv">VIN <b>2C4RDGBGXGR217456</b></span>
+            <span class="kv">COLOR <b>Red</b></span>
+            <span class="kv">MILEAGE <b>102,049 mi</b></span>
+            <span class="kv">LAST IN <b>Ontario 🇨🇦</b></span>
+          </div>
+          <div class="verdict">
+            <div class="ic">✓</div>
+            <div class="txt">
+              <b>Looks clean — no accidents, no odometer rollback</b>
+              <span>5 owners · 25 service records · title guaranteed no problem</span>
             </div>
-            <div class="face f-right">
-              <div class="glass g1"></div><div class="glass g2"></div><div class="glass g3"></div>
-              <div class="light head"></div><div class="light tail"></div>
-            </div>
-            <div class="wheel fr"></div><div class="wheel br"></div>
-            <div class="wheel fl"></div><div class="wheel bl"></div>
           </div>
         </div>
-        <span class="hint">DRAG TO ROTATE · AUTO-SPINNING</span>
+        <div class="mv-wrap">
+          <span class="mv-badge">360°</span>
+          <model-viewer
+            src="/caravan-3d.glb"
+            alt="3D model of a Dodge Caravan minivan"
+            camera-controls auto-rotate auto-rotate-delay="800"
+            rotation-per-second="24deg"
+            shadow-intensity="1.1" shadow-softness="0.9"
+            exposure="1.05"
+            interaction-prompt="none"
+            camera-orbit="35deg 78deg 105%"
+            min-camera-orbit="auto 60deg auto"
+            max-camera-orbit="auto 92deg auto">
+          </model-viewer>
+          <span class="mv-hint">DRAG TO ROTATE · SCROLL TO ZOOM</span>
+        </div>
+      </div>
+
+      <!-- tiles -->
+      <div class="tiles">
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-g"></span> Accidents</div><div class="val">None</div><div class="sub">No damage reported to CARFAX</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-g"></span> Odometer</div><div class="val">Clean</div><div class="sub">No rollback · title guaranteed</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-a"></span> Owners</div><div class="val">5</div><div class="sub">Commercial, then personal</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-g"></span> Service</div><div class="val">25</div><div class="sub">36 detailed records</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-g"></span> Recalls</div><div class="val">None open</div><div class="sub">No open recalls reported</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-a"></span> Warranty</div><div class="val">Expired</div><div class="sub">Original warranty ended</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-g"></span> Structural</div><div class="val">No issues</div><div class="sub">No airbag / frame damage</div></div>
+        <div class="tile card"><div class="lbl"><span class="sdot sdot-a"></span> Prior use</div><div class="val">Commercial</div><div class="sub">Owner 1 · fleet / business</div></div>
       </div>
     </section>
 
-    <!-- SUMMARY TILES -->
+    <!-- MILEAGE -->
     <section class="block">
-      <div class="section-kicker">01 · AT A GLANCE</div>
-      <h2 class="section-title">Main from the report.</h2>
-      <div class="tiles" style="margin-top:28px">
-        <div class="tile card"><div class="lbl"><span class="dot dot-g"></span> Accidents</div><div class="val">None</div><div class="sub">No damage reported to CARFAX</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-g"></span> Odometer</div><div class="val">Clean</div><div class="sub">No rollback · title guaranteed</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-a"></span> Owners</div><div class="val">5</div><div class="sub">Commercial, then personal</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-g"></span> Service</div><div class="val">25</div><div class="sub">36 detailed records</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-g"></span> Recalls</div><div class="val">None open</div><div class="sub">No open recalls reported</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-a"></span> Warranty</div><div class="val">Expired</div><div class="sub">Original warranty ended</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-g"></span> Structural</div><div class="val">No issues</div><div class="sub">No airbag / frame damage</div></div>
-        <div class="tile card"><div class="lbl"><span class="dot dot-a"></span> Prior use</div><div class="val">Commercial</div><div class="sub">Owner 1 · fleet / business</div></div>
-      </div>
-    </section>
-
-    <!-- MILEAGE CHART -->
-    <section class="block">
-      <div class="section-kicker">02 · MILEAGE</div>
-      <div class="chart-wrap card" style="margin-top:20px">
+      <div class="section-kicker">01 · MILEAGE</div>
+      <div class="chart-card card">
         <div class="chart-head">
           <div>
-            <div class="meta">BY OUR DATA</div>
+            <div class="meta">ODOMETER · BY OUR DATA</div>
             <div class="big" id="mileage-big">102,049 mi</div>
-            <div class="meta" id="mileage-avg" style="color:var(--ink2)">~10,200 mi / year</div>
+            <div class="avg" id="mileage-avg">~10,200 mi per year</div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+          <div class="chart-right">
             <span class="clean-pill">✓ CONSISTENT · NOT ROLLED BACK</span>
             <div class="unit-toggle">
               <button id="btn-mi" class="on" onclick="setUnit('mi')">MILES</button>
@@ -277,124 +379,246 @@
             </div>
           </div>
         </div>
-        <div id="chart"></div>
+        <div id="chart"><div class="chart-tip" id="chart-tip"></div></div>
       </div>
     </section>
 
     <!-- OWNERS -->
     <section class="block">
-      <div class="section-kicker">03 · OWNERSHIP</div>
+      <div class="section-kicker">02 · OWNERSHIP</div>
       <h2 class="section-title">5 owners.</h2>
-      <p class="section-sub">The vehicle started life as a commercial (fleet) vehicle in the Greater Toronto Area, then moved to a series of personal owners in Ontario.</p>
-      <div class="owners card" style="margin-top:24px;padding:8px 28px">
+      <p class="section-sub">Started life as a commercial (fleet) vehicle in the Greater Toronto Area, then moved through personal owners in Ontario.</p>
+      <div class="owners card">
         <div class="owner">
-          <div class="when"><div class="badge"><span class="n">1</span> Owner 1</div><div class="dates">2016 — 2024 · ~8 yrs</div></div>
+          <div><div class="badge"><span class="n">1</span> Owner 1</div><div class="dates">2016 — 2024 · ~8 yrs</div></div>
           <div class="facts">
             <span class="chip warn">Commercial</span><span class="chip">Scarborough / Newmarket, ON</span><span class="chip">~12,050 mi / yr</span>
-            <div class="note">Registered as a commercial vehicle. Serviced mostly at NewRoads Chrysler (Newmarket) and Port Perry Automotive — regular oil, brakes, tires and alignments.</div>
+            <div class="note">Registered as a commercial vehicle. Serviced regularly at NewRoads Chrysler (Newmarket) and Port Perry Automotive — oil, brakes, tires, alignments.</div>
           </div>
         </div>
         <div class="owner">
-          <div class="when"><div class="badge"><span class="n">2</span> Owner 2</div><div class="dates">2024 · brief</div></div>
+          <div><div class="badge"><span class="n">2</span> Owner 2</div><div class="dates">2024 · brief</div></div>
           <div class="facts"><span class="chip blue">Personal</span><span class="chip">Ontario</span><div class="note">Passed Ontario safety standards inspection · new owner reported.</div></div>
         </div>
         <div class="owner">
-          <div class="when"><div class="badge"><span class="n">3</span> Owner 3</div><div class="dates">2024 · brief</div></div>
+          <div><div class="badge"><span class="n">3</span> Owner 3</div><div class="dates">2024 · brief</div></div>
           <div class="facts"><span class="chip blue">Personal</span><span class="chip">Ontario</span><div class="note">Passed Ontario safety standards inspection · new owner reported.</div></div>
         </div>
         <div class="owner">
-          <div class="when"><div class="badge"><span class="n">4</span> Owner 4</div><div class="dates">2025 · 19 days</div></div>
-          <div class="facts"><span class="chip blue">Personal</span><span class="chip">Ontario</span><span class="chip warn">Very short ownership</span><div class="note">Passed safety inspection, then transferred again after only 19 days — worth asking the seller why.</div></div>
+          <div><div class="badge"><span class="n">4</span> Owner 4</div><div class="dates">2025 · 19 days</div></div>
+          <div class="facts"><span class="chip blue">Personal</span><span class="chip warn">Very short ownership</span><div class="note">Passed safety inspection, then transferred again after only 19 days — worth asking the seller why.</div></div>
         </div>
         <div class="owner">
-          <div class="when"><div class="badge"><span class="n">5</span> Owner 5</div><div class="dates">2025 — now · 7 months</div></div>
-          <div class="facts"><span class="chip blue">Personal · current</span><span class="chip">Ontario</span><div class="note">Current owner. Last odometer reading 102,049 mi (164,232 km) on 24 Nov 2025. Registered as a personal vehicle.</div></div>
+          <div><div class="badge"><span class="n">5</span> Owner 5</div><div class="dates">2025 — now · 7 months</div></div>
+          <div class="facts"><span class="chip blue">Personal · current</span><span class="chip">Ontario</span><div class="note">Current owner. Last odometer reading 102,049 mi (164,232 km) on 24 Nov 2025.</div></div>
         </div>
       </div>
     </section>
 
-    <!-- SERVICE HISTORY -->
+    <!-- SERVICE -->
     <section class="block">
-      <div class="section-kicker">04 · SERVICE HISTORY</div>
+      <div class="section-kicker">03 · SERVICE HISTORY</div>
       <h2 class="section-title">25 service records.</h2>
-      <div class="card" style="margin-top:24px;padding:12px 24px">
-        <div class="svc-list" id="svc-list"></div>
-      </div>
+      <div class="svc-card card"><div class="svc-list" id="svc-list"></div></div>
     </section>
 
     <!-- SPECS -->
     <section class="block">
-      <div class="section-kicker">05 · VEHICLE DETAILS</div>
-      <h2 class="section-title">Vehicle & VIN decode.</h2>
-      <p class="section-sub">Decoded from the VIN via the free U.S. NHTSA vPIC government database, plus the CARFAX report.</p>
-      <div class="specs" style="margin-top:24px">
+      <div class="section-kicker">04 · VEHICLE DETAILS</div>
+      <h2 class="section-title">Vehicle &amp; VIN decode.</h2>
+      <p class="section-sub">Decoded from the VIN via the free NHTSA vPIC government database, plus the CARFAX report.</p>
+      <div class="specs">
         <div class="spec-card card">
           <h4>IDENTITY</h4>
-          <div class="spec-row"><span class="k">VIN</span><span class="v">2C4RDGBGXGR217456</span></div>
-          <div class="spec-row"><span class="k">Make / Model</span><span class="v">Dodge Grand Caravan</span></div>
-          <div class="spec-row"><span class="k">Trim / Series</span><span class="v">SE · RT</span></div>
-          <div class="spec-row"><span class="k">Model year</span><span class="v">2016</span></div>
-          <div class="spec-row"><span class="k">Body</span><span class="v">Minivan · 4-door MPV</span></div>
-          <div class="spec-row"><span class="k">Color</span><span class="v">Red</span></div>
+          <div class="res-row"><span class="k">VIN</span><span class="v">2C4RDGBGXGR217456</span></div>
+          <div class="res-row"><span class="k">Make / Model</span><span class="v">Dodge Grand Caravan</span></div>
+          <div class="res-row"><span class="k">Trim / Series</span><span class="v">SE · RT</span></div>
+          <div class="res-row"><span class="k">Model year</span><span class="v">2016</span></div>
+          <div class="res-row"><span class="k">Body</span><span class="v">Minivan · 4-door MPV</span></div>
+          <div class="res-row"><span class="k">Color</span><span class="v">Red</span></div>
         </div>
         <div class="spec-card card">
-          <h4>POWERTRAIN & BUILD</h4>
-          <div class="spec-row"><span class="k">Engine</span><span class="v">3.6L V6 DOHC 24V</span></div>
-          <div class="spec-row"><span class="k">Cylinders</span><span class="v">6</span></div>
-          <div class="spec-row"><span class="k">Fuel</span><span class="v">Gasoline</span></div>
-          <div class="spec-row"><span class="k">Drivetrain</span><span class="v">Front-wheel drive</span></div>
-          <div class="spec-row"><span class="k">Built</span><span class="v">Windsor, Ontario 🇨🇦</span></div>
-          <div class="spec-row"><span class="k">Manufacturer</span><span class="v">FCA Canada Inc.</span></div>
+          <h4>POWERTRAIN &amp; BUILD</h4>
+          <div class="res-row"><span class="k">Engine</span><span class="v">3.6L V6 DOHC 24V</span></div>
+          <div class="res-row"><span class="k">Cylinders</span><span class="v">6</span></div>
+          <div class="res-row"><span class="k">Fuel</span><span class="v">Gasoline</span></div>
+          <div class="res-row"><span class="k">Drivetrain</span><span class="v">Front-wheel drive</span></div>
+          <div class="res-row"><span class="k">Built</span><span class="v">Windsor, Ontario 🇨🇦</span></div>
+          <div class="res-row"><span class="k">Manufacturer</span><span class="v">FCA Canada Inc.</span></div>
         </div>
       </div>
     </section>
 
-    <!-- VIN INTERNET LOOKUP -->
+    <!-- INTERNET LOOKUP -->
     <section class="block">
-      <div class="section-kicker">06 · VIN LOOKUP ONLINE</div>
+      <div class="section-kicker">05 · VIN LOOKUP ONLINE</div>
       <h2 class="section-title">What the internet says.</h2>
-      <p class="section-sub">We checked this VIN against public decoders and listing databases. Here's what came back.</p>
-      <div class="lookup card" style="margin-top:24px">
+      <div class="lookup card">
         <div class="row">
           <div class="ic ic-g">✓</div>
           <div><b>Government VIN decode — verified</b><p>NHTSA vPIC confirms a 2016 Dodge Grand Caravan SE, 3.6L V6, built by FCA Canada in Windsor, Ontario. Everything matches the CARFAX report. <a href="https://vpic.nhtsa.dot.gov/decoder/" target="_blank" rel="noopener">Check on NHTSA →</a></p></div>
         </div>
         <div class="row">
           <div class="ic ic-b">🌐</div>
-          <div><b>No public sale or auction listing found</b><p>A web search for this exact VIN returned only generic VIN-decoder pages — no active classifieds, salvage-auction, or theft listings surfaced. That's consistent with a clean, privately-held Ontario vehicle.</p></div>
+          <div><b>No public sale or auction listing found</b><p>A web search for this exact VIN returned only generic decoder pages — no classifieds, salvage-auction or theft listings surfaced. Consistent with a clean, privately-held Ontario vehicle.</p></div>
         </div>
         <div class="row">
           <div class="ic ic-b">🏭</div>
-          <div><b>Origin confirmed by VIN structure</b><p>The <b>2C4</b> prefix marks an FCA Canada build (Windsor, ON). Digit 9 is the check digit; the last 6 (<b>217456</b>) are the production serial — consistent with a genuine 2016 Grand Caravan.</p></div>
-        </div>
-        <div class="row">
-          <div class="ic ic-a">🔎</div>
-          <div><b>Want the deepest check?</b><p>For paid history beyond CARFAX, cross-reference AutoCheck and the Canadian provincial UVIP. Drivee aggregates the free sources and flags anything worth a second look.</p></div>
+          <div><b>Origin confirmed by VIN structure</b><p>The <b>2C4</b> prefix marks an FCA Canada build (Windsor, ON). The last 6 digits (<b>217456</b>) are the production serial — consistent with a genuine 2016 Grand Caravan.</p></div>
         </div>
       </div>
     </section>
 
     <!-- CTA -->
-    <section class="block">
-      <div class="cta-block">
-        <h2>Every used car has a story.</h2>
-        <p>Drivee reads the report so you don't have to. Scan a VIN, get the verdict.</p>
-        <a href="/?app=1">Run your own report →</a>
-      </div>
-    </section>
+    <div class="cta-block">
+      <h2>Buying used? Check it first.</h2>
+      <p>Drivee reads the report so you don't have to. Paste a VIN, get the verdict.</p>
+      <a href="#check">Check a VIN free →</a>
+    </div>
   </main>
 
   <div class="disclaimer">
-    <b>About this report:</b> This is a sample Drivee Report built from a CARFAX Vehicle History Report and the free NHTSA vPIC VIN decoder for demonstration. Drivee is independent and not affiliated with CARFAX, the City of Toronto, MTO, or any manufacturer. Always pair any history report with an in-person inspection and test drive. The 3D vehicle shown is a stylized model, not a photograph of the actual car.
+    <b>About this page:</b> The free VIN check pulls live data from the U.S. NHTSA vPIC decoder and NHTSA recall database. The value shown is a rough estimate from vehicle age and segment, not an appraisal. The sample report is built from a CARFAX Vehicle History Report for demonstration; Drivee is independent and not affiliated with CARFAX, NHTSA, the City of Toronto or any manufacturer. The 3D model is a representative Dodge Caravan model, not photography of the actual vehicle. Always pair any report with an in-person inspection and test drive.
   </div>
 
   <footer>
     <span class="brand">Drivee<span class="dot">.</span></span>
-    <span>© 2026 DRIVEE TECHNOLOGIES INC. · TORONTO, ON · SAMPLE REPORT</span>
+    <span>© 2026 DRIVEE TECHNOLOGIES INC. · TORONTO, ON</span>
   </footer>
 
 <script>
-  // ══════════ Mileage data (date, miles) — from the CARFAX detailed history ══════════
+  // ═══════════════ FREE VIN CHECK ═══════════════
+  var SAMPLE_VIN = '2C4RDGBGXGR217456';
+  // Real record counts for the sample VIN (from its CARFAX). For any other VIN
+  // we do NOT invent counts — locked cards just say what the full report includes.
+  var SAMPLE_LOCKED = { accidents: 0, liens: null, odo: 28, owners: 5, theft: 0 };
+
+  function vinError(msg){
+    var e = document.getElementById('vin-error');
+    e.textContent = msg; e.style.display = msg ? 'block' : 'none';
+  }
+
+  function runVin(ev){
+    if (ev) ev.preventDefault();
+    var vin = document.getElementById('vin-input').value.trim().toUpperCase();
+    vinError('');
+    if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
+      vinError('A VIN is exactly 17 characters and never contains I, O or Q. Check and try again.');
+      return false;
+    }
+    var btn = document.getElementById('vin-btn');
+    btn.disabled = true; btn.textContent = 'Checking…';
+
+    fetch('https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/' + vin + '?format=json')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var d = data.Results && data.Results[0] || {};
+        if (!d.Make || !d.ModelYear) {
+          vinError("We couldn't decode that VIN. Double-check it — or the vehicle may be too old for the database.");
+          document.getElementById('vin-results').style.display = 'none';
+          return;
+        }
+        renderIdentity(vin, d);
+        renderValue(d);
+        renderLocked(vin);
+        document.getElementById('vin-results').style.display = 'block';
+        // recalls need make/model/year from the decode
+        fetchRecalls(d.Make, d.Model, d.ModelYear);
+        document.getElementById('vin-results').scrollIntoView({behavior:'smooth', block:'start'});
+      })
+      .catch(function(){ vinError('The decoder service is unreachable right now. Try again in a minute.'); })
+      .finally(function(){ btn.disabled = false; btn.textContent = 'Check VIN — free'; });
+    return false;
+  }
+
+  function esc(s){ var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+  function renderIdentity(vin, d){
+    document.getElementById('res-title').textContent = [d.ModelYear, d.Make ? cap(d.Make) : '', d.Model].filter(Boolean).join(' ');
+    document.getElementById('res-vin').textContent = 'VIN ' + vin;
+    var rows = [
+      ['Make', cap(d.Make)], ['Model', d.Model], ['Year', d.ModelYear],
+      ['Trim', d.Trim || d.Series || '—'],
+      ['Body', d.BodyClass || '—'],
+      ['Engine', (d.DisplacementL ? (+d.DisplacementL).toFixed(1) + 'L' : '') + (d.EngineCylinders ? ' · ' + d.EngineCylinders + ' cyl' : '') || '—'],
+      ['Fuel', d.FuelTypePrimary || '—'],
+      ['Drive', d.DriveType || '—'],
+      ['Built in', [d.PlantCity ? cap(d.PlantCity) : '', d.PlantCountry ? cap(d.PlantCountry) : ''].filter(Boolean).join(', ') || '—']
+    ];
+    document.getElementById('res-identity').innerHTML = rows.map(function(r){
+      return '<div class="res-row"><span class="k">' + esc(r[0]) + '</span><span class="v">' + esc(r[1] || '—') + '</span></div>';
+    }).join('');
+  }
+
+  function cap(s){ if (!s) return s; return String(s).toLowerCase().replace(/\b[a-z]/g, function(c){ return c.toUpperCase(); }); }
+
+  function fetchRecalls(make, model, year){
+    var box = document.getElementById('res-recalls');
+    box.innerHTML = '<div class="recall-item"><span>Checking NHTSA recall database…</span></div>';
+    fetch('https://api.nhtsa.gov/recalls/recallsByVehicle?make=' + encodeURIComponent(make) + '&model=' + encodeURIComponent(model) + '&modelYear=' + encodeURIComponent(year))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var rs = data.results || [];
+        if (!rs.length) { box.innerHTML = '<div class="recall-none">✓ No recall campaigns found</div>'; return; }
+        box.innerHTML = '<div class="res-row"><span class="k">Campaigns for this model</span><span class="v" style="color:var(--amber)">' + rs.length + ' found</span></div>' +
+          rs.slice(0, 4).map(function(rc){
+            return '<div class="recall-item"><b>' + esc(rc.Component || 'Component') + '</b><span>' + esc((rc.Summary || '').slice(0, 140)) + '…</span></div>';
+          }).join('') +
+          (rs.length > 4 ? '<div class="recall-item"><span>+' + (rs.length - 4) + ' more — ask your dealer to check by VIN (recall work is free).</span></div>' : '');
+      })
+      .catch(function(){ box.innerHTML = '<div class="recall-item"><span>Recall service unreachable — try NHTSA.gov directly.</span></div>'; });
+  }
+
+  function renderValue(d){
+    var year = parseInt(d.ModelYear, 10) || 2015;
+    var age = Math.max(0, 2026 - year);
+    // Rough segment base (new MSRP, CAD) by body class — a heuristic, clearly labeled.
+    var body = (d.BodyClass || '').toLowerCase();
+    var base = 38000;
+    if (/minivan|van/.test(body)) base = 42000;
+    else if (/pickup|truck/.test(body)) base = 52000;
+    else if (/suv|utility/.test(body)) base = 46000;
+    else if (/coupe|convertible/.test(body)) base = 48000;
+    else if (/sedan|hatchback|wagon/.test(body)) base = 34000;
+    // ~15% depreciation/yr first 5 years, ~8% after; floor at scrap value
+    var v = base;
+    for (var i = 0; i < age; i++) v *= (i < 5 ? 0.85 : 0.92);
+    v = Math.max(v, 1800);
+    var lo = Math.round(v * 0.82 / 100) * 100, hi = Math.round(v * 1.18 / 100) * 100;
+    document.getElementById('res-value').innerHTML =
+      '<div class="res-row"><span class="k">Estimated range</span></div>' +
+      '<div class="value-big">$' + lo.toLocaleString() + ' – $' + hi.toLocaleString() + '</div>' +
+      '<div class="res-row"><span class="k">Currency</span><span class="v">CAD · private sale</span></div>' +
+      '<div class="value-bar"><i></i></div>' +
+      '<div class="value-note">Rough estimate from age and vehicle segment only — condition, mileage and region move this a lot. Not an appraisal.</div>';
+  }
+
+  function renderLocked(vin){
+    var isSample = vin === SAMPLE_VIN;
+    var cards = [
+      { ic: '🚧', name: 'Accident history', key: 'accidents' },
+      { ic: '🏦', name: 'Lien check', key: 'liens' },
+      { ic: '🧮', name: 'Odometer history', key: 'odo' },
+      { ic: '👤', name: 'Previous owners', key: 'owners' },
+      { ic: '🚨', name: 'Theft record', key: 'theft' }
+    ];
+    document.getElementById('locked-grid').innerHTML = cards.map(function(c){
+      var foundLine;
+      if (isSample) {
+        var n = SAMPLE_LOCKED[c.key];
+        if (n === null) foundLine = '<div class="lc-found none">CHECK INCLUDED</div>';
+        else if (n > 0) foundLine = '<div class="lc-found has">● ' + n + ' RECORD' + (n === 1 ? '' : 'S') + ' FOUND</div>';
+        else foundLine = '<div class="lc-found none">RECORDS CHECKED</div>';
+      } else {
+        foundLine = '<div class="lc-found none">INCLUDED IN FULL REPORT</div>';
+      }
+      return '<div class="locked-card card"><span class="lock-ic">🔒</span>' +
+        '<div class="lc-head">' + c.ic + ' ' + c.name + '</div>' + foundLine +
+        '<div class="lc-blur"><div></div><div></div><div></div></div></div>';
+    }).join('');
+  }
+
+  // ═══════════════ MILEAGE CHART (sample report) ═══════════════
   var MILEAGE = [
     ['2015-12-02',3],['2016-03-09',31],['2016-06-07',7456],['2016-11-14',15961],
     ['2017-04-12',22872],['2017-08-17',29997],['2018-05-03',40612],['2018-10-24',48851],
@@ -404,63 +628,89 @@
     ['2022-11-17',83618],['2023-02-07',84982],['2023-04-27',86456],['2023-09-26',92107],
     ['2023-11-07',93438],['2024-04-26',97742],['2024-07-31',101254],['2025-11-24',102049]
   ];
-  var KM = 1.60934;
+  var KM = 1.60934, curUnit = 'mi', chartPts = [];
 
   function fmt(n){ return Math.round(n).toLocaleString(); }
 
   function renderChart(unit){
+    curUnit = unit;
     var factor = unit === 'km' ? KM : 1;
-    var pts = MILEAGE.map(function(r){ return { t: new Date(r[0]).getTime(), v: r[1]*factor }; });
-    var W = 1000, H = 380, padL = 78, padR = 28, padT = 20, padB = 44;
-    var t0 = pts[0].t, t1 = pts[pts.length-1].t;
-    var vmax = Math.max.apply(null, pts.map(function(p){ return p.v; }));
+    var pts = MILEAGE.map(function(r){ return { d: r[0], t: new Date(r[0]).getTime(), v: r[1] * factor }; });
+    var W = 1000, H = 360, padL = 74, padR = 30, padT = 26, padB = 42;
+    var t0 = pts[0].t, t1 = pts[pts.length - 1].t;
+    var vmax = pts[pts.length - 1].v;
     var step = unit === 'km' ? 40000 : 25000;
     var niceMax = Math.ceil(vmax / step) * step;
     var x = function(t){ return padL + (t - t0) / (t1 - t0) * (W - padL - padR); };
     var y = function(v){ return H - padB - v / niceMax * (H - padT - padB); };
+    chartPts = pts.map(function(p){ return { px: x(p.t), py: y(p.v), d: p.d, v: p.v }; });
 
-    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mileage over time">';
-    // horizontal gridlines + y labels
-    var lines = niceMax / step;
-    for (var i = 0; i <= lines; i++){
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Odometer readings over time" id="chart-svg">';
+    // hairline gridlines + y ticks (tabular, clean numbers)
+    for (var i = 0; i <= niceMax / step; i++){
       var gv = step * i, gy = y(gv);
-      svg += '<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="#E4EAF6" stroke-width="1"/>';
-      svg += '<text x="'+(padL-12)+'" y="'+(gy+4)+'" text-anchor="end" font-family="ui-monospace,monospace" font-size="13" fill="#8C95A7">'+fmt(gv)+'</text>';
+      svg += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (W - padR) + '" y2="' + gy + '" stroke="#E7ECF7" stroke-width="1"/>';
+      svg += '<text x="' + (padL - 12) + '" y="' + (gy + 4) + '" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="12" fill="#8C95A7" style="font-variant-numeric:tabular-nums">' + fmt(gv) + '</text>';
     }
-    // x labels (year ticks)
-    var years = [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
-    years.forEach(function(yr){
+    // x year ticks
+    [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025].forEach(function(yr){
       var tt = new Date(yr + '-01-01').getTime();
       if (tt < t0 || tt > t1) return;
-      var gx = x(tt);
-      svg += '<text x="'+gx+'" y="'+(H-16)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="13" fill="#8C95A7">'+yr+'</text>';
+      svg += '<text x="' + x(tt) + '" y="' + (H - 14) + '" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#8C95A7">' + yr + '</text>';
     });
-    // area + line
+    // area wash (~10%) + 2px line
     var d = '', area = '';
-    pts.forEach(function(p, i){
-      var px = x(p.t), py = y(p.v);
-      d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1) + ' ';
-      area += (i === 0 ? 'M' + px.toFixed(1) + ' ' + (H-padB) + ' L' : 'L') + px.toFixed(1) + ' ' + py.toFixed(1) + ' ';
+    chartPts.forEach(function(p, i){
+      d += (i === 0 ? 'M' : 'L') + p.px.toFixed(1) + ' ' + p.py.toFixed(1) + ' ';
+      area += (i === 0 ? 'M' + p.px.toFixed(1) + ' ' + (H - padB) + ' L' : 'L') + p.px.toFixed(1) + ' ' + p.py.toFixed(1) + ' ';
     });
-    area += 'L' + x(pts[pts.length-1].t).toFixed(1) + ' ' + (H-padB) + ' Z';
-    svg += '<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16A34A" stop-opacity="0.18"/><stop offset="100%" stop-color="#16A34A" stop-opacity="0"/></linearGradient></defs>';
-    svg += '<path d="'+area+'" fill="url(#ga)"/>';
-    svg += '<path d="'+d+'" fill="none" stroke="#16A34A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>';
-    // points
-    pts.forEach(function(p, i){
-      var last = i === pts.length - 1;
-      svg += '<circle cx="'+x(p.t).toFixed(1)+'" cy="'+y(p.v).toFixed(1)+'" r="'+(last?6:3.5)+'" fill="'+(last?'#16A34A':'#fff')+'" stroke="#16A34A" stroke-width="2"/>';
-    });
-    // current value label
-    var lp = pts[pts.length-1];
-    svg += '<text x="'+(x(lp.t)-10)+'" y="'+(y(lp.v)-12)+'" text-anchor="end" font-family="Plus Jakarta Sans,sans-serif" font-size="15" font-weight="800" fill="#0B1430">'+fmt(lp.v)+' '+unit+'</text>';
+    area += 'L' + chartPts[chartPts.length - 1].px.toFixed(1) + ' ' + (H - padB) + ' Z';
+    svg += '<path d="' + area + '" fill="#2D63F0" opacity="0.09"/>';
+    svg += '<path d="' + d + '" fill="none" stroke="#2D63F0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    // hover crosshair + marker (hidden until hover)
+    svg += '<line id="ch-x" x1="0" y1="' + padT + '" x2="0" y2="' + (H - padB) + '" stroke="#B9C6E4" stroke-width="1" style="display:none"/>';
+    svg += '<circle id="ch-dot" r="5" fill="#2D63F0" stroke="#FFFFFF" stroke-width="2" style="display:none"/>';
+    // endpoint marker (≥8px, surface ring) + endpoint label in ink
+    var lp = chartPts[chartPts.length - 1];
+    svg += '<circle cx="' + lp.px + '" cy="' + lp.py + '" r="5" fill="#2D63F0" stroke="#FFFFFF" stroke-width="2"/>';
+    svg += '<text x="' + (lp.px - 10) + '" y="' + (lp.py - 12) + '" text-anchor="end" font-family="Plus Jakarta Sans,sans-serif" font-size="15" font-weight="800" fill="#0B1430">' + fmt(lp.v) + ' ' + unit + '</text>';
     svg += '</svg>';
-    document.getElementById('chart').innerHTML = svg;
 
-    // header numbers
-    document.getElementById('mileage-big').textContent = fmt(102049*factor) + ' ' + unit;
-    var perYear = unit === 'km' ? '~16,400 km / year' : '~10,200 mi / year';
-    document.getElementById('mileage-avg').textContent = perYear;
+    var tip = document.getElementById('chart-tip');
+    document.getElementById('chart').innerHTML = svg;
+    document.getElementById('chart').appendChild(tip);
+    bindHover();
+
+    document.getElementById('mileage-big').textContent = fmt(102049 * factor) + ' ' + unit;
+    document.getElementById('mileage-avg').textContent = unit === 'km' ? '~16,400 km per year' : '~10,200 mi per year';
+  }
+
+  function bindHover(){
+    var svg = document.getElementById('chart-svg');
+    var tip = document.getElementById('chart-tip');
+    var dot = document.getElementById('ch-dot');
+    var cx = document.getElementById('ch-x');
+    var wrap = document.getElementById('chart');
+    function onMove(e){
+      var rect = svg.getBoundingClientRect();
+      var mx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      var sx = mx * 1000 / rect.width; // to viewBox coords
+      var best = chartPts[0], bd = Infinity;
+      chartPts.forEach(function(p){ var dd = Math.abs(p.px - sx); if (dd < bd) { bd = dd; best = p; } });
+      dot.style.display = 'block'; cx.style.display = 'block';
+      dot.setAttribute('cx', best.px); dot.setAttribute('cy', best.py);
+      cx.setAttribute('x1', best.px); cx.setAttribute('x2', best.px);
+      var dt = new Date(best.d);
+      tip.innerHTML = '<b>' + fmt(best.v) + ' ' + curUnit + '</b><span>' + dt.toLocaleDateString('en-CA', {year:'numeric', month:'short', day:'numeric'}) + '</span>';
+      tip.style.display = 'block';
+      tip.style.left = (best.px / 1000 * rect.width) + 'px';
+      tip.style.top = (best.py / 360 * rect.height) + 'px';
+    }
+    function onLeave(){ tip.style.display = 'none'; dot.style.display = 'none'; cx.style.display = 'none'; }
+    wrap.addEventListener('mousemove', onMove);
+    wrap.addEventListener('touchmove', onMove, {passive: true});
+    wrap.addEventListener('mouseleave', onLeave);
+    wrap.addEventListener('touchend', onLeave);
   }
 
   function setUnit(u){
@@ -470,10 +720,10 @@
   }
   renderChart('mi');
 
-  // ══════════ Service history list ══════════
+  // ═══════════════ SERVICE LIST ═══════════════
   var SERVICE = [
     ['2015-12-02','5 km','Service Facility, Scarborough ON','Pre-delivery inspection completed'],
-    ['2016-03-09','50 km','NewRoads Chrysler, Newmarket ON','Floor mats, tires mounted, undercoating/rustproofing, wheels checked'],
+    ['2016-03-09','50 km','NewRoads Chrysler, Newmarket ON','Floor mats, tires mounted, undercoating, wheels checked'],
     ['2016-06-07','12,000 km','Service Facility, Newmarket ON','Fluids checked · oil and filter changed'],
     ['2016-11-14','25,687 km','NewRoads Chrysler, Newmarket ON','Brakes serviced · oil & filter · rear brakes adjusted'],
     ['2017-04-12','36,809 km','NewRoads Chrysler, Newmarket ON','Cabin air filter · oil & filter · tires mounted'],
@@ -499,25 +749,8 @@
     ['2024-07-31','162,953 km','Port Perry Automotive, Port Perry ON','Alignment · oil and filter changed']
   ];
   document.getElementById('svc-list').innerHTML = SERVICE.slice().reverse().map(function(s){
-    return '<div class="svc"><div class="date">'+s[0]+'</div><div class="mi">'+s[1]+'</div><div><div class="who">'+s[2]+'</div><div class="what">'+s[3]+'</div></div></div>';
+    return '<div class="svc"><div class="date">' + s[0] + '</div><div class="mi">' + s[1] + '</div><div><div class="who">' + s[2] + '</div><div class="what">' + s[3] + '</div></div></div>';
   }).join('');
-
-  // ══════════ 360° van — auto-rotate + drag ══════════
-  (function(){
-    var car = document.getElementById('car');
-    var viewer = document.getElementById('viewer');
-    var spin = 24, tilt = -12, autoOn = true, dragging = false, lastX = 0;
-    function apply(){ car.style.transform = 'rotateX('+tilt+'deg) rotateY('+spin+'deg)'; }
-    apply();
-    setInterval(function(){ if (autoOn && !dragging){ spin = (spin + 0.5) % 360; apply(); } }, 30);
-    function down(e){ dragging = true; autoOn = false; lastX = (e.touches ? e.touches[0].clientX : e.clientX); }
-    function move(e){ if (!dragging) return; var cx = (e.touches ? e.touches[0].clientX : e.clientX); spin += (cx - lastX) * 0.6; lastX = cx; apply(); if (e.cancelable) e.preventDefault(); }
-    function up(){ dragging = false; }
-    viewer.addEventListener('mousedown', down); window.addEventListener('mousemove', move); window.addEventListener('mouseup', up);
-    viewer.addEventListener('touchstart', down, {passive:true}); viewer.addEventListener('touchmove', move, {passive:false}); window.addEventListener('touchend', up);
-    // resume auto-spin after 4s idle
-    viewer.addEventListener('mouseup', function(){ setTimeout(function(){ if(!dragging) autoOn = true; }, 4000); });
-  })();
 </script>
 </body>
 </html>

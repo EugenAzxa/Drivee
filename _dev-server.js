@@ -8,7 +8,8 @@ const ROOT = __dirname;
 const MIME = {
   '.html':'text/html', '.js':'application/javascript', '.css':'text/css',
   '.json':'application/json', '.png':'image/png', '.jpg':'image/jpeg',
-  '.svg':'image/svg+xml', '.ico':'image/x-icon', '.webmanifest':'application/manifest+json'
+  '.svg':'image/svg+xml', '.ico':'image/x-icon', '.webmanifest':'application/manifest+json',
+  '.glb':'model/gltf-binary', '.mp4':'video/mp4'
 };
 http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
