@@ -121,9 +121,27 @@
   .locked-card .lc-blur div { height: 9px; border-radius: 4px; background: var(--bg2); margin: 7px 0; }
   .locked-card .lc-blur div:nth-child(2) { width: 82%; } .locked-card .lc-blur div:nth-child(3) { width: 64%; }
   .locked-card .lock-ic { position: absolute; right: 14px; top: 14px; font-size: 13px; opacity: 0.75; }
-  .unlock-bar { margin-top: 18px; display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding: 22px 26px; border-radius: 18px; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; }
-  .unlock-bar .txt b { font-size: 17px; } .unlock-bar .txt p { margin-top: 4px; font-size: 13px; color: rgba(255,255,255,0.65); }
-  .unlock-bar a { padding: 13px 24px; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; font-size: 14px; text-decoration: none; white-space: nowrap; }
+  .unlock-bar { margin-top: 18px; padding: 26px; border-radius: 18px; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; }
+  .unlock-bar .ub-head b { font-size: 18px; }
+  .unlock-bar .ub-head p { margin-top: 5px; font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.55; }
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+  .plan { position: relative; border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 20px; text-align: left; background: rgba(255,255,255,0.04); }
+  .plan.best { border-color: rgba(255,255,255,0.45); background: rgba(255,255,255,0.08); }
+  .plan .p-tag { position: absolute; top: -10px; right: 14px; padding: 3px 10px; border-radius: 999px; background: #16A34A; color: #fff; font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+  .plan .p-price { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+  .plan .p-price small { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 0; }
+  .plan .p-name { margin-top: 2px; font-size: 14px; font-weight: 700; }
+  .plan ul { margin: 12px 0 0; padding: 0; list-style: none; }
+  .plan li { font-size: 12.5px; color: rgba(255,255,255,0.72); padding: 3.5px 0 3.5px 20px; position: relative; line-height: 1.45; }
+  .plan li::before { content: "✓"; position: absolute; left: 0; color: #4ade80; font-weight: 800; }
+  .plan li.no::before { content: "—"; color: rgba(255,255,255,0.35); }
+  .plan li.no { color: rgba(255,255,255,0.45); }
+  .plan .p-btn { display: block; margin-top: 16px; padding: 12px 0; text-align: center; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; font-size: 14px; text-decoration: none; }
+  .plan.best .p-btn { background: #16A34A; color: #fff; }
+  .ub-note { margin-top: 14px; font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+  .paid-banner { display: none; margin: 24px auto 0; max-width: 640px; padding: 18px 22px; border-radius: 16px; background: rgba(22,163,74,0.12); border: 1px solid rgba(22,163,74,0.3); text-align: left; }
+  .paid-banner b { color: var(--green); font-size: 16px; }
+  .paid-banner p { margin-top: 5px; font-size: 13.5px; color: var(--ink2); line-height: 1.55; }
 
   /* ══════════ SAMPLE REPORT ══════════ */
   .divider { margin: 72px 0 0; border: none; border-top: 1px solid var(--line); }
@@ -270,6 +288,11 @@
       <div class="vin-try">Try the sample: <a onclick="document.getElementById('vin-input').value='2C4RDGBGXGR217456'; runVin();">2C4RDGBGXGR217456</a></div>
       <div class="vin-error" id="vin-error"></div>
 
+      <div class="paid-banner" id="paid-banner">
+        <b>✓ Payment received — thank you!</b>
+        <p>Your full Drivee Report is being prepared. It will arrive in your email inbox (the one you used at checkout), usually <b>within a few hours</b>. Questions? <a href="mailto:drivee.canada@gmail.com" style="color:var(--blue-d);font-weight:700">drivee.canada@gmail.com</a></p>
+      </div>
+
       <!-- RESULTS -->
       <div id="vin-results">
         <div class="res-head">
@@ -297,11 +320,36 @@
           <div class="locked-title">Full history report <span class="tag">🔒 LOCKED</span></div>
           <div class="locked-grid" id="locked-grid"></div>
           <div class="unlock-bar">
-            <div class="txt">
+            <div class="ub-head">
               <b>Unlock the full Drivee Report</b>
-              <p>Accident history · lien check · odometer readings · previous owners · theft records — everything in one report.</p>
+              <p>We pull the complete history for your exact VIN — accidents, odometer readings, previous owners, theft records — and email it to you, usually within a few hours.</p>
             </div>
-            <a href="/?app=1">Unlock full report →</a>
+            <div class="plans">
+              <div class="plan">
+                <div class="p-price">$19 <small>CAD</small></div>
+                <div class="p-name">Full report</div>
+                <ul>
+                  <li>Accident &amp; damage history</li>
+                  <li>Odometer readings — rollback check</li>
+                  <li>Previous owners &amp; use type</li>
+                  <li>Theft &amp; title records</li>
+                  <li class="no">Lien check not included (you can buy it yourself in the ServiceOntario UVIP package, ~$20)</li>
+                </ul>
+                <a class="p-btn" id="buy-basic" href="#" onclick="return buyReport('basic')">Get full report — $19</a>
+              </div>
+              <div class="plan best">
+                <span class="p-tag">EVERYTHING</span>
+                <div class="p-price">$30 <small>CAD</small></div>
+                <div class="p-name">Full report + lien check</div>
+                <ul>
+                  <li>Everything in the $19 report</li>
+                  <li>Ontario lien check — is money still owed on this car?</li>
+                  <li>One email, one document — nothing else to buy</li>
+                </ul>
+                <a class="p-btn" id="buy-lien" href="#" onclick="return buyReport('lien')">Get report + lien — $30</a>
+              </div>
+            </div>
+            <div class="ub-note">Secure payment via Stripe · One-time fee · Delivered to your email · No subscription. Your VIN is attached to the order automatically.</div>
           </div>
         </div>
       </div>
@@ -487,6 +535,40 @@
   </footer>
 
 <script>
+  // ═══════════════ PAYMENT (Stripe Payment Links) ═══════════════
+  // Create two Payment Links in the Stripe dashboard (Products → Payment links)
+  // and paste them here. The buyer's VIN rides along as client_reference_id so
+  // every Stripe payment email tells you exactly which car to pull.
+  // Set each link's after-payment redirect to:
+  //   https://www.drivee.ca/report.html?paid=1
+  var STRIPE_LINKS = {
+    basic: '',   // $19 CAD — full report, no lien
+    lien:  ''    // $30 CAD — full report + Ontario lien check
+  };
+
+  function buyReport(plan){
+    var vin = (document.getElementById('vin-input').value || '').trim().toUpperCase();
+    var link = STRIPE_LINKS[plan];
+    if (link) {
+      location.href = link + (link.indexOf('?') > -1 ? '&' : '?') + 'client_reference_id=' + encodeURIComponent(vin || 'NO-VIN');
+    } else {
+      // Payments not wired yet — take the order by email so no sale is lost.
+      var price = plan === 'lien' ? '$30 CAD (report + lien check)' : '$19 CAD (full report)';
+      location.href = 'mailto:drivee.canada@gmail.com'
+        + '?subject=' + encodeURIComponent('Full report order — VIN ' + (vin || '(paste your VIN)'))
+        + '&body=' + encodeURIComponent('Hi Drivee,\n\nI would like the ' + price + ' for VIN: ' + (vin || '(paste your VIN here)') + '\n\nPlease send me the payment link.\n');
+    }
+    return false;
+  }
+
+  // After-payment confirmation (?paid=1)
+  (function(){
+    if (new URLSearchParams(location.search).get('paid') === '1') {
+      document.getElementById('paid-banner').style.display = 'block';
+      document.getElementById('paid-banner').scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  })();
+
   // ═══════════════ FREE VIN CHECK ═══════════════
   var SAMPLE_VIN = '2C4RDGBGXGR217456';
   // Real record counts for the sample VIN (from its CARFAX). For any other VIN
