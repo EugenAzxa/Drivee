@@ -3,19 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Drivee Report — Free VIN Check & Vehicle History</title>
-<meta name="description" content="Check any VIN free: make, model, engine, open recalls and market value. See a full Drivee vehicle history report — mileage graph, owners, service records, 3D view."/>
+<title>Drivee Report - Free VIN Check & Vehicle History</title>
+<meta name="description" content="Check any VIN free: make, model, engine, open recalls and market value. See a full Drivee vehicle history report - mileage graph, owners, service records, 3D view."/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Drivee"/>
-<meta property="og:title" content="Drivee Report — Free VIN Check & Vehicle History"/>
-<meta property="og:description" content="Paste a VIN, get the vehicle's identity, open recalls and value — free. Full history report with mileage graph, owners and service records."/>
+<meta property="og:title" content="Drivee Report - Free VIN Check & Vehicle History"/>
+<meta property="og:description" content="Paste a VIN, get the vehicle's identity, open recalls and value - free. Full history report with mileage graph, owners and service records."/>
 <meta property="og:url" content="https://drivee.ca/report.html"/>
 <link rel="canonical" href="https://drivee.ca/report.html"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
   :root {
     --bg: #EEF2FB;
@@ -134,7 +133,7 @@
   .plan ul { margin: 12px 0 0; padding: 0; list-style: none; }
   .plan li { font-size: 12.5px; color: rgba(255,255,255,0.72); padding: 3.5px 0 3.5px 20px; position: relative; line-height: 1.45; }
   .plan li::before { content: "✓"; position: absolute; left: 0; color: #4ade80; font-weight: 800; }
-  .plan li.no::before { content: "—"; color: rgba(255,255,255,0.35); }
+  .plan li.no::before { content: "-"; color: rgba(255,255,255,0.35); }
   .plan li.no { color: rgba(255,255,255,0.45); }
   .plan .p-btn { display: block; margin-top: 16px; padding: 12px 0; text-align: center; background: #fff; color: var(--ink); border-radius: 999px; font-weight: 800; font-size: 14px; text-decoration: none; }
   .plan.best .p-btn { background: #16A34A; color: #fff; }
@@ -156,15 +155,20 @@
   .verdict .txt b { display: block; font-size: 15px; color: var(--green); }
   .verdict .txt span { font-size: 13px; color: var(--ink2); }
 
-  .mv-wrap { position: relative; }
-  model-viewer {
-    width: 100%; height: 420px; border-radius: 24px;
-    background: radial-gradient(120% 120% at 50% 18%, #ffffff 0%, #E9EEFA 68%, #dbe3f3 100%);
-    border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(11,20,48,0.10);
-    --poster-color: transparent;
-  }
-  .mv-badge { position: absolute; top: 14px; right: 14px; z-index: 3; font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 1px; background: rgba(255,255,255,0.88); border: 1px solid var(--line); padding: 6px 12px; border-radius: 999px; }
-  .mv-hint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); z-index: 3; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--ink3); background: rgba(255,255,255,0.8); padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+  /* photo gallery */
+  .gallery { user-select: none; }
+  .g-main { position: relative; margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(11,20,48,0.10); background: var(--bg2); }
+  .g-main img { width: 100%; height: 380px; object-fit: cover; display: block; }
+  .g-cap { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; }
+  .g-cap span { background: rgba(11,20,48,0.72); color: #fff; backdrop-filter: blur(6px); font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
+  .g-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,0.94); cursor: pointer; display: grid; place-items: center; color: var(--ink); transition: transform 0.15s ease, background 0.15s ease; }
+  .g-nav:hover { background: #fff; transform: translateY(-50%) scale(1.06); }
+  .g-nav.prev { left: 12px; } .g-nav.next { right: 12px; }
+  .g-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .g-thumb { border: 2px solid transparent; border-radius: 12px; overflow: hidden; cursor: pointer; padding: 0; background: none; }
+  .g-thumb img { width: 100%; height: 74px; object-fit: cover; display: block; opacity: 0.7; transition: opacity 0.15s ease; }
+  .g-thumb:hover img, .g-thumb.on img { opacity: 1; }
+  .g-thumb.on { border-color: var(--blue); }
 
   /* summary tiles */
   .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 28px; }
@@ -256,7 +260,8 @@
     .specs { grid-template-columns: 1fr; }
     .svc { grid-template-columns: 92px 1fr; } .svc .mi { display: none; }
     .section-title { font-size: 32px; }
-    model-viewer { height: 320px; }
+    .g-main img { height: 250px; }
+    .g-thumbs img { height: 56px; }
   }
 </style>
 </head>
@@ -277,52 +282,52 @@
 
     <!-- ══════════ FREE VIN CHECKER ══════════ -->
     <section class="checker-hero" id="check">
-      <span class="hero-badge">◆ DRIVEE REPORT · FREE VIN CHECK</span>
+      <span class="hero-badge">DRIVEE REPORT · FREE VIN CHECK</span>
       <h1>Every used car<br/>has a <em>story.</em></h1>
-      <p class="sub">Paste any VIN. We instantly pull the vehicle's identity, open safety recalls and an estimated market value — free, no sign-up.</p>
+      <p class="sub">Paste any VIN. We instantly pull the vehicle's identity, open safety recalls and an estimated market value - free, no sign-up.</p>
 
       <form class="vin-form" id="vin-form" onsubmit="return runVin(event)">
         <input id="vin-input" placeholder="ENTER 17-CHARACTER VIN…" maxlength="17" autocomplete="off" spellcheck="false"/>
-        <button id="vin-btn" type="submit">Check VIN — free</button>
+        <button id="vin-btn" type="submit">Check VIN - free</button>
       </form>
       <div class="vin-try">Try the sample: <a onclick="document.getElementById('vin-input').value='2C4RDGBGXGR217456'; runVin();">2C4RDGBGXGR217456</a></div>
       <div class="vin-error" id="vin-error"></div>
 
       <div class="paid-banner" id="paid-banner">
-        <b>✓ Payment received — thank you!</b>
+        <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M20 6 9 17l-5-5"/></svg> Payment received - thank you!</b>
         <p>Your full Drivee Report is being prepared. It will arrive in your email inbox (the one you used at checkout), usually <b>within a few hours</b>. Questions? <a href="mailto:drivee.canada@gmail.com" style="color:var(--blue-d);font-weight:700">drivee.canada@gmail.com</a></p>
       </div>
 
       <!-- RESULTS -->
       <div id="vin-results">
         <div class="res-head">
-          <div class="found">✓ <span class="ok">We found this vehicle</span> — <span id="res-title"></span></div>
+          <div class="found"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M20 6 9 17l-5-5"/></svg> <span class="ok">We found this vehicle</span> - <span id="res-title"></span></div>
           <div class="res-vin" id="res-vin"></div>
         </div>
 
         <div class="res-grid">
           <div class="res-card card">
-            <h4>🚗 IDENTITY <span class="free-tag">FREE</span></h4>
+            <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H8.5c-1.1 0-2.1.7-2.4 1.8L5 12H3c-.6 0-1 .4-1 1v3c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg> IDENTITY <span class="free-tag">FREE</span></h4>
             <div id="res-identity"></div>
           </div>
           <div class="res-card card">
-            <h4>⚠️ OPEN SAFETY RECALLS <span class="free-tag">FREE</span></h4>
+            <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> OPEN SAFETY RECALLS <span class="free-tag">FREE</span></h4>
             <div id="res-recalls"></div>
           </div>
           <div class="res-card card">
-            <h4>💰 ESTIMATED VALUE <span class="free-tag">FREE</span></h4>
+            <h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg> ESTIMATED VALUE <span class="free-tag">FREE</span></h4>
             <div id="res-value"></div>
           </div>
         </div>
 
         <!-- LOCKED TIER -->
         <div class="locked-wrap">
-          <div class="locked-title">Full history report <span class="tag">🔒 LOCKED</span></div>
+          <div class="locked-title">Full history report <span class="tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> LOCKED</span></div>
           <div class="locked-grid" id="locked-grid"></div>
           <div class="unlock-bar">
             <div class="ub-head">
               <b>Unlock the full Drivee Report</b>
-              <p>We pull the complete history for your exact VIN — accidents, odometer readings, previous owners, theft records — and email it to you, usually within a few hours.</p>
+              <p>We pull the complete history for your exact VIN - accidents, odometer readings, previous owners, theft records - and email it to you, usually within a few hours.</p>
             </div>
             <div class="plans">
               <div class="plan">
@@ -330,12 +335,12 @@
                 <div class="p-name">Full report</div>
                 <ul>
                   <li>Accident &amp; damage history</li>
-                  <li>Odometer readings — rollback check</li>
+                  <li>Odometer readings - rollback check</li>
                   <li>Previous owners &amp; use type</li>
                   <li>Theft &amp; title records</li>
                   <li class="no">Lien check not included (you can buy it yourself in the ServiceOntario UVIP package, ~$20)</li>
                 </ul>
-                <a class="p-btn" id="buy-basic" href="#" onclick="return buyReport('basic')">Get full report — $19</a>
+                <a class="p-btn" id="buy-basic" href="#" onclick="return buyReport('basic')">Get full report - $19</a>
               </div>
               <div class="plan best">
                 <span class="p-tag">EVERYTHING</span>
@@ -343,10 +348,10 @@
                 <div class="p-name">Full report + lien check</div>
                 <ul>
                   <li>Everything in the $19 report</li>
-                  <li>Ontario lien check — is money still owed on this car?</li>
-                  <li>One email, one document — nothing else to buy</li>
+                  <li>Ontario lien check - is money still owed on this car?</li>
+                  <li>One email, one document - nothing else to buy</li>
                 </ul>
-                <a class="p-btn" id="buy-lien" href="#" onclick="return buyReport('lien')">Get report + lien — $30</a>
+                <a class="p-btn" id="buy-lien" href="#" onclick="return buyReport('lien')">Get report + lien - $30</a>
               </div>
             </div>
             <div class="ub-note">Secure payment via Stripe · One-time fee · Delivered to your email · No subscription. Your VIN is attached to the order automatically.</div>
@@ -368,31 +373,28 @@
             <span class="kv">VIN <b>2C4RDGBGXGR217456</b></span>
             <span class="kv">COLOR <b>Red</b></span>
             <span class="kv">MILEAGE <b>102,049 mi</b></span>
-            <span class="kv">LAST IN <b>Ontario 🇨🇦</b></span>
+            <span class="kv">LAST IN <b>Ontario, Canada</b></span>
           </div>
           <div class="verdict">
-            <div class="ic">✓</div>
+            <div class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
             <div class="txt">
-              <b>Looks clean — no accidents, no odometer rollback</b>
+              <b>Looks clean - no accidents, no odometer rollback</b>
               <span>5 owners · 25 service records · title guaranteed no problem</span>
             </div>
           </div>
         </div>
-        <div class="mv-wrap">
-          <span class="mv-badge">360°</span>
-          <model-viewer
-            src="/caravan-3d.glb"
-            alt="3D model of a Dodge Caravan minivan"
-            camera-controls auto-rotate auto-rotate-delay="800"
-            rotation-per-second="24deg"
-            shadow-intensity="1.1" shadow-softness="0.9"
-            exposure="1.05"
-            interaction-prompt="none"
-            camera-orbit="35deg 78deg 105%"
-            min-camera-orbit="auto 60deg auto"
-            max-camera-orbit="auto 92deg auto">
-          </model-viewer>
-          <span class="mv-hint">DRAG TO ROTATE · SCROLL TO ZOOM</span>
+        <div class="gallery">
+          <figure class="g-main">
+            <img id="g-hero" src="/caravan-front.jpg" alt="Red Dodge Grand Caravan, front right view"/>
+            <div class="g-cap"><span id="g-label">FRONT · RIGHT</span><span id="g-count">1 / 3</span></div>
+            <button class="g-nav prev" type="button" aria-label="Previous photo" onclick="gStep(-1)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button class="g-nav next" type="button" aria-label="Next photo" onclick="gStep(1)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </figure>
+          <div class="g-thumbs" id="g-thumbs"></div>
         </div>
       </div>
 
@@ -420,7 +422,7 @@
             <div class="avg" id="mileage-avg">~10,200 mi per year</div>
           </div>
           <div class="chart-right">
-            <span class="clean-pill">✓ CONSISTENT · NOT ROLLED BACK</span>
+            <span class="clean-pill"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> CONSISTENT · NOT ROLLED BACK</span>
             <div class="unit-toggle">
               <button id="btn-mi" class="on" onclick="setUnit('mi')">MILES</button>
               <button id="btn-km" onclick="setUnit('km')">KM</button>
@@ -438,10 +440,10 @@
       <p class="section-sub">Started life as a commercial (fleet) vehicle in the Greater Toronto Area, then moved through personal owners in Ontario.</p>
       <div class="owners card">
         <div class="owner">
-          <div><div class="badge"><span class="n">1</span> Owner 1</div><div class="dates">2016 — 2024 · ~8 yrs</div></div>
+          <div><div class="badge"><span class="n">1</span> Owner 1</div><div class="dates">2016 - 2024 · ~8 yrs</div></div>
           <div class="facts">
             <span class="chip warn">Commercial</span><span class="chip">Scarborough / Newmarket, ON</span><span class="chip">~12,050 mi / yr</span>
-            <div class="note">Registered as a commercial vehicle. Serviced regularly at NewRoads Chrysler (Newmarket) and Port Perry Automotive — oil, brakes, tires, alignments.</div>
+            <div class="note">Registered as a commercial vehicle. Serviced regularly at NewRoads Chrysler (Newmarket) and Port Perry Automotive - oil, brakes, tires, alignments.</div>
           </div>
         </div>
         <div class="owner">
@@ -454,10 +456,10 @@
         </div>
         <div class="owner">
           <div><div class="badge"><span class="n">4</span> Owner 4</div><div class="dates">2025 · 19 days</div></div>
-          <div class="facts"><span class="chip blue">Personal</span><span class="chip warn">Very short ownership</span><div class="note">Passed safety inspection, then transferred again after only 19 days — worth asking the seller why.</div></div>
+          <div class="facts"><span class="chip blue">Personal</span><span class="chip warn">Very short ownership</span><div class="note">Passed safety inspection, then transferred again after only 19 days - worth asking the seller why.</div></div>
         </div>
         <div class="owner">
-          <div><div class="badge"><span class="n">5</span> Owner 5</div><div class="dates">2025 — now · 7 months</div></div>
+          <div><div class="badge"><span class="n">5</span> Owner 5</div><div class="dates">2025 - now · 7 months</div></div>
           <div class="facts"><span class="chip blue">Personal · current</span><span class="chip">Ontario</span><div class="note">Current owner. Last odometer reading 102,049 mi (164,232 km) on 24 Nov 2025.</div></div>
         </div>
       </div>
@@ -491,7 +493,7 @@
           <div class="res-row"><span class="k">Cylinders</span><span class="v">6</span></div>
           <div class="res-row"><span class="k">Fuel</span><span class="v">Gasoline</span></div>
           <div class="res-row"><span class="k">Drivetrain</span><span class="v">Front-wheel drive</span></div>
-          <div class="res-row"><span class="k">Built</span><span class="v">Windsor, Ontario 🇨🇦</span></div>
+          <div class="res-row"><span class="k">Built</span><span class="v">Windsor, Ontario</span></div>
           <div class="res-row"><span class="k">Manufacturer</span><span class="v">FCA Canada Inc.</span></div>
         </div>
       </div>
@@ -503,16 +505,16 @@
       <h2 class="section-title">What the internet says.</h2>
       <div class="lookup card">
         <div class="row">
-          <div class="ic ic-g">✓</div>
-          <div><b>Government VIN decode — verified</b><p>NHTSA vPIC confirms a 2016 Dodge Grand Caravan SE, 3.6L V6, built by FCA Canada in Windsor, Ontario. Everything matches the CARFAX report. <a href="https://vpic.nhtsa.dot.gov/decoder/" target="_blank" rel="noopener">Check on NHTSA →</a></p></div>
+          <div class="ic ic-g"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <div><b>Government VIN decode - verified</b><p>NHTSA vPIC confirms a 2016 Dodge Grand Caravan SE, 3.6L V6, built by FCA Canada in Windsor, Ontario. Everything matches the CARFAX report. <a href="https://vpic.nhtsa.dot.gov/decoder/" target="_blank" rel="noopener">Check on NHTSA →</a></p></div>
         </div>
         <div class="row">
-          <div class="ic ic-b">🌐</div>
-          <div><b>No public sale or auction listing found</b><p>A web search for this exact VIN returned only generic decoder pages — no classifieds, salvage-auction or theft listings surfaced. Consistent with a clean, privately-held Ontario vehicle.</p></div>
+          <div class="ic ic-b"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B45C2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></div>
+          <div><b>No public sale or auction listing found</b><p>A web search for this exact VIN returned only generic decoder pages - no classifieds, salvage-auction or theft listings surfaced. Consistent with a clean, privately-held Ontario vehicle.</p></div>
         </div>
         <div class="row">
-          <div class="ic ic-b">🏭</div>
-          <div><b>Origin confirmed by VIN structure</b><p>The <b>2C4</b> prefix marks an FCA Canada build (Windsor, ON). The last 6 digits (<b>217456</b>) are the production serial — consistent with a genuine 2016 Grand Caravan.</p></div>
+          <div class="ic ic-b"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B45C2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16h.01"/><path d="M16 16h.01"/><path d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 12.5v-2a.5.5 0 0 0-.769-.422L9.77 12.922A.5.5 0 0 1 9 12.5V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2Z"/><path d="M8 16h.01"/></svg></div>
+          <div><b>Origin confirmed by VIN structure</b><p>The <b>2C4</b> prefix marks an FCA Canada build (Windsor, ON). The last 6 digits (<b>217456</b>) are the production serial - consistent with a genuine 2016 Grand Caravan.</p></div>
         </div>
       </div>
     </section>
@@ -526,7 +528,7 @@
   </main>
 
   <div class="disclaimer">
-    <b>About this page:</b> The free VIN check pulls live data from the U.S. NHTSA vPIC decoder and NHTSA recall database. The value shown is a rough estimate from vehicle age and segment, not an appraisal. The sample report is built from a CARFAX Vehicle History Report for demonstration; Drivee is independent and not affiliated with CARFAX, NHTSA, the City of Toronto or any manufacturer. The 3D model is a representative Dodge Caravan model, not photography of the actual vehicle. Always pair any report with an in-person inspection and test drive.
+    <b>About this page:</b> The free VIN check pulls live data from the U.S. NHTSA vPIC decoder and NHTSA recall database. The value shown is a rough estimate from vehicle age and segment, not an appraisal. The sample report is built from a CARFAX Vehicle History Report for demonstration; Drivee is independent and not affiliated with CARFAX, NHTSA, the City of Toronto or any manufacturer. Photos show an equivalent red Dodge Grand Caravan of the same generation, not the exact vehicle (photos by Elise240SX, CC BY-SA 4.0, via Wikimedia Commons). Always pair any report with an in-person inspection and test drive.
   </div>
 
   <footer>
@@ -542,8 +544,8 @@
   // Set each link's after-payment redirect to:
   //   https://www.drivee.ca/report.html?paid=1
   var STRIPE_LINKS = {
-    basic: '',   // $19 CAD — full report, no lien
-    lien:  ''    // $30 CAD — full report + Ontario lien check
+    basic: 'https://buy.stripe.com/cNi28t89F7Cd4I61I0es001',  // $19 CAD - full report, no lien
+    lien:  'https://buy.stripe.com/aFa6oJfC76y98Ym5Yges002'   // $30 CAD - full report + Ontario lien check
   };
 
   function buyReport(plan){
@@ -552,10 +554,10 @@
     if (link) {
       location.href = link + (link.indexOf('?') > -1 ? '&' : '?') + 'client_reference_id=' + encodeURIComponent(vin || 'NO-VIN');
     } else {
-      // Payments not wired yet — take the order by email so no sale is lost.
+      // Payments not wired yet - take the order by email so no sale is lost.
       var price = plan === 'lien' ? '$30 CAD (report + lien check)' : '$19 CAD (full report)';
       location.href = 'mailto:drivee.canada@gmail.com'
-        + '?subject=' + encodeURIComponent('Full report order — VIN ' + (vin || '(paste your VIN)'))
+        + '?subject=' + encodeURIComponent('Full report order - VIN ' + (vin || '(paste your VIN)'))
         + '&body=' + encodeURIComponent('Hi Drivee,\n\nI would like the ' + price + ' for VIN: ' + (vin || '(paste your VIN here)') + '\n\nPlease send me the payment link.\n');
     }
     return false;
@@ -572,7 +574,7 @@
   // ═══════════════ FREE VIN CHECK ═══════════════
   var SAMPLE_VIN = '2C4RDGBGXGR217456';
   // Real record counts for the sample VIN (from its CARFAX). For any other VIN
-  // we do NOT invent counts — locked cards just say what the full report includes.
+  // we do NOT invent counts - locked cards just say what the full report includes.
   var SAMPLE_LOCKED = { accidents: 0, liens: null, odo: 28, owners: 5, theft: 0 };
 
   function vinError(msg){
@@ -596,7 +598,7 @@
       .then(function(data){
         var d = data.Results && data.Results[0] || {};
         if (!d.Make || !d.ModelYear) {
-          vinError("We couldn't decode that VIN. Double-check it — or the vehicle may be too old for the database.");
+          vinError("We couldn't decode that VIN. Double-check it - or the vehicle may be too old for the database.");
           document.getElementById('vin-results').style.display = 'none';
           return;
         }
@@ -609,7 +611,7 @@
         document.getElementById('vin-results').scrollIntoView({behavior:'smooth', block:'start'});
       })
       .catch(function(){ vinError('The decoder service is unreachable right now. Try again in a minute.'); })
-      .finally(function(){ btn.disabled = false; btn.textContent = 'Check VIN — free'; });
+      .finally(function(){ btn.disabled = false; btn.textContent = 'Check VIN - free'; });
     return false;
   }
 
@@ -620,15 +622,15 @@
     document.getElementById('res-vin').textContent = 'VIN ' + vin;
     var rows = [
       ['Make', cap(d.Make)], ['Model', d.Model], ['Year', d.ModelYear],
-      ['Trim', d.Trim || d.Series || '—'],
-      ['Body', d.BodyClass || '—'],
-      ['Engine', (d.DisplacementL ? (+d.DisplacementL).toFixed(1) + 'L' : '') + (d.EngineCylinders ? ' · ' + d.EngineCylinders + ' cyl' : '') || '—'],
-      ['Fuel', d.FuelTypePrimary || '—'],
-      ['Drive', d.DriveType || '—'],
-      ['Built in', [d.PlantCity ? cap(d.PlantCity) : '', d.PlantCountry ? cap(d.PlantCountry) : ''].filter(Boolean).join(', ') || '—']
+      ['Trim', d.Trim || d.Series || '-'],
+      ['Body', d.BodyClass || '-'],
+      ['Engine', (d.DisplacementL ? (+d.DisplacementL).toFixed(1) + 'L' : '') + (d.EngineCylinders ? ' · ' + d.EngineCylinders + ' cyl' : '') || '-'],
+      ['Fuel', d.FuelTypePrimary || '-'],
+      ['Drive', d.DriveType || '-'],
+      ['Built in', [d.PlantCity ? cap(d.PlantCity) : '', d.PlantCountry ? cap(d.PlantCountry) : ''].filter(Boolean).join(', ') || '-']
     ];
     document.getElementById('res-identity').innerHTML = rows.map(function(r){
-      return '<div class="res-row"><span class="k">' + esc(r[0]) + '</span><span class="v">' + esc(r[1] || '—') + '</span></div>';
+      return '<div class="res-row"><span class="k">' + esc(r[0]) + '</span><span class="v">' + esc(r[1] || '-') + '</span></div>';
     }).join('');
   }
 
@@ -646,15 +648,15 @@
           rs.slice(0, 4).map(function(rc){
             return '<div class="recall-item"><b>' + esc(rc.Component || 'Component') + '</b><span>' + esc((rc.Summary || '').slice(0, 140)) + '…</span></div>';
           }).join('') +
-          (rs.length > 4 ? '<div class="recall-item"><span>+' + (rs.length - 4) + ' more — ask your dealer to check by VIN (recall work is free).</span></div>' : '');
+          (rs.length > 4 ? '<div class="recall-item"><span>+' + (rs.length - 4) + ' more - ask your dealer to check by VIN (recall work is free).</span></div>' : '');
       })
-      .catch(function(){ box.innerHTML = '<div class="recall-item"><span>Recall service unreachable — try NHTSA.gov directly.</span></div>'; });
+      .catch(function(){ box.innerHTML = '<div class="recall-item"><span>Recall service unreachable - try NHTSA.gov directly.</span></div>'; });
   }
 
   function renderValue(d){
     var year = parseInt(d.ModelYear, 10) || 2015;
     var age = Math.max(0, 2026 - year);
-    // Rough segment base (new MSRP, CAD) by body class — a heuristic, clearly labeled.
+    // Rough segment base (new MSRP, CAD) by body class - a heuristic, clearly labeled.
     var body = (d.BodyClass || '').toLowerCase();
     var base = 38000;
     if (/minivan|van/.test(body)) base = 42000;
@@ -672,17 +674,18 @@
       '<div class="value-big">$' + lo.toLocaleString() + ' – $' + hi.toLocaleString() + '</div>' +
       '<div class="res-row"><span class="k">Currency</span><span class="v">CAD · private sale</span></div>' +
       '<div class="value-bar"><i></i></div>' +
-      '<div class="value-note">Rough estimate from age and vehicle segment only — condition, mileage and region move this a lot. Not an appraisal.</div>';
+      '<div class="value-note">Rough estimate from age and vehicle segment only - condition, mileage and region move this a lot. Not an appraisal.</div>';
   }
 
   function renderLocked(vin){
     var isSample = vin === SAMPLE_VIN;
+    var I = function(p){ return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; };
     var cards = [
-      { ic: '🚧', name: 'Accident history', key: 'accidents' },
-      { ic: '🏦', name: 'Lien check', key: 'liens' },
-      { ic: '🧮', name: 'Odometer history', key: 'odo' },
-      { ic: '👤', name: 'Previous owners', key: 'owners' },
-      { ic: '🚨', name: 'Theft record', key: 'theft' }
+      { ic: I('<path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'), name: 'Accident history', key: 'accidents' },
+      { ic: I('<path d="M10 18v-7"/><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>'), name: 'Lien check', key: 'liens' },
+      { ic: I('<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>'), name: 'Odometer history', key: 'odo' },
+      { ic: I('<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'), name: 'Previous owners', key: 'owners' },
+      { ic: I('<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/>'), name: 'Theft record', key: 'theft' }
     ];
     document.getElementById('locked-grid').innerHTML = cards.map(function(c){
       var foundLine;
@@ -694,7 +697,7 @@
       } else {
         foundLine = '<div class="lc-found none">INCLUDED IN FULL REPORT</div>';
       }
-      return '<div class="locked-card card"><span class="lock-ic">🔒</span>' +
+      return '<div class="locked-card card"><span class="lock-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>' +
         '<div class="lc-head">' + c.ic + ' ' + c.name + '</div>' + foundLine +
         '<div class="lc-blur"><div></div><div></div><div></div></div></div>';
     }).join('');
@@ -801,6 +804,38 @@
     renderChart(u);
   }
   renderChart('mi');
+
+  // ═══════════════ PHOTO GALLERY ═══════════════
+  var PHOTOS = [
+    { src: '/caravan-front.jpg', label: 'FRONT · RIGHT', alt: 'Red Dodge Grand Caravan, front right view' },
+    { src: '/caravan-rear.jpg',  label: 'REAR · RIGHT',  alt: 'Red Dodge Grand Caravan, rear right view' },
+    { src: '/caravan-rear2.jpg', label: 'REAR · LEFT',   alt: 'Red Dodge Grand Caravan, rear left view' }
+  ];
+  var gIdx = 0;
+  function gShow(i){
+    gIdx = i;
+    var hero = document.getElementById('g-hero');
+    hero.src = PHOTOS[i].src; hero.alt = PHOTOS[i].alt;
+    document.getElementById('g-label').textContent = PHOTOS[i].label;
+    document.getElementById('g-count').textContent = (i + 1) + ' / ' + PHOTOS.length;
+    var thumbs = document.querySelectorAll('.g-thumb');
+    thumbs.forEach(function(t, j){ t.classList.toggle('on', j === i); });
+  }
+  function gStep(d){ gShow((gIdx + d + PHOTOS.length) % PHOTOS.length); }
+  document.getElementById('g-thumbs').innerHTML = PHOTOS.map(function(p, i){
+    return '<button class="g-thumb' + (i === 0 ? ' on' : '') + '" type="button" onclick="gShow(' + i + ')"><img src="' + p.src + '" alt="' + p.alt + '" loading="lazy"/></button>';
+  }).join('');
+  // swipe on touch
+  (function(){
+    var sx = null, el = document.querySelector('.g-main');
+    el.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive: true});
+    el.addEventListener('touchend', function(e){
+      if (sx === null) return;
+      var dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) gStep(dx < 0 ? 1 : -1);
+      sx = null;
+    }, {passive: true});
+  })();
 
   // ═══════════════ SERVICE LIST ═══════════════
   var SERVICE = [
