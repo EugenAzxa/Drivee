@@ -472,9 +472,86 @@
       <div class="svc-card card"><div class="svc-list" id="svc-list"></div></div>
     </section>
 
+    <!-- COST OF OWNERSHIP -->
+    <section class="block">
+      <div class="section-kicker">04 · COST OF OWNERSHIP</div>
+      <h2 class="section-title">What it costs to run.</h2>
+      <p class="section-sub">Fuel economy, the repairs this model is known for, and what they typically cost in Ontario (parts + labour). Figures are typical ranges for this generation, not quotes.</p>
+
+      <!-- fuel economy -->
+      <div class="tiles" style="grid-template-columns: repeat(4, 1fr)">
+        <div class="tile card">
+          <div class="lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="15" y1="22" y2="22"/><line x1="4" x2="14" y1="9" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></svg> City</div>
+          <div class="val">13.8 L/100km</div><div class="sub">17 MPG</div>
+        </div>
+        <div class="tile card">
+          <div class="lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="15" y1="22" y2="22"/><line x1="4" x2="14" y1="9" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></svg> Highway</div>
+          <div class="val">9.4 L/100km</div><div class="sub">25 MPG</div>
+        </div>
+        <div class="tile card">
+          <div class="lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="15" y1="22" y2="22"/><line x1="4" x2="14" y1="9" y2="9"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/></svg> Combined</div>
+          <div class="val">11.8 L/100km</div><div class="sub">20 MPG</div>
+        </div>
+        <div class="tile card">
+          <div class="lbl"><span class="sdot sdot-a"></span> Fuel per year</div>
+          <div class="val">~$3,700</div><div class="sub">20,000 km/yr at $1.55/L - regular gas</div>
+        </div>
+      </div>
+
+      <div class="specs" style="margin-top:16px">
+        <!-- common repairs -->
+        <div class="spec-card card">
+          <h4><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> COMMON REPAIRS - TYPICAL COST</h4>
+          <div class="res-row"><span class="k">Front brakes (pads + rotors)</span><span class="v">$450 - 650</span></div>
+          <div class="res-row"><span class="k">Power steering rack</span><span class="v">$900 - 1,400</span></div>
+          <div class="res-row"><span class="k">TIPM (fuse module) issues</span><span class="v">$900 - 1,500</span></div>
+          <div class="res-row"><span class="k">Oil cooler housing leak (3.6L)</span><span class="v">$450 - 700</span></div>
+          <div class="res-row"><span class="k">Rear A/C lines (rust)</span><span class="v">$700 - 1,400</span></div>
+          <div class="res-row"><span class="k">Alternator</span><span class="v">$500 - 750</span></div>
+          <div class="res-row"><span class="k">Transmission rebuild (62TE)</span><span class="v">$3,500 - 4,800</span></div>
+          <div class="res-row"><span class="k">Typical maintenance per year</span><span class="v">~$750</span></div>
+          <div class="value-note" style="margin-top:12px">Good news on this exact van: the steering rack was already replaced (Feb 2023, Port Perry Automotive) - one of this model's known jobs, already done.</div>
+        </div>
+
+        <!-- reliability -->
+        <div class="spec-card card">
+          <h4><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg> RELIABLE VS WATCH OUT</h4>
+          <div class="res-row"><span class="k"><span class="sdot sdot-g"></span> 3.6L Pentastar V6 engine</span><span class="v">Solid with regular oil changes</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-g"></span> Body and Stow'n'Go seats</span><span class="v">Durable, family-proof</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-g"></span> Parts supply</span><span class="v">Cheap and everywhere</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-a"></span> 62TE transmission</span><span class="v">Shudder - change fluid every 80k km</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-a"></span> TIPM electrical module</span><span class="v">Known gremlins - test all electrics</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-a"></span> Front brake wear</span><span class="v">Wears fast - budget for it often</span></div>
+          <div class="res-row"><span class="k"><span class="sdot sdot-a"></span> Rear A/C lines</span><span class="v">Rust on salted Ontario roads</span></div>
+          <div class="value-note" style="margin-top:12px">Verdict for this generation: a cheap-to-own workhorse if the transmission fluid was maintained - have a mechanic scan the transmission before buying.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPRECIATION -->
+    <section class="block">
+      <div class="section-kicker">05 · DEPRECIATION &amp; RESALE</div>
+      <h2 class="section-title">What it's worth - now and later.</h2>
+      <p class="section-sub">Grand Caravans were discontinued in 2020, so used demand keeps prices firm. At this age depreciation slows to roughly 8-9% per year.</p>
+      <div class="specs">
+        <div class="spec-card card">
+          <h4><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg> PROJECTED VALUE - PRIVATE SALE, CAD</h4>
+          <div id="dep-chart" style="margin-top:8px"></div>
+        </div>
+        <div class="spec-card card">
+          <h4><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg> IF YOU SELL TODAY</h4>
+          <div class="res-row"><span class="k">Private sale (Ontario)</span><span class="v">$10,500 - 12,500</span></div>
+          <div class="res-row"><span class="k">Dealer trade-in</span><span class="v">$8,000 - 9,500</span></div>
+          <div class="res-row"><span class="k">Loss per year from here</span><span class="v">~$900 - 1,000</span></div>
+          <div class="res-row"><span class="k">Best time to sell</span><span class="v">Spring - vans move fastest</span></div>
+          <div class="value-note" style="margin-top:12px">Estimates from age, mileage (164,000 km) and Ontario listings for this trim - condition moves the price. A documented service file like this one supports the top of the range.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- SPECS -->
     <section class="block">
-      <div class="section-kicker">04 · VEHICLE DETAILS</div>
+      <div class="section-kicker">06 · VEHICLE DETAILS</div>
       <h2 class="section-title">Vehicle &amp; VIN decode.</h2>
       <p class="section-sub">Decoded from the VIN via the free NHTSA vPIC government database, plus the CARFAX report.</p>
       <div class="specs">
@@ -501,7 +578,7 @@
 
     <!-- INTERNET LOOKUP -->
     <section class="block">
-      <div class="section-kicker">05 · VIN LOOKUP ONLINE</div>
+      <div class="section-kicker">07 · VIN LOOKUP ONLINE</div>
       <h2 class="section-title">What the internet says.</h2>
       <div class="lookup card">
         <div class="row">
@@ -835,6 +912,36 @@
       if (Math.abs(dx) > 40) gStep(dx < 0 ? 1 : -1);
       sx = null;
     }, {passive: true});
+  })();
+
+  // ═══════════════ DEPRECIATION CHART ═══════════════
+  (function(){
+    var DEP = [
+      { yr: '2026', v: 11500, now: true },
+      { yr: '2027', v: 10500 },
+      { yr: '2028', v: 9600 },
+      { yr: '2029', v: 8800 },
+      { yr: '2030', v: 8100 }
+    ];
+    var W = 520, H = 292, baseY = 240, top = 34, colW = 44, vmax = 12000;
+    function colPath(x, y, w, h, r){
+      return 'M' + x + ' ' + (y + h) + ' V' + (y + r) + ' Q' + x + ' ' + y + ' ' + (x + r) + ' ' + y +
+             ' H' + (x + w - r) + ' Q' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + r) + ' V' + (y + h) + ' Z';
+    }
+    var slot = (W - 40) / DEP.length;
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Projected resale value by year">';
+    svg += '<line x1="20" y1="' + baseY + '" x2="' + (W - 20) + '" y2="' + baseY + '" stroke="#E7ECF7" stroke-width="1"/>';
+    DEP.forEach(function(d, i){
+      var h = d.v / vmax * (baseY - top);
+      var x = 20 + slot * i + (slot - colW) / 2;
+      var y = baseY - h;
+      svg += '<path d="' + colPath(x, y, colW, h, 4) + '" fill="' + (d.now ? '#2D63F0' : '#7C9FF5') + '"/>';
+      svg += '<text x="' + (x + colW / 2) + '" y="' + (y - 9) + '" text-anchor="middle" font-family="Plus Jakarta Sans,sans-serif" font-size="13.5" font-weight="800" fill="#0B1430">$' + (d.v / 1000).toFixed(1).replace('.0','') + 'k</text>';
+      svg += '<text x="' + (x + colW / 2) + '" y="' + (baseY + 22) + '" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#8C95A7">' + d.yr + (d.now ? ' *' : '') + '</text>';
+    });
+    svg += '<text x="20" y="' + (H - 6) + '" font-family="Plus Jakarta Sans,sans-serif" font-size="11.5" fill="#8C95A7">* today\'s estimate - later years projected at 8-9%/yr</text>';
+    svg += '</svg>';
+    document.getElementById('dep-chart').innerHTML = svg;
   })();
 
   // ═══════════════ SERVICE LIST ═══════════════
