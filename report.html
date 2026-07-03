@@ -106,6 +106,69 @@
   .value-bar { margin-top: 14px; height: 8px; border-radius: 999px; background: var(--bg2); position: relative; overflow: hidden; }
   .value-bar i { position: absolute; left: 18%; right: 18%; top: 0; bottom: 0; background: linear-gradient(90deg,#7fa4f7,var(--blue)); border-radius: 999px; }
 
+  /* known issues (free tier) */
+  .issues-card { margin-top: 16px; text-align: left; }
+  .issues-list { columns: 2; column-gap: 40px; }
+  .issues-list .res-row { break-inside: avoid; }
+  .issues-note { margin-top: 12px; font-size: 12px; color: var(--ink3); line-height: 1.5; }
+  .issues-good { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding: 10px 14px; border-radius: 10px; background: rgba(22,163,74,0.08); font-size: 13px; color: var(--ink2); line-height: 1.5; }
+  .issues-good svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* buyer's checklist */
+  .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+  .check-card { padding: 20px; }
+  .check-anim { height: 118px; border-radius: 14px; background: var(--bg2); position: relative; overflow: hidden; margin-bottom: 14px; }
+  .check-anim svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .check-card h5 { font-size: 15px; font-weight: 800; letter-spacing: -0.2px; }
+  .check-card p { margin-top: 6px; font-size: 13px; color: var(--ink2); line-height: 1.55; }
+  .check-card .flag { margin-top: 10px; font-size: 12px; font-weight: 700; color: var(--red); line-height: 1.45; }
+
+  /* tachometer: rev then settle at idle with a small wobble */
+  .tach-needle { transform-box: fill-box; transform-origin: 50% 92%; animation: tachSettle 5s ease-in-out infinite; }
+  @keyframes tachSettle {
+    0%, 8%   { transform: rotate(-62deg); }
+    22%      { transform: rotate(48deg); }
+    38%      { transform: rotate(-52deg); }
+    48%      { transform: rotate(-58deg); }
+    58%      { transform: rotate(-55deg); }
+    70%, 100%{ transform: rotate(-57deg); }
+  }
+  /* oil drip + puddle */
+  .drip { animation: oilDrip 2.6s ease-in infinite; }
+  @keyframes oilDrip {
+    0%, 20% { transform: translateY(0); opacity: 0; }
+    30%     { opacity: 1; }
+    72%     { transform: translateY(30px); opacity: 1; }
+    78%,100%{ transform: translateY(30px); opacity: 0; }
+  }
+  .puddle { transform-box: fill-box; transform-origin: center; animation: oilPuddle 2.6s ease-out infinite; }
+  @keyframes oilPuddle { 0%,60% { transform: scaleX(0.55); opacity: 0.25; } 85%,100% { transform: scaleX(1); opacity: 0.5; } }
+  /* exhaust smoke */
+  .smoke { animation: smokeUp 3s ease-out infinite; opacity: 0; }
+  .smoke.s2 { animation-delay: 0.9s; } .smoke.s3 { animation-delay: 1.8s; }
+  @keyframes smokeUp {
+    0%   { transform: translate(0,0) scale(0.5); opacity: 0; }
+    15%  { opacity: 0.45; }
+    100% { transform: translate(26px,-40px) scale(1.8); opacity: 0; }
+  }
+  /* gear selector highlight sliding P-R-N-D */
+  .prnd-sel { animation: prndSlide 6s ease-in-out infinite; }
+  @keyframes prndSlide {
+    0%, 14%  { transform: translateX(0); }
+    24%, 38% { transform: translateX(38px); }
+    48%, 62% { transform: translateX(76px); }
+    72%, 100%{ transform: translateX(114px); }
+  }
+  /* rust hotspot pulse */
+  .rustring { transform-box: fill-box; transform-origin: center; animation: rustPulse 2.2s ease-out infinite; }
+  .rustring.r2 { animation-delay: 0.7s; } .rustring.r3 { animation-delay: 1.4s; }
+  @keyframes rustPulse { 0% { transform: scale(0.5); opacity: 0.85; } 100% { transform: scale(2.1); opacity: 0; } }
+  /* dipstick droplet bob */
+  .fluid-dot { animation: fluidBob 2.4s ease-in-out infinite; }
+  .fluid-dot.f2 { animation-delay: 0.4s; } .fluid-dot.f3 { animation-delay: 0.8s; }
+  @keyframes fluidBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  @media (prefers-reduced-motion: reduce) { .check-anim * { animation: none !important; } }
+
   /* locked tier */
   .locked-wrap { margin-top: 18px; }
   .locked-title { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; font-size: 17px; font-weight: 800; }
@@ -319,6 +382,9 @@
             <div id="res-value"></div>
           </div>
         </div>
+
+        <!-- KNOWN ISSUES (free) -->
+        <div class="res-card card issues-card" id="res-issues" style="display:none"></div>
 
         <!-- LOCKED TIER -->
         <div class="locked-wrap">
@@ -549,9 +615,123 @@
       </div>
     </section>
 
+    <!-- BUYER'S CHECKLIST -->
+    <section class="block" id="checklist">
+      <div class="section-kicker">06 · BUYER'S CHECKLIST</div>
+      <h2 class="section-title">What to check before you buy.</h2>
+      <p class="section-sub">Ten minutes with the car tells you more than any ad. Bring a flashlight and a paper towel - here is where to point them.</p>
+
+      <div class="check-grid">
+        <!-- 1: idle rpm / tachometer -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <path d="M 40 96 A 60 60 0 1 1 160 96" fill="none" stroke="#D6DEF0" stroke-width="8" stroke-linecap="round"/>
+              <path d="M 148 47 A 60 60 0 0 1 160 96" fill="none" stroke="#E1473D" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+              <g class="tach-needle"><line x1="100" y1="96" x2="100" y2="42" stroke="#0B1430" stroke-width="3.5" stroke-linecap="round"/></g>
+              <circle cx="100" cy="96" r="6" fill="#0B1430"/>
+              <text x="100" y="114" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">IDLE ~750 RPM</text>
+            </svg>
+          </div>
+          <h5>Cold start &amp; idle</h5>
+          <p>Ask for a cold start. The needle spikes, then should settle near 750 rpm and hold dead steady. A hunting or bouncing idle means vacuum leaks or worse.</p>
+          <div class="flag">Red flag: ticking or rattle that stays after 30 seconds.</div>
+        </div>
+
+        <!-- 2: oil leaks -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <rect x="60" y="22" width="80" height="42" rx="8" fill="#B9C6E4"/>
+              <rect x="72" y="12" width="56" height="14" rx="5" fill="#8C95A7"/>
+              <rect x="60" y="52" width="80" height="6" fill="#8C95A7" opacity="0.5"/>
+              <circle class="drip" cx="100" cy="68" r="4.5" fill="#0B1430"/>
+              <ellipse class="puddle" cx="100" cy="102" rx="26" ry="4.5" fill="#0B1430"/>
+            </svg>
+          </div>
+          <h5>Oil leaks</h5>
+          <p>Look under the engine and along the valve cover with your flashlight. A dusty oil film is normal at this age - fresh, wet drips are not.</p>
+          <div class="flag">Red flag: fresh drops on the ground where it was parked.</div>
+        </div>
+
+        <!-- 3: exhaust smoke -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <rect x="30" y="72" width="52" height="16" rx="8" fill="#8C95A7"/>
+              <rect x="76" y="69" width="14" height="22" rx="6" fill="#4A5267"/>
+              <circle class="smoke" cx="102" cy="76" r="9" fill="#7C8AA5"/>
+              <circle class="smoke s2" cx="106" cy="80" r="7" fill="#9AA7BF"/>
+              <circle class="smoke s3" cx="100" cy="72" r="8" fill="#B4BfD4"/>
+              <text x="100" y="112" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">BLUE=OIL · WHITE=COOLANT · BLACK=RICH</text>
+            </svg>
+          </div>
+          <h5>Exhaust smoke</h5>
+          <p>A puff of vapour at cold start is fine. Steady blue smoke means burning oil, sweet-smelling white means coolant (head gasket), black means running rich.</p>
+          <div class="flag">Red flag: smoke that keeps coming once the engine is warm.</div>
+        </div>
+
+        <!-- 4: transmission -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <rect x="24" y="44" width="152" height="34" rx="10" fill="#D6DEF0"/>
+              <rect class="prnd-sel" x="30" y="49" width="30" height="24" rx="7" fill="#2D63F0"/>
+              <text x="45" y="66" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#0B1430">P</text>
+              <text x="83" y="66" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#0B1430">R</text>
+              <text x="121" y="66" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#0B1430">N</text>
+              <text x="159" y="66" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#0B1430">D</text>
+              <text x="100" y="100" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">EACH SHIFT UNDER 1 SECOND</text>
+            </svg>
+          </div>
+          <h5>Transmission feel</h5>
+          <p>Foot on the brake, shift P-R-N-D. Each gear should engage in under a second with no clunk. On the drive, listen for shudder at 60-80 km/h.</p>
+          <div class="flag">Red flag: delay then a thud into Drive or Reverse.</div>
+        </div>
+
+        <!-- 5: rust -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <path d="M 30 78 L 34 58 Q 36 48 48 46 L 76 42 Q 96 26 120 28 L 148 32 Q 166 36 168 50 L 170 62 Q 172 78 160 78 Z" fill="#B9C6E4"/>
+              <circle cx="62" cy="78" r="13" fill="#4A5267"/><circle cx="62" cy="78" r="6" fill="#8C95A7"/>
+              <circle cx="140" cy="78" r="13" fill="#4A5267"/><circle cx="140" cy="78" r="6" fill="#8C95A7"/>
+              <circle class="rustring" cx="62" cy="70" r="9" fill="none" stroke="#E1473D" stroke-width="2.5"/>
+              <circle class="rustring r2" cx="101" cy="80" r="9" fill="none" stroke="#E1473D" stroke-width="2.5"/>
+              <circle class="rustring r3" cx="140" cy="70" r="9" fill="none" stroke="#E1473D" stroke-width="2.5"/>
+              <text x="100" y="110" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">ARCHES · ROCKERS · DOOR BOTTOMS</text>
+            </svg>
+          </div>
+          <h5>Rust spots</h5>
+          <p>Check wheel arches, rocker panels, door bottoms and under the trunk mat. On Ontario cars, surface rust is common - bubbling paint means it is deep.</p>
+          <div class="flag">Red flag: bubbling paint - it is always worse underneath.</div>
+        </div>
+
+        <!-- 6: fluids -->
+        <div class="check-card card">
+          <div class="check-anim">
+            <svg viewBox="0 0 200 118">
+              <rect x="36" y="18" width="8" height="70" rx="4" fill="#8C95A7" transform="rotate(18 40 18)"/>
+              <rect x="52" y="70" width="10" height="4" rx="2" fill="#4A5267" transform="rotate(18 57 72)"/>
+              <circle class="fluid-dot" cx="104" cy="52" r="11" fill="#E89B22"/>
+              <circle class="fluid-dot f2" cx="136" cy="52" r="11" fill="#1A1D24"/>
+              <circle class="fluid-dot f3" cx="168" cy="52" r="11" fill="#D9CDBE"/>
+              <text x="104" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">GOOD</text>
+              <text x="136" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">OLD</text>
+              <text x="168" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">MILKY</text>
+              <text x="100" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">PULL THE DIPSTICK</text>
+            </svg>
+          </div>
+          <h5>Oil &amp; coolant condition</h5>
+          <p>Amber-brown oil is fine, black means neglected service, milky means coolant is mixing into the oil. Coolant should be bright, never rusty or oily.</p>
+          <div class="flag">Red flag: milky oil - walk away, that is a head gasket.</div>
+        </div>
+      </div>
+    </section>
+
     <!-- SPECS -->
     <section class="block">
-      <div class="section-kicker">06 · VEHICLE DETAILS</div>
+      <div class="section-kicker">07 · VEHICLE DETAILS</div>
       <h2 class="section-title">Vehicle &amp; VIN decode.</h2>
       <p class="section-sub">Decoded from the VIN via the free NHTSA vPIC government database, plus the CARFAX report.</p>
       <div class="specs">
@@ -578,7 +758,7 @@
 
     <!-- INTERNET LOOKUP -->
     <section class="block">
-      <div class="section-kicker">07 · VIN LOOKUP ONLINE</div>
+      <div class="section-kicker">08 · VIN LOOKUP ONLINE</div>
       <h2 class="section-title">What the internet says.</h2>
       <div class="lookup card">
         <div class="row">
@@ -681,6 +861,7 @@
         }
         renderIdentity(vin, d);
         renderValue(d);
+        renderIssues(d);
         renderLocked(vin);
         document.getElementById('vin-results').style.display = 'block';
         // recalls need make/model/year from the decode
@@ -752,6 +933,71 @@
       '<div class="res-row"><span class="k">Currency</span><span class="v">CAD · private sale</span></div>' +
       '<div class="value-bar"><i></i></div>' +
       '<div class="value-note">Rough estimate from age and vehicle segment only - condition, mileage and region move this a lot. Not an appraisal.</div>';
+  }
+
+  // Known weak points by make - typical CAD repair ranges for the used
+  // examples people actually shop (not findings about the specific VIN).
+  var KNOWN_ISSUES = {
+    'DODGE':      { good: 'The 3.6L Pentastar V6 is solid with regular oil changes, and parts are cheap and everywhere.',
+                    items: [['62TE transmission shudder', '$3,500 - 4,800'], ['TIPM electrical module', '$900 - 1,500'], ['Oil cooler housing leak (3.6L)', '$450 - 700'], ['Fast front brake wear', '$450 - 650']] },
+    'CHRYSLER':   { good: 'Same solid Pentastar V6 family as Dodge; cheap, plentiful parts.',
+                    items: [['62TE / 9-speed transmission issues', '$3,500 - 5,000'], ['TIPM electrical module', '$900 - 1,500'], ['Oil cooler housing leak (3.6L)', '$450 - 700']] },
+    'JEEP':       { good: 'Pentastar V6 engines age well; drivetrains are stout on the trail-rated models.',
+                    items: [['Air suspension (Grand Cherokee)', '$1,500 - 3,000'], ['Oil cooler housing leak (3.6L)', '$450 - 700'], ['Electrical gremlins / TIPM', '$900 - 1,500']] },
+    'RAM':        { good: 'HEMI and Pentastar engines are durable; huge parts supply.',
+                    items: [['Air suspension', '$1,500 - 3,000'], ['Exhaust manifold bolts (HEMI tick)', '$600 - 1,200'], ['Front end wear (ball joints)', '$700 - 1,400']] },
+    'TOYOTA':     { good: 'Benchmark reliability - most examples just need fluids and brakes on schedule.',
+                    items: [['Water pump', '$400 - 700'], ['Oil consumption (some 2007-2011 4-cyl)', 'monitor'], ['Frame rust on older trucks', 'inspect']] },
+    'HONDA':      { good: 'Engines and manual gearboxes are excellent; interiors wear well.',
+                    items: [['A/C compressor', '$900 - 1,400'], ['CVT judder (newer Civic/HR-V - fluid service)', '$150 - 400'], ['VCM oil use (older V6)', 'monitor']] },
+    'NISSAN':     { good: 'Engines are generally reliable and parts are affordable.',
+                    items: [['CVT transmission failure (2013-2018 - the big one)', '$3,500 - 5,000'], ['Timing chain stretch (older 4-cyl)', '$1,200 - 2,000'], ['Suspension bushings', '$400 - 900']] },
+    'FORD':       { good: 'Simple engines (non-turbo) last long; parts everywhere.',
+                    items: [['PowerShift dual-clutch (Focus/Fiesta 2012-2016)', '$2,000 - 3,000'], ['EcoBoost carbon buildup / timing', '$500 - 1,500'], ['Rust on older frames and arches', 'inspect']] },
+    'CHEVROLET':  { good: 'Drivetrains are simple to fix and parts are cheap.',
+                    items: [['AFM lifter failure (V8)', '$2,000 - 4,000'], ['8-speed torque converter shudder', '$300 fluid / $2,500+'], ['Electrical accessories', '$300 - 800']] },
+    'GMC':        { good: 'Same durable underpinnings as Chevrolet trucks.',
+                    items: [['AFM lifter failure (V8)', '$2,000 - 4,000'], ['8-speed torque converter shudder', '$300 fluid / $2,500+'], ['Condensation in headlights', '$300 - 600']] },
+    'HYUNDAI':    { good: 'Great value and warranty coverage; most issues are engine-specific.',
+                    items: [['Theta II engine failure (2011-2019 - check recall done)', 'ask for proof'], ['GDI carbon buildup', '$400 - 800'], ['Front suspension wear', '$400 - 900']] },
+    'KIA':        { good: 'Same platforms as Hyundai - good value if the engine recall work is documented.',
+                    items: [['Theta II engine failure (2011-2019 - check recall done)', 'ask for proof'], ['GDI carbon buildup', '$400 - 800']] },
+    'VOLKSWAGEN': { good: 'Tight chassis and comfortable interiors; budget for German parts pricing.',
+                    items: [['Timing chain tensioner (EA888)', '$1,000 - 2,000'], ['DSG mechatronic unit', '$2,000 - 3,000'], ['Carbon buildup (direct injection)', '$400 - 800'], ['Oil leaks (valve cover, cam seal)', '$400 - 900']] },
+    'AUDI':       { good: 'Strong engines when maintained; interiors age beautifully.',
+                    items: [['Timing chain tensioner (EA888)', '$1,200 - 2,200'], ['Oil consumption (2009-2016 2.0T)', 'monitor'], ['Carbon buildup', '$500 - 900']] },
+    'BMW':        { good: 'Chassis and engines are engineered to be driven - budget for gaskets as they age.',
+                    items: [['Oil leaks (valve cover / oil filter housing)', '$600 - 1,200'], ['Cooling system (pump, thermostat)', '$800 - 1,500'], ['Timing chain (N20 4-cyl)', '$2,000 - 3,500']] },
+    'MERCEDES-BENZ': { good: 'Comfort and build quality; keep a maintenance fund.',
+                    items: [['Air suspension (Airmatic)', '$1,500 - 3,000'], ['Oil leaks as they age', '$500 - 1,200'], ['Balance shaft (older M272 V6)', '$3,000+']] },
+    'SUBARU':     { good: 'AWD is excellent in Canadian winters; engines need honest maintenance.',
+                    items: [['Head gaskets (older EJ engines)', '$1,500 - 2,500'], ['CVT chain (2010s)', '$3,000 - 4,000'], ['Oil consumption (FB engines)', 'monitor']] },
+    'MAZDA':      { good: 'SkyActiv engines are among the most reliable on the road today.',
+                    items: [['Rust - arches and rockers (pre-2017 especially)', 'inspect'], ['Infotainment quirks', '$200 - 500']] }
+  };
+
+  function renderIssues(d){
+    var box = document.getElementById('res-issues');
+    var make = (d.Make || '').toUpperCase().trim();
+    var db = KNOWN_ISSUES[make];
+    var year = parseInt(d.ModelYear, 10) || 0;
+    var title = [d.ModelYear, cap(d.Make), d.Model].filter(Boolean).join(' ');
+    var head = '<h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> KNOWN WEAK POINTS - ' + esc(make || 'THIS MAKE') + ' <span class="free-tag">FREE</span></h4>';
+    if (db) {
+      box.innerHTML = head +
+        '<div class="issues-list">' + db.items.map(function(it){
+          return '<div class="res-row"><span class="k">' + esc(it[0]) + '</span><span class="v">' + esc(it[1]) + '</span></div>';
+        }).join('') + '</div>' +
+        '<div class="issues-good"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>' + esc(db.good) + '</span></div>' +
+        '<div class="issues-note">Typical weak points and Ontario repair ranges for this make\'s common used models - not findings about this exact vehicle. The full report covers what actually happened to this one.</div>';
+    } else {
+      var ageAdvice = year && (2026 - year) >= 10
+        ? 'At 10+ years old, focus on rust (arches, rockers, subframe), suspension bushings, cooling system condition and service history.'
+        : 'Focus on service history, tires and brakes, fluid condition, and that all electronics work on the test drive.';
+      box.innerHTML = head +
+        '<div class="issues-note" style="font-size:13.5px;color:var(--ink2)">' + esc(ageAdvice) + ' Use the checklist below when you go see the ' + esc(title) + '.</div>';
+    }
+    box.style.display = 'block';
   }
 
   function renderLocked(vin){
