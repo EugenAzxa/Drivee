@@ -355,6 +355,11 @@
   }
   .stage3d.pop .g-photo { display: none; }
   .stage3d.pop .s3-bg, .stage3d.pop .s3-van, .stage3d.pop .s3-refl { display: block; }
+  .stage3d.pop .g-main { cursor: grab; }
+  .stage3d.pop .g-main:active { cursor: grabbing; }
+  #g-spin-hint { display: none; background: var(--blue) !important; }
+  .stage3d.pop ~ * #g-spin-hint { display: inline-block; }
+  .stage3d.pop #g-spin-hint { display: inline-block; }
   /* idle float when not hovered */
   @keyframes s3Float { 0%,100% { transform: translateX(-50%) translateZ(56px) translateY(0); } 50% { transform: translateX(-50%) translateZ(56px) translateY(-7px); } }
   .stage3d.pop:not(:hover) .s3-van { animation: s3Float 5s ease-in-out infinite; }
@@ -600,10 +605,10 @@
           <div class="stage3d pop" id="stage3d">
           <figure class="g-main" id="gmain">
             <div class="s3-bg"></div>
-            <img class="s3-van" src="/caravan-3d.png" alt="Red Dodge Grand Caravan - 3D view" draggable="false"/>
-            <img class="s3-refl" src="/caravan-3d.png" alt="" aria-hidden="true" draggable="false"/>
+            <img class="s3-van" id="s3van" src="/caravan-spin-0.png" alt="Red Dodge Grand Caravan - 360 view" draggable="false"/>
+            <img class="s3-refl" id="s3refl" src="/caravan-spin-0.png" alt="" aria-hidden="true" draggable="false"/>
             <img id="g-hero" class="g-photo" src="/caravan-front.jpg" alt="Red Dodge Grand Caravan, front right view"/>
-            <div class="g-cap"><span id="g-label">3D VIEW</span><span id="g-count">1 / 4</span></div>
+            <div class="g-cap"><span id="g-label">FRONT · RIGHT</span><span id="g-count">1 / 4</span><span id="g-spin-hint">DRAG TO SPIN</span></div>
             <button class="g-nav prev" type="button" aria-label="Previous photo" onclick="gStep(-1)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
@@ -1327,11 +1332,12 @@
     var hero = document.getElementById('g-hero');
     if (p.mode === 'pop') {
       stage.classList.add('pop');
+      document.getElementById('g-label').textContent = (typeof SPIN !== 'undefined') ? SPIN[spinIdx].label : p.label;
     } else {
       stage.classList.remove('pop');
       hero.src = p.src; hero.alt = p.alt;
+      document.getElementById('g-label').textContent = p.label;
     }
-    document.getElementById('g-label').textContent = p.label;
     document.getElementById('g-count').textContent = (i + 1) + ' / ' + PHOTOS.length;
     document.querySelectorAll('.g-thumb').forEach(function(t, j){ t.classList.toggle('on', j === i); });
   }
@@ -1341,13 +1347,35 @@
     return '<button class="g-thumb' + (i === 0 ? ' on' : '') + '" type="button" onclick="gShow(' + i + ')"><img src="' + p.src + '" alt="' + p.alt + '" loading="lazy"' + style + '/></button>';
   }).join('');
 
-  // cursor-follow tilt - the whole card rotates in perspective, the cutout
-  // van sits on a higher Z layer so it parallaxes above the frame
+  // ── 360 spin (drag through angle frames) + cursor tilt ──
+  var SPIN = [
+    { src: '/caravan-spin-0.png', label: 'FRONT · RIGHT' },
+    { src: '/caravan-spin-1.png', label: 'REAR · RIGHT' },
+    { src: '/caravan-spin-2.png', label: 'REAR · LEFT' },
+    { src: '/caravan-spin-3.png', label: 'FRONT · LEFT' }
+  ];
+  var spinIdx = 0, spinTouched = false;
+  SPIN.forEach(function(f){ var im = new Image(); im.src = f.src; }); // preload
+
+  function spinShow(i){
+    spinIdx = (i + SPIN.length) % SPIN.length;
+    document.getElementById('s3van').src = SPIN[spinIdx].src;
+    document.getElementById('s3refl').src = SPIN[spinIdx].src;
+    if (document.getElementById('stage3d').classList.contains('pop')) {
+      document.getElementById('g-label').textContent = SPIN[spinIdx].label;
+    }
+  }
+
   (function(){
     var card = document.getElementById('gmain');
     var stage = document.getElementById('stage3d');
-    var raf = null;
-    function onMove(e){
+    var raf = null, dragging = false, hovering = false, downX = 0, acc = 0;
+    var STEP_PX = 70; // drag distance per angle step
+
+    function isPop(){ return stage.classList.contains('pop'); }
+
+    function tilt(e){
+      if (dragging) return;
       var r = card.getBoundingClientRect();
       var x = (e.clientX - r.left) / r.width - 0.5;
       var y = (e.clientY - r.top) / r.height - 0.5;
@@ -1356,19 +1384,50 @@
         card.style.transform = 'rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 8).toFixed(2) + 'deg)';
       });
     }
-    function onLeave(){
+    function resetTilt(){
       if (raf) cancelAnimationFrame(raf);
       card.style.transform = 'rotateY(0deg) rotateX(0deg)';
     }
-    stage.addEventListener('mousemove', onMove);
-    stage.addEventListener('mouseleave', onLeave);
+
+    function dragStart(e){
+      if (!isPop()) return;
+      dragging = true; spinTouched = true; acc = 0;
+      downX = e.touches ? e.touches[0].clientX : e.clientX;
+      if (e.cancelable && !e.touches) e.preventDefault();
+    }
+    function dragMove(e){
+      if (!dragging) return;
+      var cx = e.touches ? e.touches[0].clientX : e.clientX;
+      acc += cx - downX; downX = cx;
+      while (acc > STEP_PX)  { spinShow(spinIdx - 1); acc -= STEP_PX; }
+      while (acc < -STEP_PX) { spinShow(spinIdx + 1); acc += STEP_PX; }
+      if (e.cancelable && e.touches) e.preventDefault();
+    }
+    function dragEnd(){ dragging = false; }
+
+    stage.addEventListener('mousemove', tilt);
+    stage.addEventListener('mouseenter', function(){ hovering = true; });
+    stage.addEventListener('mouseleave', function(){ hovering = false; dragEnd(); resetTilt(); });
+    stage.addEventListener('mousedown', dragStart);
+    window.addEventListener('mousemove', dragMove);
+    window.addEventListener('mouseup', dragEnd);
+    stage.addEventListener('touchstart', dragStart, {passive: true});
+    stage.addEventListener('touchmove', dragMove, {passive: false});
+    stage.addEventListener('touchend', dragEnd);
+
+    // slow auto-spin until the user grabs it
+    setInterval(function(){
+      if (isPop() && !dragging && !hovering && !spinTouched) spinShow(spinIdx + 1);
+    }, 2200);
   })();
-  // swipe on touch
+  // swipe on touch - switches gallery slots, but not while the 360 spin
+  // owns the gesture (pop mode drags rotate the car instead)
   (function(){
     var sx = null, el = document.querySelector('.g-main');
     el.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive: true});
     el.addEventListener('touchend', function(e){
       if (sx === null) return;
+      if (document.getElementById('stage3d').classList.contains('pop')) { sx = null; return; }
       var dx = e.changedTouches[0].clientX - sx;
       if (Math.abs(dx) > 40) gStep(dx < 0 ? 1 : -1);
       sx = null;
