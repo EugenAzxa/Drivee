@@ -8,4 +8,4 @@ Disallow: /api/
 Disallow: /analytics.html
 Disallow: /analytics-forecast.html
 
-Sitemap: https://drivee.ca/sitemap.xml
+Sitemap: https://www.drivee.ca/sitemap.xml

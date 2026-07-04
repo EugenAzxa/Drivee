@@ -61,8 +61,8 @@
   <meta property="og:site_name" content="Drivee" />
   <meta property="og:title" content="Drivee — The driver's app for Toronto" />
   <meta property="og:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads." />
-  <meta property="og:url" content="https://drivee.ca/" />
-  <meta property="og:image" content="https://drivee.ca/og-image.png" />
+  <meta property="og:url" content="https://www.drivee.ca/" />
+  <meta property="og:image" content="https://www.drivee.ca/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Drivee — Smiling parking-officer mascot with the tagline: The driver's app for Toronto." />
@@ -72,10 +72,10 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Drivee — The driver's app for Toronto" />
   <meta name="twitter:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads." />
-  <meta name="twitter:image" content="https://drivee.ca/og-image.png" />
+  <meta name="twitter:image" content="https://www.drivee.ca/og-image.png" />
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://drivee.ca/" />
+  <link rel="canonical" href="https://www.drivee.ca/" />
 
   <!-- JetBrains Mono — used for ticket numbers and fine amounts -->
   <!-- Plus Jakarta Sans + IBM Plex Serif — used by ?design=v2 only -->
@@ -10557,7 +10557,7 @@
           <div class="dv2-install-share-sub">Know someone who got a ticket? Send them the link — they can install it the same way in 30 seconds.</div>
           <div class="dv2-install-share-link" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            <span>https://drivee.ca</span>
+            <span>https://www.drivee.ca</span>
           </div>
           <div class="dv2-install-share-row">
             <button class="dv2-install-share-btn" type="button" onclick="dv2ShareDrivee()">
@@ -14525,7 +14525,7 @@
 
     // Share Drivee link — Web Share on mobile, clipboard fallback on desktop
     function dv2ShareDrivee() {
-      var url   = 'https://drivee.ca';
+      var url   = 'https://www.drivee.ca';
       var title = 'Drivee — driver\'s app for Toronto';
       var text  = 'Got a parking ticket? Scan it with Drivee — free AI verdict in 8 seconds. ' + url;
       if (navigator.share) {
@@ -14536,7 +14536,7 @@
       }
     }
     function dv2CopyDriveeLink() {
-      var url = 'https://drivee.ca';
+      var url = 'https://www.drivee.ca';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(function() {
           if (typeof showToast === 'function') showToast('Link copied — paste anywhere to share');
@@ -15265,7 +15265,7 @@
         lines.push('💡 Advice: ' + p.advice);
       }
       lines.push('');
-      lines.push('👉 Scanned with Drivee — https://drivee.ca');
+      lines.push('👉 Scanned with Drivee — https://www.drivee.ca');
       return lines.join('\n');
     }
 
@@ -18596,7 +18596,7 @@
         '——————————————\n' +
         'TRUE TOTAL COST: $' + r.trueTotal.toLocaleString() + '\n\n' +
         r.tip + '\n\n' +
-        '👉 Calculate yours at https://drivee.ca';
+        '👉 Calculate yours at https://www.drivee.ca';
 
       if (navigator.share) {
         // Pass title + text only. Don't pass `url` — many apps (Telegram in
