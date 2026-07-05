@@ -248,13 +248,39 @@
   }
   .puddle { transform-box: fill-box; transform-origin: center; animation: oilPuddle 2.6s ease-out infinite; }
   @keyframes oilPuddle { 0%,60% { transform: scaleX(0.55); opacity: 0.25; } 85%,100% { transform: scaleX(1); opacity: 0.5; } }
-  /* exhaust smoke */
-  .smoke { animation: smokeUp 3s ease-out infinite; opacity: 0; }
-  .smoke.s2 { animation-delay: 0.9s; } .smoke.s3 { animation-delay: 1.8s; }
-  @keyframes smokeUp {
-    0%   { transform: translate(0,0) scale(0.5); opacity: 0; }
-    15%  { opacity: 0.45; }
-    100% { transform: translate(26px,-40px) scale(1.8); opacity: 0; }
+  /* exhaust smoke - billowing puffs whose colour cycles blue/white/black */
+  .smoke-anim svg { transition: color 1.4s ease; }
+  .puff {
+    fill: currentColor; opacity: 0;
+    filter: blur(1.6px);
+    transform-box: fill-box; transform-origin: center;
+    animation: puffA 3.8s ease-out infinite;
+  }
+  .puff.pw { animation-name: puffB; }
+  .puff.d1 { animation-delay: 0.63s; } .puff.d2 { animation-delay: 1.26s; }
+  .puff.d3 { animation-delay: 1.9s; }  .puff.d4 { animation-delay: 2.53s; }
+  .puff.d5 { animation-delay: 3.16s; }
+  @keyframes puffA {
+    0%   { transform: translate(0,0) scale(0.35); opacity: 0; }
+    10%  { opacity: 0.8; }
+    55%  { transform: translate(46px,-20px) scale(1.3); opacity: 0.55; }
+    100% { transform: translate(92px,-44px) scale(2.2); opacity: 0; }
+  }
+  @keyframes puffB {
+    0%   { transform: translate(0,0) scale(0.35); opacity: 0; }
+    10%  { opacity: 0.75; }
+    55%  { transform: translate(40px,-28px) scale(1.35); opacity: 0.5; }
+    100% { transform: translate(84px,-54px) scale(2.3); opacity: 0; }
+  }
+  .smoke-tag {
+    position: absolute; left: 0; right: 0; bottom: 9px;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1px; font-weight: 700; color: var(--ink2);
+  }
+  .smoke-tag .smoke-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 1px solid rgba(11,20,48,0.18);
+    transition: background 1.4s ease;
   }
   /* gear selector highlight sliding P-R-N-D */
   .prnd-sel { animation: prndSlide 6s ease-in-out infinite; }
@@ -813,15 +839,27 @@
 
         <!-- 3: exhaust smoke -->
         <div class="check-card card">
-          <div class="check-anim">
+          <div class="check-anim smoke-anim" id="smoke-anim" style="color:#8FA6D9">
             <svg viewBox="0 0 200 118">
-              <rect x="30" y="72" width="52" height="16" rx="8" fill="#8C95A7"/>
-              <rect x="76" y="69" width="14" height="22" rx="6" fill="#4A5267"/>
-              <circle class="smoke" cx="102" cy="76" r="9" fill="#7C8AA5"/>
-              <circle class="smoke s2" cx="106" cy="80" r="7" fill="#9AA7BF"/>
-              <circle class="smoke s3" cx="100" cy="72" r="8" fill="#B4BfD4"/>
-              <text x="100" y="112" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">BLUE=OIL · WHITE=COOLANT · BLACK=RICH</text>
+              <!-- rear corner of the car -->
+              <path d="M10 26 Q10 16 20 16 H50 Q58 16 58 26 V76 H10 Z" fill="#AEBDDE"/>
+              <rect x="16" y="22" width="34" height="18" rx="4" fill="#66748F"/>
+              <rect x="50" y="44" width="7" height="16" rx="3" fill="#E1473D"/>
+              <rect x="6" y="70" width="58" height="13" rx="6" fill="#8C95A7"/>
+              <circle cx="30" cy="94" r="13" fill="#3A4152"/>
+              <circle cx="30" cy="94" r="5.5" fill="#9AA5B8"/>
+              <!-- chrome tailpipe -->
+              <rect x="58" y="84" width="20" height="9" rx="4.5" fill="#6B7686"/>
+              <ellipse cx="78" cy="88.5" rx="3" ry="4.5" fill="#2A303C"/>
+              <!-- billowing puffs (colour = currentColor, cycled by JS) -->
+              <circle class="puff"    cx="86" cy="86" r="7"/>
+              <circle class="puff pw d1" cx="88" cy="88" r="9"/>
+              <circle class="puff d2" cx="85" cy="84" r="6"/>
+              <circle class="puff pw d3" cx="89" cy="87" r="8"/>
+              <circle class="puff d4" cx="86" cy="89" r="10"/>
+              <circle class="puff pw d5" cx="87" cy="85" r="7"/>
             </svg>
+            <div class="smoke-tag"><span class="smoke-dot" id="smoke-dot" style="background:#8FA6D9"></span><span id="smoke-txt">BLUE = BURNING OIL</span></div>
           </div>
           <h5>Exhaust smoke</h5>
           <p>A puff of vapour at cold start is fine. Steady blue smoke means burning oil, sweet-smelling white means coolant (head gasket), black means running rich.</p>
@@ -1462,6 +1500,26 @@
     svg += '<text x="20" y="' + (H - 6) + '" font-family="Plus Jakarta Sans,sans-serif" font-size="11.5" fill="#8C95A7">* today\'s estimate - later years projected at 8-9%/yr</text>';
     svg += '</svg>';
     document.getElementById('dep-chart').innerHTML = svg;
+  })();
+
+  // ═══════════════ SMOKE COLOUR CYCLE (buyer's checklist) ═══════════════
+  (function(){
+    var anim = document.getElementById('smoke-anim');
+    if (!anim) return;
+    var dot = document.getElementById('smoke-dot');
+    var txt = document.getElementById('smoke-txt');
+    var phases = [
+      { c: '#8FA6D9', t: 'BLUE = BURNING OIL' },
+      { c: '#FFFFFF', t: 'WHITE = COOLANT LEAK' },
+      { c: '#2E3440', t: 'BLACK = RUNNING RICH' }
+    ];
+    var pi = 0;
+    setInterval(function(){
+      pi = (pi + 1) % phases.length;
+      anim.style.color = phases[pi].c;
+      dot.style.background = phases[pi].c;
+      txt.textContent = phases[pi].t;
+    }, 3800);
   })();
 
   // ═══════════════ SERVICE LIST ═══════════════
