@@ -294,10 +294,26 @@
   .rustring { transform-box: fill-box; transform-origin: center; animation: rustPulse 2.2s ease-out infinite; }
   .rustring.r2 { animation-delay: 0.7s; } .rustring.r3 { animation-delay: 1.4s; }
   @keyframes rustPulse { 0% { transform: scale(0.5); opacity: 0.85; } 100% { transform: scale(2.1); opacity: 0; } }
-  /* dipstick droplet bob */
-  .fluid-dot { animation: fluidBob 2.4s ease-in-out infinite; }
-  .fluid-dot.f2 { animation-delay: 0.4s; } .fluid-dot.f3 { animation-delay: 0.8s; }
-  @keyframes fluidBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  /* dipstick: pull out of the tube, show the oil film, drip, re-dip */
+  .dip-anim svg { transition: color 1.4s ease; overflow: visible; }
+  .dip-stick { animation: dipPull 5.6s ease-in-out infinite; }
+  @keyframes dipPull {
+    0%, 10%  { transform: translateY(30px); }
+    30%      { transform: translateY(-12px); }
+    76%      { transform: translateY(-12px); }
+    92%,100% { transform: translateY(30px); }
+  }
+  .dip-oil { fill: currentColor; transition: fill 1.4s ease; }
+  .dip-drop {
+    fill: currentColor; opacity: 0; transition: fill 1.4s ease;
+    animation: dipDrop 5.6s ease-in infinite;
+  }
+  @keyframes dipDrop {
+    0%, 42%  { transform: translateY(0); opacity: 0; }
+    48%      { opacity: 0.9; }
+    66%      { transform: translateY(22px); opacity: 0.9; }
+    70%,100% { transform: translateY(22px); opacity: 0; }
+  }
   @media (prefers-reduced-motion: reduce) { .check-anim * { animation: none !important; } }
 
   /* locked tier */
@@ -904,18 +920,27 @@
 
         <!-- 6: fluids -->
         <div class="check-card card">
-          <div class="check-anim">
+          <div class="check-anim dip-anim" id="dip-anim" style="color:#E89B22">
             <svg viewBox="0 0 200 118">
-              <rect x="36" y="18" width="8" height="70" rx="4" fill="#8C95A7" transform="rotate(18 40 18)"/>
-              <rect x="52" y="70" width="10" height="4" rx="2" fill="#4A5267" transform="rotate(18 57 72)"/>
-              <circle class="fluid-dot" cx="104" cy="52" r="11" fill="#E89B22"/>
-              <circle class="fluid-dot f2" cx="136" cy="52" r="11" fill="#1A1D24"/>
-              <circle class="fluid-dot f3" cx="168" cy="52" r="11" fill="#D9CDBE"/>
-              <text x="104" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">GOOD</text>
-              <text x="136" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">OLD</text>
-              <text x="168" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#8C95A7">MILKY</text>
-              <text x="100" y="108" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8C95A7">PULL THE DIPSTICK</text>
+              <!-- engine block hint + dipstick tube -->
+              <rect x="62" y="86" width="76" height="26" rx="8" fill="#AEBDDE"/>
+              <rect x="70" y="92" width="24" height="6" rx="3" fill="#8C99B5"/>
+              <rect x="106" y="92" width="24" height="6" rx="3" fill="#8C99B5"/>
+              <path d="M93 74 h14 v14 h-14 Z" fill="#6B7686"/>
+              <ellipse cx="100" cy="74" rx="8" ry="3.2" fill="#4A5267"/>
+              <!-- droplet falls while the stick is up -->
+              <circle class="dip-drop" cx="100" cy="66" r="3.4"/>
+              <!-- dipstick: ring handle, shaft, blade with oil film + level marks -->
+              <g class="dip-stick">
+                <circle cx="100" cy="10" r="7.5" fill="none" stroke="#6B7686" stroke-width="4"/>
+                <rect x="97.6" y="16" width="4.8" height="30" rx="2.4" fill="#8C95A7"/>
+                <rect x="98" y="44" width="4" height="22" rx="2" fill="#C6CEDD"/>
+                <rect class="dip-oil" x="97.6" y="52" width="4.8" height="14" rx="2.4"/>
+                <line x1="95" y1="52" x2="105" y2="52" stroke="#0B1430" stroke-width="1" opacity="0.35"/>
+                <line x1="95" y1="61" x2="105" y2="61" stroke="#0B1430" stroke-width="1" opacity="0.35"/>
+              </g>
             </svg>
+            <div class="smoke-tag"><span class="smoke-dot" id="dip-dot" style="background:#E89B22"></span><span id="dip-txt">AMBER = GOOD</span></div>
           </div>
           <h5>Oil &amp; coolant condition</h5>
           <p>Amber-brown oil is fine, black means neglected service, milky means coolant is mixing into the oil. Coolant should be bright, never rusty or oily.</p>
@@ -1520,6 +1545,26 @@
       dot.style.background = phases[pi].c;
       txt.textContent = phases[pi].t;
     }, 3800);
+  })();
+
+  // ═══════════════ DIPSTICK OIL COLOUR CYCLE ═══════════════
+  (function(){
+    var anim = document.getElementById('dip-anim');
+    if (!anim) return;
+    var dot = document.getElementById('dip-dot');
+    var txt = document.getElementById('dip-txt');
+    var phases = [
+      { c: '#E89B22', t: 'AMBER = GOOD' },
+      { c: '#1A1D24', t: 'BLACK = OVERDUE SERVICE' },
+      { c: '#D9CDBE', t: 'MILKY = WALK AWAY' }
+    ];
+    var pi = 0;
+    setInterval(function(){
+      pi = (pi + 1) % phases.length;
+      anim.style.color = phases[pi].c;
+      dot.style.background = phases[pi].c;
+      txt.textContent = phases[pi].t;
+    }, 5600); // one full pull-and-dip per colour
   })();
 
   // ═══════════════ SERVICE LIST ═══════════════
