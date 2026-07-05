@@ -331,6 +331,17 @@
   .locked-card .lc-blur div:nth-child(2) { width: 82%; } .locked-card .lc-blur div:nth-child(3) { width: 64%; }
   .locked-card .lock-ic { position: absolute; right: 14px; top: 14px; font-size: 13px; opacity: 0.75; }
   .unlock-bar { margin-top: 18px; padding: 26px; border-radius: 18px; background: linear-gradient(135deg,#0B1430,#1a2a54); color: #fff; }
+  .mech-addon {
+    margin-top: 14px; display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-radius: 14px; text-decoration: none;
+    background: rgba(22,163,74,0.14); border: 1px solid rgba(74,222,128,0.35);
+    color: #fff; font-size: 13.5px; line-height: 1.5; transition: background 0.15s;
+  }
+  .mech-addon:hover { background: rgba(22,163,74,0.22); }
+  .mech-addon .ma-dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; flex-shrink: 0; box-shadow: 0 0 0 0 rgba(74,222,128,0.5); animation: onlinePulseMa 2s infinite; }
+  @keyframes onlinePulseMa { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); } 70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+  .mech-addon .ma-txt { flex: 1; color: rgba(255,255,255,0.8); }
+  .mech-addon .ma-txt b { color: #fff; }
   .unlock-bar .ub-head b { font-size: 18px; }
   .unlock-bar .ub-head p { margin-top: 5px; font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.55; }
   .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
@@ -529,6 +540,7 @@
     <div class="links">
       <a href="/desktop.html#features">Features</a>
       <a href="/report.html" class="active">Report</a>
+      <a href="/mechanic.html">Mechanic</a>
       <a href="/parking-signs/">Signs</a>
       <a href="/blog/">Blog</a>
       <a href="/desktop.html#contact">Contact</a>
@@ -616,6 +628,11 @@
               </div>
             </div>
             <div class="ub-note">Secure payment via Stripe · One-time fee · Delivered to your email · No subscription. Your VIN is attached to the order automatically.</div>
+            <a href="/mechanic.html" class="mech-addon">
+              <span class="ma-dot"></span>
+              <span class="ma-txt"><b>Add a mobile mechanic - pre-purchase inspection at the car.</b> Anywhere in the GTA, 24/7 on call · $100-150 per trip · +$50 outside the GTA</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
           </div>
         </div>
       </div>
