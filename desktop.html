@@ -322,34 +322,6 @@
     .nav-car, .nav-bang, .report-link { animation: none !important; }
   }
 
-  /* ── Contact section ── */
-  .contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
-  .contact-form {
-    background: var(--paper); border: 1px solid var(--line); border-radius: 20px;
-    padding: 28px; box-shadow: 0 10px 30px rgba(11,20,48,0.05);
-    display: flex; flex-direction: column; gap: 14px;
-  }
-  .contact-form label { font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; font-weight: 700; color: var(--ink2); display: block; margin-bottom: 6px; }
-  .contact-form input, .contact-form textarea {
-    width: 100%; border: 1px solid var(--line); border-radius: 12px;
-    background: var(--bg); color: var(--ink);
-    font-family: var(--font); font-size: 15px; padding: 12px 14px;
-    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(45,99,240,0.12); }
-  .contact-form textarea { min-height: 120px; resize: vertical; }
-  .contact-send {
-    align-self: flex-start; border: none; cursor: pointer;
-    padding: 13px 26px; border-radius: 999px; background: var(--ink); color: #fff;
-    font-family: var(--font); font-size: 14px; font-weight: 800;
-    transition: transform 0.15s ease, background 0.2s;
-  }
-  .contact-send:hover { transform: translateY(-1px); }
-  .contact-send:disabled { opacity: 0.55; cursor: wait; transform: none; }
-  .contact-send.sent { background: var(--green); }
-  .contact-note { font-size: 12px; color: var(--ink3); line-height: 1.5; }
-  .contact-error { display: none; font-size: 13px; font-weight: 600; color: var(--red); }
-  @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 28px; } }
 
   /* ─────────── Hero — full-bleed video background + LEFT-aligned copy ─── */
   .hero {
@@ -1539,7 +1511,7 @@
       <a href="/mechanic.html">Mechanic</a>
       <a href="/parking-signs/">Signs</a>
       <a href="/blog/">Blog</a>
-      <a href="#contact">Contact</a>
+      <a href="/contact.html">Contact</a>
     </div>
     <a href="/?app=1" class="cta" style="text-decoration: none;">Open the app →</a>
   </nav>
@@ -2258,42 +2230,6 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
-  <section class="block reveal" id="contact">
-    <div class="contact-grid">
-      <div>
-        <div class="section-kicker"><span class="num">09</span>CONTACT US</div>
-        <h2 class="section-title">Talk to us.</h2>
-        <p class="founder-p" style="margin-top:18px">
-          Question about a ticket, a report, or a partnership? Write to us - a real person reads
-          every message, usually the same day.
-        </p>
-        <p class="founder-p">
-          Prefer email? <a href="mailto:drivee.canada@gmail.com" style="color:var(--blue-d);font-weight:700">drivee.canada@gmail.com</a>
-        </p>
-      </div>
-      <form class="contact-form" id="contact-form" onsubmit="return dvContactSubmit(event)">
-        <div>
-          <label for="cf-name">YOUR NAME</label>
-          <input id="cf-name" name="name" maxlength="100" autocomplete="name" required/>
-        </div>
-        <div>
-          <label for="cf-email">EMAIL</label>
-          <input id="cf-email" name="email" type="email" maxlength="200" autocomplete="email" required/>
-        </div>
-        <div>
-          <label for="cf-msg">MESSAGE</label>
-          <textarea id="cf-msg" name="message" maxlength="4000" required></textarea>
-        </div>
-        <!-- honeypot - hidden from humans, bots fill it -->
-        <input name="company" id="cf-company" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;width:0;border:0;padding:0" aria-hidden="true"/>
-        <div class="contact-error" id="cf-error"></div>
-        <button class="contact-send" id="cf-send" type="submit">Send message</button>
-        <div class="contact-note">No newsletters, no spam - your email is used only to reply.</div>
-      </form>
-    </div>
-  </section>
-
   <!-- LIVE ONLINE COUNTER -->
   <div class="online-bar">
     <div class="online-pill">
@@ -2359,41 +2295,6 @@
     setTimeout(() => { intro.classList.add("gone"); intro.style.display = "none"; }, 5400);
   }
   endIntro();
-
-  // ─────── Contact form ───────
-  function dvContactSubmit(ev) {
-    ev.preventDefault();
-    var btn = document.getElementById('cf-send');
-    var err = document.getElementById('cf-error');
-    err.style.display = 'none';
-    btn.disabled = true; btn.textContent = 'Sending…';
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: document.getElementById('cf-name').value,
-        email: document.getElementById('cf-email').value,
-        message: document.getElementById('cf-msg').value,
-        company: document.getElementById('cf-company').value
-      })
-    })
-    .then(function(r){ return r.json().then(function(j){ return { ok: r.ok && j.ok, j: j }; }); })
-    .then(function(res){
-      if (res.ok) {
-        btn.classList.add('sent'); btn.textContent = 'Message sent ✓';
-        document.getElementById('contact-form').reset();
-        setTimeout(function(){ btn.classList.remove('sent'); btn.textContent = 'Send message'; btn.disabled = false; }, 6000);
-      } else {
-        throw new Error(res.j && res.j.error || 'Send failed');
-      }
-    })
-    .catch(function(e){
-      err.textContent = (e.message || 'Send failed') + ' You can also email drivee.canada@gmail.com';
-      err.style.display = 'block';
-      btn.disabled = false; btn.textContent = 'Send message';
-    });
-    return false;
-  }
 
   // ─────── Live "drivers online" counter ───────
   // Picks a fresh number each day (deterministic per date, ~300–520) then
