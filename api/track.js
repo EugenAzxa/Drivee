@@ -57,11 +57,16 @@ var ALLOWED_EVENTS = [
   'reminder_added', 'profile_saved', 'report_created',
   'magic_link_sent', 'gps_started', 'share_ticket',
   'dispute_generated', 'true_cost_calc', 'expert_contact',
-  'user_feedback', 'sign_scan', 'lawyer_lead'
+  'user_feedback', 'sign_scan', 'lawyer_lead',
+  'page_view', 'vin_check', 'report_buy_click', 'mechanic_request',
+  'mechanic_apply', 'contact_sent'
 ];
 
 // Only these events trigger a Telegram notification — everything else just goes to Supabase
 var TELEGRAM_EVENTS = [
+  'report_buy_click',
+  'mechanic_request',
+  'mechanic_apply',
   'magic_link_sent',
   'scan_success',
   'report_created',
@@ -73,6 +78,9 @@ var TELEGRAM_EVENTS = [
 ];
 
 var ICONS = {
+  'report_buy_click':  '💰',
+  'mechanic_request':  '🔧',
+  'mechanic_apply':    '🧑‍🔧',
   'magic_link_sent':   '✉️',
   'scan_success':      '📸',
   'report_created':    '📍',
@@ -84,6 +92,9 @@ var ICONS = {
 };
 
 var LABELS = {
+  'report_buy_click':  'Report checkout started',
+  'mechanic_request':  'Inspection requested',
+  'mechanic_apply':    'Mechanic application',
   'magic_link_sent':   'New user signed in',
   'scan_success':      'Ticket scanned',
   'report_created':    'Community report filed',

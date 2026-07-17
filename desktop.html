@@ -27,6 +27,7 @@
 <!-- Canonical -->
 <link rel="canonical" href="https://www.drivee.ca/"/>
 
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -1165,7 +1166,12 @@
     .cta-block h2 { font-size: 48px; letter-spacing: -2px; }
     .intro-logo { font-size: 72px; letter-spacing: -3px; }
     nav.top { padding: 14px 20px; }
-    nav.top .links { display: none; }
+    nav.top .links {
+      display: flex; overflow-x: auto; max-width: 55vw;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 18px;
+    }
+    nav.top .links::-webkit-scrollbar { display: none; }
+    nav.top .links a { white-space: nowrap; font-size: 13px; }
   }
   /* ─────────── Install Guide section ─────────── */
   .install-grid {
@@ -1393,6 +1399,20 @@
     .install-foot .install-qr { margin: 0 auto; }
   }
 </style>
+<script>
+  (function(){
+    try {
+      var K='dv_sid', sid=localStorage.getItem(K);
+      if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
+      window.dvTrack=function(event, meta){
+        try { fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false})}).catch(function(){});
+        } catch(e){}
+      };
+      dvTrack('page_view', location.pathname);
+    } catch(e){ window.dvTrack=function(){}; }
+  })();
+</script>
 </head>
 <body>
 
