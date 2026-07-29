@@ -126,6 +126,36 @@
     }
     .card-title .hint { font-weight: 500; color: var(--ink2); letter-spacing: 0.3px; text-transform: none; }
 
+    /* ── social panel ── */
+    .soc-tot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .soc-tot .st { background: var(--blue-50); border-radius: 12px; padding: 14px 16px; }
+    .soc-tot .st .n { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .soc-tot .st .l { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: var(--ink2); text-transform: uppercase; margin-top: 2px; }
+    .soc-list { display: flex; flex-direction: column; gap: 10px; }
+    .soc-row { display: grid; grid-template-columns: 150px 1fr auto auto; gap: 12px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+    .soc-row .plat { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; color: var(--ink); }
+    .soc-row .plat .badge { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+    .soc-row .plat a { color: var(--blue); font-weight: 600; font-size: 12px; text-decoration: none; }
+    .soc-metrics { display: flex; gap: 18px; flex-wrap: wrap; }
+    .soc-metrics .m { font-size: 12px; color: var(--ink2); }
+    .soc-metrics .m b { display: block; font-size: 18px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.3px; }
+    .soc-row .del { background: none; border: none; color: var(--red); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px; opacity: 0.5; }
+    .soc-row .del:hover { opacity: 1; }
+    .soc-empty { color: var(--ink2); font-size: 13px; padding: 8px 0 14px; }
+    .soc-add { display: grid; grid-template-columns: repeat(6, 1fr) auto; gap: 8px; align-items: end; margin-top: 14px; padding-top: 16px; border-top: 1px dashed var(--line); }
+    .soc-add label { font-size: 10px; font-weight: 700; letter-spacing: 0.6px; color: var(--ink2); text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .soc-add input, .soc-add select {
+      width: 100%; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink);
+      font-family: inherit; font-size: 13px; padding: 8px 10px; outline: none;
+    }
+    .soc-add input:focus, .soc-add select:focus { border-color: var(--blue); }
+    .soc-add button { grid-column: auto; background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    @media (max-width: 780px) {
+      .soc-tot { grid-template-columns: 1fr; }
+      .soc-row { grid-template-columns: 1fr; gap: 8px; }
+      .soc-add { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ── bar list (top events / top tabs) ── */
     .bar-list { display: flex; flex-direction: column; gap: 8px; }
     .bar-row {
@@ -537,6 +567,36 @@
   </div>
 
   <!-- Top events + Top tabs -->
+  <!-- Social media -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">
+      <span>Social media</span>
+      <span class="hint">followers · views · engagement · editable</span>
+    </div>
+    <div class="soc-tot" id="soc-tot"></div>
+    <div class="soc-list" id="soc-list"></div>
+    <div class="soc-add">
+      <div><label>Platform</label>
+        <select id="soc-plat">
+          <option value="Instagram">Instagram</option>
+          <option value="TikTok">TikTok</option>
+          <option value="YouTube">YouTube</option>
+          <option value="Facebook">Facebook</option>
+          <option value="X">X / Twitter</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Reddit">Reddit</option>
+          <option value="Threads">Threads</option>
+        </select>
+      </div>
+      <div><label>Handle / link</label><input id="soc-link" placeholder="@drivee or URL"/></div>
+      <div><label>Followers</label><input id="soc-foll" type="number" min="0" placeholder="0"/></div>
+      <div><label>Views</label><input id="soc-views" type="number" min="0" placeholder="0"/></div>
+      <div><label>Posts</label><input id="soc-posts" type="number" min="0" placeholder="0"/></div>
+      <div><label>Engagement %</label><input id="soc-eng" type="number" min="0" step="0.1" placeholder="0"/></div>
+      <button onclick="socAdd()">Add / update</button>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="card">
       <div class="card-title">
@@ -603,6 +663,78 @@
 
 <script>
   var REFRESH_MS = 30000;
+
+  // ═══ Social media panel (stored locally in this browser) ═══
+  var SOC_KEY = 'drivee_social_v1';
+  var SOC_META = {
+    Instagram: { c: '#E1306C', ic: 'IG' }, TikTok: { c: '#111', ic: 'TT' },
+    YouTube: { c: '#FF0000', ic: 'YT' }, Facebook: { c: '#1877F2', ic: 'f' },
+    X: { c: '#111', ic: 'X' }, LinkedIn: { c: '#0A66C2', ic: 'in' },
+    Reddit: { c: '#FF4500', ic: 'r' }, Threads: { c: '#111', ic: '@' }
+  };
+  function socLoad() { try { return JSON.parse(localStorage.getItem(SOC_KEY)) || {}; } catch (e) { return {}; } }
+  function socSave(d) { localStorage.setItem(SOC_KEY, JSON.stringify(d)); }
+  function socFmt(n) { n = +n || 0; return n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'K' : String(n); }
+  function socLink(v) {
+    if (!v) return '';
+    if (/^https?:\/\//.test(v)) return v;
+    return v.replace(/^@/, '') ? 'https://' + v.replace(/^@/, '') : '';
+  }
+  function socAdd() {
+    var plat = document.getElementById('soc-plat').value;
+    var d = socLoad();
+    d[plat] = {
+      link: document.getElementById('soc-link').value.trim(),
+      followers: +document.getElementById('soc-foll').value || 0,
+      views: +document.getElementById('soc-views').value || 0,
+      posts: +document.getElementById('soc-posts').value || 0,
+      eng: +document.getElementById('soc-eng').value || 0,
+      updated: new Date().toISOString().slice(0, 10)
+    };
+    socSave(d);
+    ['soc-link','soc-foll','soc-views','soc-posts','soc-eng'].forEach(function(id){ document.getElementById(id).value = ''; });
+    socRender();
+  }
+  function socDel(plat) { var d = socLoad(); delete d[plat]; socSave(d); socRender(); }
+  function socEdit(plat) {
+    var d = socLoad()[plat]; if (!d) return;
+    document.getElementById('soc-plat').value = plat;
+    document.getElementById('soc-link').value = d.link || '';
+    document.getElementById('soc-foll').value = d.followers || '';
+    document.getElementById('soc-views').value = d.views || '';
+    document.getElementById('soc-posts').value = d.posts || '';
+    document.getElementById('soc-eng').value = d.eng || '';
+    document.querySelector('.soc-add').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function socRender() {
+    var d = socLoad();
+    var keys = Object.keys(d);
+    var tf = 0, tv = 0;
+    keys.forEach(function(k){ tf += +d[k].followers || 0; tv += +d[k].views || 0; });
+    var avgEng = keys.length ? (keys.reduce(function(s,k){ return s + (+d[k].eng || 0); }, 0) / keys.length) : 0;
+    document.getElementById('soc-tot').innerHTML =
+      '<div class="st"><div class="n">' + socFmt(tf) + '</div><div class="l">Total followers</div></div>' +
+      '<div class="st"><div class="n">' + socFmt(tv) + '</div><div class="l">Total views</div></div>' +
+      '<div class="st"><div class="n">' + (avgEng ? avgEng.toFixed(1) + '%' : '—') + '</div><div class="l">Avg engagement</div></div>';
+    var list = document.getElementById('soc-list');
+    if (!keys.length) { list.innerHTML = '<div class="soc-empty">No accounts yet — add your handles below. Numbers are saved in this browser.</div>'; return; }
+    list.innerHTML = keys.map(function(k){
+      var s = d[k], m = SOC_META[k] || { c: '#5a6075', ic: k[0] };
+      var url = socLink(s.link);
+      return '<div class="soc-row">' +
+        '<div class="plat"><span class="badge" style="background:' + m.c + '">' + m.ic + '</span>' +
+          '<span>' + k + (url ? '<br><a href="' + url + '" target="_blank" rel="noopener">' + (s.link || 'view') + '</a>' : (s.link ? '<br><span style="color:var(--ink2);font-weight:500;font-size:12px">' + s.link + '</span>' : '')) + '</span></div>' +
+        '<div class="soc-metrics">' +
+          '<div class="m"><b>' + socFmt(s.followers) + '</b>followers</div>' +
+          '<div class="m"><b>' + socFmt(s.views) + '</b>views</div>' +
+          '<div class="m"><b>' + socFmt(s.posts) + '</b>posts</div>' +
+          '<div class="m"><b>' + (s.eng ? s.eng + '%' : '—') + '</b>engagement</div>' +
+        '</div>' +
+        '<button class="del" title="Edit" onclick="socEdit(\'' + k + '\')" style="color:var(--blue)">✎</button>' +
+        '<button class="del" title="Remove" onclick="socDel(\'' + k + '\')">×</button>' +
+      '</div>';
+    }).join('');
+  }
 
   // ─── Fetch ───
   async function loadStats() {
@@ -974,6 +1106,7 @@
   function eventIcon(k)  { return EVENT_ICONS[k]  || '•'; }
 
   // ─── Init ───
+  socRender();
   loadStats();
   setInterval(loadStats, REFRESH_MS);
   document.addEventListener('visibilitychange', function(){
