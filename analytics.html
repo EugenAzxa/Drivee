@@ -176,12 +176,29 @@
     .post-add input:focus, .post-add select:focus { border-color: var(--blue); }
     .post-add button { background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
 
+    /* ── report sales / CARFAX ── */
+    .rep-funnel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
+    .rep-step { background: var(--blue-50); border-radius: 12px; padding: 14px 16px; position: relative; }
+    .rep-step.money { background: #eafaf1; }
+    .rep-step .n { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .rep-step .l { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--ink2); text-transform: uppercase; margin-top: 3px; line-height: 1.3; }
+    .rep-step .r { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 4px; }
+    .rep-manual { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+    .rep-note { font-size: 12px; color: var(--ink2); margin-bottom: 10px; }
+    .rep-add { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 8px; align-items: end; }
+    .rep-add label { font-size: 10px; font-weight: 700; letter-spacing: 0.6px; color: var(--ink2); text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .rep-add input { width: 100%; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink); font-family: inherit; font-size: 13px; padding: 8px 10px; outline: none; }
+    .rep-add input:focus { border-color: var(--blue); }
+    .rep-add button { background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
+
     @media (max-width: 780px) {
       .soc-tot { grid-template-columns: 1fr; }
       .soc-row { grid-template-columns: 1fr; gap: 8px; }
       .soc-add, .post-add { grid-template-columns: 1fr 1fr; }
       .post-row { grid-template-columns: 30px 1fr auto; }
       .post-breakdown { display: none; }
+      .rep-funnel { grid-template-columns: 1fr 1fr; }
+      .rep-add { grid-template-columns: 1fr 1fr; }
     }
 
     /* ── bar list (top events / top tabs) ── */
@@ -655,6 +672,24 @@
     </div>
   </div>
 
+  <!-- CARFAX / report sales -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">
+      <span>Report sales (CARFAX)</span>
+      <span class="hint">free checks &amp; checkout clicks auto-tracked · sales entered manually from Stripe</span>
+    </div>
+    <div class="rep-funnel" id="rep-funnel"></div>
+    <div class="rep-manual">
+      <div class="rep-note">Stripe sales can't be read automatically here — enter your fulfilled report totals from the Stripe dashboard:</div>
+      <div class="rep-add">
+        <div><label>Reports sold ($19)</label><input id="rep-basic" type="number" min="0" placeholder="0"/></div>
+        <div><label>Reports + lien ($30)</label><input id="rep-lien" type="number" min="0" placeholder="0"/></div>
+        <div><label>Refunds</label><input id="rep-refunds" type="number" min="0" placeholder="0"/></div>
+        <button onclick="repSave()">Save totals</button>
+      </div>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="card">
       <div class="card-title">
@@ -723,7 +758,7 @@
   var REFRESH_MS = 30000;
 
   // ═══ Social media panel (stored locally in this browser) ═══
-  var SOC_KEY = 'drivee_social_v1';
+  var SOC_KEY = 'drivee_social_v2';
   var POST_KEY = 'drivee_posts_v1';
   var SOC_META = {
     Instagram: { c: '#E1306C', ic: 'IG' }, TikTok: { c: '#111', ic: 'TT' },
@@ -738,11 +773,15 @@
     Facebook: { link: 'https://www.facebook.com/profile.php?id=100088686670103', followers: 0, views: 0, posts: 0, eng: 0, updated: '' }
   };
   function socLoad() {
-    try {
-      var raw = localStorage.getItem(SOC_KEY);
-      if (raw === null) { localStorage.setItem(SOC_KEY, JSON.stringify(SOC_SEED)); return JSON.parse(JSON.stringify(SOC_SEED)); }
-      return JSON.parse(raw) || {};
-    } catch (e) { return {}; }
+    var d = {};
+    try { d = JSON.parse(localStorage.getItem(SOC_KEY)) || {}; } catch (e) { d = {}; }
+    // Guarantee the three real Drivee accounts are always present with their
+    // links, even if this browser has older/partial saved data.
+    Object.keys(SOC_SEED).forEach(function(k){
+      if (!d[k]) d[k] = JSON.parse(JSON.stringify(SOC_SEED[k]));
+      else if (!d[k].link) d[k].link = SOC_SEED[k].link;
+    });
+    return d;
   }
   function socSave(d) { localStorage.setItem(SOC_KEY, JSON.stringify(d)); }
   function socFmt(n) { n = +n || 0; return n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'K' : String(n); }
@@ -922,7 +961,43 @@
   }
 
   // ─── Rendering ───
+  // ═══ Report sales (CARFAX) ═══
+  var REP_KEY = 'drivee_reports_v1';
+  function repLoad() { try { return JSON.parse(localStorage.getItem(REP_KEY)) || { basic: 0, lien: 0, refunds: 0 }; } catch (e) { return { basic: 0, lien: 0, refunds: 0 }; } }
+  function repSave() {
+    var d = {
+      basic: +document.getElementById('rep-basic').value || 0,
+      lien: +document.getElementById('rep-lien').value || 0,
+      refunds: +document.getElementById('rep-refunds').value || 0
+    };
+    localStorage.setItem(REP_KEY, JSON.stringify(d));
+    renderReports(window._lastStats || {});
+  }
+  function renderReports(d) {
+    var ev = {};
+    (d.byEvent || []).forEach(function(e){ ev[e.key] = e.count; });
+    var checks = ev['vin_check'] || 0;
+    var clicks = ev['report_buy_click'] || 0;
+    var m = repLoad();
+    var sold = (+m.basic || 0) + (+m.lien || 0);
+    var netSold = Math.max(0, sold - (+m.refunds || 0));
+    var revenue = (+m.basic || 0) * 19 + (+m.lien || 0) * 30 - (+m.refunds || 0) * 24; // refund at blended price
+    var conv = checks ? (netSold / checks * 100) : 0;
+    // pre-fill manual inputs so owner sees current saved values
+    if (document.getElementById('rep-basic') && document.activeElement.id !== 'rep-basic') document.getElementById('rep-basic').value = m.basic || '';
+    if (document.getElementById('rep-lien') && document.activeElement.id !== 'rep-lien') document.getElementById('rep-lien').value = m.lien || '';
+    if (document.getElementById('rep-refunds') && document.activeElement.id !== 'rep-refunds') document.getElementById('rep-refunds').value = m.refunds || '';
+    document.getElementById('rep-funnel').innerHTML =
+      '<div class="rep-step"><div class="n">' + fmt(checks) + '</div><div class="l">Free VIN checks</div><div class="r">auto-tracked</div></div>' +
+      '<div class="rep-step"><div class="n">' + fmt(clicks) + '</div><div class="l">Checkout clicks</div><div class="r">auto-tracked</div></div>' +
+      '<div class="rep-step money"><div class="n">' + fmt(netSold) + '</div><div class="l">Reports sold</div><div class="r">' + fmt(m.basic || 0) + ' basic · ' + fmt(m.lien || 0) + ' lien</div></div>' +
+      '<div class="rep-step money"><div class="n">$' + fmt(revenue) + '</div><div class="l">Revenue (CAD)</div><div class="r">less ' + fmt(m.refunds || 0) + ' refunds</div></div>' +
+      '<div class="rep-step"><div class="n">' + conv.toFixed(1) + '%</div><div class="l">Check → sale</div><div class="r">conversion</div></div>';
+  }
+
   function render(d) {
+    window._lastStats = d;
+    renderReports(d);
     // Users (top-most row): unique humans who used the app in each window
     var u = d.users || { today:0, last7d:0, last30d:0, last60d:0, allTime:0, triedTotal:0 };
     document.getElementById('tile-users-today').textContent = fmt(u.today);
