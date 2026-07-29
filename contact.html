@@ -113,8 +113,14 @@
       var K='dv_sid', sid=localStorage.getItem(K);
       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
       window.dvTrack=function(event, meta){
-        try { fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false})}).catch(function(){});
+        try {
+          var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
+          // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/track', new Blob([payload], {type:'application/json'}));
+          } else {
+            fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true}).catch(function(){});
+          }
         } catch(e){}
       };
       dvTrack('page_view', location.pathname);
