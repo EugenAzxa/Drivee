@@ -150,10 +150,38 @@
     }
     .soc-add input:focus, .soc-add select:focus { border-color: var(--blue); }
     .soc-add button { grid-column: auto; background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .soc-updated { font-size: 10px; color: var(--ink2); font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+
+    /* ── top posts ── */
+    .post-list { display: flex; flex-direction: column; gap: 10px; }
+    .post-empty { color: var(--ink2); font-size: 13px; padding: 8px 0 14px; }
+    .post-row { display: grid; grid-template-columns: 34px 1fr auto auto; gap: 14px; align-items: center; padding: 13px 14px; border: 1px solid var(--line); border-radius: 12px; }
+    .post-row.top1 { border-color: var(--amber); background: #fffdf5; box-shadow: 0 0 0 1px var(--amber); }
+    .post-rank { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 15px; background: var(--blue-50); color: var(--ink); }
+    .post-row.top1 .post-rank { background: var(--amber); color: #4a3800; }
+    .post-main .cap { font-weight: 700; font-size: 14px; color: var(--ink); }
+    .post-main .sub { font-size: 12px; color: var(--ink2); margin-top: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .post-main .sub .pbadge { color: #fff; padding: 1px 7px; border-radius: 5px; font-size: 10px; font-weight: 700; }
+    .post-main .sub a { color: var(--blue); text-decoration: none; }
+    .post-eng { text-align: right; }
+    .post-eng .big { font-size: 20px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -0.3px; }
+    .post-eng .lbl { font-size: 10px; color: var(--ink2); font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+    .post-breakdown { font-size: 11px; color: var(--ink2); white-space: nowrap; }
+    .post-breakdown b { color: var(--ink); }
+    .post-del { background: none; border: none; color: var(--red); cursor: pointer; font-size: 18px; padding: 4px; opacity: 0.5; }
+    .post-del:hover { opacity: 1; }
+    .post-add { display: grid; grid-template-columns: repeat(7, 1fr) auto; gap: 8px; align-items: end; margin-top: 14px; padding-top: 16px; border-top: 1px dashed var(--line); }
+    .post-add label { font-size: 10px; font-weight: 700; letter-spacing: 0.6px; color: var(--ink2); text-transform: uppercase; display: block; margin-bottom: 4px; }
+    .post-add input, .post-add select { width: 100%; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink); font-family: inherit; font-size: 13px; padding: 8px 10px; outline: none; }
+    .post-add input:focus, .post-add select:focus { border-color: var(--blue); }
+    .post-add button { background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 9px 16px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; }
+
     @media (max-width: 780px) {
       .soc-tot { grid-template-columns: 1fr; }
       .soc-row { grid-template-columns: 1fr; gap: 8px; }
-      .soc-add { grid-template-columns: 1fr 1fr; }
+      .soc-add, .post-add { grid-template-columns: 1fr 1fr; }
+      .post-row { grid-template-columns: 30px 1fr auto; }
+      .post-breakdown { display: none; }
     }
 
     /* ── bar list (top events / top tabs) ── */
@@ -597,6 +625,36 @@
     </div>
   </div>
 
+  <!-- Top posts across all platforms -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">
+      <span>Top posts</span>
+      <span class="hint">ranked by engagement · across every platform</span>
+    </div>
+    <div class="post-list" id="post-list"></div>
+    <div class="post-add">
+      <div><label>Platform</label>
+        <select id="post-plat">
+          <option value="Instagram">Instagram</option>
+          <option value="TikTok">TikTok</option>
+          <option value="YouTube">YouTube</option>
+          <option value="Facebook">Facebook</option>
+          <option value="X">X / Twitter</option>
+          <option value="Threads">Threads</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Reddit">Reddit</option>
+        </select>
+      </div>
+      <div><label>Caption / topic</label><input id="post-cap" placeholder="e.g. How to fight a Toronto ticket"/></div>
+      <div><label>Link</label><input id="post-link" placeholder="post URL"/></div>
+      <div><label>Views</label><input id="post-views" type="number" min="0" placeholder="0"/></div>
+      <div><label>Likes</label><input id="post-likes" type="number" min="0" placeholder="0"/></div>
+      <div><label>Comments</label><input id="post-comments" type="number" min="0" placeholder="0"/></div>
+      <div><label>Shares</label><input id="post-shares" type="number" min="0" placeholder="0"/></div>
+      <button onclick="postAdd()">Add post</button>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="card">
       <div class="card-title">
@@ -666,13 +724,26 @@
 
   // ═══ Social media panel (stored locally in this browser) ═══
   var SOC_KEY = 'drivee_social_v1';
+  var POST_KEY = 'drivee_posts_v1';
   var SOC_META = {
     Instagram: { c: '#E1306C', ic: 'IG' }, TikTok: { c: '#111', ic: 'TT' },
     YouTube: { c: '#FF0000', ic: 'YT' }, Facebook: { c: '#1877F2', ic: 'f' },
     X: { c: '#111', ic: 'X' }, LinkedIn: { c: '#0A66C2', ic: 'in' },
     Reddit: { c: '#FF4500', ic: 'r' }, Threads: { c: '#111', ic: '@' }
   };
-  function socLoad() { try { return JSON.parse(localStorage.getItem(SOC_KEY)) || {}; } catch (e) { return {}; } }
+  // Real Drivee accounts, pre-loaded on first visit (numbers editable).
+  var SOC_SEED = {
+    X:        { link: 'https://x.com/Driveeca', followers: 0, views: 0, posts: 0, eng: 0, updated: '' },
+    Threads:  { link: 'https://www.threads.com/@drivee_ca', followers: 11, views: 0, posts: 0, eng: 0, updated: '2026-07-29' },
+    Facebook: { link: 'https://www.facebook.com/profile.php?id=100088686670103', followers: 0, views: 0, posts: 0, eng: 0, updated: '' }
+  };
+  function socLoad() {
+    try {
+      var raw = localStorage.getItem(SOC_KEY);
+      if (raw === null) { localStorage.setItem(SOC_KEY, JSON.stringify(SOC_SEED)); return JSON.parse(JSON.stringify(SOC_SEED)); }
+      return JSON.parse(raw) || {};
+    } catch (e) { return {}; }
+  }
   function socSave(d) { localStorage.setItem(SOC_KEY, JSON.stringify(d)); }
   function socFmt(n) { n = +n || 0; return n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,'')+'M' : n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,'')+'K' : String(n); }
   function socLink(v) {
@@ -715,15 +786,16 @@
     document.getElementById('soc-tot').innerHTML =
       '<div class="st"><div class="n">' + socFmt(tf) + '</div><div class="l">Total followers</div></div>' +
       '<div class="st"><div class="n">' + socFmt(tv) + '</div><div class="l">Total views</div></div>' +
-      '<div class="st"><div class="n">' + (avgEng ? avgEng.toFixed(1) + '%' : '—') + '</div><div class="l">Avg engagement</div></div>';
+      '<div class="st"><div class="n">' + (avgEng ? avgEng.toFixed(1) + '%' : '—') + '</div><div class="l">Avg engagement rate</div></div>';
     var list = document.getElementById('soc-list');
     if (!keys.length) { list.innerHTML = '<div class="soc-empty">No accounts yet — add your handles below. Numbers are saved in this browser.</div>'; return; }
     list.innerHTML = keys.map(function(k){
       var s = d[k], m = SOC_META[k] || { c: '#5a6075', ic: k[0] };
       var url = socLink(s.link);
+      var upd = s.updated ? '<span class="soc-updated">upd ' + s.updated + '</span>' : '';
       return '<div class="soc-row">' +
         '<div class="plat"><span class="badge" style="background:' + m.c + '">' + m.ic + '</span>' +
-          '<span>' + k + (url ? '<br><a href="' + url + '" target="_blank" rel="noopener">' + (s.link || 'view') + '</a>' : (s.link ? '<br><span style="color:var(--ink2);font-weight:500;font-size:12px">' + s.link + '</span>' : '')) + '</span></div>' +
+          '<span>' + k + upd + (url ? '<br><a href="' + url + '" target="_blank" rel="noopener">open profile ↗</a>' : (s.link ? '<br><span style="color:var(--ink2);font-weight:500;font-size:12px">' + s.link + '</span>' : '')) + '</span></div>' +
         '<div class="soc-metrics">' +
           '<div class="m"><b>' + socFmt(s.followers) + '</b>followers</div>' +
           '<div class="m"><b>' + socFmt(s.views) + '</b>views</div>' +
@@ -732,6 +804,53 @@
         '</div>' +
         '<button class="del" title="Edit" onclick="socEdit(\'' + k + '\')" style="color:var(--blue)">✎</button>' +
         '<button class="del" title="Remove" onclick="socDel(\'' + k + '\')">×</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ═══ Top posts across platforms ═══
+  function postLoad() { try { return JSON.parse(localStorage.getItem(POST_KEY)) || []; } catch (e) { return []; } }
+  function postSave(a) { localStorage.setItem(POST_KEY, JSON.stringify(a)); }
+  function postEng(p) { return (+p.likes || 0) + (+p.comments || 0) + (+p.shares || 0); }
+  function postAdd() {
+    var arr = postLoad();
+    arr.push({
+      plat: document.getElementById('post-plat').value,
+      cap: document.getElementById('post-cap').value.trim() || '(untitled)',
+      link: document.getElementById('post-link').value.trim(),
+      views: +document.getElementById('post-views').value || 0,
+      likes: +document.getElementById('post-likes').value || 0,
+      comments: +document.getElementById('post-comments').value || 0,
+      shares: +document.getElementById('post-shares').value || 0
+    });
+    postSave(arr);
+    ['post-cap','post-link','post-views','post-likes','post-comments','post-shares'].forEach(function(id){ document.getElementById(id).value = ''; });
+    postRender();
+  }
+  function postDel(i) { var a = postLoad(); a.splice(i, 1); postSave(a); postRender(); }
+  function postRender() {
+    var arr = postLoad();
+    // rank by total engagement, keep original index for deletion
+    var ranked = arr.map(function(p, i){ return { p: p, i: i, e: postEng(p) }; })
+                    .sort(function(a, b){ return b.e - a.e; });
+    var list = document.getElementById('post-list');
+    if (!ranked.length) { list.innerHTML = '<div class="post-empty">No posts yet — add your best-performing posts below and this ranks them by engagement (likes + comments + shares) across every platform.</div>'; return; }
+    list.innerHTML = ranked.map(function(r, rank){
+      var p = r.p, m = SOC_META[p.plat] || { c: '#5a6075', ic: p.plat[0] };
+      var url = socLink(p.link);
+      return '<div class="post-row' + (rank === 0 ? ' top1' : '') + '">' +
+        '<div class="post-rank">' + (rank === 0 ? '★' : (rank + 1)) + '</div>' +
+        '<div class="post-main">' +
+          '<div class="cap">' + esc(p.cap) + '</div>' +
+          '<div class="sub"><span class="pbadge" style="background:' + m.c + '">' + p.plat + '</span>' +
+            '<span>' + socFmt(p.views) + ' views</span>' +
+            (url ? '<a href="' + url + '" target="_blank" rel="noopener">open ↗</a>' : '') + '</div>' +
+        '</div>' +
+        '<div class="post-breakdown">likes <b>' + socFmt(p.likes) + '</b> &nbsp; comments <b>' + socFmt(p.comments) + '</b> &nbsp; shares <b>' + socFmt(p.shares) + '</b></div>' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<div class="post-eng"><div class="big">' + socFmt(r.e) + '</div><div class="lbl">engagements</div></div>' +
+          '<button class="post-del" title="Remove" onclick="postDel(' + r.i + ')">×</button>' +
+        '</div>' +
       '</div>';
     }).join('');
   }
@@ -1107,6 +1226,7 @@
 
   // ─── Init ───
   socRender();
+  postRender();
   loadStats();
   setInterval(loadStats, REFRESH_MS);
   document.addEventListener('visibilitychange', function(){
