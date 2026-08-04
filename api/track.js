@@ -59,7 +59,7 @@ var ALLOWED_EVENTS = [
   'dispute_generated', 'true_cost_calc', 'expert_contact',
   'user_feedback', 'sign_scan', 'lawyer_lead',
   'page_view', 'vin_check', 'report_buy_click', 'mechanic_request',
-  'mechanic_apply', 'contact_sent'
+  'mechanic_apply', 'contact_sent', 'game_score'
 ];
 
 // Only these events trigger a Telegram notification — everything else just goes to Supabase
