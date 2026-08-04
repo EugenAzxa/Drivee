@@ -1436,7 +1436,7 @@
 </script>
 
 <!-- ═══════════════════ INTRO OVERLAY ═══════════════════ -->
-<div class="intro" id="intro">
+<div class="intro" id="intro" style="display:none">
   <div class="intro-bg"></div>
   <div class="intro-grid"></div>
   <div class="intro-stage">
@@ -2315,12 +2315,9 @@
     document.body.classList.add("ready");
   }
 
-  function endIntro() {
-    intro.classList.add("fade-out");
-    setTimeout(revealHero, 4400);
-    setTimeout(() => { intro.classList.add("gone"); intro.style.display = "none"; }, 5400);
-  }
-  endIntro();
+  // Loading/intro screen removed - reveal the site immediately.
+  revealHero();
+  if (intro) { intro.classList.add("gone"); intro.style.display = "none"; }
 
   // ─────── Live "drivers online" counter ───────
   // Picks a fresh number each day (deterministic per date, ~300–520) then
@@ -2343,7 +2340,8 @@
     }, 4000);
   })();
 
-  document.getElementById("skipIntro").addEventListener("click", () => {
+  var _skip = document.getElementById("skipIntro");
+  if (_skip) _skip.addEventListener("click", () => {
     intro.style.transition = "opacity 0.4s ease";
     intro.style.opacity = "0";
     revealHero();
