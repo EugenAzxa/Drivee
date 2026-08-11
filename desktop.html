@@ -1193,11 +1193,33 @@
   }
   /* On phones the full-bleed hero video sits right behind the copy and hurts
      legibility, so hide it for a clean hero. The full demo is one section down
-     in "See it in action". */
+     in "See it in action". Then make the App Store + web-app CTAs big. */
   @media (max-width: 760px) {
     .hero-video-bg { display: none; }
     .hero { min-height: auto; padding-top: 120px; }
+
+    /* Big, prominent download options on phones */
+    .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-top: 26px; }
+    .hero-content .hero-actions { justify-content: stretch; }
+    .appstore-badge {
+      width: 100%; justify-content: center; align-items: center;
+      background: #000; border-radius: 16px; padding: 5px 0; overflow: hidden; position: relative;
+      box-shadow: 0 10px 26px rgba(11,20,48,0.22);
+      animation: badgeFloat 3.2s ease-in-out infinite;
+    }
+    .appstore-badge svg { height: 60px; width: auto; }
+    .appstore-badge::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,0.35) 50%, transparent 68%);
+      transform: translateX(-120%); animation: badgeShine 4.5s 1.8s infinite;
+    }
+    .hero-actions .btn-primary {
+      width: 100%; justify-content: center; padding: 19px; font-size: 16px; border-radius: 16px;
+    }
+    .hero-meta { justify-content: center; gap: 28px; margin-top: 22px; }
   }
+  @keyframes badgeShine { 0% { transform: translateX(-120%); } 32%,100% { transform: translateX(120%); } }
+  @keyframes badgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   /* ─────────── Install Guide section ─────────── */
   .install-grid {
     display: grid;
