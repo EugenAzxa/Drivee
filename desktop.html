@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Drivee — The driver's app for Toronto</title>
-<meta name="description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Live enforcement hotspots, free guided dispute forms, and a Toronto driver's full toolkit — all in one app."/>
+<title>Drivee - The driver's app for Toronto</title>
+<meta name="description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Live enforcement hotspots, free guided dispute forms, and a Toronto driver's full toolkit - all in one app."/>
 
-<!-- Open Graph / share-card meta — what shows up when someone pastes drivee.ca in Telegram, WhatsApp, iMessage, etc. -->
+<!-- Open Graph / share-card meta - what shows up when someone pastes drivee.ca in Telegram, WhatsApp, iMessage, etc. -->
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Drivee"/>
-<meta property="og:title" content="Drivee — The driver's app for Toronto"/>
+<meta property="og:title" content="Drivee - The driver's app for Toronto"/>
 <meta property="og:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads."/>
 <meta property="og:url" content="https://www.drivee.ca/"/>
 <meta property="og:image" content="https://www.drivee.ca/og-image.png?v=2"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
-<meta property="og:image:alt" content="Drivee — Smiling parking-officer mascot with the tagline: The driver's app for Toronto."/>
+<meta property="og:image:alt" content="Drivee - Smiling parking-officer mascot with the tagline: The driver's app for Toronto."/>
 <meta property="og:locale" content="en_CA"/>
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Drivee — The driver's app for Toronto"/>
+<meta name="twitter:title" content="Drivee - The driver's app for Toronto"/>
 <meta name="twitter:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads."/>
 <meta name="twitter:image" content="https://www.drivee.ca/og-image.png?v=2"/>
 
@@ -212,7 +212,7 @@
   .car-wheel { transform-origin: center; animation: wheelSpin 0.25s linear infinite 1.6s; }
   @keyframes wheelSpin { to { transform: rotate(360deg); } }
 
-  /* exhaust puff — trails behind the right-facing car (so emitted on its left/rear) */
+  /* exhaust puff - trails behind the right-facing car (so emitted on its left/rear) */
   .car-puff {
     position: absolute; left: -2px; bottom: 14px;
     width: 8px; height: 8px; border-radius: 999px;
@@ -324,7 +324,7 @@
   }
 
 
-  /* ─────────── Hero — full-bleed video background + LEFT-aligned copy ─── */
+  /* ─────────── Hero - full-bleed video background + LEFT-aligned copy ─── */
   .hero {
     position: relative;
     min-height: clamp(680px, 88vh, 900px);
@@ -349,7 +349,7 @@
   .hero-bg { display: none; }
 
   /* Background animation. object-fit: contain leaves letterbox areas around
-     the video; browsers fill those with BLACK by default — that's the
+     the video; browsers fill those with BLACK by default - that's the
      "black lane" you saw. Forcing the element background to white makes
      the letterbox blend invisibly into the white hero. */
   .hero-video-bg {
@@ -453,7 +453,7 @@
 
   /* hero elements visible by default; intro overlay covers them during reveal */
 
-  /* Old side-mounted receipt mockup — no longer used (hero now uses
+  /* Old side-mounted receipt mockup - no longer used (hero now uses
      full-bleed .hero-video-bg). Kept hidden for any future revert. */
   .receipt-wrap { display: none; }
   .receipt {
@@ -470,7 +470,7 @@
   }
   .receipt:hover { transform: rotate(0); }
 
-  /* Hero graphic — sits where the original ticket mockup was. Right side
+  /* Hero graphic - sits where the original ticket mockup was. Right side
      of the hero, slight rotation, soft shadow. Natural aspect ratio is
      ~16:9 (1400x782 source), so height is auto from the width. */
   .receipt-video {
@@ -618,10 +618,10 @@
   .float-3 .ic { background: var(--amber); }
 
   /* Receipt sits on a soft neutral cast-shadow instead of a pulsing blue
-     halo — keeps depth without the "AI app launching" gloss. */
+     halo - keeps depth without the "AI app launching" gloss. */
   .receipt-glow { display: none; }
 
-  /* ─────────── Intro video (9:16 portrait — matches the trailer's phone shape) ─────────── */
+  /* ─────────── Intro video (9:16 portrait - matches the trailer's phone shape) ─────────── */
   .video-frame {
     position: relative;
     margin: 0 auto;
@@ -780,7 +780,7 @@
     min-height: 520px;
   }
   /* Soft warm-blue glow behind the cut-out so the page doesn't look like a
-     floating head — anchors the figure visually. */
+     floating head - anchors the figure visually. */
   .founder-photo-wrap::before {
     content: ""; position: absolute; inset: 8% 12% 8% 12%;
     background: radial-gradient(circle at 50% 55%, rgba(46,100,255,0.22), rgba(46,100,255,0) 70%);
@@ -890,7 +890,7 @@
 
   @media (max-width: 900px) { .reviews-grid { grid-template-columns: 1fr; } }
 
-  /* Stack on smaller screens — photo above text. */
+  /* Stack on smaller screens - photo above text. */
   @media (max-width: 900px) {
     .founder-grid, .payoff-grid {
       grid-template-columns: 1fr; gap: 32px;
@@ -903,7 +903,7 @@
   }
 
   /* Three-feature grid */
-  /* 2-column feature layout — 3-col reads as a generic SaaS marketing
+  /* 2-column feature layout - 3-col reads as a generic SaaS marketing
      poster. With 7 features, 2 columns lets the last card span and breaks
      the perfect grid into something less template-y. */
   .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
@@ -974,7 +974,7 @@
     border: 1px solid var(--line-s);
   }
   .map-canvas svg { width: 100%; height: 100%; display: block; }
-  /* The 3D enforcement-map iframe — pointer-events gated by .engaged class
+  /* The 3D enforcement-map iframe - pointer-events gated by .engaged class
      so users can scroll past the section without the map hijacking the wheel. */
   .map-canvas .map-iframe { pointer-events: none; }
   .map-canvas.engaged .map-iframe { pointer-events: auto; }
@@ -1175,6 +1175,28 @@
     }
     nav.top .links::-webkit-scrollbar { display: none; }
     nav.top .links a { white-space: nowrap; font-size: 13px; }
+  }
+  /* ─────────── Phones ─────────── */
+  @media (max-width: 560px) {
+    nav.top { padding: 12px 16px; }
+    nav.top .cta { display: none; }               /* hero App Store badge is the CTA on phones */
+    nav.top .links { max-width: none; flex: 1 1 auto; margin-left: 14px; }
+    section.block { padding: 64px 20px; }
+    h1.hero-title { font-size: 38px; letter-spacing: -1.4px; line-height: 1.04; }
+    .hero { padding: 90px 18px 44px; }
+    .hero-actions { margin-top: 24px; gap: 10px; }
+    .appstore-badge svg { height: 48px; }
+    .section-title { font-size: 30px; letter-spacing: -1px; }
+    .cta-block { padding: 40px 20px; border-radius: 20px; }
+    .cta-block h2 { font-size: 34px; letter-spacing: -1.4px; }
+    footer { padding: 40px 20px; }
+  }
+  /* On phones the full-bleed hero video sits right behind the copy and hurts
+     legibility, so hide it for a clean hero. The full demo is one section down
+     in "See it in action". */
+  @media (max-width: 760px) {
+    .hero-video-bg { display: none; }
+    .hero { min-height: auto; padding-top: 120px; }
   }
   /* ─────────── Install Guide section ─────────── */
   .install-grid {
@@ -1425,18 +1447,8 @@
 </head>
 <body>
 
-<script>
-  // ─── Mobile detection: redirect phones straight to the app ───
-  (function() {
-    const ua = navigator.userAgent || "";
-    const isPhone = /iPhone|Android.*Mobile|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)
-                    || (window.matchMedia && window.matchMedia("(max-width: 768px)").matches && /Mobi/i.test(ua));
-    const skipRedirect = window.location.hash === "#desktop" || window.location.search.includes("desktop=1");
-    if (isPhone && !skipRedirect) {
-      window.location.replace("/?app=1");
-    }
-  })();
-</script>
+<!-- Phones now stay on the marketing site (they no longer redirect into the
+     web app). The web app opens only via the App Store badge or "Open web app". -->
 
 <!-- ═══════════════════ INTRO OVERLAY ═══════════════════ -->
 <div class="intro" id="intro" style="display:none">
@@ -1483,7 +1495,7 @@
         </svg>
       </div>
 
-      <!-- Car with driver — facing right, fleeing -->
+      <!-- Car with driver - facing right, fleeing -->
       <div class="chase-car">
         <div class="car-puff"></div>
         <svg width="56" height="36" viewBox="0 0 56 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: scaleX(-1);">
@@ -1514,7 +1526,7 @@
   <button class="skip-intro" id="skipIntro">SKIP →</button>
 </div>
 
-<!-- (officer scene removed — pending direction) -->
+<!-- (officer scene removed - pending direction) -->
 
 <!-- ═══════════════════ PAGE ═══════════════════ -->
 <div class="page" id="page">
@@ -1568,7 +1580,7 @@
       </div>
       <h1 class="hero-title">
         <span class="anim a2">Park, pay,</span><br/>
-        <span class="anim a3">dispute — </span>
+        <span class="anim a3">dispute - </span>
         <span class="anim a4 underline">in seconds.</span>
       </h1>
       <p class="hero-sub anim a5">
@@ -1582,7 +1594,7 @@
           <span class="ripple"></span>
           <span class="ripple r2"></span>
         </span>
-        <span class="nudge-txt">Tap here — <b>install Drivee on your phone</b> in 2 taps</span>
+        <span class="nudge-txt">Tap here - <b>install Drivee on your phone</b> in 2 taps</span>
         <svg class="nudge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
       <div class="hero-actions anim a5">
@@ -1614,7 +1626,7 @@
         <h2 class="section-title">60 seconds.<br/>One ticket. Sorted.</h2>
       </div>
       <div>
-        <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight — before you can finish reading this paragraph.</p>
+        <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight - before you can finish reading this paragraph.</p>
       </div>
     </div>
 
@@ -1640,7 +1652,7 @@
           <div class="vp-play">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg>
           </div>
-          <div class="vp-title">Park, scan, dispute — in seconds.</div>
+          <div class="vp-title">Park, scan, dispute - in seconds.</div>
           <div class="vp-sub">A real Toronto driver, a real King St ticket. Watch what Drivee does next.</div>
         </div>
       </button>
@@ -1657,12 +1669,12 @@
     <span class="pill"><span class="dot"></span>311 Toronto</span>
   </div>
 
-  <!-- FOUNDER STORY SECTION — "Why I built Drivee" -->
+  <!-- FOUNDER STORY SECTION - "Why I built Drivee" -->
   <section class="block reveal" id="founder">
     <div class="founder-grid" style="grid-template-columns:1fr">
       <!-- Founder photo temporarily removed
       <div class="founder-photo-wrap">
-        <img class="founder-photo" src="/founder-evgenka.png" alt="Evgenka — developer of Drivee, holding a handful of Toronto parking tickets" loading="lazy" />
+        <img class="founder-photo" src="/founder-evgenka.png" alt="Evgenka - developer of Drivee, holding a handful of Toronto parking tickets" loading="lazy" />
       </div>
       -->
       <div class="founder-body">
@@ -1670,16 +1682,16 @@
         <h2 class="section-title">Why we built<br/>Drivee.</h2>
         <p class="founder-p">
           Hi, I'm Evgenka. We're Toronto drivers, like you. A few years and a stack of tickets later,
-          we realised the city makes it deliberately hard to know what to do — which forms to file,
+          we realised the city makes it deliberately hard to know what to do - which forms to file,
           which fines you can fight, which deadlines really matter. Most drivers just pay. Quietly.
           And lose money.
         </p>
         <p class="founder-p">
           So we built Drivee. One app that reads your ticket, remembers the deadline, and explains
-          your options in plain English. We help you understand what's at stake — what you decide is
+          your options in plain English. We help you understand what's at stake - what you decide is
           up to you.
         </p>
-        <div class="founder-sign">— Evgenka, developer</div>
+        <div class="founder-sign">- Evgenka, developer</div>
       </div>
     </div>
   </section>
@@ -1703,7 +1715,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>
         </div>
         <h3>AI ticket scanner</h3>
-        <p>Snap any parking ticket, camera fine, or warning. We extract amount, deadline, location, and verdict — usually in under 8 seconds.</p>
+        <p>Snap any parking ticket, camera fine, or warning. We extract amount, deadline, location, and verdict - usually in under 8 seconds.</p>
         <div class="feature-tag">OCR · GPT-4 VISION</div>
       </div>
 
@@ -1723,7 +1735,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
         </div>
         <h3>AI legal verdict</h3>
-        <p>One paragraph telling you whether to pay or fight your ticket — and a generated dispute letter you can copy in one tap.</p>
+        <p>One paragraph telling you whether to pay or fight your ticket - and a generated dispute letter you can copy in one tap.</p>
         <div class="feature-tag">74% SUCCESS RATE</div>
       </div>
 
@@ -1733,7 +1745,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <h3>Late-fee shield</h3>
-        <p>We track every deadline. Early-pay discount, day-30 surcharge, day-60 court referral — Drivee shows you the cost of waiting.</p>
+        <p>We track every deadline. Early-pay discount, day-30 surcharge, day-60 court referral - Drivee shows you the cost of waiting.</p>
         <div class="feature-tag">SAVES $79.59 AVG</div>
       </div>
 
@@ -1743,7 +1755,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13"/><path d="M2.5 6.253c4.5-1.5 9.5-1.5 9.5 0M21.5 6.253c-4.5-1.5-9.5-1.5-9.5 0"/></svg>
         </div>
         <h3>Lawyer marketplace</h3>
-        <p>Vetted Toronto defence firms — sorted by win rate, fee, and language. Free 15-min consults, no commission, no upsells.</p>
+        <p>Vetted Toronto defence firms - sorted by win rate, fee, and language. Free 15-min consults, no commission, no upsells.</p>
         <div class="feature-tag">42 FIRMS · ALL VETTED</div>
       </div>
 
@@ -1763,7 +1775,7 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </div>
         <h3>USA ticket assistance</h3>
-        <p>Cross-border parking and toll tickets — NYC, Buffalo, Detroit. We surface the right portal, the right deadline, and the right pay flow so you don't miss a US-side fine while on the road.</p>
+        <p>Cross-border parking and toll tickets - NYC, Buffalo, Detroit. We surface the right portal, the right deadline, and the right pay flow so you don't miss a US-side fine while on the road.</p>
         <div class="feature-tag">USA · TOLL · PARKING</div>
       </div>
     </div>
@@ -1801,7 +1813,7 @@
       <div class="split-text">
         <div class="section-kicker"><span class="num">02</span>THE AI SCANNER</div>
         <h2 style="margin-top: 14px;">A receipt in.<br/>An answer out.</h2>
-        <p style="margin-top: 22px;">Drag, snap, or paste any Toronto fine. Our model reads the ticket type, charge code, location, and deadline — then crosses that against 12k+ historical disputes to tell you exactly what to do next.</p>
+        <p style="margin-top: 22px;">Drag, snap, or paste any Toronto fine. Our model reads the ticket type, charge code, location, and deadline - then crosses that against 12k+ historical disputes to tell you exactly what to do next.</p>
         <div class="timeline" style="margin-top: 36px;">
           <div class="timeline-step done">
             <div class="step-meta">STEP 01 · 0.4s</div>
@@ -1816,7 +1828,7 @@
           <div class="timeline-step done">
             <div class="step-meta">STEP 03 · 4.7s</div>
             <h4>Verdict generated</h4>
-            <p>"Contest" — sign visibility issues at this corner.</p>
+            <p>"Contest" - sign visibility issues at this corner.</p>
           </div>
           <div class="timeline-step">
             <div class="step-meta">STEP 04 · You</div>
@@ -1876,7 +1888,7 @@
         <h2 class="section-title">14,283 pins.<br/>One Toronto.</h2>
       </div>
       <div>
-        <p class="section-sub">Every bike lane, fire route, permit-only block, and rush-hour stop-tow zone — mapped, color-coded, and updated by other Drivee drivers in real time.</p>
+        <p class="section-sub">Every bike lane, fire route, permit-only block, and rush-hour stop-tow zone - mapped, color-coded, and updated by other Drivee drivers in real time.</p>
       </div>
     </div>
 
@@ -1886,7 +1898,7 @@
           src="/enforcement-map.html"
           width="100%" height="100%" style="border:0; display:block; border-radius: 16px; background: #070d1f;"
           loading="lazy"
-          title="Drivee live parking enforcement — downtown Toronto" tabindex="-1"></iframe>
+          title="Drivee live parking enforcement - downtown Toronto" tabindex="-1"></iframe>
         <!-- Click anywhere on the map → engage interactivity (drag, zoom, click officers).
              Cursor leaves the map area → re-arms so users can scroll past freely. -->
         <a class="map-cta-overlay" href="#" id="hotspots-engage"
@@ -1938,7 +1950,7 @@
     </div>
   </section>
 
-  <!-- ARCADE — playable game embed -->
+  <!-- ARCADE - playable game embed -->
   <section class="block reveal" id="arcade">
     <div class="section-head">
       <div>
@@ -1991,19 +2003,19 @@
       <div>
         <div class="section-kicker"><span class="num">04</span>LEGAL · WITHOUT THE LEGALESE</div>
         <h2 style="margin-top: 14px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;">Pay it. Or<br/>fight it. We'll<br/>tell you which.</h2>
-        <p style="margin-top: 22px; font-size: 17px; color: var(--ink2); line-height: 1.55;">Drivee crosses your specific ticket against thousands of historical Toronto disputes — then issues a verdict in plain English. If we say "fight it," you'll have a printable letter in 30 seconds.</p>
+        <p style="margin-top: 22px; font-size: 17px; color: var(--ink2); line-height: 1.55;">Drivee crosses your specific ticket against thousands of historical Toronto disputes - then issues a verdict in plain English. If we say "fight it," you'll have a printable letter in 30 seconds.</p>
         <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
             <span class="stamp red">URGENT</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Don't pay yet — court referral risk.</div>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Don't pay yet - court referral risk.</div>
           </div>
           <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
             <span class="stamp amber">SERIOUS</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Worth fighting — hire a lawyer.</div>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Worth fighting - hire a lawyer.</div>
           </div>
           <div style="padding: 16px; background: var(--blue-50); border: 2px solid var(--blue); border-radius: 12px;">
             <span class="stamp blue">CONTEST</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">DIY dispute — we draft the letter.</div>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">DIY dispute - we draft the letter.</div>
           </div>
           <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
             <span class="stamp green">MINOR</span>
@@ -2073,7 +2085,7 @@
         <h2 class="section-title">No App Store.<br/>Just two taps.</h2>
       </div>
       <div>
-        <p class="section-sub">Drivee lives on the web — open <b style="color:var(--ink)">drivee.ca</b> in your phone's browser, then add it to your home screen. Same icon. Same speed. No download, no update prompts, no 200 MB sitting on your phone.</p>
+        <p class="section-sub">Drivee lives on the web - open <b style="color:var(--ink)">drivee.ca</b> in your phone's browser, then add it to your home screen. Same icon. Same speed. No download, no update prompts, no 200 MB sitting on your phone.</p>
       </div>
     </div>
 
@@ -2110,10 +2122,10 @@
           </div>
           <h3>Add Drivee to your iPhone home screen</h3>
           <ol class="install-steps">
-            <li>Open <b>drivee.ca</b> in <b>Safari</b> (not Chrome — Apple only allows install from Safari).</li>
+            <li>Open <b>drivee.ca</b> in <b>Safari</b> (not Chrome - Apple only allows install from Safari).</li>
             <li>Tap the <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</span> icon at the bottom of the screen.</li>
             <li>Scroll down and choose <b>Add to Home Screen</b>.</li>
-            <li>Confirm the name (Drivee) and tap <b>Add</b>. The icon appears on your home screen — tap it like any app.</li>
+            <li>Confirm the name (Drivee) and tap <b>Add</b>. The icon appears on your home screen - tap it like any app.</li>
           </ol>
         </div>
       </div>
@@ -2150,8 +2162,8 @@
           </div>
           <h3>Add Drivee to your Android home screen</h3>
           <ol class="install-steps">
-            <li>Open <b>drivee.ca</b> in <b>Chrome</b> (or Samsung Internet, Edge — any modern browser).</li>
-            <li>You may see an <b>Install app</b> banner at the bottom — tap it. If not, continue to step 3.</li>
+            <li>Open <b>drivee.ca</b> in <b>Chrome</b> (or Samsung Internet, Edge - any modern browser).</li>
+            <li>You may see an <b>Install app</b> banner at the bottom - tap it. If not, continue to step 3.</li>
             <li>Tap the <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/></svg>menu</span> in the top-right corner of the browser.</li>
             <li>Choose <b>Install app</b> (or <b>Add to Home screen</b>) and confirm. Drivee installs like any Play Store app.</li>
           </ol>
@@ -2164,7 +2176,7 @@
   <!-- CTA -->
   <div class="cta-block reveal">
     <h2>Stop paying<br/><span class="grad">tickets you<br/>could fight.</span></h2>
-    <p>Free for life. Free to scan. Free to dispute. We make money when lawyers do — never from you.</p>
+    <p>Free for life. Free to scan. Free to dispute. We make money when lawyers do - never from you.</p>
     <div class="row" style="display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;">
       <a class="appstore-badge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" aria-label="Download Drivee Canada on the App Store" onclick="if(window.dvTrack)dvTrack('app_open','appstore-cta')">
         <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
@@ -2278,7 +2290,7 @@
     </div>
   </section>
 
-  <!-- AFTER-PAYOFF SECTION — emotional close: ticket + app showing PAID -->
+  <!-- AFTER-PAYOFF SECTION - emotional close: ticket + app showing PAID -->
   <section class="block reveal" id="payoff">
     <div class="payoff-grid" style="grid-template-columns:1fr">
       <div class="payoff-body">
@@ -2286,7 +2298,7 @@
         <h2 class="section-title">From "I&nbsp;owe<br/>what?!" to handled.</h2>
         <p class="founder-p">
           One scan. One verdict. One paid (or fought) ticket. The way it should
-          have always been — calm, clear, and on your phone.
+          have always been - calm, clear, and on your phone.
         </p>
         <a class="btn-primary" href="/?app=1" style="text-decoration:none;margin-top:24px">
           Open the app

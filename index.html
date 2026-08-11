@@ -4,25 +4,24 @@
   <meta charset="UTF-8" />
 
   <!-- ═══════════════════════════════════════════════════════════════
-       DESKTOP/TABLET REDIRECT TO LANDING PAGE
-       Phones (iPhone/Android) keep this app. Tablets + PCs see desktop.html.
-       Bypass with ?app=1 (sticks for the session via sessionStorage).
+       LANDING-PAGE REDIRECT
+       Everyone (phones, tablets, PCs) lands on the marketing site
+       (/desktop.html) by default. The web app only loads when the visitor
+       explicitly opens it via ?app=1 (sticks for the session).
        To REVERSE: delete this entire <script> block.
   ═══════════════════════════════════════════════════════════════ -->
   <script>
     (function() {
-      var ua = navigator.userAgent || "";
-      var isPhone = /iPhone|Android.*Mobile|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
       var params = new URLSearchParams(location.search);
-      // Only ?app=1 (or sticky session flag from clicking "Open the app") bypasses the landing.
-      // Wipe any stale ?design=… session flag that used to bypass — landing should always show on PC.
+      // Only ?app=1 (or sticky session flag from clicking "Open web app") bypasses the landing.
+      // Wipe any stale ?design=… session flag that used to bypass.
       try { sessionStorage.removeItem('drivee_design'); } catch (e) {}
       var forceApp = params.has('app')
                   || sessionStorage.getItem('drivee_app') === '1';
       if (params.has('app')) {
         try { sessionStorage.setItem('drivee_app', '1'); } catch (e) {}
       }
-      if (!isPhone && !forceApp) {
+      if (!forceApp) {
         location.replace('/desktop.html');
       }
     })();
