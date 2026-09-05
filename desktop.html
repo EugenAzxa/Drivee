@@ -940,6 +940,9 @@
 
   /* Showcase / split */
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  /* Grid items default to min-width:auto, so a wide child stretched the column
+     past the page on narrow phones and the copy got clipped. */
+  .split > * { min-width: 0; }
   .split.right { grid-template-columns: 1fr 1.1fr; }
   .split-text h2 { font-size: 52px; font-weight: 800; letter-spacing: -1.8px; line-height: 1.05; margin-bottom: 18px; }
   .split-text p { font-size: 17px; color: var(--ink2); line-height: 1.55; }
@@ -973,9 +976,16 @@
     position: relative; overflow: hidden;
     border: 1px solid var(--line-s);
   }
-  .map-canvas svg { width: 100%; height: 100%; display: block; }
+  /* Only a map drawn as an inline SVG should fill the canvas - not the
+     little icons inside the overlay pills, which this used to blow up. */
+  .map-canvas > svg { width: 100%; height: 100%; display: block; }
   /* The 3D enforcement-map iframe - pointer-events gated by .engaged class
      so users can scroll past the section without the map hijacking the wheel. */
+  .arcade-canvas { aspect-ratio: 960/600; }
+  .game-controls { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+  .game-controls b { color: var(--ink); }
+  .gc-touch { display: none; }
+  .map-legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px; }
   .map-canvas .map-iframe { pointer-events: none; }
   .map-canvas.engaged .map-iframe { pointer-events: auto; }
   /* Click-overlay that engages map interactivity on click */
@@ -1162,6 +1172,7 @@
     .split, .split.right { grid-template-columns: 1fr; gap: 32px; }
     .section-head { grid-template-columns: 1fr; gap: 16px; }
     .section-title { font-size: 40px; }
+    .split-text h2 { font-size: 38px; letter-spacing: -1.4px; }
     .stat-strip { grid-template-columns: 1fr 1fr; }
     .stat-cell { border-right: none; border-bottom: 1px solid var(--line); }
     footer { grid-template-columns: 1fr 1fr; }
@@ -1187,9 +1198,29 @@
     .hero-actions { margin-top: 24px; gap: 10px; }
     .appstore-badge svg { height: 48px; }
     .section-title { font-size: 30px; letter-spacing: -1px; }
+    /* These headings kept their 52px desktop size and ran off narrow phones. */
+    .split-text h2 { font-size: 30px; letter-spacing: -1px; }
     .cta-block { padding: 40px 20px; border-radius: 20px; }
     .cta-block h2 { font-size: 34px; letter-spacing: -1.4px; }
     footer { padding: 40px 20px; }
+    /* The 2x2 stat grid only has ~140px per cell here - the 56px mono
+       numbers were running past the card and getting clipped. */
+    .stat-cell { padding: 20px 16px; }
+    .stat-cell .k { font-size: 9.5px; letter-spacing: 0.8px; }
+    .stat-cell .v { font-size: 34px; letter-spacing: -1.5px; margin-top: 6px; }
+    .stat-cell .sub { font-size: 11px; }
+    /* Four legend columns leave one word per line - go two-up. */
+    .map-legend { grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+    /* The game needs more height than 16:9 gives it at this width. */
+    .arcade-canvas { aspect-ratio: 7/6; }
+    .gc-keys { display: none; }
+    .gc-touch { display: inline; }
+    /* The links strip scrolls - fade its edge so the cut pill reads as more, not broken. */
+    nav.top .links {
+      -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+      mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+    }
+    .legal { flex-direction: column; gap: 6px; padding: 20px; }
   }
   /* On phones the full-bleed hero video sits right behind the copy and hurts
      legibility, so hide it for a clean hero. The full demo is one section down
@@ -1966,7 +1997,7 @@
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </a>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px;">
+      <div class="map-legend">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="width: 12px; height: 12px; background: var(--red); border-radius: 999px;"></span>
           <div>
@@ -2011,14 +2042,15 @@
       </div>
     </div>
     <div class="map-card">
-      <div class="map-canvas" style="position: relative; background: #060a18; aspect-ratio: 960/600;">
+      <div class="map-canvas arcade-canvas" style="position: relative; background: #060a18;">
         <iframe id="arcade-frame" src="/game.html"
           width="100%" height="100%" style="border:0; display:block; border-radius: 16px; background: #060a18;"
           loading="lazy" title="Drivee Ticket Rampage - browser game"></iframe>
       </div>
       <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top: 20px;">
-        <div style="font-family: var(--mono); font-size: 12px; color: var(--ink2);">
-          <b style="color:var(--ink)">WASD</b> move &nbsp;·&nbsp; <b style="color:var(--ink)">Shift</b> run &nbsp;·&nbsp; <b style="color:var(--ink)">J</b> punch &nbsp;·&nbsp; <b style="color:var(--ink)">K</b> kick &nbsp;·&nbsp; <b style="color:var(--ink)">U/I/O</b> throw ticket / coffee / donut
+        <div class="game-controls">
+          <span class="gc-keys"><b>WASD</b> move &nbsp;·&nbsp; <b>Shift</b> run &nbsp;·&nbsp; <b>J</b> punch &nbsp;·&nbsp; <b>K</b> kick &nbsp;·&nbsp; <b>U/I/O</b> throw ticket / coffee / donut</span>
+          <span class="gc-touch">Thumb stick and buttons appear on the game - tap to start.</span>
         </div>
         <a href="/game.html" target="_blank" class="btn-primary" style="text-decoration:none; padding:12px 22px;">
           Full screen
