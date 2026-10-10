@@ -811,7 +811,7 @@
           : '<h3>Request received</h3>' +
             '<p class="lede mt-16">We’ll connect you with ' + esc(firm.name) + ' for your free case review, usually within one business day. We emailed you a copy of exactly what you sent.</p>') +
         '<div class="done-next mt-32">' +
-          '<a class="btn btn-ghost" href="/?app=1">Track this ticket in the app</a>' +
+          '<a class="btn btn-ghost" href="/app.html">Track this ticket in the app</a>' +
           '<a class="btn btn-ghost" href="/blog/how-to-dispute-parking-ticket-toronto.html">How disputes work →</a>' +
         '</div>' +
       '</div>'

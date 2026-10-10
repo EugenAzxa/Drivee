@@ -114,7 +114,7 @@ module.exports = async function handler(req, res) {
           '<h2 style="color:#0E1B3D;margin:0 0 8px">Your fine is due ' + whenTxt + '</h2>' +
           '<p style="color:#5a6075;line-height:1.5">Ticket <b>' + ref + '</b> is due on <b>' + rem.due_date + '</b>. ' +
           'Pay before the deadline to avoid Toronto\'s escalating late fees (+$15 at day 16, +$80 by day 60).</p>' +
-          '<p><a href="https://drivee.ca/?app=1" style="display:inline-block;background:#2E64FF;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700">Open Drivee</a></p>' +
+          '<p><a href="https://drivee.ca/app.html" style="display:inline-block;background:#2E64FF;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:700">Open Drivee</a></p>' +
           '<p style="color:#8c95a7;font-size:12px;margin-top:24px">You\'re getting this because you set a reminder in Drivee. No marketing — just deadline alerts. Reply STOP to unsubscribe.</p>' +
         '</div>';
       try {
@@ -132,7 +132,7 @@ module.exports = async function handler(req, res) {
       var payload = JSON.stringify({
         title: days === 1 ? '⏰ Fine due tomorrow' : '🅿️ Fine due in 3 days',
         body: ref + ' is due ' + rem.due_date + '. Tap to open Drivee and pay before late fees hit.',
-        url: '/?app=1', tag: 'reminder-' + rem.id, requireInteraction: true
+        url: '/app.html', tag: 'reminder-' + rem.id, requireInteraction: true
       });
       for (var j = 0; j < subsByEmail[email].length; j++) {
         var s = subsByEmail[email][j];

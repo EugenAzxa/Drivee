@@ -12,5 +12,8 @@
       "path": "/api/notify-daily-tip",
       "schedule": "0 14 * * *"
     }
+  ],
+  "redirects": [
+    { "source": "/desktop.html", "destination": "/", "permanent": true }
   ]
 }

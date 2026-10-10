@@ -95,7 +95,7 @@ module.exports = async function handler(req, res) {
   var payload = JSON.stringify({
     title: '💡 Did you know?',
     body: tip,
-    url: '/?app=1',
+    url: '/app.html',
     tag: 'daily-tip'
   });
 
