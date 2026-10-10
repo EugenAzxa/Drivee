@@ -9,13 +9,15 @@ Key facts:
 - The full vehicle history report costs $19 CAD (accident and damage history, odometer readings with rollback check, previous owners, theft records) or $30 CAD including an Ontario lien check. Reports are delivered by email.
 - In Ontario, lien information is also available directly from ServiceOntario in the Used Vehicle Information Package (UVIP, about $20).
 - The ticket scanner reads Toronto parking and traffic tickets and explains options and deadlines in plain English; the Early Resolution guided wizard is free.
+- Drivee matches a scanned charge to vetted Ontario defence firms (X-Copper, Toronto Traffic Law, POINTTS Advisory Services, OTT Legal, HWY-LAW), all offering a free case review from 99. Drivee takes no commission, and the driver's details go only to the single firm they choose.
+- Drivee matches a scanned charge to vetted Ontario defence firms (X-Copper, Toronto Traffic Law, POINTTS, OTT Legal, HWY-LAW), all offering a free case review from $199. Drivee takes no commission and the driver's details go only to the single firm they choose.
 - Drivee is independent and not affiliated with CARFAX, NHTSA, the City of Toronto, MTO or any law firm.
 - Contact: drivee.canada@gmail.com
 
 ## Main pages
 
-- [Drivee app](https://www.drivee.ca/): the driver's app - ticket scanner, enforcement hotspot map, reminders
-- [Landing page](https://www.drivee.ca/desktop.html): product overview, features, testimonials
+- [Drivee](https://www.drivee.ca/): upload a ticket photo, get an instant plain-English verdict on whether to pay or fight it, see the exact cost of waiting, and get a matched shortlist of vetted Ontario paralegals offering a free case review
+- [Drivee app](https://www.drivee.ca/?app=1): the full app - ticket scanner, enforcement hotspot map, deadline reminders, legal verdicts
 - [Free VIN check & vehicle history report](https://www.drivee.ca/report.html): free VIN lookup, sample report (mileage graph, owners, service records, cost of ownership, depreciation), buyer's checklist with what to inspect before buying a used car, FAQ
 - [Mobile mechanic - pre-purchase inspection](https://www.drivee.ca/mechanic.html): a mobile mechanic meets the buyer at the seller's location anywhere in the GTA, 24/7 on call. $100-150 CAD per inspection trip, +$50 outside the GTA (OBD scan, cold start, leaks, rust, brakes, test drive). Mechanics can apply on the same page - paid $100-150 per trip as independent contractors, optional 24/7 on-call status.
 - [Parking signs guide](https://www.drivee.ca/parking-signs/): how to read Toronto parking signs
@@ -28,6 +30,9 @@ Key facts:
 - [Car towed in Toronto - what to do](https://www.drivee.ca/blog/car-towed-toronto-what-to-do.html)
 - [Green P parking rates 2026](https://www.drivee.ca/blog/green-p-parking-rates-2026.html)
 - [Toronto parking ticket late fees](https://www.drivee.ca/blog/toronto-parking-ticket-late-fees.html)
+- [Car accident in Toronto - what to do](https://www.drivee.ca/blog/car-accident-toronto-what-to-do.html)
+- [Careless driving ticket in Ontario](https://www.drivee.ca/blog/careless-driving-ticket-ontario.html)
+- [Will a car accident raise my insurance in Ontario](https://www.drivee.ca/blog/car-accident-insurance-ontario.html)
 
 ## Frequently cited answers
 

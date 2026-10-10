@@ -16,13 +16,21 @@
       // Only ?app=1 (or sticky session flag from clicking "Open web app") bypasses the landing.
       // Wipe any stale ?design=… session flag that used to bypass.
       try { sessionStorage.removeItem('drivee_design'); } catch (e) {}
+      // A link to a section of the website (/#scan from the guides, /#faq …)
+      // always opens the website, even after the visitor tapped into the app
+      // earlier in the session — otherwise phones that once opened the app
+      // could never reach the ticket scanner again. Keep the list to landing
+      // anchors only: the app's OAuth return lands on "/" with a token hash.
+      var landingAnchor = /^#(scan|scanner|faq|features|video|founder|hotspots|arcade|legal|guide|reviews|payoff)$/
+                            .test(location.hash);
       var forceApp = params.has('app')
-                  || sessionStorage.getItem('drivee_app') === '1';
+                  || (!landingAnchor && sessionStorage.getItem('drivee_app') === '1');
       if (params.has('app')) {
         try { sessionStorage.setItem('drivee_app', '1'); } catch (e) {}
       }
       if (!forceApp) {
-        location.replace('/desktop.html');
+        // keep the #anchor so /#scan lands on the scan form
+        location.replace('/desktop.html' + (landingAnchor ? location.hash : ''));
       }
     })();
   </script>

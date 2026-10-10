@@ -167,12 +167,12 @@
 
   .sg-cta {
     max-width: 760px; margin: 32px auto 0; padding: 28px 24px;
-    background: var(--ink); border-radius: 18px; text-align: center;
+    background: var(--ink-fill, var(--ink)); border-radius: 18px; text-align: center;
   }
   .sg-cta h3 { font-family: var(--serif); font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 8px; }
   .sg-cta p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 18px; }
   .sg-cta a {
-    display: inline-block; background: var(--blue); color: #fff;
+    display: inline-block; background: var(--blue-fill, var(--blue)); color: #fff;
     padding: 13px 26px; border-radius: 999px; font-weight: 700; font-size: 15px;
   }
   .sg-cta a:hover { background: #4b7bf5; text-decoration: none; }
@@ -207,6 +207,7 @@
     .sg-cta { margin-left: 20px; margin-right: 20px; }
   }
 </style>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
@@ -218,7 +219,7 @@
     <a href="/parking-signs/">Signs</a>
     <a href="/?app=1">Open app</a>
   </div>
-  <a href="/?app=1" class="cta">Open the app &rarr;</a>
+  <a href="/#scan" class="cta">Scan your ticket →</a>
 </nav>
 
 <div class="sg-crumbs">
@@ -229,6 +230,15 @@
   <div class="eyebrow">Toronto parking signs</div>
   <h1>What a No Standing sign actually means in Toronto</h1>
   <p class="lead">No Standing is the middle rung of Toronto's three-step ladder, and it is the one drivers misread most often. The word "standing" sounds like it means the car is stopped and empty. It means almost the opposite.</p>
+  <div class="scan-cta">
+    <div class="scan-cta-ic" aria-hidden="true">🎫</div>
+    <div class="scan-cta-txt">
+      <h3>Ticketed under a No Standing sign?</h3>
+      <p>Snap a photo of the ticket. Drivee reads it and tells you whether it’s worth disputing and how long you have.</p>
+    </div>
+    <a class="scan-cta-btn" href="/#scan">Check my ticket — free</a>
+  </div>
+
 </section>
 
 <div class="sg-figure">

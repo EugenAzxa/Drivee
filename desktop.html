@@ -3,14 +3,18 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Drivee - The driver's app for Toronto</title>
-<meta name="description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Live enforcement hotspots, free guided dispute forms, and a Toronto driver's full toolkit - all in one app."/>
+<title>Dispute a Parking or Traffic Ticket in Toronto &amp; Ontario — Free AI Ticket Scan | Drivee</title>
+<meta name="description" content="Got a Toronto parking ticket or an Ontario traffic ticket? Upload a photo. Drivee reads it in seconds, tells you whether to pay or fight it, shows what it really costs once insurance is counted, and matches you with licensed Ontario paralegals and lawyers for a free case review. No signup."/>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"/>
+<meta name="geo.region" content="CA-ON"/>
+<meta name="geo.placename" content="Toronto, Ontario"/>
+<link rel="manifest" href="/manifest.json"/>
 
 <!-- Open Graph / share-card meta - what shows up when someone pastes drivee.ca in Telegram, WhatsApp, iMessage, etc. -->
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Drivee"/>
-<meta property="og:title" content="Drivee - The driver's app for Toronto"/>
-<meta property="og:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads."/>
+<meta property="og:title" content="Dispute a Parking or Traffic Ticket in Toronto — Free AI Scan"/>
+<meta property="og:description" content="Upload your ticket. Verdict in seconds, the true cost once insurance is counted, and matched Ontario paralegals and lawyers for a free case review."/>
 <meta property="og:url" content="https://www.drivee.ca/"/>
 <meta property="og:image" content="https://www.drivee.ca/og-image.png?v=2"/>
 <meta property="og:image:width" content="1200"/>
@@ -20,12 +24,67 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Drivee - The driver's app for Toronto"/>
-<meta name="twitter:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads."/>
+<meta name="twitter:title" content="Dispute a Parking or Traffic Ticket in Toronto — Drivee"/>
+<meta name="twitter:description" content="Upload your ticket. Verdict in seconds. Matched with licensed Ontario paralegals and lawyers, free case review."/>
 <meta name="twitter:image" content="https://www.drivee.ca/og-image.png?v=2"/>
 
 <!-- Canonical -->
 <link rel="canonical" href="https://www.drivee.ca/"/>
+
+<!-- Structured data. The FAQPage entries mirror the visible #faq section
+     word for word — Google ignores FAQ markup that isn't on the page. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://www.drivee.ca/#app",
+      "name": "Drivee",
+      "url": "https://www.drivee.ca/",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web (iOS, Android, desktop)",
+      "description": "Scan any Ontario parking or traffic ticket, get a plain-English verdict on whether to pay or dispute it, see the true cost once demerit points and insurance are counted, and connect with licensed Ontario paralegals and lawyers.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CAD" },
+      "areaServed": { "@type": "State", "name": "Ontario", "containedInPlace": { "@type": "Country", "name": "Canada" } }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://www.drivee.ca/#org",
+      "name": "Drivee",
+      "url": "https://www.drivee.ca/",
+      "email": "drivee.canada@gmail.com",
+      "areaServed": "Ontario, Canada",
+      "disambiguatingDescription": "Independent. Not affiliated with the City of Toronto, MTO, CARFAX, NHTSA or any law firm."
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.drivee.ca/#faq",
+      "mainEntity": [
+        { "@type": "Question", "name": "Can I fight a parking ticket in Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Toronto and many other Ontario municipalities run an Administrative Penalty System: you request a screening review rather than a court date, and a screening officer can cancel, reduce or uphold the penalty. Municipalities that have not adopted it still run parking tickets through Provincial Offences Court. Upload your ticket and Drivee tells you which one applies to yours." } },
+        { "@type": "Question", "name": "How long do I have to dispute it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "About 15 days from the issue date — for a parking screening review and for a Highway Traffic Act offence notice alike. Miss it and a parking fine starts stacking fees, or a moving violation can be convicted in your absence. The exact window is printed on your ticket." } },
+        { "@type": "Question", "name": "What happens if I just ignore it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Day 16 adds a $15.39 address search fee. Day 31 adds a $32.10 late payment fee. Day 60 adds a $32.10 plate denial fee, which blocks your licence plate renewal. A $30 ticket left for two months becomes about $109.59." } },
+        { "@type": "Question", "name": "Do I need a paralegal or a lawyer?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends on the charge. A licensed Ontario paralegal can represent you on Highway Traffic Act matters — speeding, red light, careless, stunt — and usually pays for themselves once the insurance increase is counted. Impaired driving and over 80 are Criminal Code charges, and only a lawyer can represent you there. Drivee checks each firm's licence before matching, so a criminal charge is never put in front of a paralegal-only firm." } },
+        { "@type": "Question", "name": "How much does it cost to fight a ticket in Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes — every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide." } },
+        { "@type": "Question", "name": "What does Drivee cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full vehicle history report — $19 CAD, or $30 CAD with an Ontario lien check." } },
+        { "@type": "Question", "name": "Does Drivee work outside Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario's, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says, but we will tell you plainly that we cannot advise on it rather than guess." } },
+        { "@type": "Question", "name": "What happens to my ticket photo?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It is sent to be read and is not stored on our servers. If you request a case review, your details go to the single firm you picked and nobody else — and we copy you on that email so you can see exactly what was shared." } },
+        { "@type": "Question", "name": "Is Drivee affiliated with the City of Toronto?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Drivee is independent and not affiliated with the City of Toronto, MTO, ServiceOntario, CARFAX, NHTSA or any law firm. We are Toronto drivers who got tired of losing money quietly." } }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="stylesheet" href="/assets/css/scan-widget.css"/>
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -1479,6 +1538,36 @@
     .install-foot { grid-template-columns: 1fr; text-align: center; padding: 22px; }
     .install-foot .install-qr { margin: 0 auto; }
   }
+
+  /* ── Live ticket scan (#scan) ── */
+  /* the fixed nav would cover the top of the form after a #scan jump */
+  .scan-anchor { position: absolute; top: 0; scroll-margin-top: 84px; }
+  #scanner { position: relative; scroll-margin-top: 84px; }
+  .scan-split { align-items: start; }
+  @media (max-width: 960px) {
+    /* phones: heading → form, no scroll past the step list to reach it */
+    .scan-split .scan-timeline { display: none; }
+  }
+
+  /* ── FAQ (source of the FAQPage schema in <head>) ── */
+  .faq-list { margin-top: 36px; border-top: 1px solid var(--line); max-width: 860px; }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary {
+    cursor: pointer; list-style: none; position: relative;
+    padding: 22px 44px 22px 0; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
+  }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary::after {
+    content: '+'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 24px; font-weight: 400; color: var(--ink3); transition: transform 0.25s, color 0.25s;
+  }
+  .faq-list details[open] summary::after { transform: translateY(-50%) rotate(45deg); color: var(--blue); }
+  .faq-list details > div { padding: 0 0 22px; color: var(--ink2); font-size: 16px; line-height: 1.68; max-width: 72ch; }
+  .faq-list a { color: var(--blue-d); text-decoration: underline; }
+  @media (max-width: 560px) {
+    .faq-list summary { font-size: 16px; padding: 18px 36px 18px 0; }
+    .faq-list details > div { font-size: 15px; }
+  }
 </style>
 <script>
   (function(){
@@ -1592,7 +1681,7 @@
     <div class="brand">Drivee<span class="dot">.</span></div>
     <div class="links">
       <a href="#features">Features</a>
-      <a href="#scanner">Scanner</a>
+      <a href="#scan">Scan a ticket</a>
       <a href="#hotspots">Map</a>
       <a href="#arcade">Arcade</a>
       <span class="report-wrap">
@@ -1611,8 +1700,9 @@
       <a href="/parking-signs/">Signs</a>
       <a href="/blog/">Blog</a>
       <a href="/contact.html">Contact</a>
+      <a href="/?app=1">Web app</a>
     </div>
-    <a href="/?app=1" class="cta" style="text-decoration: none;">Open the app →</a>
+    <a href="#scan" class="cta" style="text-decoration: none;">Scan your ticket →</a>
   </nav>
 
   <!-- HERO -->
@@ -1645,13 +1735,13 @@
         and warns you before the next one. Built after one too many $295 careless tickets
         on King Street.
       </p>
-      <a href="#guide" class="install-nudge anim a5" id="installNudge">
+      <a href="#scan" class="install-nudge anim a5" id="installNudge">
         <span class="cursor-tap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 11V4a2 2 0 0 1 4 0v9"/><path d="M17 11V6a2 2 0 0 1 4 0v9a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 17V4a2 2 0 0 1 4 0v7"/></svg>
           <span class="ripple"></span>
           <span class="ripple r2"></span>
         </span>
-        <span class="nudge-txt">Tap here - <b>install Drivee on your phone</b> in 2 taps</span>
+        <span class="nudge-txt">Tap here - <b>scan your ticket free</b>, right on this page</span>
         <svg class="nudge-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
       <div class="hero-actions anim a5">
@@ -1887,74 +1977,69 @@
     </div>
   </section>
 
-  <!-- SCANNER SECTION (split) -->
+  <!-- SCANNER SECTION - the live ticket scan, carried over from the redesign.
+       Drop / pick / photograph / paste a ticket → /api/scan-ticket reads it →
+       verdict, real cost, matched Ontario lawyers → free case review via
+       /api/lead. Logic: assets/js/scanner.js. Styles: assets/css/scan-widget.css. -->
   <section class="block reveal" id="scanner">
-    <div class="split right">
+    <span id="scan" class="scan-anchor" aria-hidden="true"></span>
+    <div class="split right scan-split">
       <div class="split-text">
-        <div class="section-kicker"><span class="num">02</span>THE AI SCANNER</div>
-        <h2 style="margin-top: 14px;">A receipt in.<br/>An answer out.</h2>
-        <p style="margin-top: 22px;">Drag, snap, or paste any Toronto fine. Our model reads the ticket type, charge code, location, and deadline - then crosses that against 12k+ historical disputes to tell you exactly what to do next.</p>
-        <div class="timeline" style="margin-top: 36px;">
+        <div class="section-kicker"><span class="num">02</span>SCAN YOUR TICKET</div>
+        <h2 style="margin-top: 14px;">Got a ticket?<br/>Find out what it really costs.</h2>
+        <p style="margin-top: 22px;">Upload a photo of any Ontario parking or traffic ticket. Drivee reads the charge, the deadline and the amount, works out what it truly costs you once demerit points and insurance are counted, and shows you the licensed Ontario lawyers and paralegals who can take it - free case review, no signup.</p>
+        <div class="timeline scan-timeline" style="margin-top: 36px;">
           <div class="timeline-step done">
-            <div class="step-meta">STEP 01 · 0.4s</div>
-            <h4>Photo captured</h4>
-            <p>Auto-deskew, glare removal, edge detection.</p>
+            <div class="step-meta">STEP 01 · ~8s</div>
+            <h4>Ticket read</h4>
+            <p>Charge, amount, plate, issue date and deadline - straight off the photo.</p>
           </div>
           <div class="timeline-step done">
-            <div class="step-meta">STEP 02 · 2.1s</div>
-            <h4>OCR + classification</h4>
-            <p>Charge code, plate, amount, location, time.</p>
+            <div class="step-meta">STEP 02</div>
+            <h4>Verdict + real cost</h4>
+            <p>Pay or fight, with the fine, demerit points and the insurance hit side by side.</p>
           </div>
           <div class="timeline-step done">
-            <div class="step-meta">STEP 03 · 4.7s</div>
-            <h4>Verdict generated</h4>
-            <p>"Contest" - sign visibility issues at this corner.</p>
+            <div class="step-meta">STEP 03</div>
+            <h4>Matched lawyers</h4>
+            <p>Only firms licensed for that charge - a criminal charge never goes to a paralegal.</p>
           </div>
           <div class="timeline-step">
             <div class="step-meta">STEP 04 · You</div>
-            <h4>One-tap action</h4>
-            <p>Pay it, fight it, or save it for later. Your call.</p>
+            <h4>Free case review</h4>
+            <p>Your details go to the one firm you pick. Your call what happens next.</p>
           </div>
         </div>
       </div>
-      <div>
-        <div class="receipt" style="position: relative; left: auto; top: auto; transform: rotate(2deg); margin: 0 auto;">
-          <div class="receipt-head">
-            <div class="meta">SCAN · TR-2841093 · 14:32</div>
-            <h2 style="font-size: 22px;">Verdict: Contest</h2>
-            <div class="dotline"></div>
-          </div>
-          <div class="receipt-row">
-            <span class="k">Charge code</span>
-            <span class="v">001 · No Standing</span>
-          </div>
-          <div class="receipt-row" style="padding-top: 0;">
-            <span class="k">Location</span>
-            <span class="v">King W (Bathurst)</span>
-          </div>
-          <div class="receipt-row" style="padding-top: 0;">
-            <span class="k">Amount</span>
-            <span class="v">$65.00</span>
-          </div>
-          <div class="receipt-row" style="padding-top: 0;">
-            <span class="k">Success odds</span>
-            <span class="v" style="color: var(--green);">MED-HIGH</span>
-          </div>
 
-          <div style="padding: 8px 22px;">
-            <div class="receipt-section" style="padding-left: 0; padding-right: 0;">
-              <span>§ AI NOTES</span><span class="l"></span>
+      <div class="dv-scan">
+        <div class="intake">
+          <div class="dropzone" id="dropzone" role="button" tabindex="0"
+               aria-label="Upload a photo of your ticket to scan it">
+            <div class="dz-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+              </svg>
             </div>
-            <p style="font-family: var(--serif); font-size: 13px; line-height: 1.5; color: var(--ink); padding: 4px 0 14px;">
-              Sign at this corner is partially obstructed by construction hoarding (verified Apr 18). Of 28 disputes filed at this location in 2025, 21 were dismissed.
-            </p>
+            <div class="dz-title">Drop your ticket here</div>
+            <p class="dz-sub">Parking, speeding, red light, careless, stunt, 407 toll - anywhere in Ontario.</p>
+            <div class="dz-or">or</div>
+            <div class="dz-actions">
+              <span class="btn btn-primary">Choose a photo</span>
+              <span class="btn btn-ghost">Take a picture</span>
+            </div>
+            <div class="dz-note">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              </svg>
+              Not stored. Not sold. You can also just paste a screenshot.
+            </div>
           </div>
 
-          <div style="padding: 0 14px 14px; display: flex; gap: 8px;">
-            <button class="scanner-btn" style="flex: 1; background: var(--blue);">GENERATE LETTER</button>
-            <button class="scanner-btn" style="flex: 1; background: white; color: var(--ink); border: 1px solid var(--line);">PAY $65</button>
-          </div>
-          <div class="receipt-foot">━━━ END OF VERDICT ━━━</div>
+          <input type="file" id="ticket-file" accept="image/*" capture="environment" class="sr-only"/>
+
+          <!-- verdict / lawyers / lead form render here -->
+          <div class="scan-stage" id="scan-stage" hidden aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -2394,18 +2479,62 @@
     </div>
   </section>
 
+  <!-- FAQ - keep in sync with the FAQPage schema in <head> -->
+  <section class="block reveal" id="faq">
+    <div class="section-kicker"><span class="num">08</span>QUESTIONS</div>
+    <h2 class="section-title">Fighting a ticket<br/>in Ontario.</h2>
+    <div class="faq-list">
+      <details open>
+        <summary>Can I fight a parking ticket in Ontario?</summary>
+        <div>Yes. Toronto and many other Ontario municipalities run an Administrative Penalty System: you request a screening review rather than a court date, and a screening officer can cancel, reduce or uphold the penalty. Municipalities that have not adopted it still run parking tickets through Provincial Offences Court. Upload your ticket and Drivee tells you which one applies to yours.</div>
+      </details>
+      <details>
+        <summary>How long do I have to dispute it?</summary>
+        <div>About 15 days from the issue date — for a parking screening review and for a Highway Traffic Act offence notice alike. Miss it and a parking fine starts stacking fees, or a moving violation can be convicted in your absence. The exact window is printed on your ticket.</div>
+      </details>
+      <details>
+        <summary>What happens if I just ignore it?</summary>
+        <div>Day 16 adds a $15.39 address search fee. Day 31 adds a $32.10 late payment fee. Day 60 adds a $32.10 plate denial fee, which blocks your licence plate renewal. A $30 ticket left for two months becomes about $109.59. See the full breakdown in <a href="/blog/toronto-parking-ticket-late-fees.html">our guide to late fees</a>.</div>
+      </details>
+      <details>
+        <summary>Do I need a paralegal or a lawyer?</summary>
+        <div>It depends on the charge. A licensed Ontario paralegal can represent you on Highway Traffic Act matters — speeding, red light, careless, stunt — and usually pays for themselves once the insurance increase is counted. Impaired driving and over 80 are <em>Criminal Code</em> charges, and only a lawyer can represent you there. Drivee checks each firm&rsquo;s licence before matching, so a criminal charge is never put in front of a paralegal-only firm.</div>
+      </details>
+      <details>
+        <summary>How much does it cost to fight a ticket in Ontario?</summary>
+        <div>Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes — every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide.</div>
+      </details>
+      <details>
+        <summary>What does Drivee cost?</summary>
+        <div>The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full vehicle history report — $19 CAD, or $30 CAD with an Ontario lien check.</div>
+      </details>
+      <details>
+        <summary>Does Drivee work outside Ontario?</summary>
+        <div>No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario&rsquo;s, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says, but we will tell you plainly that we cannot advise on it rather than guess.</div>
+      </details>
+      <details>
+        <summary>What happens to my ticket photo?</summary>
+        <div>It is sent to be read and is not stored on our servers. If you request a case review, your details go to the single firm you picked and nobody else — and we copy you on that email so you can see exactly what was shared.</div>
+      </details>
+      <details>
+        <summary>Is Drivee affiliated with the City of Toronto?</summary>
+        <div>No. Drivee is independent and not affiliated with the City of Toronto, MTO, ServiceOntario, CARFAX, NHTSA or any law firm. We are Toronto drivers who got tired of losing money quietly.</div>
+      </details>
+    </div>
+  </section>
+
   <!-- AFTER-PAYOFF SECTION - emotional close: ticket + app showing PAID -->
   <section class="block reveal" id="payoff">
     <div class="payoff-grid" style="grid-template-columns:1fr">
       <div class="payoff-body">
-        <div class="section-kicker"><span class="num">08</span>THE PAYOFF</div>
+        <div class="section-kicker"><span class="num">09</span>THE PAYOFF</div>
         <h2 class="section-title">From "I&nbsp;owe<br/>what?!" to handled.</h2>
         <p class="founder-p">
           One scan. One verdict. One paid (or fought) ticket. The way it should
           have always been - calm, clear, and on your phone.
         </p>
-        <a class="btn-primary" href="/?app=1" style="text-decoration:none;margin-top:24px">
-          Open the app
+        <a class="btn-primary" href="#scan" style="text-decoration:none;margin-top:24px">
+          Scan my ticket - free
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
       </div>
@@ -2547,5 +2676,10 @@
 
 </script>
 
+<!-- live ticket scan: Ontario rules → firm matching → free account → funnel UI -->
+<script src="/assets/js/ontario.js" defer></script>
+<script src="/assets/js/lawyers.js" defer></script>
+<script src="/assets/js/account.js" defer></script>
+<script src="/assets/js/scanner.js" defer></script>
 </body>
 </html>

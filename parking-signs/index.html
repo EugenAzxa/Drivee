@@ -245,7 +245,7 @@
     padding: 0 24px;
   }
   .signs-cta-inner {
-    background: var(--ink); color: white;
+    background: var(--ink-fill, var(--ink)); color: white;
     padding: 36px 32px;
     border-radius: 18px;
     text-align: center;
@@ -258,7 +258,7 @@
   }
   .signs-cta-inner a {
     display: inline-block;
-    background: var(--blue); color: white;
+    background: var(--blue-fill, var(--blue)); color: white;
     padding: 13px 26px; border-radius: 999px;
     font-weight: 700; font-size: 15px;
   }
@@ -275,6 +275,7 @@
     .signs-section h2 { font-size: 22px; }
   }
 </style>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
@@ -286,13 +287,22 @@
     <a href="/parking-signs/">Signs</a>
     <a href="/?app=1">Open app</a>
   </div>
-  <a href="/?app=1" class="cta">Open the app →</a>
+  <a href="/#scan" class="cta">Scan your ticket →</a>
 </nav>
 
 <section class="signs-hero">
   <div class="eyebrow">Visual reference · Toronto</div>
   <h1>Every Toronto parking sign — with a picture and what it actually means.</h1>
   <p>Toronto stacks parking restrictions on top of each other and most drivers have never been taught how to read them. Here's every common sign you'll see on a Toronto street, drawn at proper proportions, with a plain-English explanation.</p>
+  <div class="scan-cta">
+    <div class="scan-cta-ic" aria-hidden="true">🎫</div>
+    <div class="scan-cta-txt">
+      <h3>Already got the ticket?</h3>
+      <p>Snap a photo of it. Drivee reads it in seconds and tells you whether the sign gives you grounds to fight it.</p>
+    </div>
+    <a class="scan-cta-btn" href="/#scan">Check my ticket — free</a>
+  </div>
+
 </section>
 
 <section class="signs-toc">
