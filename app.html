@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
 
-  <!-- ═══════════════════════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════════════════════════
        WEB APP (/app.html). The website lives at / (index.html).
        Opening the app marks the session as "in the app", so a return to
        "/" — the Google sign-in round-trip lands there — is forwarded back
        here by the website's head script. Leaving via the back-to-landing
        link clears the mark.
-  ═══════════════════════════════════════════════════════════════ -->
+  ══════════════════════════════════════════════════════════════ -->
   <script>
     try {
       sessionStorage.removeItem('drivee_design');
@@ -50,7 +50,7 @@
   <meta property="og:site_name" content="Drivee" />
   <meta property="og:title" content="Drivee — The driver's app for Toronto" />
   <meta property="og:description" content="Snap a parking or traffic ticket. AI tells you whether to pay or fight. Free, no ads." />
-  <meta property="og:url" content="https://www.drivee.ca/" />
+  <meta property="og:url" content="https://www.drivee.ca/app.html" />
   <meta property="og:image" content="https://www.drivee.ca/og-image.png?v=2" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -64,7 +64,7 @@
   <meta name="twitter:image" content="https://www.drivee.ca/og-image.png?v=2" />
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://www.drivee.ca/" />
+  <link rel="canonical" href="https://www.drivee.ca/app.html" />
 
   <!-- JetBrains Mono — used for ticket numbers and fine amounts -->
   <!-- Plus Jakarta Sans + IBM Plex Serif — used by ?design=v2 only -->
@@ -601,7 +601,7 @@
        immediately recognise Toronto Parking Authority lots. */
     .dv-gp-pin {
       width: 26px; height: 26px;
-      background: #fff;
+      background: var(--dv2-paper);
       border: 2px solid #1FAB6B;
       border-radius: 50%;
       display: grid; place-items: center;
@@ -612,23 +612,23 @@
     }
     /* Green P lot popup */
     .dv-gp-pop { font-family: 'Inter', sans-serif; min-width: 200px; }
-    .dv-gp-pop-title  { font-weight: 800; font-size: 14px; color: #0E1B3D; margin-bottom: 4px; line-height: 1.25; }
+    .dv-gp-pop-title  { font-weight: 800; font-size: 14px; color: #F2F0FA; margin-bottom: 4px; line-height: 1.25; }
     .dv-gp-pop-meta   { font-size: 11.5px; color: #6b7280; margin-bottom: 8px; }
     .dv-gp-pop-rate   { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 800; color: #1FAB6B; margin-bottom: 10px; }
     .dv-gp-pop-rate-year { color: #9ca3af; font-weight: 600; font-size: 11px; }
     .dv-gp-calc {
-      background: #f4f7ff; border: 1px solid rgba(46,100,255,0.15);
+      background: #11182a; border: 1px solid rgba(46,100,255,0.15);
       border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
     }
     .dv-gp-calc-h {
       font-family: 'JetBrains Mono', monospace; font-size: 9px;
       letter-spacing: 1.4px; font-weight: 800;
-      color: #4F5A7A; text-transform: uppercase; margin-bottom: 6px;
+      color: #A9A3C4; text-transform: uppercase; margin-bottom: 6px;
     }
     .dv-gp-calc-row {
       display: flex; justify-content: space-between;
       font-size: 12.5px; padding: 3px 0;
-      color: #0E1B3D;
+      color: #F2F0FA;
     }
     .dv-gp-calc-row span:last-child { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
     .dv-gp-calc-note {
@@ -667,7 +667,7 @@
 
     /* Map theme toggle button */
     .leaflet-control.map-theme-control {
-      background: #fff;
+      background: var(--dv2-paper);
       border: 1px solid rgba(0, 0, 0, 0.15);
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
@@ -681,7 +681,7 @@
       user-select: none;
     }
     .leaflet-control.map-theme-control:active { transform: scale(0.92); }
-    .leaflet-control.map-theme-control:hover  { background: #f5f5f7; }
+    .leaflet-control.map-theme-control:hover  { background: #120E22; }
 
     /* ===================================================
        STEP CARDS (Guide tab)
@@ -763,7 +763,7 @@
     }
     .ai-advisor-input::placeholder { color: rgba(255,255,255,0.5); }
     .ai-advisor-btn {
-      background: #fff; color: var(--blue);
+      background: var(--dv2-paper); color: var(--blue);
       font-weight: 600; font-size: 14px;
       padding: 11px 20px; border-radius: 9999px;
       display: inline-flex; align-items: center; gap: 6px;
@@ -1116,7 +1116,7 @@
       width: 36px; height: 36px;
       border-radius: 999px;
       background: rgba(11,20,48,0.06);
-      color: #0E1B3D;
+      color: #F2F0FA;
       border: none;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
@@ -1151,7 +1151,7 @@
     .profile-sheet-row i { width: 20px; color: var(--blue); }
     .profile-sheet-signout {
       width: 100%; margin-top: 20px; padding: 14px;
-      background: #FEE2E2; color: #DC2626;
+      background: #2a1111; color: #FF8C82;
       border: none; border-radius: 12px;
       font-size: 15px; font-weight: 600; cursor: pointer;
     }
@@ -1159,7 +1159,7 @@
     .ps-notif-card {
       display: flex; align-items: center; gap: 12px;
       margin-top: 16px; padding: 14px;
-      background: var(--blue-50, #eaf0ff);
+      background: var(--blue-50, #11182a);
       border: 1px solid rgba(46,100,255,0.18);
       border-radius: 14px;
     }
@@ -1182,14 +1182,14 @@
        doesn't scream, but is clearly available at the bottom of the sheet. */
     .profile-sheet-logout {
       width: 100%; margin-top: 18px; padding: 13px;
-      background: transparent; color: #DC2626;
+      background: transparent; color: #FF8C82;
       border: 1px solid rgba(220,38,38,0.35); border-radius: 12px;
       font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       transition: background 0.15s, border-color 0.15s;
     }
     .profile-sheet-logout:hover {
-      background: #FEE2E2; border-color: #DC2626;
+      background: #2a1111; border-color: #DC2626;
     }
 
     /* ── Log-out confirmation modal ── */
@@ -1205,7 +1205,7 @@
     }
     .dv-logout-overlay.open { display: flex; }
     .dv-logout-modal {
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       border-radius: 22px;
       padding: 26px 24px 20px;
       width: 100%; max-width: 380px;
@@ -1245,9 +1245,9 @@
       background: var(--blue, #2E64FF); color: #fff; border: 0;
     }
     .dv-logout-btn.danger {
-      background: #FEE2E2; color: #DC2626; border: 1px solid rgba(220,38,38,0.3);
+      background: #2a1111; color: #FF8C82; border: 1px solid rgba(220,38,38,0.3);
     }
-    .dv-logout-btn.danger:hover { background: #fecaca; }
+    .dv-logout-btn.danger:hover { background: #2a1111; }
     .dv-logout-btn.cancel {
       background: transparent; color: var(--text-secondary, #5a6075);
       border: 0; margin-bottom: 0;
@@ -1264,7 +1264,7 @@
     .dv-auth-overlay.open { display: flex; }
     .dv-auth-modal {
       position: relative;
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       border-radius: 24px; padding: 30px 26px 22px;
       width: 100%; max-width: 380px;
       text-align: center;
@@ -1276,7 +1276,7 @@
     .dv-auth-close {
       position: absolute; top: 14px; right: 14px;
       width: 32px; height: 32px; border-radius: 999px;
-      background: var(--elevated, #f4f1ea); color: var(--text-primary, #0e1b3d);
+      background: var(--elevated, #262114); color: var(--text-primary, #0e1b3d);
       border: 0; cursor: pointer; display: grid; place-items: center;
     }
     .dv-auth-logo {
@@ -1298,12 +1298,12 @@
     .dv-auth-google {
       width: 100%; padding: 12px;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      background: #fff; color: #1f1f1f;
+      background: var(--dv2-paper); color: #F2F0FA;
       border: 1px solid var(--border, #dadce0); border-radius: 12px;
       font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
       transition: background 0.15s, box-shadow 0.15s;
     }
-    .dv-auth-google:hover { background: #f7f8fa; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .dv-auth-google:hover { background: #171b24; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     /* Secondary (de-emphasised) Google button — quieter than the email CTA */
     .dv-auth-google.secondary {
       background: transparent;
@@ -1311,23 +1311,23 @@
       font-size: 13px; padding: 11px;
       border-color: var(--border, #e3dfd4);
     }
-    .dv-auth-google.secondary:hover { background: var(--elevated, #f4f1ea); box-shadow: none; }
+    .dv-auth-google.secondary:hover { background: var(--elevated, #262114); box-shadow: none; }
     .dv-auth-or {
       display: flex; align-items: center; gap: 12px;
       margin: 16px 0; color: var(--text-tertiary, #8c95a7); font-size: 12px;
     }
     .dv-auth-or::before, .dv-auth-or::after {
-      content: ""; flex: 1; height: 1px; background: var(--border, #e3dfd4);
+      content: ""; flex: 1; height: 1px; background: var(--border, #242017);
     }
     .dv-auth-input {
       width: 100%; padding: 12px 14px;
       border: 1px solid var(--border, #e3dfd4); border-radius: 12px;
-      font: 600 14px inherit; background: var(--elevated, #f8f6f0);
+      font: 600 14px inherit; background: var(--elevated, #282313);
       color: var(--text-primary, #0e1b3d);
       transition: border-color 0.15s, background 0.15s;
     }
     .dv-auth-input:focus { outline: 2px solid var(--blue, #2E64FF); border-color: var(--blue, #2E64FF); }
-    .dv-auth-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv-auth-input.invalid { border-color: #e1473d; background: #2a1311; }
     .dv-auth-code {
       text-align: center; letter-spacing: 8px;
       font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800;
@@ -1375,7 +1375,7 @@
     }
     .dv-free-overlay.open { display: flex; }
     .dv-free-sheet {
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       width: 100%; max-width: 460px;
       border-radius: 24px 24px 0 0;
       padding: 14px 18px calc(env(safe-area-inset-bottom, 0px) + 24px);
@@ -1387,13 +1387,13 @@
     @keyframes dvFreeUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .dv-free-handle {
       width: 38px; height: 4px; border-radius: 999px;
-      background: var(--border, #e3dfd4);
+      background: var(--border, #242017);
       margin: 2px auto 14px;
     }
     .dv-free-close {
       position: absolute; top: 14px; right: 16px;
       width: 32px; height: 32px; border-radius: 999px;
-      background: var(--elevated, #f4f1ea); color: var(--text-primary, #0e1b3d);
+      background: var(--elevated, #262114); color: var(--text-primary, #0e1b3d);
       border: 0; cursor: pointer;
       display: grid; place-items: center;
     }
@@ -1413,7 +1413,7 @@
     }
     .dv-free-count {
       flex-shrink: 0;
-      background: rgba(31,171,107,0.14); color: #0d6e44;
+      background: rgba(31,171,107,0.14); color: #5FD894;
       font-family: var(--dv2-mono, monospace);
       font-size: 12px; font-weight: 800;
       padding: 6px 12px; border-radius: 999px;
@@ -1421,16 +1421,16 @@
     }
     .dv-free-warn {
       display: flex; gap: 10px; align-items: flex-start;
-      background: #fff8e7; border: 1px solid #f5cf73;
+      background: #2a2211; border: 1px solid #f5cf73;
       border-radius: 14px; padding: 12px 14px; margin-bottom: 16px;
-      font-size: 12.5px; line-height: 1.45; color: #7a4f00;
+      font-size: 12.5px; line-height: 1.45; color: #F5BB63;
     }
     .dv-free-warn b { font-weight: 800; }
     .dv-free-list { display: flex; flex-direction: column; gap: 8px; }
     .dv-free-row {
       display: flex; align-items: center; gap: 12px;
       padding: 13px 14px;
-      background: var(--elevated, #f8f6f0);
+      background: var(--elevated, #282313);
       border: 1px solid var(--border, #e3dfd4);
       border-radius: 14px;
     }
@@ -1489,7 +1489,7 @@
     /* Invalid state — red border, soft red background, shake */
     .profile-sheet-email-input.invalid {
       border-color: #e1473d;
-      background: #fff4f3;
+      background: #2a1311;
     }
     .profile-sheet-email-input.shake {
       animation: shake 0.3s ease-in-out;
@@ -1567,7 +1567,7 @@
     .auth-email-input:focus { border-color: var(--blue); }
     .auth-email-input.invalid {
       border-color: #ff8a82;
-      background: #fff4f3;
+      background: #2a1311;
     }
     .auth-email-input.shake { animation: shake 0.3s ease-in-out; }
     .auth-error {
@@ -1593,7 +1593,7 @@
 
     .support-banner {
       display: flex; align-items: center; gap: 12px;
-      background: linear-gradient(135deg, #fff5f5 0%, #fff0f8 100%);
+      background: linear-gradient(135deg, #2a1111 0%, #2a111e 100%);
       border: 1.5px solid rgba(239,68,68,0.18);
       border-radius: 16px; padding: 14px 16px;
       margin-bottom: 12px; text-decoration: none;
@@ -1607,7 +1607,7 @@
     }
     .support-emoji { font-size: 28px; flex-shrink: 0; }
     .support-text  { flex: 1; min-width: 0; }
-    .support-title { font-size: 14px; font-weight: 700; color: #DC2626; margin-bottom: 2px; }
+    .support-title { font-size: 14px; font-weight: 700; color: #FF8C82; margin-bottom: 2px; }
     .support-sub   { font-size: 12px; color: var(--text-secondary); }
     .support-arrow { font-size: 22px; color: rgba(220,38,38,0.4); font-weight: 300; flex-shrink: 0; }
 
@@ -1622,7 +1622,7 @@
       left: 50%;
       transform: translateX(-50%);
       background: var(--green);
-      color: #000;
+      color: #F2F0FA;
       font-size: 14px;
       font-weight: 600;
       padding: 10px 22px;
@@ -1766,8 +1766,8 @@
       font-size: 13px; line-height: 1.4;
     }
     .street-status-live b { font-weight: 800; }
-    .street-status-live.free { background: rgba(31,171,107,0.12); border: 1px solid rgba(31,171,107,0.3); color: #0d6e44; }
-    .street-status-live.soon { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #92400e; }
+    .street-status-live.free { background: rgba(31,171,107,0.12); border: 1px solid rgba(31,171,107,0.3); color: #5FD894; }
+    .street-status-live.soon { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); color: #F5BB63; }
     .street-status-live.paid { background: rgba(255,69,58,0.10);  border: 1px solid rgba(255,69,58,0.25); color: var(--red); }
     /* "Read the sign" reminder under every street result */
     .street-sign-note {
@@ -1784,7 +1784,7 @@
       position: fixed;
       inset: 0;
       z-index: 99998; /* just below splash */
-      background: #fff;
+      background: var(--dv2-paper);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -2236,7 +2236,7 @@
     .chat-fab-dot {
       position: absolute; top: -1px; right: -1px;
       width: 13px; height: 13px;
-      background: #fff; border-radius: 50%;
+      background: var(--dv2-paper); border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
     }
     .chat-fab-dot::after {
@@ -2360,7 +2360,7 @@
     }
     .vision-scan-status.done {
       animation: none; background: rgba(34,197,94,0.08);
-      border-color: rgba(34,197,94,0.25); color: #15803D;
+      border-color: rgba(34,197,94,0.25); color: #5FD894;
     }
     .vision-scan-status.error {
       animation: none; background: rgba(239,68,68,0.08);
@@ -2941,7 +2941,7 @@
 
     /* ──── "By the numbers" cost breakdown block ──── */
     .dv-lv-numbers {
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       border: 1px solid var(--border, #d6d2c4);
       border-radius: 16px; padding: 6px 16px;
       margin: 0 0 8px;
@@ -2963,7 +2963,7 @@
       font-weight: 800;
     }
     .dv-lv-num-row.total > span:first-child { color: var(--text-primary, #111); }
-    .dv-lv-num-row.total .mono { font-size: 18px; color: #E1473D; }
+    .dv-lv-num-row.total .mono { font-size: 18px; color: #FF8C82; }
     .dv-lv-num-save {
       background: rgba(31,171,107,0.10);
       border: 1px solid rgba(31,171,107,0.30);
@@ -2971,7 +2971,7 @@
       margin: 12px 0 4px;
       font-size: 13px; line-height: 1.55; color: var(--text-primary, #111);
     }
-    .dv-lv-num-save b { font-weight: 800; color: #157a40; }
+    .dv-lv-num-save b { font-weight: 800; color: #5FD894; }
 
     /* "What do you want to do?" eyebrow inside the focused page */
     #dv-scan-result-view > .dv-lv-eyebrow,
@@ -2988,7 +2988,7 @@
     .dv-lv-choice {
       display: flex; align-items: center; gap: 14px;
       width: 100%; text-align: left;
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       border: 1px solid var(--border, #d6d2c4);
       border-radius: 16px; padding: 16px;
       cursor: pointer; font-family: inherit;
@@ -3035,7 +3035,7 @@
     .dv-lv-firms { display: grid; gap: 12px; }
     .dv-lv-firm {
       display: block; width: 100%; text-align: left;
-      background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
+      background: var(--surface, #120E22); border: 1px solid var(--border, #d6d2c4);
       border-radius: 16px; padding: 16px; cursor: pointer;
       font-family: inherit;
       transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
@@ -3092,14 +3092,14 @@
       display: inline-flex; align-items: center; gap: 6px;
       background: rgba(31,171,107,0.10);
       border: 1px solid rgba(31,171,107,0.30);
-      color: #157a40;
+      color: #5FD894;
       font-size: 12px; font-weight: 700;
       padding: 6px 12px; border-radius: 999px;
       margin: 0 0 14px;
     }
     .dv-lv-firm-claim-big {
       position: relative;
-      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      background: linear-gradient(135deg, #2a2211, #2a2111);
       border: 1px solid rgba(232,155,34,0.30);
       border-radius: 14px; padding: 14px 16px 14px 50px;
       margin: 0 0 16px;
@@ -3119,7 +3119,7 @@
     }
     .dv-lv-firm-facts {
       display: grid; gap: 12px;
-      background: var(--surface, #fff);
+      background: var(--surface, #120E22);
       border: 1px solid var(--border, #d6d2c4);
       border-radius: 14px; padding: 14px 16px;
       margin: 0 0 16px;
@@ -3148,7 +3148,7 @@
       content: '✓'; position: absolute; left: 0; top: 0;
       width: 18px; height: 18px;
       display: grid; place-items: center;
-      background: rgba(31,171,107,0.14); color: #157a40;
+      background: rgba(31,171,107,0.14); color: #5FD894;
       border-radius: 50%; font-size: 11px; font-weight: 800;
     }
 
@@ -3157,7 +3157,7 @@
       display: flex; align-items: center; gap: 12px;
       width: 100%; margin: 0 0 14px;
       text-decoration: none;
-      background: linear-gradient(135deg, #fffdf6, #fff7e0);
+      background: linear-gradient(135deg, #2a2411, #2a2311);
       border: 1px solid #f5d97a;
       border-radius: 14px; padding: 14px 16px;
       transition: transform .12s ease, box-shadow .12s ease;
@@ -3167,7 +3167,7 @@
     .dv-lv-firm-reviews-ic {
       flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
       display: grid; place-items: center;
-      background: #FBBC05; color: #5a3a00;
+      background: #FBBC05; color: #F5BB63;
       font-size: 20px; font-weight: 900;
     }
     .dv-lv-firm-reviews-tx { flex: 1; min-width: 0; }
@@ -3176,7 +3176,7 @@
       color: var(--text-primary, #111); letter-spacing: -0.2px;
     }
     .dv-lv-firm-reviews-s  {
-      display: block; font-size: 12px; color: #8a6d22;
+      display: block; font-size: 12px; color: #F5BB63;
       margin-top: 2px;
     }
     .dv-lv-firm-reviews-arrow {
@@ -3203,7 +3203,7 @@
     }
     .dv-lv-field input {
       width: 100%; padding: 14px 14px; font-size: 16px; font-family: inherit;
-      background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
+      background: var(--surface, #120E22); border: 1px solid var(--border, #d6d2c4);
       border-radius: 12px; color: var(--text-primary, #111);
       transition: border-color .15s ease, box-shadow .15s ease;
     }
@@ -3216,7 +3216,7 @@
     .dv-lv-time-options input { position: absolute; opacity: 0; pointer-events: none; }
     .dv-lv-time-options span {
       display: block; text-align: center;
-      background: var(--surface, #fff); border: 1px solid var(--border, #d6d2c4);
+      background: var(--surface, #120E22); border: 1px solid var(--border, #d6d2c4);
       border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 700;
       color: var(--text-primary, #111);
       transition: all .15s ease;
@@ -3243,7 +3243,7 @@
     .dv-lv-resume {
       display: flex; align-items: center; gap: 14px;
       width: 100%; margin: 14px 0 4px;
-      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      background: linear-gradient(135deg, #2a2211, #2a2111);
       border: 1px solid rgba(232,155,34,0.35);
       border-radius: 16px; padding: 14px 16px;
       cursor: pointer; font-family: inherit;
@@ -3260,7 +3260,7 @@
     .dv2-loss-cta {
       margin-top: 16px;
       padding: 18px;
-      background: linear-gradient(135deg, #fff7e6, #ffefd1);
+      background: linear-gradient(135deg, #2a2211, #2a2111);
       border: 1px solid #f5b94d;
       border-radius: 16px;
       position: relative;
@@ -3279,24 +3279,24 @@
       font-family: var(--dv2-serif, Georgia, serif);
       font-size: 19px; font-weight: 700;
       letter-spacing: -0.4px;
-      color: #7a3f00;
+      color: #F5BB63;
       line-height: 1.2;
       margin-bottom: 8px;
       position: relative;
     }
     .dv2-loss-detail {
       font-size: 13px; line-height: 1.5;
-      color: #5b3a0a;
+      color: #F5BB63;
       margin-bottom: 4px;
       position: relative;
     }
     .dv2-loss-detail strong { font-weight: 800; }
     .dv2-loss-detail .dv2-loss-strike {
-      color: #b91c1c; font-weight: 800;
+      color: #FF8C82; font-weight: 800;
     }
     .dv2-loss-promise {
       font-size: 12px;
-      color: #6b4818;
+      color: #F5BB63;
       margin: 8px 0 12px;
       opacity: 0.88;
       position: relative;
@@ -3311,16 +3311,16 @@
       border: 1px solid #d4a04a;
       border-radius: 10px;
       font: 600 14px var(--dv2-font, inherit);
-      background: white;
-      color: #1f1407;
+      background: var(--dv2-paper);
+      color: #F5BB63;
       min-width: 0;
     }
     .dv2-loss-input:focus { outline: 2px solid #d97706; border-color: #d97706; }
-    .dv2-loss-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv2-loss-input.invalid { border-color: #e1473d; background: #2a1311; }
     .dv2-loss-input.shake   { animation: shake 0.3s ease-in-out; }
     .dv2-loss-error {
       display: none;
-      font-size: 12px; color: #b91c1c;
+      font-size: 12px; color: #FF8C82;
       font-weight: 700;
       margin-top: 6px;
     }
@@ -3353,7 +3353,7 @@
       border: 1px solid rgba(31,171,107,0.3);
       border-radius: 10px;
       font-size: 13px;
-      color: #0d6e44;
+      color: #5FD894;
       font-weight: 600;
       line-height: 1.4;
       display: none;
@@ -3381,8 +3381,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(0deg,  rgba(255,255,255,0.04) 1px, transparent 1px),
+      background-image: linear-gradient(0deg,  rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
       background-size: 30px 30px;
       pointer-events: none;
@@ -3450,7 +3449,7 @@
       min-width: 0;
     }
     .dv2-tip-share {
-      background: white;
+      background: var(--dv2-paper);
       color: var(--dv2-blue-d, #0E1B3D);
       border: 0;
       box-shadow: 0 6px 14px -4px rgba(0,0,0,0.25);
@@ -3477,7 +3476,7 @@
     .dv2-doc-cta {
       margin-top: 16px;
       padding: 18px;
-      background: linear-gradient(135deg, #eaf0ff, #d9e3ff);
+      background: linear-gradient(135deg, #11182a, #11172a);
       border: 1px solid #5a78d6;
       border-radius: 16px;
       position: relative;
@@ -3518,16 +3517,16 @@
       border: 1px solid #5a78d6;
       border-radius: 10px;
       font: 600 14px var(--dv2-font, inherit);
-      background: white;
+      background: var(--dv2-paper);
       color: var(--dv2-ink);
       min-width: 0;
     }
     .dv2-doc-input:focus { outline: 2px solid var(--dv2-blue); border-color: var(--dv2-blue); }
-    .dv2-doc-input.invalid { border-color: #e1473d; background: #fff4f3; }
+    .dv2-doc-input.invalid { border-color: #e1473d; background: #2a1311; }
     .dv2-doc-input.shake   { animation: shake 0.3s ease-in-out; }
     .dv2-doc-error {
       display: none;
-      font-size: 12px; color: #b91c1c;
+      font-size: 12px; color: #FF8C82;
       font-weight: 700;
       margin-top: 6px;
     }
@@ -3558,7 +3557,7 @@
       border: 1px solid rgba(31,171,107,0.3);
       border-radius: 10px;
       font-size: 13px;
-      color: #0d6e44;
+      color: #5FD894;
       font-weight: 600;
       line-height: 1.4;
       display: none;
@@ -3603,7 +3602,7 @@
       border: 1px solid rgba(31,171,107,0.25);
       border-radius: 12px;
       font-size: 13px; line-height: 1.45;
-      color: #0d6e44;
+      color: #5FD894;
       display: flex; align-items: center; gap: 8px;
     }
     .dv2-known-line svg { flex-shrink: 0; }
@@ -3716,23 +3715,23 @@
     }
 
     /* ── TRUE COST CALCULATOR ──────────────────────────── */
-    .true-cost-card { background:#fff; border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
-    .tcc-select { width:100%; padding:12px 32px 12px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:14px; font-family:inherit; background:#f9fafb url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center; color:#1a1a2e; appearance:none; cursor:pointer; margin-bottom:12px; box-sizing:border-box; }
-    .tcc-select:focus { outline:none; border-color:var(--blue); background:#fff; }
+    .true-cost-card { background: var(--dv2-paper); border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+    .tcc-select { width:100%; padding:12px 32px 12px 14px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:14px; font-family:inherit; background: #171d24 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center; color: #F2F0FA; appearance:none; cursor:pointer; margin-bottom:12px; box-sizing:border-box; }
+    .tcc-select:focus { outline:none; border-color:var(--blue); background: var(--dv2-paper); }
     .tcc-amount-wrap { position:relative; margin-bottom:12px; }
     .tcc-dollar-sign { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:15px; color:#6b7280; font-weight:600; pointer-events:none; }
-    .tcc-amount-input { width:100%; padding:12px 14px 12px 26px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:14px; font-family:inherit; background:#f9fafb; color:#1a1a2e; box-sizing:border-box; }
-    .tcc-amount-input:focus { outline:none; border-color:var(--blue); background:#fff; }
-    .tcc-calc-btn { width:100%; padding:14px; background:var(--blue); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; margin-bottom:16px; }
-    .tcc-calc-btn:active { background:var(--primary-dim); }
-    .tcc-result { display:none; background:#f0f4ff; border-radius:14px; padding:18px; margin-bottom:12px; border:1.5px solid #c7d7f8; animation:tccFadeIn .3s ease; }
+    .tcc-amount-input { width:100%; padding:12px 14px 12px 26px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:14px; font-family:inherit; background: #171d24; color: #F2F0FA; box-sizing:border-box; }
+    .tcc-amount-input:focus { outline:none; border-color:var(--blue); background: var(--dv2-paper); }
+    .tcc-calc-btn { width:100%; padding:14px; background: var(--blue); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; margin-bottom:16px; }
+    .tcc-calc-btn:active { background: var(--primary-dim); }
+    .tcc-result { display:none; background: #11182a; border-radius:14px; padding:18px; margin-bottom:12px; border:1.5px solid #c7d7f8; animation:tccFadeIn .3s ease; }
     .tcc-result.visible { display:block; }
     @keyframes tccFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .tcc-result-title { font-size:13px; font-weight:600; color:var(--blue); text-transform:uppercase; letter-spacing:.5px; margin-bottom:14px; }
     .tcc-line { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #dce7fb; font-size:14px; }
     .tcc-line:last-of-type { border-bottom:none; }
-    .tcc-line-label { color:#4b5563; }
-    .tcc-line-value { font-weight:600; color:#1a1a2e; }
+    .tcc-line-label { color: #A9A3C4; }
+    .tcc-line-value { font-weight:600; color: #F2F0FA; }
     .tcc-line-value.red { color:var(--red); }
     .tcc-line-value.orange { color:var(--warning); }
     .tcc-line-value.green { color:var(--green); }
@@ -3740,28 +3739,28 @@
     .tcc-total-label { font-size:15px; font-weight:800; }
     .tcc-total-value { font-size:22px; font-weight:900; color:var(--red); }
     .tcc-verdict-box { margin-top:14px; padding:12px 14px; border-radius:10px; font-size:13px; font-weight:600; line-height:1.5; }
-    .tcc-verdict-box.fight { background:#fef3c7; border:1px solid #fbbf24; color:#92400e; }
-    .tcc-verdict-box.pay { background:#d1fae5; border:1px solid #34d399; color:#065f46; }
-    .tcc-verdict-box.serious { background:#fee2e2; border:1px solid #f87171; color:#991b1b; }
-    .tcc-points-badge { display:inline-flex; align-items:center; gap:5px; background:#1a1a2e; color:#fff; border-radius:20px; padding:3px 10px; font-size:12px; font-weight:700; margin-left:6px; }
-    .tcc-share-btn { width:100%; padding:13px; background:transparent; color:var(--blue); border:1.5px solid var(--blue); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; }
-    .tcc-share-btn:active { background:#f0f4ff; }
-    .tcc-expert-card { background:linear-gradient(135deg,var(--blue) 0%,#1a6fd4 100%); border-radius:14px; padding:18px; margin-top:16px; color:#fff; animation:tccFadeIn .4s ease; }
+    .tcc-verdict-box.fight { background: #2a2511; border:1px solid #fbbf24; color: #F5BB63; }
+    .tcc-verdict-box.pay { background: #112a1d; border:1px solid #34d399; color: #5FD894; }
+    .tcc-verdict-box.serious { background: #2a1111; border:1px solid #f87171; color: #FF8C82; }
+    .tcc-points-badge { display:inline-flex; align-items:center; gap:5px; background: #1a1a2e; color:#fff; border-radius:20px; padding:3px 10px; font-size:12px; font-weight:700; margin-left:6px; }
+    .tcc-share-btn { width:100%; padding:13px; background: transparent; color:var(--blue); border:1.5px solid var(--blue); border-radius:12px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; }
+    .tcc-share-btn:active { background: #11182a; }
+    .tcc-expert-card { background: linear-gradient(135deg,var(--blue) 0%,#1a6fd4 100%); border-radius:14px; padding:18px; margin-top:16px; color:#fff; animation:tccFadeIn .4s ease; }
     .tcc-expert-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-    .tcc-expert-avatar { width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .tcc-expert-avatar { width:46px; height:46px; border-radius:50%; background: rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
     .tcc-expert-name { font-size:15px; font-weight:700; }
     .tcc-expert-role { font-size:12px; color:rgba(255,255,255,.75); margin-top:2px; }
     .tcc-expert-desc { font-size:13px; color:rgba(255,255,255,.9); line-height:1.6; margin-bottom:14px; }
     .tcc-situation-label { font-size:12px; font-weight:600; color:rgba(255,255,255,.8); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
-    .tcc-situation-textarea { width:100%; min-height:90px; padding:12px; border:1.5px solid rgba(255,255,255,.3); border-radius:10px; font-size:14px; font-family:inherit; background:rgba(255,255,255,.12); color:#fff; resize:vertical; box-sizing:border-box; margin-bottom:12px; line-height:1.5; }
+    .tcc-situation-textarea { width:100%; min-height:90px; padding:12px; border:1.5px solid rgba(255,255,255,.3); border-radius:10px; font-size:14px; font-family:inherit; background: rgba(255,255,255,.12); color:#fff; resize:vertical; box-sizing:border-box; margin-bottom:12px; line-height:1.5; }
     .tcc-situation-textarea::placeholder { color:rgba(255,255,255,.5); }
-    .tcc-situation-textarea:focus { outline:none; border-color:rgba(255,255,255,.7); background:rgba(255,255,255,.18); }
+    .tcc-situation-textarea:focus { outline:none; border-color:rgba(255,255,255,.7); background: rgba(255,255,255,.18); }
     .tcc-contact-btns { display:flex; flex-direction:column; gap:8px; }
     .tcc-contact-btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:13px; border-radius:11px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; border:none; width:100%; box-sizing:border-box; }
     .tcc-contact-btn:active { opacity:.85; transform:scale(.98); }
-    .tcc-btn-whatsapp { background:#25D366; color:#fff; }
-    .tcc-btn-sms { background:rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.35) !important; }
-    .tcc-btn-email { background:rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.35) !important; }
+    .tcc-btn-whatsapp { background: #25D366; color:#fff; }
+    .tcc-btn-sms { background: rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.35) !important; }
+    .tcc-btn-email { background: rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.35) !important; }
     .tcc-expert-note { font-size:11px; color:rgba(255,255,255,.65); text-align:center; margin-top:10px; line-height:1.6; }
     .tcc-disclaimer { font-size:11px; color:#9ca3af; text-align:center; margin-top:12px; line-height:1.5; }
 
@@ -3878,7 +3877,7 @@
       gap: 14px;
       margin: 14px 0 18px;
       padding: 16px 16px 18px;
-      background: linear-gradient(135deg, #ffffff, #f4f7ff);
+      background: linear-gradient(135deg, #120E22, #11182a);
       border: 1px solid rgba(46,100,255,0.20);
       border-radius: 20px;
       box-shadow: 0 16px 36px -22px rgba(26,63,184,0.30);
@@ -3951,7 +3950,7 @@
     .dv2-hero {
       /* Pure deep blue — matches the iPhone status bar (theme-color) above.
          No purple tint, no radial gradients pulling it off-color. */
-      background: var(--dv2-blue-d);
+      background: var(--dv2-blue-d-fill, #1A3FB8);
       color: white;
       padding: 28px 20px 36px;
       border-radius: 0 0 28px 28px;
@@ -3976,8 +3975,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       mask-image: radial-gradient(circle at 30% 50%, black, transparent 70%);
@@ -4018,7 +4016,9 @@
     /* The user's name stays bright white with only a whisper of cool tint
        at the very bottom so it reads clearly white against the blue hero. */
     .dv2-greeting #dv2-name {
-      background: linear-gradient(180deg, #FFFFFF 0%, #EDF2FF 100%);
+      /* background-clip:text — this gradient IS the letterform colour, so it
+         must stay light against the blue hero (not darkened like a surface). */
+      background: linear-gradient(180deg, #FFFFFF 0%, #E8EEFF 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -4044,8 +4044,7 @@
 
     /* Glass balance card inside hero */
     .dv2-balance {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06));
+      background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.06));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.18);
@@ -4282,7 +4281,7 @@
       bottom: 50%;
       right: calc(100% + 14px);
       transform: translateY(50%);
-      background: white;
+      background: var(--dv2-paper);
       color: var(--dv2-ink);
       padding: 10px 14px;
       border-radius: 14px;
@@ -4351,7 +4350,7 @@
     .design-v2 .dv2-tab-hero { display: block; }
 
     .dv2-hero-simple {
-      background: var(--dv2-blue-d);
+      background: var(--dv2-blue-d-fill, #1A3FB8);
       color: white;
       padding: 28px 20px 32px;
       border-radius: 0 0 28px 28px;
@@ -4396,7 +4395,7 @@
       flex-shrink: 0; transition: background 0.15s, color 0.15s;
     }
     .dv2-hsimple-filter.active {
-      background: white; color: var(--dv2-blue-d);
+      background: var(--dv2-paper); color: var(--dv2-blue-d);
     }
 
     /* Hide v1 page titles when v2 is on so heroes replace them */
@@ -4492,7 +4491,7 @@
       border: none !important;
     }
     .design-v2 .btn-primary:hover {
-      background: var(--dv2-blue-d) !important;
+      background: var(--dv2-blue-d-fill, #1A3FB8) !important;
     }
 
     /* Inputs */
@@ -4531,7 +4530,7 @@
       top: calc(env(safe-area-inset-top, 0px) + 12px);
       left: 16px;
       z-index: 100;
-      background: rgba(255,255,255,0.96);
+      background: rgba(18,14,34,0.96);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(14,27,61,0.10);
@@ -4540,7 +4539,7 @@
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
       font-size: 12px;
       font-weight: 700;
-      color: #1A3FB8;
+      color: #9DBAFF;
       cursor: pointer;
       box-shadow: 0 8px 20px -8px rgba(14,27,61,0.20);
       align-items: center;
@@ -4550,7 +4549,7 @@
       letter-spacing: -0.1px;
     }
     .dv2-back-to-landing:hover {
-      background: white;
+      background: var(--dv2-paper);
       transform: translateY(-1px);
       box-shadow: 0 12px 24px -8px rgba(14,27,61,0.25);
     }
@@ -4743,7 +4742,7 @@
     .dv2-insp-intro b { font-weight: 800; }
     .dv2-insp-featured {
       position: relative;
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d-fill, #1A3FB8));
       color: #fff; border-radius: 18px; padding: 18px;
       margin-bottom: 16px;
       box-shadow: 0 16px 36px -14px rgba(26,63,184,0.45);
@@ -4779,7 +4778,7 @@
     .dv2-insp-price .lbl { font-size: 12px; color: rgba(255,255,255,0.8); }
     .dv2-insp-disc {
       display: inline-flex; align-items: center; gap: 6px; margin-left: auto;
-      background: #2bd673; color: #06351c; font-weight: 800; font-size: 11px;
+      background: #2bd673; color: #5FD894; font-weight: 800; font-size: 11px;
       letter-spacing: 0.3px; padding: 5px 10px; border-radius: 999px;
     }
     .dv2-insp-script {
@@ -4794,7 +4793,7 @@
       padding: 12px; border-radius: 12px; text-decoration: none;
       font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; border: 0;
     }
-    .dv2-insp-fbtn.call { background: #fff; color: var(--dv2-blue-d); }
+    .dv2-insp-fbtn.call { background: var(--dv2-paper); color: var(--dv2-blue-d); }
     .dv2-insp-fbtn.maps { background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
     .dv2-insp-fbtn svg { width: 15px; height: 15px; }
 
@@ -4851,14 +4850,14 @@
     .dv2-tow-info b { color: var(--dv2-ink); font-weight: 800; }
     .dv2-tow-addr {
       font-size: 12px; line-height: 1.6; color: var(--dv2-ink);
-      background: #fff; border: 1px solid var(--dv2-line);
+      background: var(--dv2-paper); border: 1px solid var(--dv2-line);
       border-radius: 10px; padding: 11px 13px; margin: 0 0 8px;
     }
 
     /* ─── Delivery Zone explainer (inside Street Parking Checker card) ─── */
     .dv-dz-card {
       margin-top: 18px;
-      background: linear-gradient(135deg, #f4f7ff, #ffffff);
+      background: linear-gradient(135deg, #11182a, #120E22);
       border: 1px solid rgba(46,100,255,0.18);
       border-radius: 14px;
       padding: 14px 16px 12px;
@@ -4924,7 +4923,7 @@
       font-size: 12.5px; line-height: 1.5;
       color: var(--text-secondary, #4F5A7A);
     }
-    .dv-dz-mini-body b { font-weight: 800; color: #ad2f28; }
+    .dv-dz-mini-body b { font-weight: 800; color: #FF8C82; }
 
     /* ─── "How to check a car before buying" guide ─── */
     /* Entry button (lives inside the inspect card, opens the sub-page) */
@@ -5031,7 +5030,7 @@
     @keyframes dvVinChar { to { opacity: 1; } }
     .dv2-vin-match {
       display: flex; align-items: center; gap: 7px; justify-content: center;
-      margin-top: 12px; font-size: 13px; font-weight: 800; color: #1a9a52;
+      margin-top: 12px; font-size: 13px; font-weight: 800; color: #5FD894;
       background: rgba(26,154,82,0.08); border: 1px solid rgba(26,154,82,0.2);
       border-radius: 11px; padding: 10px; opacity: 0;
     }
@@ -5053,12 +5052,12 @@
     .dv2-chk-name { font-weight: 800; font-size: 13px; color: var(--dv2-ink); margin-bottom: 2px; }
     .dv2-chk-desc { font-size: 11px; line-height: 1.45; color: var(--dv2-ink2); }
     /* Tinted variants so the grid reads as a colourful checklist */
-    .dv2-chk.c1 { background: #FFF1E8; border-color: #FFD9C2; }
-    .dv2-chk.c2 { background: #EAF1FF; border-color: #CFE0FF; }
-    .dv2-chk.c3 { background: #F0ECFF; border-color: #DDD3FF; }
-    .dv2-chk.c4 { background: #E8F8F0; border-color: #C6ECD7; }
-    .dv2-chk.c5 { background: #FFF6E0; border-color: #FBE6AE; }
-    .dv2-chk.c6 { background: #FDEAEF; border-color: #F8C9D4; }
+    .dv2-chk.c1 { background: #2a1b11; border-color: #FFD9C2; }
+    .dv2-chk.c2 { background: #11192a; border-color: #CFE0FF; }
+    .dv2-chk.c3 { background: #16112a; border-color: #DDD3FF; }
+    .dv2-chk.c4 { background: #112a1d; border-color: #C6ECD7; }
+    .dv2-chk.c5 { background: #2a2211; border-color: #FBE6AE; }
+    .dv2-chk.c6 { background: #2a1117; border-color: #F8C9D4; }
     /* Records (Carfax / UVIP) callout */
     .dv2-records {
       background: var(--dv2-blue-50); border: 1px solid rgba(46,100,255,0.15);
@@ -5069,7 +5068,7 @@
     /* Video guide card */
     .dv2-vid-card {
       display: flex; align-items: center; gap: 13px; text-decoration: none;
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d-fill, #1A3FB8));
       color: #fff; border-radius: 16px; padding: 16px; margin-top: 18px;
       box-shadow: 0 14px 30px -14px rgba(26,63,184,0.45);
       transition: transform 0.15s ease;
@@ -5135,7 +5134,7 @@
     .dv2-hc-fact-label {
       font-family: var(--dv2-mono);
       font-size: 10px; letter-spacing: 1.4px;
-      font-weight: 800; color: #0d6e44;
+      font-weight: 800; color: #5FD894;
     }
     .dv2-hc-fact-value {
       font-size: 13px; font-weight: 700;
@@ -5174,7 +5173,7 @@
     }
     /* Sticky-feeling pay CTA at the bottom of the handicap card */
     .dv2-hc-pay {
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d-fill, #1A3FB8));
       color: white;
       border-radius: 18px;
       padding: 20px;
@@ -5204,7 +5203,7 @@
     .dv2-hc-pay-btn {
       width: 100%;
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      background: white; color: var(--dv2-blue-d);
+      background: var(--dv2-paper); color: var(--dv2-blue-d);
       border: 0; border-radius: 12px;
       padding: 14px;
       font-family: var(--dv2-font); font-weight: 800; font-size: 15px;
@@ -5261,7 +5260,7 @@
       color: var(--dv2-blue-d);
       text-decoration: none;
       padding: 8px 12px;
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid rgba(46,100,255,0.25);
       border-radius: 999px;
     }
@@ -5302,7 +5301,7 @@
       position: relative;
       display: flex; align-items: center; justify-content: center; gap: 8px;
       width: 100%;
-      background: white; color: var(--dv2-blue-d);
+      background: var(--dv2-paper); color: var(--dv2-blue-d);
       padding: 14px 18px; border-radius: 12px;
       font-family: var(--dv2-font); font-size: 15px; font-weight: 800;
       text-decoration: none;
@@ -5378,7 +5377,7 @@
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%;
       padding: 14px 18px;
-      background: white;
+      background: var(--dv2-paper);
       color: var(--dv2-blue-d);
       border: 0;
       border-radius: 12px;
@@ -5540,7 +5539,7 @@
       width: 18px; height: 18px;
       border-radius: 999px;
       border: 2px solid var(--dv2-line);
-      background: white;
+      background: var(--dv2-paper);
       transition: border-color 0.15s, background 0.15s;
     }
     .dv2-er-opt:has(input:checked) {
@@ -5571,7 +5570,7 @@
     .dv2-er-output-text {
       width: 100%;
       padding: 14px;
-      background: #F8FAFD !important;
+      background: #111b2a !important;
       border: 1.5px solid var(--dv2-line) !important;
       border-radius: 10px;
       font-family: var(--dv2-mono) !important;
@@ -5603,7 +5602,7 @@
       background: var(--dv2-blue);
       color: white;
     }
-    .dv2-er-action-btn.primary:hover { background: var(--dv2-blue-d); }
+    .dv2-er-action-btn.primary:hover { background: var(--dv2-blue-d-fill, #1A3FB8); }
 
     /* Wizard footer */
     .dv2-er-w-footer {
@@ -5643,7 +5642,7 @@
 
     /* ─── Clean Ticket-Details summary card after scan ─── */
     .design-v2 .dv2-sd-card {
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid var(--dv2-line-soft);
       border-radius: 14px;
       padding: 14px 16px;
@@ -5722,7 +5721,7 @@
 
     /* ─── Big prominent fine amount inside the verdict card ─── */
     .design-v2 .dv2-verdict-amount {
-      background: linear-gradient(135deg, #FFEAE0 0%, #FBE5E3 100%);
+      background: linear-gradient(135deg, #2a1911 0%, #2a1311 100%);
       border: 1.5px solid rgba(225,71,61,0.25);
       border-radius: 12px;
       padding: 14px 16px;
@@ -5831,8 +5830,8 @@
       width: 100%;
       margin-top: 14px;
       padding: 13px 18px;
-      background: white;
-      color: #1A3FB8;
+      background: var(--dv2-paper);
+      color: #9DBAFF;
       border: 0;
       border-radius: 11px;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -5858,7 +5857,7 @@
     /* ─── Restore True Cost Calculator to its original v1 look ─── */
     /* Don't apply the v2 paper-card flat treatment to this card */
     .design-v2 #svc-cost {
-      background: #fff !important;
+      background: var(--dv2-paper) !important;
       border: none !important;
       border-radius: 16px !important;
       padding: 20px !important;
@@ -5875,7 +5874,7 @@
     .design-v2 #svc-cost .tcc-select {
       border-radius: 10px !important;
       border-width: 1.5px !important;
-      background: #f9fafb !important;
+      background: #171d24 !important;
       padding: 12px 14px !important;
       font-family: inherit !important;
       font-size: 16px !important; /* 16px+ stops iOS auto-zoom-on-focus */
@@ -5884,7 +5883,7 @@
     .design-v2 #svc-cost .tcc-amount-input { padding-left: 26px !important; }
     .design-v2 #svc-cost .tcc-amount-input:focus,
     .design-v2 #svc-cost .tcc-select:focus {
-      background: #fff !important;
+      background: var(--dv2-paper) !important;
       box-shadow: none !important;
     }
     .design-v2 #svc-cost .tcc-calc-btn {
@@ -5968,7 +5967,7 @@
     #tab-legal[data-scan-result-active] .dv-scan-result-back {
       display: inline-flex !important;
       align-items: center; gap: 8px;
-      background: #fff; border: 1px solid rgba(14,27,61,0.10);
+      background: var(--dv2-paper); border: 1px solid rgba(14,27,61,0.10);
       border-radius: 12px; padding: 10px 14px;
       font-family: inherit; font-weight: 700; font-size: 13px;
       color: var(--dv2-blue-d, #1A3FB8); cursor: pointer;
@@ -5976,7 +5975,7 @@
       transition: background 0.15s;
       position: relative; z-index: 2;
     }
-    #tab-legal[data-scan-result-active] .dv-scan-result-back:hover { background: var(--dv2-blue-50, #EAF0FF); }
+    #tab-legal[data-scan-result-active] .dv-scan-result-back:hover { background: var(--dv2-blue-50, #11182a); }
 
     /* Dedicated "All your reminders" view */
     .dv2-rem-heading { display: none; }
@@ -6020,7 +6019,7 @@
     .dv2-sign-cta {
       display: flex; align-items: center; gap: 12px; width: 100%;
       margin-top: 12px; text-align: left; cursor: pointer; border: 0;
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d-fill, #1A3FB8));
       color: #fff; border-radius: 16px; padding: 14px 16px;
       box-shadow: 0 14px 30px -16px rgba(26,63,184,0.55);
       transition: transform 0.15s ease;
@@ -6129,7 +6128,7 @@
       width: 100%;
       display: flex; align-items: center; gap: 14px;
       padding: 18px 20px;
-      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d));
+      background: linear-gradient(135deg, var(--dv2-blue), var(--dv2-blue-d-fill, #1A3FB8));
       color: white;
       border: 0; border-radius: 18px;
       cursor: pointer;
@@ -6148,8 +6147,7 @@
       position: absolute;
       inset: -40%;
       z-index: -2;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18), transparent 38%),
+      background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.18), transparent 38%),
         radial-gradient(circle at 80% 70%, rgba(122,232,176,0.20), transparent 42%),
         radial-gradient(circle at 60% 20%, rgba(167,139,250,0.18), transparent 40%);
       animation: dv2-install-orbs 14s ease-in-out infinite;
@@ -6331,7 +6329,7 @@
       display: flex; flex-direction: column; gap: 12px;
     }
     .dv2-install-step-illust {
-      background: linear-gradient(135deg, var(--dv2-blue-50), #e9efff);
+      background: linear-gradient(135deg, var(--dv2-blue-50), #11182a);
       border-radius: 12px;
       padding: 18px 14px;
       display: grid; place-items: center;
@@ -6366,7 +6364,7 @@
 
     /* "You're done" celebration card at the bottom */
     .dv2-install-done {
-      background: linear-gradient(135deg, var(--dv2-blue-d), var(--dv2-blue));
+      background: linear-gradient(135deg, var(--dv2-blue-d-fill, #1A3FB8), var(--dv2-blue));
       color: white;
       border-radius: 18px;
       padding: 22px;
@@ -6429,7 +6427,7 @@
     .dv2-install-share-btn svg { width: 16px; height: 16px; }
     .dv2-install-share-link {
       display: flex; align-items: center; gap: 8px;
-      background: #f4f1ea; border: 1px dashed var(--dv2-line);
+      background: #262114; border: 1px dashed var(--dv2-line);
       border-radius: 10px; padding: 10px 12px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px; font-weight: 700;
@@ -6460,7 +6458,7 @@
       border-color: var(--dv2-blue-50);
     }
     .dv2-essential-illust {
-      background: linear-gradient(135deg, var(--dv2-blue-50), #e9efff);
+      background: linear-gradient(135deg, var(--dv2-blue-50), #11182a);
       border-radius: 12px;
       padding: 14px;
       display: grid; place-items: center;
@@ -6560,8 +6558,7 @@
       border-radius: 20px;
       border: none;
       cursor: pointer;
-      background:
-        radial-gradient(circle at 100% 0%, rgba(255,255,255,0.20), transparent 50%),
+      background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.20), transparent 50%),
         linear-gradient(135deg, #2E64FF 0%, #6B4EE0 100%);
       color: white;
       box-shadow:
@@ -6633,7 +6630,7 @@
       position: relative;
       margin-top: 18px;
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      background: white; color: var(--dv2-blue-d);
+      background: var(--dv2-paper); color: var(--dv2-blue-d);
       padding: 16px 18px; border-radius: 12px;
       font-family: var(--dv2-font); font-size: 16px; font-weight: 800;
       letter-spacing: -0.2px;
@@ -6731,7 +6728,7 @@
     .design-v2 #scan-status {
       position: relative !important;
       overflow: hidden !important;
-      background: linear-gradient(135deg, #EAF0FF 0%, #F0EBFF 100%) !important;
+      background: linear-gradient(135deg, #11182a 0%, #17112a 100%) !important;
       border: 1.5px solid rgba(46,100,255,0.30) !important;
       padding: 18px 18px 18px 22px !important;
       font-size: 14px !important;
@@ -6788,7 +6785,7 @@
       display: flex; flex-direction: column; gap: 10px;
     }
     .dv2-rem {
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid var(--dv2-line-soft);
       border-radius: 12px;
       padding: 14px;
@@ -6842,7 +6839,7 @@
 
     /* Empty state */
     .dv2-rem-empty {
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid var(--dv2-line-soft);
       border-radius: 12px;
       padding: 22px 16px;
@@ -6858,7 +6855,7 @@
 
     /* Density heatmap legend (bottom-left of map) */
     .dv2-density-legend {
-      background: rgba(255,255,255,0.96);
+      background: rgba(18,14,34,0.96);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(14,27,61,0.10);
@@ -6872,7 +6869,7 @@
     .dv2-density-legend .dv2-dl-title {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px; font-weight: 800;
-      color: #4F5A7A; letter-spacing: 1.4px;
+      color: #A9A3C4; letter-spacing: 1.4px;
       margin-bottom: 6px;
     }
     .dv2-density-legend .dv2-dl-bar {
@@ -6887,10 +6884,10 @@
       display: flex; justify-content: space-between;
       margin-top: 4px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px; color: #4F5A7A;
+      font-size: 9px; color: #A9A3C4;
       font-weight: 700; letter-spacing: 0.8px;
     }
-    .dv2-density-legend .dv2-dl-hot { color: #E1473D; }
+    .dv2-density-legend .dv2-dl-hot { color: #FF8C82; }
 
     /* Pulsing red ring around enforcement zones */
     .dv2-enforce-ring {
@@ -6907,7 +6904,7 @@
 
     /* Live officer counter — Leaflet control top-left */
     .dv2-officer-counter {
-      background: rgba(255,255,255,0.96);
+      background: rgba(18,14,34,0.96);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(14,27,61,0.10);
@@ -6939,14 +6936,14 @@
     .dv2-officer-counter .dv2-oc-num {
       font-family: 'JetBrains Mono', monospace;
       font-weight: 800; font-size: 18px;
-      color: #E1473D;
+      color: #FF8C82;
       letter-spacing: -0.5px;
       line-height: 1;
     }
     .dv2-officer-counter .dv2-oc-lbl {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px; font-weight: 800;
-      color: #4F5A7A;
+      color: #A9A3C4;
       letter-spacing: 1.2px;
       line-height: 1.3;
       max-width: 80px;
@@ -6956,7 +6953,7 @@
     .dv2-fp-card {
       width: 100%;
       display: flex; align-items: center; gap: 14px;
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid var(--dv2-line-soft);
       border-radius: 14px;
       padding: 14px;
@@ -7001,7 +6998,7 @@
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
     }
     .dv2-quick {
-      background: white;
+      background: var(--dv2-paper);
       border: 1px solid var(--dv2-line-soft);
       border-radius: 12px;
       padding: 14px;
@@ -7028,6 +7025,8 @@
       font-weight: 700;
     }
   </style>
+  <link rel="stylesheet" href="/assets/css/app-theme.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 
 <body>
@@ -7735,7 +7734,7 @@
       </div>
 
       <!-- Profile completion prompt — hidden when profile is complete -->
-      <div class="card" id="profile-prompt" style="display:none;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);border:1px solid rgba(37,99,235,0.2)">
+      <div class="card" id="profile-prompt" style="display:none;background: linear-gradient(135deg,#11172a,#11172a);border:1px solid rgba(37,99,235,0.2)">
         <div style="display:flex;align-items:center;gap:12px">
           <div style="font-size:28px;flex-shrink:0">👤</div>
           <div style="flex:1">
@@ -7765,7 +7764,7 @@
           <i class="fa-solid fa-camera"></i> Scan Ticket Photo with AI
         </label>
 
-        <div id="scan-status" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.2);border-radius:12px;font-size:13px;color:var(--blue);text-align:center">
+        <div id="scan-status" style="display:none;margin-bottom:12px;padding:12px 14px;background: rgba(10,132,255,0.07);border:1px solid rgba(10,132,255,0.2);border-radius:12px;font-size:13px;color:var(--blue);text-align:center">
           🤖 Drivee is reading your ticket…
         </div>
 
@@ -7780,14 +7779,14 @@
           <div id="scan-details" style="display:none"></div>
 
           <!-- Payment helper card -->
-          <div style="background:#f0f7ff;border:1.5px solid #c7d7f8;border-radius:14px;padding:14px;margin-bottom:10px">
+          <div style="background: #111d2a;border:1.5px solid #c7d7f8;border-radius:14px;padding:14px;margin-bottom:10px">
             <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">💳 Payment Details</div>
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
               <div style="flex:1;min-width:0">
                 <div style="font-size:11px;color:var(--text-secondary);margin-bottom:2px">Ticket / Infraction #</div>
                 <div id="pay-ref-display" style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
               </div>
-              <button onclick="copyPayRef()" id="copy-ref-btn" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;transition:opacity .15s">
+              <button onclick="copyPayRef()" id="copy-ref-btn" style="background: var(--blue);color:white;border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;transition:opacity .15s">
                 📋 Copy #
               </button>
             </div>
@@ -8142,7 +8141,7 @@
           <span class="gov-arrow">›</span>
         </a>
 
-        <div class="portal-category" style="border-color:#0EA5E9;background:rgba(14,165,233,0.05);">🛣️ Highway &amp; Other Provinces</div>
+        <div class="portal-category" style="border-color:#0EA5E9;background: rgba(14,165,233,0.05);">🛣️ Highway &amp; Other Provinces</div>
         <a class="btn-gov" href="https://www.407etr.com/en/pay-your-bill" target="_blank" rel="noopener">
           <span><span class="gov-icon">🛣️</span>Pay 407 ETR Bill</span>
           <span class="gov-arrow">›</span>
@@ -8729,7 +8728,7 @@
         #svc-precheck .dv2-pc-disclaimer-strong {
           background: rgba(232,155,34,0.10);
           border-left: 3px solid #E89B22;
-          color: #6B4310;
+          color: #F5BB63;
           font-size: 13px; line-height: 1.5;
           padding: 12px 14px; border-radius: 0 8px 8px 0;
           margin: 14px 0;
@@ -8751,7 +8750,7 @@
           position: relative;
           display: flex; flex-direction: column; align-items: flex-start;
           padding: 14px 14px 12px;
-          background: white;
+          background: var(--dv2-paper);
           border: 1px solid rgba(11,20,48,0.08);
           border-radius: 12px;
           cursor: pointer;
@@ -8784,17 +8783,17 @@
           background: rgba(31,171,107,0.06);
           border-color: rgba(31,171,107,0.30);
         }
-        #svc-precheck .dv2-pc-area-tile.done .dv2-pc-area-tile-status { color: #0F7A48; }
+        #svc-precheck .dv2-pc-area-tile.done .dv2-pc-area-tile-status { color: #5FD894; }
         #svc-precheck .dv2-pc-area-tile.done.caution {
           background: rgba(232,155,34,0.07);
           border-color: rgba(232,155,34,0.32);
         }
-        #svc-precheck .dv2-pc-area-tile.done.caution .dv2-pc-area-tile-status { color: #8A5A12; }
+        #svc-precheck .dv2-pc-area-tile.done.caution .dv2-pc-area-tile-status { color: #F5BB63; }
         #svc-precheck .dv2-pc-area-tile.done.fail {
           background: rgba(225,71,61,0.07);
           border-color: rgba(225,71,61,0.32);
         }
-        #svc-precheck .dv2-pc-area-tile.done.fail .dv2-pc-area-tile-status { color: #B0271E; }
+        #svc-precheck .dv2-pc-area-tile.done.fail .dv2-pc-area-tile-status { color: #FF8C82; }
 
         #svc-precheck .dv2-pc-area-tile-dot {
           position: absolute; top: 14px; right: 14px;
@@ -8823,7 +8822,7 @@
         }
         #svc-precheck .dv2-pc-howto-modal[hidden] { display: none !important; }
         #svc-precheck .dv2-pc-howto-inner {
-          background: white; border-radius: 18px;
+          background: var(--dv2-paper); border-radius: 18px;
           padding: 28px 24px 22px;
           width: min(340px, calc(100% - 32px));
           text-align: center;
@@ -8915,7 +8914,7 @@
           margin-top: 8px;
           font-size: 12.5px; line-height: 1.45;
           font-weight: 600;
-          color: #B0271E;
+          color: #FF8C82;
           text-align: center;
         }
         /* Make the example stage a bit taller so the SVG + caption fit cleanly */
@@ -8934,7 +8933,7 @@
         #svc-precheck .dv2-pc-howto-hint {
           font-size: 12.5px; line-height: 1.55;
           background: rgba(46,100,255,0.08);
-          color: #1B45C2;
+          color: #9DBAFF;
           padding: 10px 12px;
           border-radius: 10px;
           text-align: left;
@@ -8956,7 +8955,7 @@
         #svc-precheck .dv2-pc-capture-modal[hidden] { display: none !important; }
         @keyframes dvPCFadeIn { from { opacity: 0; } to { opacity: 1; } }
         #svc-precheck .dv2-pc-capture-modal-inner {
-          background: white; border-radius: 18px;
+          background: var(--dv2-paper); border-radius: 18px;
           padding: 32px 28px 22px;
           text-align: center;
           width: min(300px, calc(100% - 48px));
@@ -9022,12 +9021,12 @@
           font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
           padding: 5px 12px; border-radius: 999px;
           margin-bottom: 8px;
-          background: rgba(11,20,48,0.08); color: #4A5267;
+          background: rgba(11,20,48,0.08); color: #A9A3C4;
           text-transform: uppercase;
         }
-        #svc-precheck .dv2-pc-overall-badge.pass    { background: rgba(31,171,107,0.16); color: #0F7A48; }
-        #svc-precheck .dv2-pc-overall-badge.caution { background: rgba(232,155,34,0.18); color: #8A5A12; }
-        #svc-precheck .dv2-pc-overall-badge.fail    { background: rgba(225,71,61,0.16); color: #B0271E; }
+        #svc-precheck .dv2-pc-overall-badge.pass    { background: rgba(31,171,107,0.16); color: #5FD894; }
+        #svc-precheck .dv2-pc-overall-badge.caution { background: rgba(232,155,34,0.18); color: #F5BB63; }
+        #svc-precheck .dv2-pc-overall-badge.fail    { background: rgba(225,71,61,0.16); color: #FF8C82; }
         #svc-precheck .dv2-pc-overall-title {
           font-size: 22px; font-weight: 800; color: var(--ink, #0B1430);
           margin-bottom: 4px;
@@ -9040,7 +9039,7 @@
         #svc-precheck .dv2-pc-area-card {
           display: flex; align-items: flex-start; gap: 12px;
           padding: 14px;
-          background: white;
+          background: var(--dv2-paper);
           border: 1px solid rgba(11,20,48,0.08);
           border-radius: 12px;
         }
@@ -9060,7 +9059,7 @@
         }
         #svc-precheck .dv2-pc-area-verdict {
           font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-          margin-bottom: 6px; color: #4A5267;
+          margin-bottom: 6px; color: #A9A3C4;
         }
         #svc-precheck .dv2-pc-area-findings {
           list-style: disc; margin: 0 0 6px 18px;
@@ -9888,9 +9887,9 @@
 
       <!-- Legend bar -->
       <div class="map-legend">
-        <span class="map-legend-dot" style="background:#22C55E"></span> Free
+        <span class="map-legend-dot" style="background: #22C55E"></span> Free
         <span class="map-legend-dot" style="background:#2563EB;margin-left:12px"></span> Metered
-        <span class="map-legend-dot" style="background:#EF4444;margin-left:12px"></span> No Parking
+        <span class="map-legend-dot" style="background: #EF4444;margin-left:12px"></span> No Parking
       </div>
 
       <!-- Enforcement Map — full-bleed, no card wrapper -->
@@ -10125,7 +10124,7 @@
 
       <div class="firm-card" data-tags="dui speeding stunt careless criminal">
         <div class="firm-card-left">
-          <div class="firm-icon" style="background:rgba(37,99,235,0.1);color:var(--blue)"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="firm-icon" style="background: rgba(37,99,235,0.1);color:var(--blue)"><i class="fa-solid fa-scale-balanced"></i></div>
           <div class="firm-info">
             <div class="firm-name">X-Copper Professional Corp</div>
             <div class="firm-tags">
@@ -10142,7 +10141,7 @@
 
       <div class="firm-card" data-tags="speeding parking careless redlight">
         <div class="firm-card-left">
-          <div class="firm-icon" style="background:rgba(124,58,237,0.1);color:var(--purple)"><i class="fa-solid fa-gavel"></i></div>
+          <div class="firm-icon" style="background: rgba(124,58,237,0.1);color:var(--purple)"><i class="fa-solid fa-gavel"></i></div>
           <div class="firm-info">
             <div class="firm-name">Toronto Traffic Law</div>
             <div class="firm-tags">
@@ -10159,7 +10158,7 @@
 
       <div class="firm-card" data-tags="speeding parking stunt redlight all">
         <div class="firm-card-left">
-          <div class="firm-icon" style="background:rgba(14,165,233,0.1);color:var(--teal)"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="firm-icon" style="background: rgba(14,165,233,0.1);color:var(--teal)"><i class="fa-solid fa-shield-halved"></i></div>
           <div class="firm-info">
             <div class="firm-name">POINTTS Advisory Services</div>
             <div class="firm-tags">
@@ -10176,7 +10175,7 @@
 
       <div class="firm-card" data-tags="parking speeding redlight">
         <div class="firm-card-left">
-          <div class="firm-icon" style="background:rgba(245,158,11,0.1);color:var(--warning)"><i class="fa-solid fa-car-burst"></i></div>
+          <div class="firm-icon" style="background: rgba(245,158,11,0.1);color:var(--warning)"><i class="fa-solid fa-car-burst"></i></div>
           <div class="firm-info">
             <div class="firm-name">OTT Legal</div>
             <div class="firm-tags">
@@ -10193,7 +10192,7 @@
 
       <div class="firm-card" data-tags="dui stunt criminal careless">
         <div class="firm-card-left">
-          <div class="firm-icon" style="background:rgba(239,68,68,0.1);color:var(--red)"><i class="fa-solid fa-user-shield"></i></div>
+          <div class="firm-icon" style="background: rgba(239,68,68,0.1);color:var(--red)"><i class="fa-solid fa-user-shield"></i></div>
           <div class="firm-info">
             <div class="firm-name">HWY-LAW Criminal Defence</div>
             <div class="firm-tags">
@@ -11655,9 +11654,9 @@
           className: 'dv2-enforce-dot'
         });
         var popup = '<div style="font-family: \'Plus Jakarta Sans\', sans-serif; min-width: 180px;">' +
-          '<div style="font-weight:800;color:#E1473D;font-size:13px;margin-bottom:4px">⚠️ Active enforcement</div>' +
+          '<div style="font-weight:800;color: #FF8C82;font-size:13px;margin-bottom:4px">⚠️ Active enforcement</div>' +
           '<div style="font-weight:700;font-size:14px">' + z.name + '</div>' +
-          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#4F5A7A;margin-top:4px;letter-spacing:1px">' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color: #A9A3C4;margin-top:4px;letter-spacing:1px">' +
           z.severity.toUpperCase().replace('-', ' ') + ' RISK · 8AM–8PM</div></div>';
         outer.bindPopup(popup);
         inner.bindPopup(popup);
@@ -11714,7 +11713,7 @@
         var colour = colours[zone.type];
         var icon = L.divIcon({
           className: '',
-          html: '<div class="zone-marker zone-marker-' + zone.type + '" style="background:' + colour + '"></div>',
+          html: '<div class="zone-marker zone-marker-' + zone.type + '" style="background: ' + colour + '"></div>',
           iconSize:   [22, 22],
           iconAnchor: [11, 11],
           popupAnchor: [0, -10]
@@ -12174,7 +12173,7 @@
               role: 'user',
               content: [
                 { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-                { type: 'text', text: 'You are scanning a document that may be any Canadian vehicle-related fine, ticket, or bill. This includes: parking tickets, speeding tickets, red light camera fines, stop sign fines, stunt driving charges, careless driving charges, DUI/impaired driving charges, toll bills (407 ETR, 412, 418), HOV lane violations, distracted driving fines, seatbelt fines, insurance fines, registration fines, camera enforcement notices, or any other traffic or parking violation from any Canadian province or territory (ON, BC, QC, AB, MB, SK, NS, NB, PE, NL, YT, NT, NU).\n\nExtract all available details and reply in this EXACT format (no extra text):\nAMOUNT: [total amount owing, number only, no $ sign]\nREF: [ticket number, infraction number, reference number, or account number]\nPLATE: [vehicle license plate number, or unknown]\nTYPE: [one of: parking, speeding, redlight, stopsign, toll, hov, distracted, seatbelt, stunt, careless, dui, insurance, registration, camera, other]\nPROVINCE: [2-letter province code where violation occurred, e.g. ON, BC, QC, or unknown]\nMUNICIPALITY: [city or municipality where violation occurred, e.g. Toronto, Mississauga, Ottawa, Vancouver, Montreal, or unknown]\nDATE: [violation or bill date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear practical sentence: dispute chances and what to do next]\n\nIf the image contains NO fine, ticket, or bill of any kind, reply exactly: NOT_A_TICKET' }
+                { type: 'text', text: 'You are scanning a document that may be any Canadian vehicle-related fine, ticket, or bill. This includes: parking tickets, speeding tickets, red light camera fines, stop sign fines, stunt driving charges, careless driving charges, DUI/impaired driving charges, toll bills (407 ETR, 412, 418), HOV lane violations, distracted driving fines, seatbelt fines, insurance fines, registration fines, camera enforcement notices, or any other traffic or parking violation. Drivee serves ONTARIO, CANADA only — read the ticket either way, but report the province accurately so an out-of-province ticket can be flagged rather than given Ontario advice.\n\nExtract all available details and reply in this EXACT format (no extra text):\nAMOUNT: [total amount owing, number only, no $ sign]\nREF: [ticket number, infraction number, reference number, or account number]\nPLATE: [vehicle license plate number, or unknown]\nTYPE: [one of: parking, speeding, redlight, stopsign, toll, hov, distracted, seatbelt, stunt, careless, dui, insurance, registration, camera, other]\nPROVINCE: [2-letter code where the violation occurred — ON for Ontario; use the correct code for anywhere else, or unknown]\nMUNICIPALITY: [city or municipality where violation occurred, e.g. Toronto, Mississauga, Ottawa, Hamilton, London, or unknown]\nDATE: [violation or bill date YYYY-MM-DD, or unknown]\nDUE: [payment due date YYYY-MM-DD, or unknown]\nADVICE: [1 clear practical sentence: dispute chances and what to do next]\n\nIf the image contains NO fine, ticket, or bill of any kind, reply exactly: NOT_A_TICKET' }
               ]
             }]
           })
@@ -12361,7 +12360,7 @@
       if (el) el.remove();
       var div = document.createElement('div');
       div.id = 'calendar-prompt';
-      div.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);max-width:340px;width:calc(100% - 40px);text-align:center';
+      div.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:9999;background: var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);max-width:340px;width:calc(100% - 40px);text-align:center';
       div.innerHTML =
         '<div style="font-weight:600;margin-bottom:6px">📅 Save to your calendar?</div>' +
         '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">Get phone notifications 2 days, 1 day, and morning of your deadline — even when Drivee is closed.</div>' +
@@ -13590,7 +13589,7 @@
 
       var icon = L.divIcon({
         className: '',
-        html: '<div style="background:#0A84FF;border:2px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.5);">' + emoji + '</div>',
+        html: '<div style="background: #0A84FF;border:2px solid #fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.5);">' + emoji + '</div>',
         iconSize:   [32, 32],
         iconAnchor: [16, 16],
         popupAnchor: [0, -18]
@@ -13602,14 +13601,14 @@
         : '';
       // Sample reports get a clear grey tag so users never mistake them for live ones.
       var sampleTag = report.sample
-        ? '<span style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;background:#E6E8EE;color:#6b7280;padding:2px 6px;border-radius:5px;margin-bottom:4px">SAMPLE</span><br>'
+        ? '<span style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;background: #171a24;color:#6b7280;padding:2px 6px;border-radius:5px;margin-bottom:4px">SAMPLE</span><br>'
         : '';
       var marker = L.marker([report.lat, report.lng], { icon: icon })
         .bindPopup(
           sampleTag +
           '<strong>' + report.label + '</strong><br>' +
           report.date +
-          (report.desc ? '<br><span style="color:#666">' + report.desc + '</span>' : '') +
+          (report.desc ? '<br><span style="color: #9189AE">' + report.desc + '</span>' : '') +
           photoHtml,
           { maxWidth: 220, minWidth: 120 }
         );
@@ -13717,7 +13716,7 @@
           '<div class="reminder-card" style="opacity:0.92">' +
             '<div class="reminder-info">' +
               '<div class="reminder-ref">' +
-                '<span style="font-size:9px;font-weight:800;letter-spacing:1px;background:#E6E8EE;color:#6b7280;padding:2px 6px;border-radius:5px;margin-right:6px">SAMPLE</span>' +
+                '<span style="font-size:9px;font-weight:800;letter-spacing:1px;background: #171a24;color:#6b7280;padding:2px 6px;border-radius:5px;margin-right:6px">SAMPLE</span>' +
                 esc(r.label) +
               '</div>' +
               '<div class="reminder-due">' + esc(r.desc) + '</div>' +
@@ -13874,7 +13873,7 @@
       } else {
         var icon = L.divIcon({
           className: '',
-          html: '<div style="width:16px;height:16px;background:#0A84FF;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 6px rgba(10,132,255,0.2);"></div>',
+          html: '<div style="width:16px;height:16px;background: #0A84FF;border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 6px rgba(10,132,255,0.2);"></div>',
           iconSize:   [16, 16],
           iconAnchor: [8, 8]
         });
@@ -15473,10 +15472,10 @@
         badge.style.background = '';
       } else if (freeSoon.length > 0) {
         badge.textContent = 'Soon';
-        badge.style.background = 'var(--warning)';
+        badge.style.background = 'var(--chip-warn)';
       } else {
         badge.textContent = 'Paid hours';
-        badge.style.background = 'var(--text-tertiary)';
+        badge.style.background = 'var(--chip-muted)';
       }
 
       if (freeNow.length === 0) {
@@ -16910,8 +16909,8 @@
         banner.style.border = '1px solid rgba(34,197,94,0.3)';
         banner.innerHTML =
           '<div style="font-size:22px;margin-bottom:4px">🎉</div>' +
-          '<div style="font-weight:700;color:#15803D;margin-bottom:2px">FREE holiday street parking today!</div>' +
-          '<div style="color:#166534">' + todayHoliday.name + ' — all metered streets are free. Always check signs for local restrictions.</div>';
+          '<div style="font-weight:700;color: #5FD894;margin-bottom:2px">FREE holiday street parking today!</div>' +
+          '<div style="color: #5FD894">' + todayHoliday.name + ' — all metered streets are free. Always check signs for local restrictions.</div>';
       } else {
         // Find next holiday (not Sunday — Sunday rules vary by street)
         var nextHoliday = null;
@@ -16929,7 +16928,7 @@
           banner.style.border = '1px solid rgba(245,158,11,0.3)';
           banner.innerHTML =
             '<div style="font-size:16px;margin-bottom:2px">🅿️ Next free holiday street parking:</div>' +
-            '<div style="color:#92400E;font-size:13px;font-weight:600">' + nextHoliday.name + ' (' + dateStr + ') — ' + diff + ' day' + (diff !== 1 ? 's' : '') + ' away</div>';
+            '<div style="color: #F5BB63;font-size:13px;font-weight:600">' + nextHoliday.name + ' (' + dateStr + ') — ' + diff + ' day' + (diff !== 1 ? 's' : '') + ' away</div>';
         }
       }
     }
@@ -18347,7 +18346,7 @@
       div.className = 'chat-msg bot';
       div.innerHTML =
         '<div class="chat-msg-avatar"><i class="fa-solid fa-sparkles"></i></div>' +
-        '<div class="chat-msg-bubble" style="background:#f0f4ff;border:1px solid #c7d7f8">' +
+        '<div class="chat-msg-bubble" style="background: #11182a;border:1px solid #c7d7f8">' +
           '<div style="font-weight:600;margin-bottom:6px">How can we improve Drivee?</div>' +
           '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px">Your feedback helps us build a better app for Toronto drivers.</div>' +
           '<textarea id="chat-feedback-text" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none;box-sizing:border-box" rows="2" placeholder="Any ideas, bugs, or features you want?"></textarea>' +
@@ -18710,7 +18709,7 @@
 
           html += '<div style="padding:10px 0;border-bottom:1px solid var(--border)">';
           html +=   '<div style="display:flex;align-items:center;gap:12px">';
-          html +=     '<div style="width:38px;height:38px;border-radius:10px;background:rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">' + icon + '</div>';
+          html +=     '<div style="width:38px;height:38px;border-radius:10px;background: rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">' + icon + '</div>';
           html +=     '<div style="flex:1;min-width:0">';
           html +=       '<div style="font-size:14px;font-weight:600;color:var(--text-primary)">' + esc(label) + '</div>';
           html +=       '<div style="font-size:11px;color:var(--text-secondary);font-family:\'JetBrains Mono\',monospace">Expires ' + formatDate(e.expiryDate) + '</div>';
@@ -18731,8 +18730,8 @@
             html += '</div>';
           } else {
             html += '<div style="text-align:right;margin-top:4px">';
-            html +=   '<button onclick="markRenewed(\'' + e.id + '\')" style="background:none;border:none;color:var(--blue);font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px">✓ Mark Renewed</button>';
-            html +=   '<button onclick="deleteRenewal(\'' + e.id + '\')" style="background:none;border:none;color:var(--text-tertiary);font-size:14px;cursor:pointer;padding:4px 6px" title="Remove">×</button>';
+            html +=   '<button onclick="markRenewed(\'' + e.id + '\')" style="background: none;border:none;color:var(--blue);font-size:11px;font-weight:600;cursor:pointer;padding:4px 8px">✓ Mark Renewed</button>';
+            html +=   '<button onclick="deleteRenewal(\'' + e.id + '\')" style="background: none;border:none;color:var(--text-tertiary);font-size:14px;cursor:pointer;padding:4px 6px" title="Remove">×</button>';
             html += '</div>';
           }
           html += '</div>';
@@ -18754,7 +18753,7 @@
       html += '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:18px">Track your driver\'s licence, plate sticker, or insurance</div>';
 
       html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">What is renewing?</label>';
-      html += '<select id="renewal-type" onchange="onRenewalTypeChange()" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html += '<select id="renewal-type" onchange="onRenewalTypeChange()" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
       html +=   '<option value="">— Select —</option>';
       html +=   '<option value="drivers_licence">📄 Driver\'s Licence (every 5 years)</option>';
       html +=   '<option value="plate_sticker">🏷️ Plate Sticker (yearly)</option>';
@@ -18764,11 +18763,11 @@
 
       html += '<div id="renewal-custom-wrap" style="display:none">';
       html +=   '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Renewal Name</label>';
-      html +=   '<input type="text" id="renewal-custom-name" placeholder="e.g. Health card, Disability permit" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html +=   '<input type="text" id="renewal-custom-name" placeholder="e.g. Health card, Disability permit" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
       html += '</div>';
 
       html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Expiry Date</label>';
-      html += '<input type="date" id="renewal-date" min="' + minDate + '" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:8px;box-sizing:border-box">';
+      html += '<input type="date" id="renewal-date" min="' + minDate + '" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:8px;box-sizing:border-box">';
       html += '<div style="font-size:11px;color:var(--text-tertiary);margin-bottom:14px">📌 Find this on your licence, sticker, or insurance card</div>';
 
       html += '<button onclick="saveRenewal()" class="btn btn-primary" style="width:100%;margin-top:6px;margin-bottom:8px;padding:14px">Add Renewal</button>';
@@ -18942,9 +18941,9 @@
 
       // Licence-class toggle
       var btnBase = 'flex:1;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:600;color:var(--text-primary);cursor:pointer;transition:background .2s';
-      var on  = 'background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,0.12)';
-      var off = 'background:transparent';
-      html += '<div style="display:flex;background:rgba(0,0,0,0.05);border-radius:10px;padding:3px;margin-bottom:16px">';
+      var on  = 'background: var(--surface);box-shadow:0 1px 3px rgba(0,0,0,0.12)';
+      var off = 'background: transparent';
+      html += '<div style="display:flex;background: rgba(0,0,0,0.05);border-radius:10px;padding:3px;margin-bottom:16px">';
       html +=   '<button onclick="setLicenceClass(\'G\')" style="' + btnBase + ';' + (cls === 'G' ? on : off) + '">Full G</button>';
       html +=   '<button onclick="setLicenceClass(\'novice\')" style="' + btnBase + ';' + (cls === 'novice' ? on : off) + '">Novice (G1/G2)</button>';
       html += '</div>';
@@ -18959,8 +18958,8 @@
       // Progress bar
       var maxPts = t.suspend + 2;
       var pct    = Math.min(100, (total / maxPts) * 100);
-      html += '<div style="position:relative;height:10px;background:rgba(0,0,0,0.06);border-radius:5px;margin:14px 0 8px;overflow:hidden">';
-      html +=   '<div style="height:100%;width:' + pct + '%;background:' + zone.color + ';border-radius:5px;transition:width .35s ease, background .35s ease"></div>';
+      html += '<div style="position:relative;height:10px;background: rgba(0,0,0,0.06);border-radius:5px;margin:14px 0 8px;overflow:hidden">';
+      html +=   '<div style="height:100%;width:' + pct + '%;background: ' + zone.color + ';border-radius:5px;transition:width .35s ease, background .35s ease"></div>';
       html += '</div>';
 
       // Threshold markers
@@ -18984,12 +18983,12 @@
           var monthsLeft = Math.max(0, Math.ceil(24 - ageYears * 12));
 
           html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);' + (expired ? 'opacity:.45' : '') + '">';
-          html +=   '<div style="min-width:36px;height:36px;border-radius:50%;background:' + (expired ? '#a3a3a3' : zone.color) + ';color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + e.points + '</div>';
+          html +=   '<div style="min-width:36px;height:36px;border-radius:50%;background: ' + (expired ? '#a3a3a3' : zone.color) + ';color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + e.points + '</div>';
           html +=   '<div style="flex:1;min-width:0">';
           html +=     '<div style="font-size:13px;font-weight:600;color:var(--text-primary)">' + esc(e.violation) + '</div>';
           html +=     '<div style="font-size:11px;color:var(--text-tertiary)">' + formatDate(e.date) + (expired ? ' · expired' : ' · ' + monthsLeft + ' months left') + '</div>';
           html +=   '</div>';
-          html +=   '<button onclick="deleteDemerit(\'' + e.id + '\')" title="Remove" style="background:none;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;padding:4px 6px;flex-shrink:0">×</button>';
+          html +=   '<button onclick="deleteDemerit(\'' + e.id + '\')" title="Remove" style="background: none;border:none;color:var(--text-tertiary);font-size:18px;cursor:pointer;padding:4px 6px;flex-shrink:0">×</button>';
           html += '</div>';
         });
         if (entries.length > 5) {
@@ -19015,11 +19014,11 @@
 
       // Date
       html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Offence Date</label>';
-      html += '<input type="date" id="demerit-date" value="' + today + '" max="' + today + '" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html += '<input type="date" id="demerit-date" value="' + today + '" max="' + today + '" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
 
       // Violation select
       html += '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Violation</label>';
-      html += '<select id="demerit-violation" onchange="onDemeritViolationChange()" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html += '<select id="demerit-violation" onchange="onDemeritViolationChange()" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
       html +=   '<option value="">— Select a violation —</option>';
       DEMERIT_VIOLATIONS.forEach(function(g) {
         html += '<optgroup label="' + esc(g.group) + '">';
@@ -19034,9 +19033,9 @@
       // Custom inputs (hidden until needed)
       html += '<div id="demerit-custom-wrap" style="display:none">';
       html +=   '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Custom Violation Name</label>';
-      html +=   '<input type="text" id="demerit-custom-name" placeholder="e.g. Failing to obey sign" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:10px;box-sizing:border-box">';
+      html +=   '<input type="text" id="demerit-custom-name" placeholder="e.g. Failing to obey sign" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:10px;box-sizing:border-box">';
       html +=   '<label style="font-size:11px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Demerit Points</label>';
-      html +=   '<input type="number" id="demerit-custom-points" min="0" max="9" placeholder="0" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
+      html +=   '<input type="number" id="demerit-custom-points" min="0" max="9" placeholder="0" style="width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background: var(--surface);color:var(--text-primary);margin-bottom:14px;box-sizing:border-box">';
       html += '</div>';
 
       // Save / Cancel
@@ -19119,7 +19118,7 @@
       if (s.thumb) {
         html += '<img src="' + s.thumb + '" alt="Ticket photo" ' +
           'style="width:100%;max-height:280px;object-fit:contain;border-radius:14px;' +
-          'background:rgba(0,0,0,0.04);margin-bottom:18px;display:block">';
+          'background: rgba(0,0,0,0.04);margin-bottom:18px;display:block">';
       }
 
       // Header row — type + amount
@@ -19145,7 +19144,7 @@
 
       // AI advice
       if (s.advice) {
-        html += '<div style="background:rgba(10,132,255,0.07);border:1.5px solid rgba(10,132,255,0.18);border-radius:12px;padding:13px 14px;margin:16px 0">';
+        html += '<div style="background: rgba(10,132,255,0.07);border:1.5px solid rgba(10,132,255,0.18);border-radius:12px;padding:13px 14px;margin:16px 0">';
         html +=   '<div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🤖 AI Advice</div>';
         html +=   '<div style="font-size:13px;color:var(--text-primary);line-height:1.55">' + esc(s.advice) + '</div>';
         html += '</div>';
@@ -19212,7 +19211,7 @@
       steps.forEach(function(step, i) {
         html +=
           '<div style="display:flex;gap:12px;margin-bottom:12px;align-items:flex-start">' +
-            '<div style="min-width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i + 1) + '</div>' +
+            '<div style="min-width:26px;height:26px;border-radius:50%;background: var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i + 1) + '</div>' +
             '<div style="font-size:13px;color:var(--text-primary);padding-top:4px;line-height:1.5">' + step + '</div>' +
           '</div>';
       });
@@ -19241,12 +19240,12 @@
 
     function _payField(label, value) {
       var uid = 'pgf_' + Math.random().toString(36).slice(2, 9);
-      return '<div id="' + uid + '_wrap" style="background:rgba(0,0,0,0.04);border-radius:12px;padding:12px 14px;margin-bottom:10px;transition:background .25s ease">' +
+      return '<div id="' + uid + '_wrap" style="background: rgba(0,0,0,0.04);border-radius:12px;padding:12px 14px;margin-bottom:10px;transition:background .25s ease">' +
         '<div style="font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px">' + esc(label) + '</div>' +
         '<div style="display:flex;align-items:center;gap:8px">' +
           '<div id="' + uid + '" style="flex:1;font-family:\'JetBrains Mono\',monospace;font-size:16px;font-weight:700;color:var(--text-primary)">' + esc(value) + '</div>' +
           '<button id="' + uid + '_btn" onclick="_copyPayField(\'' + uid + '\',this)" ' +
-            'style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;transition:background .2s ease,transform .15s ease">Copy</button>' +
+            'style="background: var(--blue);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;transition:background .2s ease,transform .15s ease">Copy</button>' +
         '</div>' +
       '</div>';
     }
@@ -19373,59 +19372,59 @@
 
   <!-- ── Add Renewal Sheet ────────────────────────────────────── -->
   <div id="renewal-sheet-overlay" onclick="closeAddRenewal()"
-       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
+       style="display:none;position:fixed;inset:0;background: rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
 
   <div id="renewal-sheet"
        style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;
-              background:var(--surface);border-radius:22px 22px 0 0;
+              background: var(--surface);border-radius:22px 22px 0 0;
               padding:12px 20px 44px;max-height:88vh;overflow-y:auto;
               box-shadow:0 -8px 48px rgba(0,0,0,0.22);
               transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)">
-    <div style="width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px"></div>
+    <div style="width:38px;height:4px;background: var(--border);border-radius:2px;margin:0 auto 18px"></div>
     <div id="renewal-sheet-content"></div>
   </div>
 
   <!-- ── Add Demerit Sheet ────────────────────────────────────── -->
   <div id="demerit-sheet-overlay" onclick="closeAddDemerit()"
-       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
+       style="display:none;position:fixed;inset:0;background: rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
 
   <div id="demerit-sheet"
        style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;
-              background:var(--surface);border-radius:22px 22px 0 0;
+              background: var(--surface);border-radius:22px 22px 0 0;
               padding:12px 20px 44px;max-height:88vh;overflow-y:auto;
               box-shadow:0 -8px 48px rgba(0,0,0,0.22);
               transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)">
-    <div style="width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px"></div>
+    <div style="width:38px;height:4px;background: var(--border);border-radius:2px;margin:0 auto 18px"></div>
     <div id="demerit-sheet-content"></div>
   </div>
 
   <!-- ── Scan Detail Sheet ────────────────────────────────────── -->
   <div id="scan-detail-overlay" onclick="closeScanDetail()"
-       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
+       style="display:none;position:fixed;inset:0;background: rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(2px)"></div>
 
   <div id="scan-detail-sheet"
        style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;
-              background:var(--surface);border-radius:22px 22px 0 0;
+              background: var(--surface);border-radius:22px 22px 0 0;
               padding:12px 20px 44px;max-height:92vh;overflow-y:auto;
               box-shadow:0 -8px 48px rgba(0,0,0,0.22);
               transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)">
-    <div style="width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px"></div>
+    <div style="width:38px;height:4px;background: var(--border);border-radius:2px;margin:0 auto 18px"></div>
     <div id="scan-detail-content"></div>
   </div>
 
   <!-- ── Payment Guide Sheet ──────────────────────────────────── -->
   <div id="pay-guide-overlay" onclick="closePayGuide()"
-       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;backdrop-filter:blur(2px)"></div>
+       style="display:none;position:fixed;inset:0;background: rgba(0,0,0,0.5);z-index:9000;backdrop-filter:blur(2px)"></div>
 
   <div id="pay-guide-sheet"
        style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9001;
-              background:var(--surface);border-radius:22px 22px 0 0;
+              background: var(--surface);border-radius:22px 22px 0 0;
               padding:12px 20px 44px;max-height:88vh;overflow-y:auto;
               box-shadow:0 -8px 48px rgba(0,0,0,0.22);
               transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)">
 
     <!-- drag handle -->
-    <div style="width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px"></div>
+    <div style="width:38px;height:4px;background: var(--border);border-radius:2px;margin:0 auto 18px"></div>
 
     <div id="pay-guide-content"></div>
   </div>

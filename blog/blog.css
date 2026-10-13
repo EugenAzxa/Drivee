@@ -134,7 +134,7 @@ h1.article-title {
   background: rgba(232, 155, 34, 0.08);
   border-left: 3px solid var(--amber);
 }
-.warn strong { color: #8A5A12; }
+.warn strong { color: #F5BB63; }
 
 /* Ticket-scanner card — the bridge from a guide into the funnel */
 .scan-cta {
