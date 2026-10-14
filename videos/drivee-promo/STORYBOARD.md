@@ -160,7 +160,7 @@ keyMessage: the same ticket gets more expensive every few weeks.
 - duration: 6.528s
 - poster: 4.6s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/06-matched.html
 - type: feature_showcase
 - persuasion: Risk reversal (free review)
