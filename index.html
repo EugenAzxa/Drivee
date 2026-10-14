@@ -730,6 +730,23 @@
     border: 0;
   }
   .video-frame iframe.intro-video { background: #000; }
+  .video-frame video.intro-video { background: #FFFFFF; object-fit: cover; }
+  .video-play {
+    position: absolute; inset: 0; z-index: 2; border: 0; padding: 0 0 22%;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 10px;
+    background: linear-gradient(to bottom, transparent 55%, rgba(11,20,48,0.28));
+    cursor: pointer; color: #fff; font: 700 14px var(--font);
+  }
+  .video-play-btn {
+    width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center;
+    background: #fff; color: var(--ink); box-shadow: 0 10px 30px rgba(11,20,48,0.25);
+    transition: transform 0.2s;
+  }
+  .video-play-btn svg { width: 28px; height: 28px; margin-left: 4px; }
+  .video-play:hover .video-play-btn { transform: scale(1.05); }
+  .video-play:focus-visible { outline: 3px solid var(--blue); outline-offset: -3px; }
+  .video-play-label { text-shadow: 0 1px 8px rgba(11,20,48,0.5); }
+  .video-frame.playing .video-play { display: none; }
   .video-placeholder {
     position: relative;
     width: 100%; height: 100%;
@@ -2042,35 +2059,22 @@
         <h2 class="section-title">Watch a ticket<br/>get scanned.</h2>
       </div>
       <div>
-        <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight - before you can finish reading this paragraph.</p>
+        <p class="section-sub">Snap a photo of the ticket. Drivee reads the charge, the amount and the deadline, tells you whether to pay it or fight it, and shows who can help. Press play, sound on.</p>
       </div>
     </div>
 
     <div class="video-frame" id="introVideoFrame">
-      <!-- Drivee animated trailer (React-based HTML page).
-           Loaded into an iframe on demand so it doesn't slow page load. -->
-      <iframe
-        class="intro-video"
-        id="introVideoIframe"
-        title="Drivee animated trailer"
-        loading="lazy"
-        allow="autoplay"
-        style="display:none; border:0;"
-        src=""></iframe>
-      <button class="video-placeholder" type="button" aria-label="Play Drivee trailer"
-        onclick="(function(b){var f=document.getElementById('introVideoIframe');if(f){f.src='/trailer.html';b.style.display='none';f.style.display='block';}})(this)">
-        <div class="vp-bg"></div>
-        <div class="vp-content">
-          <div class="vp-meta">
-            <span class="vp-dot"></span>
-            DEMO · 30s · TORONTO
-          </div>
-          <div class="vp-play">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg>
-          </div>
-          <div class="vp-title">Park, scan, dispute - in seconds.</div>
-          <div class="vp-sub">A real Toronto driver, a real King St ticket. Watch what Drivee does next.</div>
-        </div>
+      <!-- Drivee in 27 seconds: an HTML animation (HyperFrames) with a local
+           voice-over, rendered to MP4. Source: videos/drivee-promo/. Loads only
+           when played. -->
+      <video class="intro-video" id="demoVideo"
+        src="/assets/video/drivee-demo.mp4"
+        poster="/assets/video/drivee-demo-poster.jpg"
+        playsinline preload="none" width="720" height="1280"
+        aria-label="Drivee in 27 seconds: snap a photo of a ticket, see what it really costs, and whether to pay it or fight it"></video>
+      <button class="video-play" id="demoPlay" type="button" aria-label="Play the Drivee video, 27 seconds, with sound">
+        <span class="video-play-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+        <span class="video-play-label">Play · 27 sec</span>
       </button>
     </div>
   </section>
@@ -2822,6 +2826,24 @@
     btn.addEventListener("click", function () { set(!root.classList.contains("nav-open")); });
     links.addEventListener("click", function (e) { if (e.target.closest("a")) set(false); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
+  })();
+</script>
+
+<script>
+  // "See it in action": play the demo on tap, then use the browser's own controls
+  (function () {
+    var frame = document.getElementById("introVideoFrame");
+    var vid = document.getElementById("demoVideo");
+    var btn = document.getElementById("demoPlay");
+    if (!frame || !vid || !btn) return;
+    btn.addEventListener("click", function () {
+      frame.classList.add("playing");
+      vid.controls = true;
+      var p = vid.play();
+      if (p && p.catch) p.catch(function () {});
+      if (window.dvTrack) dvTrack("scan_cta", "demo-video-play");
+    });
+    vid.addEventListener("ended", function () { vid.currentTime = 0; });
   })();
 </script>
 </body>

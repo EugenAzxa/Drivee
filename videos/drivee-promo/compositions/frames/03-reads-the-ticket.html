@@ -1,0 +1,408 @@
+<template id="03-reads-the-ticket-template">
+  <div id="root" data-composition-id="03-reads-the-ticket" data-width="1080" data-height="1920" data-start="0" data-duration="4.191">
+
+    <!-- full-bleed ground -->
+    <div class="clip 03-reads-the-ticket-ground" data-start="0" data-duration="4.191" data-track-index="0"></div>
+
+    <!-- the shared phone stage: 560 x 1150 at (260, 260) -->
+    <div class="clip 03-reads-the-ticket-phone" data-start="0" data-duration="4.191" data-track-index="1">
+      <div class="03-reads-the-ticket-screen">
+
+        <!-- status bar -->
+        <div class="03-reads-the-ticket-sbar">
+          <span class="03-reads-the-ticket-time">9:41</span>
+          <span class="03-reads-the-ticket-island"></span>
+          <span class="03-reads-the-ticket-sicons">
+            <i class="03-reads-the-ticket-sig"><b></b><b></b><b></b><b></b></i>
+            <i class="03-reads-the-ticket-batt"><b></b></i>
+          </span>
+        </div>
+
+        <!-- app header -->
+        <div class="03-reads-the-ticket-apphead">
+          <span class="03-reads-the-ticket-brand">Drivee</span>
+          <span class="03-reads-the-ticket-tag">Ticket</span>
+        </div>
+        <div class="03-reads-the-ticket-title">Your ticket</div>
+
+        <!-- ticket card: thumbnail + working state -->
+        <div class="03-reads-the-ticket-tcard">
+          <div class="03-reads-the-ticket-thumb">
+            <div class="03-reads-the-ticket-slip-h1">PARKING INFRACTION NOTICE</div>
+            <div class="03-reads-the-ticket-slip-h2">City of Toronto</div>
+            <div class="03-reads-the-ticket-slip-rule"></div>
+            <div class="03-reads-the-ticket-slip-f 03-reads-the-ticket-slip-charge">
+              <span class="03-reads-the-ticket-slip-l">CHARGE</span>
+              <span class="03-reads-the-ticket-slip-v">No standing</span>
+            </div>
+            <div class="03-reads-the-ticket-slip-f 03-reads-the-ticket-slip-amount">
+              <span class="03-reads-the-ticket-slip-l">AMOUNT</span>
+              <span class="03-reads-the-ticket-slip-v 03-reads-the-ticket-slip-big">$30.00</span>
+            </div>
+            <div class="03-reads-the-ticket-slip-f 03-reads-the-ticket-slip-plate">
+              <span class="03-reads-the-ticket-slip-l">PLATE</span>
+              <span class="03-reads-the-ticket-slip-pl">DRIVEE 1</span>
+            </div>
+            <div class="03-reads-the-ticket-slip-due">RESPOND WITHIN 15 DAYS</div>
+            <div class="03-reads-the-ticket-slip-code"></div>
+
+            <!-- field highlights (one per read field) -->
+            <div class="03-reads-the-ticket-hl 03-reads-the-ticket-hl1"></div>
+            <div class="03-reads-the-ticket-hl 03-reads-the-ticket-hl2"></div>
+            <div class="03-reads-the-ticket-hl 03-reads-the-ticket-hl3"></div>
+
+            <!-- scan line -->
+            <div class="03-reads-the-ticket-scan"><div class="03-reads-the-ticket-scan-glow"></div><div class="03-reads-the-ticket-scan-line"></div></div>
+          </div>
+
+          <div class="03-reads-the-ticket-work">
+            <div class="03-reads-the-ticket-status">
+              <svg class="03-reads-the-ticket-spin" viewBox="0 0 36 36" width="34" height="34">
+                <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(45,99,240,0.15)" stroke-width="4"></circle>
+                <path d="M18 4 A14 14 0 0 1 32 18" fill="none" stroke="#2D63F0" stroke-width="4" stroke-linecap="round"></path>
+              </svg>
+              <svg class="03-reads-the-ticket-sdone" viewBox="0 0 36 36" width="34" height="34">
+                <circle cx="18" cy="18" r="17" fill="#059669"></circle>
+                <path class="03-reads-the-ticket-sdone-tick" d="M10.5 18.5 L15.8 23.5 L25.5 13" fill="none" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="24" stroke-dashoffset="24"></path>
+              </svg>
+              <div class="03-reads-the-ticket-stext">
+                <span class="03-reads-the-ticket-reading">Reading your ticket</span>
+                <span class="03-reads-the-ticket-done">Done</span>
+              </div>
+            </div>
+
+            <div class="03-reads-the-ticket-count">
+              <span class="03-reads-the-ticket-eyebrow">Fields read</span>
+              <div class="03-reads-the-ticket-num">
+                <span class="03-reads-the-ticket-n 03-reads-the-ticket-n0">0</span>
+                <span class="03-reads-the-ticket-n 03-reads-the-ticket-n1">1</span>
+                <span class="03-reads-the-ticket-n 03-reads-the-ticket-n2">2</span>
+                <span class="03-reads-the-ticket-n 03-reads-the-ticket-n3">3</span>
+                <span class="03-reads-the-ticket-of">/3</span>
+              </div>
+            </div>
+
+            <div class="03-reads-the-ticket-track"><div class="03-reads-the-ticket-fill"></div></div>
+          </div>
+        </div>
+
+        <!-- three read fields -->
+        <div class="03-reads-the-ticket-row 03-reads-the-ticket-row1">
+          <div class="03-reads-the-ticket-badge">
+            <span class="03-reads-the-ticket-pend">1</span>
+            <svg class="03-reads-the-ticket-ok" viewBox="0 0 52 52" width="52" height="52">
+              <circle cx="26" cy="26" r="26" fill="#059669"></circle>
+              <path class="03-reads-the-ticket-tick" d="M15 27 L22.5 34 L37 19" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"></path>
+            </svg>
+          </div>
+          <div class="03-reads-the-ticket-skel"><b class="03-reads-the-ticket-sk-a"></b><b class="03-reads-the-ticket-sk-b"></b></div>
+          <div class="03-reads-the-ticket-txt">
+            <span class="03-reads-the-ticket-lbl">Charge</span>
+            <span class="03-reads-the-ticket-val">No standing</span>
+          </div>
+        </div>
+
+        <div class="03-reads-the-ticket-row 03-reads-the-ticket-row2">
+          <div class="03-reads-the-ticket-badge">
+            <span class="03-reads-the-ticket-pend">2</span>
+            <svg class="03-reads-the-ticket-ok" viewBox="0 0 52 52" width="52" height="52">
+              <circle cx="26" cy="26" r="26" fill="#059669"></circle>
+              <path class="03-reads-the-ticket-tick" d="M15 27 L22.5 34 L37 19" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"></path>
+            </svg>
+          </div>
+          <div class="03-reads-the-ticket-skel"><b class="03-reads-the-ticket-sk-a"></b><b class="03-reads-the-ticket-sk-b"></b></div>
+          <div class="03-reads-the-ticket-txt">
+            <span class="03-reads-the-ticket-lbl">Amount</span>
+            <span class="03-reads-the-ticket-val 03-reads-the-ticket-amt">$30.00</span>
+          </div>
+        </div>
+
+        <div class="03-reads-the-ticket-row 03-reads-the-ticket-row3">
+          <div class="03-reads-the-ticket-badge">
+            <span class="03-reads-the-ticket-pend">3</span>
+            <svg class="03-reads-the-ticket-ok" viewBox="0 0 52 52" width="52" height="52">
+              <circle cx="26" cy="26" r="26" fill="#059669"></circle>
+              <path class="03-reads-the-ticket-tick" d="M15 27 L22.5 34 L37 19" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="34" stroke-dashoffset="34"></path>
+            </svg>
+          </div>
+          <div class="03-reads-the-ticket-skel"><b class="03-reads-the-ticket-sk-a"></b><b class="03-reads-the-ticket-sk-b"></b></div>
+          <div class="03-reads-the-ticket-txt">
+            <span class="03-reads-the-ticket-lbl">Respond within</span>
+            <span class="03-reads-the-ticket-val">15 days<svg class="03-reads-the-ticket-clock" viewBox="0 0 28 28" width="28" height="28"><circle cx="14" cy="14" r="13" fill="#F59E0B"></circle><path d="M14 7.5 V14 L18.5 16.8" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+          </div>
+        </div>
+
+        <div class="03-reads-the-ticket-home"></div>
+      </div>
+    </div>
+
+    <style>
+      @font-face {
+        font-family: 'Plus Jakarta Sans';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: block;
+        src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Plus Jakarta Sans';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: block;
+        src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        font-style: normal;
+        font-weight: 400 800;
+        font-display: block;
+        src: url("assets/fonts/captured-tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwgknk-4.woff2") format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #0B1430;
+      }
+
+      /* ground */
+      .\30 3-reads-the-ticket-ground {
+        position: absolute; left: 0; top: 0; width: 1080px; height: 1920px;
+        background:
+          radial-gradient(ellipse 760px 980px at 540px 835px, rgba(45, 99, 240, 0.08), rgba(45, 99, 240, 0) 70%),
+          #FFFFFF;
+      }
+
+      /* phone */
+      .\30 3-reads-the-ticket-phone {
+        position: absolute; left: 260px; top: 260px; width: 560px; height: 1150px;
+        box-sizing: border-box;
+        background: #FFFFFF;
+        border: 1.5px solid rgba(45, 99, 240, 0.2);
+        border-radius: 74px;
+      }
+      .\30 3-reads-the-ticket-screen {
+        position: absolute; left: 13px; top: 13px; width: 531px; height: 1121px;
+        border-radius: 62px;
+        background: #F6F8FE;
+        overflow: hidden;
+      }
+
+      /* status bar */
+      .\30 3-reads-the-ticket-sbar { position: absolute; left: 0; top: 0; width: 531px; height: 64px; }
+      .\30 3-reads-the-ticket-time { position: absolute; left: 50px; top: 22px; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+      .\30 3-reads-the-ticket-island { position: absolute; left: 205px; top: 16px; width: 122px; height: 34px; border-radius: 100px; background: #0B1430; }
+      .\30 3-reads-the-ticket-sicons { position: absolute; right: 44px; top: 26px; height: 16px; display: flex; gap: 8px; align-items: flex-end; }
+      .\30 3-reads-the-ticket-sig { display: flex; gap: 3px; align-items: flex-end; height: 14px; }
+      .\30 3-reads-the-ticket-sig b { display: block; width: 4px; border-radius: 1px; background: #0B1430; }
+      .\30 3-reads-the-ticket-sig b:nth-child(1) { height: 5px; }
+      .\30 3-reads-the-ticket-sig b:nth-child(2) { height: 8px; }
+      .\30 3-reads-the-ticket-sig b:nth-child(3) { height: 11px; }
+      .\30 3-reads-the-ticket-sig b:nth-child(4) { height: 14px; }
+      .\30 3-reads-the-ticket-batt { display: block; position: relative; width: 28px; height: 14px; box-sizing: border-box; border: 1.5px solid #0B1430; border-radius: 4px; }
+      .\30 3-reads-the-ticket-batt b { position: absolute; left: 2px; top: 2px; width: 18px; height: 7px; border-radius: 1.5px; background: #0B1430; }
+
+      /* app header */
+      .\30 3-reads-the-ticket-apphead { position: absolute; left: 34px; top: 84px; width: 463px; height: 40px; }
+      .\30 3-reads-the-ticket-brand { position: absolute; left: 0; top: 4px; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: #2D63F0; }
+      .\30 3-reads-the-ticket-tag { position: absolute; right: 0; top: 2px; padding: 7px 16px; border-radius: 100px; background: rgba(45, 99, 240, 0.08); color: #2D63F0; font-size: 16px; font-weight: 600; }
+      .\30 3-reads-the-ticket-title { position: absolute; left: 34px; top: 134px; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+
+      /* ticket card */
+      .\30 3-reads-the-ticket-tcard {
+        position: absolute; left: 24px; top: 204px; width: 483px; height: 300px;
+        box-sizing: border-box;
+        background: #FFFFFF;
+        border: 1.5px solid rgba(45, 99, 240, 0.2);
+        border-radius: 14px;
+      }
+      .\30 3-reads-the-ticket-thumb {
+        position: absolute; left: 20px; top: 20px; width: 184px; height: 258px;
+        box-sizing: border-box;
+        background: #FFD84A;
+        border: 1px solid #E5BC25;
+        border-radius: 8px;
+        overflow: hidden;
+        color: #3A2E00;
+      }
+      .\30 3-reads-the-ticket-slip-h1 { position: absolute; left: 10px; top: 11px; width: 166px; font-size: 8.4px; font-weight: 800; letter-spacing: 0.01em; white-space: nowrap; }
+      .\30 3-reads-the-ticket-slip-h2 { position: absolute; left: 10px; top: 24px; font-size: 8.4px; font-weight: 500; }
+      .\30 3-reads-the-ticket-slip-rule { position: absolute; left: 10px; top: 42px; width: 162px; height: 1.5px; background: rgba(58, 46, 0, 0.45); }
+      .\30 3-reads-the-ticket-slip-f { position: absolute; left: 10px; width: 162px; }
+      .\30 3-reads-the-ticket-slip-l { display: block; font-size: 7px; font-weight: 700; letter-spacing: 0.08em; opacity: 0.7; }
+      .\30 3-reads-the-ticket-slip-v { display: block; margin-top: 2px; font-size: 13px; font-weight: 700; }
+      .\30 3-reads-the-ticket-slip-big { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; }
+      .\30 3-reads-the-ticket-slip-charge { top: 54px; }
+      .\30 3-reads-the-ticket-slip-amount { top: 98px; }
+      .\30 3-reads-the-ticket-slip-plate { top: 148px; }
+      .\30 3-reads-the-ticket-slip-pl { display: inline-block; margin-top: 3px; padding: 2px 6px; border: 1.2px solid #3A2E00; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; }
+      .\30 3-reads-the-ticket-slip-due { position: absolute; left: 10px; top: 198px; font-size: 8px; font-weight: 800; letter-spacing: 0.04em; }
+      .\30 3-reads-the-ticket-slip-code {
+        position: absolute; left: 10px; top: 222px; width: 120px; height: 20px;
+        background: repeating-linear-gradient(90deg, #3A2E00 0 2px, transparent 2px 4px, #3A2E00 4px 5px, transparent 5px 8px);
+        opacity: 0.75;
+      }
+      .\30 3-reads-the-ticket-hl {
+        position: absolute; left: 5px; width: 172px;
+        box-sizing: border-box;
+        border: 2px solid #2D63F0;
+        border-radius: 6px;
+        background: rgba(45, 99, 240, 0.12);
+        opacity: 0;
+      }
+      .\30 3-reads-the-ticket-hl1 { top: 49px; height: 42px; }
+      .\30 3-reads-the-ticket-hl2 { top: 93px; height: 50px; }
+      .\30 3-reads-the-ticket-hl3 { top: 192px; height: 22px; }
+      .\30 3-reads-the-ticket-scan { position: absolute; left: 0; top: 0; width: 182px; height: 44px; opacity: 0; }
+      .\30 3-reads-the-ticket-scan-glow { position: absolute; left: 0; top: 0; width: 182px; height: 41px; background: linear-gradient(180deg, rgba(45, 99, 240, 0) 0%, rgba(45, 99, 240, 0.28) 100%); }
+      .\30 3-reads-the-ticket-scan-line { position: absolute; left: 0; top: 41px; width: 182px; height: 3px; background: #2D63F0; }
+
+      /* working column */
+      .\30 3-reads-the-ticket-work { position: absolute; left: 226px; top: 20px; width: 234px; height: 258px; }
+      .\30 3-reads-the-ticket-status { position: absolute; left: 0; top: 4px; width: 234px; height: 64px; }
+      .\30 3-reads-the-ticket-spin, .\30 3-reads-the-ticket-sdone { position: absolute; left: 0; top: 2px; display: block; }
+      .\30 3-reads-the-ticket-sdone { opacity: 0; }
+      .\30 3-reads-the-ticket-stext { position: absolute; left: 46px; top: 0; width: 188px; height: 64px; }
+      .\30 3-reads-the-ticket-reading { position: absolute; left: 0; top: 0; width: 188px; font-size: 21px; font-weight: 700; line-height: 1.22; color: #2D63F0; }
+      .\30 3-reads-the-ticket-done { position: absolute; left: 0; top: 2px; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; color: #059669; opacity: 0; }
+      .\30 3-reads-the-ticket-count { position: absolute; left: 0; top: 108px; width: 234px; height: 100px; }
+      .\30 3-reads-the-ticket-eyebrow { position: absolute; left: 0; top: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D63F0; }
+      .\30 3-reads-the-ticket-num { position: absolute; left: 0; top: 26px; width: 234px; height: 64px; overflow: hidden; }
+      .\30 3-reads-the-ticket-n { position: absolute; left: 0; top: 0; width: 38px; font-size: 54px; font-weight: 800; line-height: 64px; letter-spacing: -0.02em; color: #0B1430; font-variant-numeric: tabular-nums; opacity: 0; }
+      .\30 3-reads-the-ticket-n0 { opacity: 1; }
+      .\30 3-reads-the-ticket-of { position: absolute; left: 38px; top: 0; font-size: 54px; font-weight: 800; line-height: 64px; letter-spacing: -0.02em; color: #9A9A9A; }
+      .\30 3-reads-the-ticket-track { position: absolute; left: 0; top: 236px; width: 234px; height: 12px; border-radius: 6px; background: rgba(45, 99, 240, 0.08); overflow: hidden; }
+      .\30 3-reads-the-ticket-fill { display: block; width: 234px; height: 12px; border-radius: 6px; background: #2D63F0; }
+
+      /* rows */
+      .\30 3-reads-the-ticket-row {
+        position: absolute; left: 24px; width: 483px; height: 160px;
+        box-sizing: border-box;
+        background: #FFFFFF;
+        border: 1.5px solid rgba(45, 99, 240, 0.2);
+        border-radius: 14px;
+      }
+      .\30 3-reads-the-ticket-row1 { top: 528px; }
+      .\30 3-reads-the-ticket-row2 { top: 706px; }
+      .\30 3-reads-the-ticket-row3 { top: 884px; }
+      .\30 3-reads-the-ticket-badge { position: absolute; left: 26px; top: 52px; width: 52px; height: 52px; }
+      .\30 3-reads-the-ticket-pend {
+        position: absolute; left: 0; top: 0; width: 52px; height: 52px;
+        box-sizing: border-box;
+        border: 2px solid rgba(45, 99, 240, 0.35);
+        border-radius: 50%;
+        font-size: 22px; font-weight: 700; line-height: 48px; text-align: center; color: #2D63F0;
+      }
+      .\30 3-reads-the-ticket-ok { position: absolute; left: 0; top: 0; display: block; opacity: 0; }
+      .\30 3-reads-the-ticket-skel { position: absolute; left: 102px; top: 0; width: 340px; height: 157px; }
+      .\30 3-reads-the-ticket-skel b { position: absolute; left: 0; display: block; border-radius: 6px; background: rgba(45, 99, 240, 0.1); }
+      .\30 3-reads-the-ticket-sk-a { top: 44px; width: 104px; height: 14px; }
+      .\30 3-reads-the-ticket-sk-b { top: 74px; width: 232px; height: 34px; }
+      .\30 3-reads-the-ticket-txt { position: absolute; left: 102px; top: 0; width: 360px; height: 157px; }
+      .\30 3-reads-the-ticket-lbl { position: absolute; left: 0; top: 34px; font-size: 17px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2D63F0; opacity: 0; }
+      .\30 3-reads-the-ticket-val { position: absolute; left: 0; top: 64px; display: flex; align-items: center; gap: 14px; font-size: 42px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; color: #0B1430; white-space: nowrap; opacity: 0; }
+      .\30 3-reads-the-ticket-amt { top: 58px; font-size: 58px; font-weight: 800; line-height: 1.0; color: #2D63F0; font-variant-numeric: tabular-nums; }
+      .\30 3-reads-the-ticket-clock { display: block; flex: none; }
+
+      .\30 3-reads-the-ticket-home { position: absolute; left: 196px; top: 1094px; width: 140px; height: 6px; border-radius: 100px; background: #0B1430; opacity: 0.85; }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      (function () {
+        var ID = "03-reads-the-ticket";
+        var root = document.querySelector('[data-composition-id="' + ID + '"]');
+        var q = function (n) { return root.querySelector(".\\30 3-reads-the-ticket-" + n); };
+        var qa = function (n) { return root.querySelectorAll(".\\30 3-reads-the-ticket-" + n); };
+
+        var tl = gsap.timeline({ paused: true });
+
+        var rows = [q("row1"), q("row2"), q("row3")];
+        var part = function (row, n) { return row.querySelector(".\\30 3-reads-the-ticket-" + n); };
+
+        // ---- Scene 1 (0.0-1.0): same phone; ticket card + thumbnail settle, scan line passes once
+        tl.fromTo(q("tcard"), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 0);
+        tl.fromTo(q("thumb"), { scale: 0.94 }, { scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 0.02);
+        tl.fromTo(q("status"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, 0.1);
+        tl.fromTo(q("count"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0.16);
+        tl.fromTo(q("track"), { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0.2);
+
+        // pending rows cascade in (skeletons with numbered outline badges)
+        rows.forEach(function (row, i) {
+          tl.fromTo(row, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.2 + i * 0.1);
+        });
+
+        // spinner: finite, timeline-driven rotation until the resolve beat
+        tl.fromTo(q("spin"), { rotation: 0 }, { rotation: 810, duration: 2.7, ease: "none", transformOrigin: "50% 50%" }, 0);
+
+        // scan line: one pass top -> bottom
+        tl.fromTo(q("scan"), { y: -44, opacity: 0 }, { y: -44, opacity: 1, duration: 0.08, ease: "none" }, 0.14);
+        tl.fromTo(q("scan"), { y: -44 }, { y: 228, duration: 0.8, ease: "power1.inOut", immediateRender: false }, 0.16);
+        tl.to(q("scan"), { opacity: 0, duration: 0.12, ease: "power1.in" }, 0.86);
+
+        // progress fill steps
+        tl.fromTo(q("fill"), { scaleX: 0 }, { scaleX: 0.18, duration: 0.85, ease: "none", transformOrigin: "0% 50%" }, 0.12);
+        tl.to(q("fill"), { scaleX: 1 / 3, duration: 0.3, ease: "power2.out" }, 1.0);
+        tl.to(q("fill"), { scaleX: 2 / 3, duration: 0.3, ease: "power2.out" }, 1.9);
+        tl.to(q("fill"), { scaleX: 1, duration: 0.3, ease: "power2.out" }, 2.7);
+
+        // counter digit swaps (0 -> 1 -> 2 -> 3)
+        var digit = function (from, to, t) {
+          tl.fromTo(q("n" + from), { y: 0, opacity: 1 }, { y: -40, opacity: 0, duration: 0.2, ease: "power2.in", immediateRender: false }, t);
+          tl.fromTo(q("n" + to), { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.26, ease: "power3.out", immediateRender: false }, t + 0.06);
+        };
+
+        // field resolve: skeleton out, label + value up, badge flips to green check
+        var resolve = function (row, t) {
+          tl.to(part(row, "skel"), { opacity: 0, duration: 0.18, ease: "power1.in" }, t);
+          tl.fromTo(part(row, "lbl"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.32, ease: "power3.out" }, t + 0.04);
+          tl.fromTo(part(row, "val"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, t + 0.08);
+          tl.to(part(row, "pend"), { scale: 0.6, opacity: 0, duration: 0.14, ease: "power2.in" }, t);
+          tl.fromTo(part(row, "ok"), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "back.out(2.4)", transformOrigin: "50% 50%" }, t + 0.08);
+          tl.fromTo(part(row, "tick"), { attr: { "stroke-dashoffset": 34 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.26, ease: "power2.out" }, t + 0.18);
+          tl.fromTo(row, { borderColor: "rgba(45, 99, 240, 0.2)" }, { borderColor: "rgba(45, 99, 240, 0.55)", duration: 0.15, ease: "power1.out" }, t);
+          tl.to(row, { borderColor: "rgba(45, 99, 240, 0.2)", duration: 0.5, ease: "power1.inOut" }, t + 0.3);
+        };
+
+        // ---- Scene 2 (1.0): "the charge"
+        resolve(rows[0], 1.0);
+        digit(0, 1, 1.0);
+        tl.fromTo(q("hl1"), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 1.0);
+        tl.to(q("hl1"), { opacity: 0, duration: 0.2, ease: "power1.in" }, 1.85);
+
+        // ---- Scene 3 (1.9): "the amount" - tabular count-up
+        resolve(rows[1], 1.9);
+        digit(1, 2, 1.9);
+        tl.fromTo(q("hl2"), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 1.9);
+        tl.to(q("hl2"), { opacity: 0, duration: 0.2, ease: "power1.in" }, 2.65);
+        // the amount is the heaviest beat: an extra scale pop on the large tabular figure (seek-safe, no text mutation)
+        tl.fromTo(q("amt"), { scale: 0.86 }, { scale: 1, duration: 0.45, ease: "back.out(2)", transformOrigin: "0% 60%" }, 1.98);
+
+        // ---- Scene 4 (2.7-end): "and the deadline" - row 3, amber clock, status -> Done, then hold
+        resolve(rows[2], 2.7);
+        digit(2, 3, 2.7);
+        tl.fromTo(q("hl3"), { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" }, 2.7);
+        tl.to(q("hl3"), { opacity: 0, duration: 0.25, ease: "power1.in" }, 3.2);
+        tl.fromTo(q("clock"), { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.6)", transformOrigin: "50% 50%" }, 2.86);
+
+        tl.to(q("spin"), { scale: 0.5, opacity: 0, duration: 0.16, ease: "power2.in", transformOrigin: "50% 50%" }, 2.7);
+        tl.fromTo(q("sdone"), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(2.4)", transformOrigin: "50% 50%" }, 2.76);
+        tl.fromTo(q("sdone-tick"), { attr: { "stroke-dashoffset": 24 } }, { attr: { "stroke-dashoffset": 0 }, duration: 0.24, ease: "power2.out" }, 2.86);
+        tl.to(q("reading"), { y: -18, opacity: 0, duration: 0.2, ease: "power2.in" }, 2.7);
+        tl.fromTo(q("done"), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.32, ease: "power3.out" }, 2.78);
+
+        // hold still to the end of the frame
+        tl.set({}, {}, 3.691);
+
+        window.__timelines = window.__timelines || {};
+        window.__timelines[ID] = tl;
+      })();
+    </script>
+  </div>
+</template>

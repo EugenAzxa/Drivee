@@ -1,0 +1,424 @@
+<template id="06-matched-template">
+  <style>
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 400; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 500; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 600; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 700; font-display: block; src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+    /* Frame root: styled by #root only (never a class on the composition element). */
+    #root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1080px;
+      height: 1920px;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #0B1430;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Class names carry the frame-id prefix; a leading digit is escaped (\30 = "0"). */
+    .\30 6-matched-bg {
+      position: absolute;
+      left: 0; top: 0; width: 1080px; height: 1920px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 55%, #F7F9FE 100%);
+    }
+    .\30 6-matched-stage {
+      position: absolute;
+      left: 0; top: 0; width: 1080px; height: 1920px;
+    }
+
+    /* Environmental glow behind the phone (press-release-spring, phase 4) */
+    .\30 6-matched-envglow {
+      position: absolute;
+      left: 40px; top: 185px; width: 1000px; height: 1300px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 50% 50%, rgba(45, 99, 240, 0.55) 0%, rgba(45, 99, 240, 0.18) 38%, rgba(45, 99, 240, 0) 68%);
+      opacity: 0;
+    }
+
+    /* ---- Headline (upper third) ---- */
+    .\30 6-matched-head {
+      position: absolute;
+      left: 54px; right: 54px; top: 62px;
+      text-align: center;
+    }
+    .\30 6-matched-rule {
+      width: 60px; height: 4px; border-radius: 2px;
+      background: #2D63F0;
+      margin: 0 auto;
+      transform-origin: 50% 50%;
+    }
+    .\30 6-matched-title {
+      margin-top: 30px;
+      font-size: 104px;
+      line-height: 1.04;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0B1430;
+      white-space: nowrap;
+    }
+    .\30 6-matched-word {
+      display: inline-block;
+      margin: 0 12px;
+    }
+
+    /* ---- Phone (shared stage: 560 x 1150 at x 260, y 260) ---- */
+    .\30 6-matched-phone {
+      position: absolute;
+      left: 260px; top: 260px; width: 560px; height: 1150px;
+      box-sizing: border-box;
+      background: #FFFFFF;
+      border: 2px solid rgba(11, 20, 48, 0.12);
+      border-radius: 76px;
+    }
+    .\30 6-matched-screen {
+      position: absolute;
+      left: 12px; top: 12px; right: 12px; bottom: 12px;
+      border-radius: 64px;
+      background: #F4F6FC;
+      overflow: hidden;
+    }
+    .\30 6-matched-island {
+      position: absolute;
+      left: 50%; top: 18px; width: 150px; height: 40px;
+      margin-left: -75px;
+      border-radius: 20px;
+      background: #0B1430;
+    }
+    .\30 6-matched-status {
+      position: absolute;
+      left: 44px; right: 40px; top: 24px; height: 30px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 22px; font-weight: 600; color: #0B1430;
+    }
+    .\30 6-matched-status svg { display: block; }
+    .\30 6-matched-appbar {
+      position: absolute;
+      left: 24px; right: 24px; top: 88px; height: 56px;
+      display: flex; align-items: center;
+    }
+    .\30 6-matched-back {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(45, 99, 240, 0.2);
+      box-sizing: border-box;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .\30 6-matched-appbar-title {
+      flex: 1;
+      text-align: center;
+      margin-right: 52px;
+      font-size: 24px; font-weight: 700; color: #0B1430;
+    }
+
+    /* Context card (the ticket already on file) — abstract skeleton, dims as the match arrives */
+    .\30 6-matched-ticket {
+      position: absolute;
+      left: 20px; right: 20px; top: 172px; height: 290px;
+      box-sizing: border-box;
+      padding: 26px;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(45, 99, 240, 0.2);
+      border-radius: 20px;
+    }
+    .\30 6-matched-ticket-row { display: flex; align-items: center; }
+    .\30 6-matched-ticket-icon {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: rgba(45, 99, 240, 0.08);
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+    }
+    .\30 6-matched-ticket-lines { margin-left: 18px; flex: 1; }
+    .\30 6-matched-sk {
+      height: 16px; border-radius: 8px;
+      background: rgba(11, 20, 48, 0.08);
+    }
+    .\30 6-matched-sk.\30 6-matched-sk-strong { background: rgba(11, 20, 48, 0.16); height: 20px; }
+    .\30 6-matched-sk.\30 6-matched-sk-blue { background: rgba(45, 99, 240, 0.18); }
+    .\30 6-matched-sk-chips { display: flex; margin-top: 26px; }
+    .\30 6-matched-sk-chip {
+      height: 40px; border-radius: 100px;
+      background: rgba(45, 99, 240, 0.08);
+      margin-right: 12px;
+    }
+
+    /* ---- Match card (focal) ---- */
+    .\30 6-matched-card {
+      position: absolute;
+      left: 20px; right: 20px; bottom: 58px;
+      box-sizing: border-box;
+      padding: 38px 34px 34px;
+      background: #FFFFFF;
+      border: 1.5px solid rgba(45, 99, 240, 0.2);
+      border-radius: 24px;
+    }
+    .\30 6-matched-eyebrow {
+      display: flex; align-items: center;
+      font-size: 17px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: #2D63F0;
+    }
+    .\30 6-matched-eyebrow-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #2D63F0; margin-right: 10px;
+    }
+    .\30 6-matched-who {
+      display: flex; align-items: center;
+      margin-top: 28px;
+    }
+    .\30 6-matched-avatar {
+      width: 108px; height: 108px; border-radius: 50%;
+      background: #2D63F0;
+      display: flex; align-items: center; justify-content: center;
+      flex: none;
+      transform-origin: 50% 50%;
+    }
+    .\30 6-matched-name {
+      margin-left: 22px;
+      font-size: 35px; line-height: 1.14; font-weight: 700;
+      letter-spacing: -0.02em; color: #0B1430;
+    }
+    .\30 6-matched-handles {
+      display: flex; align-items: center;
+      margin-top: 32px;
+      font-size: 22px; font-weight: 500; color: #9A9A9A;
+    }
+    .\30 6-matched-handles-chip {
+      margin-left: 12px;
+      padding: 9px 18px;
+      border-radius: 100px;
+      background: rgba(45, 99, 240, 0.08);
+      font-weight: 600; color: #0B1430;
+    }
+    .\30 6-matched-divider {
+      height: 1.5px;
+      margin-top: 30px;
+      background: rgba(45, 99, 240, 0.15);
+    }
+    .\30 6-matched-offer {
+      display: flex; align-items: center;
+      margin-top: 28px; height: 50px;
+    }
+    .\30 6-matched-free {
+      display: flex; align-items: center;
+      padding: 0 20px 0 14px; height: 48px;
+      border-radius: 100px;
+      background: rgba(5, 150, 105, 0.12);
+      color: #059669;
+      font-size: 22px; font-weight: 700;
+      transform-origin: 0% 50%;
+    }
+    .\30 6-matched-free svg { margin-right: 8px; display: block; }
+    .\30 6-matched-nocomm {
+      margin-left: 18px;
+      font-size: 21px; font-weight: 500; color: #9A9A9A;
+    }
+    .\30 6-matched-cta {
+      position: relative;
+      margin-top: 34px;
+      height: 100px;
+    }
+    .\30 6-matched-burst {
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      border-radius: 100px;
+      background: radial-gradient(ellipse at 50% 50%, rgba(27, 69, 194, 0.95) 0%, rgba(27, 69, 194, 0.5) 45%, rgba(27, 69, 194, 0) 75%);
+      filter: blur(26px);
+      opacity: 0;
+      z-index: 1;
+      transform-origin: 50% 50%;
+    }
+    .\30 6-matched-btn {
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      border-radius: 100px;
+      background: #2D63F0;
+      color: #FFFFFF;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 27px; font-weight: 600;
+      box-shadow: 0 16px 34px rgba(45, 99, 240, 0.30);
+      z-index: 2;
+      transform-origin: 50% 50%;
+    }
+    .\30 6-matched-home {
+      position: absolute;
+      left: 50%; bottom: 18px; width: 150px; height: 6px;
+      margin-left: -75px;
+      border-radius: 3px;
+      background: rgba(11, 20, 48, 0.75);
+    }
+  </style>
+
+  <div id="root" data-composition-id="06-matched" data-start="0" data-duration="7.028" data-width="1080" data-height="1920">
+    <!-- Full-bleed ground on its own clip, lowest track -->
+    <div class="06-matched-bg clip" data-start="0" data-duration="7.028" data-track-index="0"></div>
+
+    <div class="06-matched-stage clip" data-start="0" data-duration="7.028" data-track-index="1">
+      <div class="06-matched-envglow"></div>
+
+      <!-- Upper-third headline -->
+      <div class="06-matched-head">
+        <div class="06-matched-rule"></div>
+        <div class="06-matched-title"><span class="06-matched-word 06-matched-w1">Worth</span><span class="06-matched-word 06-matched-w2">fighting?</span></div>
+      </div>
+
+      <!-- Shared phone -->
+      <div class="06-matched-phone">
+        <div class="06-matched-screen">
+          <div class="06-matched-status">
+            <span>9:41</span>
+            <svg width="92" height="22" viewBox="0 0 92 22" aria-hidden="true">
+              <rect x="0" y="14" width="5" height="7" rx="1.5" fill="#0B1430"/>
+              <rect x="8" y="10" width="5" height="11" rx="1.5" fill="#0B1430"/>
+              <rect x="16" y="6" width="5" height="15" rx="1.5" fill="#0B1430"/>
+              <rect x="24" y="2" width="5" height="19" rx="1.5" fill="#0B1430"/>
+              <rect x="50" y="3" width="36" height="17" rx="5" fill="none" stroke="#0B1430" stroke-opacity="0.45" stroke-width="2"/>
+              <rect x="53" y="6" width="26" height="11" rx="2.5" fill="#0B1430"/>
+              <rect x="88" y="8.5" width="3" height="6" rx="1.2" fill="#0B1430" fill-opacity="0.45"/>
+            </svg>
+          </div>
+          <div class="06-matched-island"></div>
+
+          <div class="06-matched-appbar">
+            <div class="06-matched-back">
+              <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M13.5 4.5 L7 11 L13.5 17.5" fill="none" stroke="#0B1430" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="06-matched-appbar-title">Next step</div>
+          </div>
+
+          <div class="06-matched-ticket">
+            <div class="06-matched-ticket-row">
+              <div class="06-matched-ticket-icon">
+                <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+                  <path d="M7 5 H27 V29 L23.5 26.5 L20 29 L17 26.5 L14 29 L10.5 26.5 L7 29 Z" fill="none" stroke="#2D63F0" stroke-width="2.4" stroke-linejoin="round"/>
+                  <path d="M12 12 H22 M12 17 H22 M12 22 H18" stroke="#2D63F0" stroke-width="2.4" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="06-matched-ticket-lines">
+                <div class="06-matched-sk 06-matched-sk-strong" style="width: 230px;"></div>
+                <div class="06-matched-sk" style="width: 150px; margin-top: 14px;"></div>
+              </div>
+            </div>
+            <div class="06-matched-sk" style="width: 100%; margin-top: 30px;"></div>
+            <div class="06-matched-sk" style="width: 82%; margin-top: 14px;"></div>
+            <div class="06-matched-sk-chips">
+              <div class="06-matched-sk-chip" style="width: 130px;"></div>
+              <div class="06-matched-sk-chip" style="width: 96px;"></div>
+            </div>
+          </div>
+
+          <!-- Focal: the match card, slides up inside the screen -->
+          <div class="06-matched-card">
+            <div class="06-matched-eyebrow"><span class="06-matched-eyebrow-dot"></span>Your match</div>
+            <div class="06-matched-who">
+              <div class="06-matched-avatar">
+                <!-- scales-of-justice glyph (no face) -->
+                <svg width="60" height="60" viewBox="0 0 60 60" aria-hidden="true">
+                  <g fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M30 9 V48"/>
+                    <path d="M20 50 H40"/>
+                    <path d="M12 17 H48"/>
+                    <circle cx="30" cy="12" r="2.6" fill="#FFFFFF" stroke="none"/>
+                    <path d="M14 17 L7 32 M14 17 L21 32"/>
+                    <path d="M6 32 Q14 40 22 32 Z" fill="#FFFFFF" fill-opacity="0.95"/>
+                    <path d="M46 17 L39 32 M46 17 L53 32"/>
+                    <path d="M38 32 Q46 40 54 32 Z" fill="#FFFFFF" fill-opacity="0.95"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="06-matched-name">Licensed Ontario paralegal</div>
+            </div>
+            <div class="06-matched-handles">Handles:<span class="06-matched-handles-chip">No standing</span></div>
+            <div class="06-matched-divider"></div>
+            <div class="06-matched-offer">
+              <div class="06-matched-free">
+                <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 11.5 L9.2 15.5 L17 7" fill="none" stroke="#059669" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Free case review
+              </div>
+              <div class="06-matched-nocomm">No commission</div>
+            </div>
+            <div class="06-matched-cta">
+              <div class="06-matched-burst"></div>
+              <div class="06-matched-btn">Request free review</div>
+            </div>
+          </div>
+
+          <div class="06-matched-home"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      var FRAME = "06-matched";
+      var scope = document.querySelector('[data-composition-id="' + FRAME + '"]') || document;
+      function q(name) {
+        return scope.querySelector('[class~="' + FRAME + "-" + name + '"]');
+      }
+
+      var rule = q("rule");
+      var w1 = q("w1");
+      var w2 = q("w2");
+      var ticket = q("ticket");
+      var card = q("card");
+      var avatar = q("avatar");
+      var name = q("name");
+      var handles = q("handles");
+      var free = q("free");
+      var nocomm = q("nocomm");
+      var cta = q("cta");
+      var btn = q("btn");
+      var burst = q("burst");
+      var envglow = q("envglow");
+
+      var tl = gsap.timeline({ paused: true });
+
+      // Scene 1 (0.0-1.0s) — phone already on stage; "Worth fighting?" rises in.
+      tl.fromTo(rule, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.05);
+      tl.fromTo(w1, { y: 56, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.1);
+      tl.fromTo(w2, { y: 56, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.24);
+
+      // Scene 2 (1.0-3.8s) — the one restrained move: the match card slide-up crossfade.
+      tl.fromTo(card, { y: 640, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 1.05);
+      tl.fromTo(ticket, { opacity: 1 }, { opacity: 0.45, duration: 0.9, ease: "power2.out" }, 1.05);
+      tl.fromTo(avatar, { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)" }, 1.35);
+      // "licensed Ontario paralegal"
+      tl.fromTo(name, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 1.7);
+      tl.fromTo(handles, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 2.65);
+      tl.fromTo(cta, { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 3.15);
+
+      // Scene 3 (3.8s-end) — "Your first case review is free".
+      tl.fromTo(free, { scale: 0.82, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.7)" }, 3.9);
+      tl.fromTo(nocomm, { x: -12, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "power2.out" }, 4.22);
+
+      // press-release-spring on the CTA (subtle-to-default press)
+      var PRESS_START = 4.6;
+      var PRESS_DUR = 0.16;
+      var RELEASE_START = PRESS_START + PRESS_DUR;
+      var RELEASE_DUR = 0.6;
+      tl.fromTo(btn,
+        { scale: 1, boxShadow: "0 16px 34px rgba(45, 99, 240, 0.30)", backgroundColor: "#2D63F0" },
+        { scale: 0.93, boxShadow: "0 4px 10px rgba(45, 99, 240, 0.22)", backgroundColor: "#1B45C2", duration: PRESS_DUR, ease: "power1.in" },
+        PRESS_START);
+      tl.to(btn,
+        { scale: 1, boxShadow: "0 16px 34px rgba(45, 99, 240, 0.30)", backgroundColor: "#2D63F0", duration: RELEASE_DUR, ease: "back.out(1.8)" },
+        RELEASE_START);
+      tl.fromTo(burst, { scale: 1, opacity: 0 }, { scale: 1.5, opacity: 0.6, duration: 0.5, ease: "power2.out" }, RELEASE_START);
+      tl.to(burst, { opacity: 0, duration: 0.5, ease: "power2.in" }, RELEASE_START + 0.5);
+      tl.fromTo(envglow, { opacity: 0 }, { opacity: 0.22, duration: 0.9, ease: "power2.out" }, RELEASE_START);
+
+      // Hold to the frame's end (6.528s) — allocated stillness.
+      tl.set({}, {}, 6.528);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[FRAME] = tl;
+    })();
+  </script>
+</template>

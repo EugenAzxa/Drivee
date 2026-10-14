@@ -16,3 +16,11 @@ tools/tickets/*
 
 # raw Higgsfield downloads; the site serves the compressed intro-*.mp4
 assets/intro/raw-*.mp4
+
+# HyperFrames video projects: keep the source, not the regenerable/heavy parts
+videos/*/capture/
+videos/*/renders/
+videos/*/.tmp/
+videos/*/.hyperframes/artifacts/
+videos/*/.hyperframes/frame-packets/
+videos/*/node_modules/

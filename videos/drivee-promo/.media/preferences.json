@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "preferences": {
+    "aspect": {
+      "value": "1080x1920",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:23:40.332Z"
+    },
+    "language": {
+      "value": "en",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:23:40.433Z"
+    },
+    "flow": {
+      "value": "automation",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:23:40.542Z"
+    },
+    "storyboard": {
+      "value": "no",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:23:40.648Z"
+    },
+    "voice": {
+      "value": "am_michael",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:23:40.737Z"
+    },
+    "style_preset.product-launch-video": {
+      "value": "blue-professional",
+      "confirmed_in": [
+        "drivee-promo"
+      ],
+      "updated_at": "2026-10-14T12:25:40.721Z"
+    }
+  },
+  "sightings": {}
+}

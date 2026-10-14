@@ -1,0 +1,513 @@
+<template>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko40yygg_vbd-E.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("assets/fonts/captured-LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yygg_vb.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+#root {
+  position: relative;
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0B1430;
+}
+
+/* ---------- full-bleed ground (clip layer, not the root) ---------- */
+[id="02-snap-a-photo-bg"] {
+  position: absolute;
+  left: 0; top: 0;
+  width: 1080px; height: 1920px;
+  background: #FFFFFF;
+}
+[id="02-snap-a-photo-halo"] {
+  position: absolute;
+  left: 40px; top: 196px;
+  width: 1000px; height: 1200px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(45, 99, 240, 0.10), rgba(45, 99, 240, 0.04) 60%, rgba(45, 99, 240, 0) 100%);
+}
+[id="02-snap-a-photo-glow"] {
+  position: absolute;
+  left: -200px; top: 200px;
+  width: 1480px; height: 1400px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(45, 99, 240, 0.22), rgba(45, 99, 240, 0) 100%);
+  opacity: 0;
+}
+
+/* ---------- stage + virtual camera ---------- */
+[id="02-snap-a-photo-stage"] {
+  position: absolute;
+  left: 0; top: 0;
+  width: 1080px; height: 1920px;
+}
+[id="02-snap-a-photo-cam"] {
+  position: absolute;
+  left: 0; top: 0;
+  width: 1080px; height: 1920px;
+  transform-origin: 540px 796px;
+}
+
+/* ---------- phone: box x260 y220 w560 h1152 r72 ---------- */
+[id="02-snap-a-photo-phone"] {
+  position: absolute;
+  left: 260px; top: 220px;
+  width: 560px; height: 1152px;
+  border-radius: 72px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(11, 20, 48, 0.08);
+  box-sizing: border-box;
+  box-shadow: 0 50px 90px rgba(11, 20, 48, 0.14), 0 12px 24px rgba(11, 20, 48, 0.06);
+}
+[class~="02-snap-a-photo-sidekey"] {
+  position: absolute;
+  width: 6px;
+  border-radius: 3px;
+  background: #E3E7EF;
+}
+[id="02-snap-a-photo-screen"] {
+  position: absolute;
+  left: 14.5px; top: 14.5px;
+  width: 528px; height: 1120px;
+  border-radius: 58px;
+  overflow: hidden;
+  background: #F6F8FD;
+}
+[id="02-snap-a-photo-island"] {
+  position: absolute;
+  left: 206px; top: 16px;
+  width: 116px; height: 34px;
+  border-radius: 17px;
+  background: #0B1430;
+}
+
+/* app header */
+[id="02-snap-a-photo-logo"] {
+  position: absolute;
+  left: 28px; top: 78px;
+  width: 56px; height: 56px;
+}
+[id="02-snap-a-photo-brand"] {
+  position: absolute;
+  left: 98px; top: 82px;
+  height: 48px;
+  line-height: 48px;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0B1430;
+  white-space: nowrap;
+}
+
+/* viewfinder */
+[id="02-snap-a-photo-vf"] {
+  position: absolute;
+  left: 24px; top: 160px;
+  width: 480px; height: 700px;
+  border-radius: 30px;
+  overflow: hidden;
+  background: linear-gradient(170deg, #E4E9F2 0%, #D3DAE7 55%, #C4CCDB 100%);
+}
+[class~="02-snap-a-photo-grid"] {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ticket (same design as Frame 1) */
+[id="02-snap-a-photo-ticket"] {
+  position: absolute;
+  left: 75px; top: 100px;
+  width: 330px; height: 450px;
+}
+[id="02-snap-a-photo-paper"] {
+  position: absolute;
+  left: 0; top: 0;
+  width: 330px; height: 450px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: #F7D54A;
+  box-shadow: 0 18px 30px rgba(11, 20, 48, 0.18);
+  padding: 24px 24px 0 24px;
+  color: #2B2410;
+}
+[id="02-snap-a-photo-t-title"] {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+[id="02-snap-a-photo-t-city"] {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+[id="02-snap-a-photo-t-rule"] {
+  margin-top: 16px;
+  height: 2px;
+  background: rgba(43, 36, 16, 0.35);
+}
+[class~="02-snap-a-photo-t-row"] {
+  margin-top: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed rgba(43, 36, 16, 0.3);
+}
+[class~="02-snap-a-photo-t-label"] {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+[class~="02-snap-a-photo-t-value"] {
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+[id="02-snap-a-photo-t-bars"] {
+  position: absolute;
+  left: 24px; right: 24px; bottom: 22px;
+  height: 34px;
+  background: repeating-linear-gradient(90deg, #2B2410 0 3px, transparent 3px 6px, #2B2410 6px 7px, transparent 7px 11px, #2B2410 11px 15px, transparent 15px 18px);
+  opacity: 0.7;
+}
+
+/* corner brackets (final positions hug the ticket) */
+[class~="02-snap-a-photo-bracket"] {
+  position: absolute;
+  width: 52px; height: 52px;
+  box-sizing: border-box;
+  border: 0 solid #2D63F0;
+}
+[id="02-snap-a-photo-br-tl"] { left: 61px;  top: 86px;  border-top-width: 7px; border-left-width: 7px;  border-top-left-radius: 16px; }
+[id="02-snap-a-photo-br-tr"] { left: 367px; top: 86px;  border-top-width: 7px; border-right-width: 7px; border-top-right-radius: 16px; }
+[id="02-snap-a-photo-br-bl"] { left: 61px;  top: 512px; border-bottom-width: 7px; border-left-width: 7px;  border-bottom-left-radius: 16px; }
+[id="02-snap-a-photo-br-br"] { left: 367px; top: 512px; border-bottom-width: 7px; border-right-width: 7px; border-bottom-right-radius: 16px; }
+
+/* "Reading…" chip */
+[id="02-snap-a-photo-chiprow"] {
+  position: absolute;
+  left: 0; top: 592px;
+  width: 480px;
+  text-align: center;
+}
+[id="02-snap-a-photo-chip"] {
+  display: inline-block;
+  padding: 12px 26px 12px 22px;
+  border-radius: 100px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(45, 99, 240, 0.2);
+  color: #2D63F0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 28px;
+  white-space: nowrap;
+}
+[id="02-snap-a-photo-chipdot"] {
+  display: inline-block;
+  width: 12px; height: 12px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #2D63F0;
+  vertical-align: 2px;
+}
+
+/* camera controls */
+[id="02-snap-a-photo-thumb"] {
+  position: absolute;
+  left: 64px; top: 954px;
+  width: 72px; height: 72px;
+  border-radius: 18px;
+  background: #E3E8F2;
+  border: 1.5px solid rgba(45, 99, 240, 0.2);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+[id="02-snap-a-photo-thumbfill"] {
+  position: absolute;
+  left: 15px; top: 10px;
+  width: 39px; height: 49px;
+  border-radius: 4px;
+  background: #F7D54A;
+}
+[id="02-snap-a-photo-flip"] {
+  position: absolute;
+  left: 392px; top: 954px;
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: #E9EEF8;
+}
+[id="02-snap-a-photo-flip"] svg {
+  position: absolute;
+  left: 18px; top: 18px;
+  width: 36px; height: 36px;
+}
+[id="02-snap-a-photo-burst"] {
+  position: absolute;
+  left: 189px; top: 915px;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(27, 69, 194, 0.9), rgba(27, 69, 194, 0) 100%);
+  filter: blur(18px);
+  opacity: 0;
+  z-index: 1;
+}
+[id="02-snap-a-photo-shutter"] {
+  position: absolute;
+  left: 189px; top: 915px;
+  width: 150px; height: 150px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 7px solid rgba(45, 99, 240, 0.25);
+  box-shadow: 0 12px 26px rgba(45, 99, 240, 0.28);
+  transform-origin: 50% 50%;
+  z-index: 2;
+}
+[id="02-snap-a-photo-shutter-core"] {
+  position: absolute;
+  left: 10px; top: 10px;
+  width: 116px; height: 116px;
+  border-radius: 50%;
+  background: #2D63F0;
+}
+[id="02-snap-a-photo-home"] {
+  position: absolute;
+  left: 184px; top: 1094px;
+  width: 160px; height: 6px;
+  border-radius: 3px;
+  background: rgba(11, 20, 48, 0.8);
+}
+
+/* shutter flash */
+[id="02-snap-a-photo-flash"] {
+  position: absolute;
+  left: 0; top: 0;
+  width: 528px; height: 1120px;
+  background: #FFFFFF;
+  opacity: 0;
+  z-index: 5;
+}
+</style>
+
+<div id="root" data-composition-id="02-snap-a-photo" data-start="0" data-duration="3.209" data-width="1080" data-height="1920">
+
+  <!-- ground -->
+  <div id="02-snap-a-photo-bg" class="clip" data-start="0" data-duration="3.209" data-track-index="0">
+    <div id="02-snap-a-photo-halo"></div>
+    <div id="02-snap-a-photo-glow"></div>
+  </div>
+
+  <!-- phone stage -->
+  <div id="02-snap-a-photo-stage" class="clip" data-start="0" data-duration="3.209" data-track-index="1">
+    <div id="02-snap-a-photo-cam">
+      <div id="02-snap-a-photo-phone">
+        <div class="02-snap-a-photo-sidekey" style="left:-6px; top:250px; height:90px;"></div>
+        <div class="02-snap-a-photo-sidekey" style="left:-6px; top:360px; height:90px;"></div>
+        <div class="02-snap-a-photo-sidekey" style="left:558px; top:300px; height:140px;"></div>
+
+        <div id="02-snap-a-photo-screen">
+          <div id="02-snap-a-photo-island"></div>
+
+          <img id="02-snap-a-photo-logo" src="assets/favicon.svg" alt="">
+          <div id="02-snap-a-photo-brand">Drivee</div>
+
+          <div id="02-snap-a-photo-vf">
+            <div class="02-snap-a-photo-grid" style="left:160px; top:0; width:2px; height:700px;"></div>
+            <div class="02-snap-a-photo-grid" style="left:320px; top:0; width:2px; height:700px;"></div>
+            <div class="02-snap-a-photo-grid" style="left:0; top:233px; width:480px; height:2px;"></div>
+            <div class="02-snap-a-photo-grid" style="left:0; top:466px; width:480px; height:2px;"></div>
+
+            <div id="02-snap-a-photo-ticket">
+              <div id="02-snap-a-photo-paper">
+                <div id="02-snap-a-photo-t-title">Parking Infraction Notice</div>
+                <div id="02-snap-a-photo-t-city">City of Toronto</div>
+                <div id="02-snap-a-photo-t-rule"></div>
+                <div class="02-snap-a-photo-t-row">
+                  <div class="02-snap-a-photo-t-label">Charge</div>
+                  <div class="02-snap-a-photo-t-value">No standing</div>
+                </div>
+                <div class="02-snap-a-photo-t-row">
+                  <div class="02-snap-a-photo-t-label">Amount</div>
+                  <div class="02-snap-a-photo-t-value">$30.00</div>
+                </div>
+                <div class="02-snap-a-photo-t-row">
+                  <div class="02-snap-a-photo-t-label">Plate</div>
+                  <div class="02-snap-a-photo-t-value">DRIVEE 1</div>
+                </div>
+                <div id="02-snap-a-photo-t-bars"></div>
+              </div>
+            </div>
+
+            <div id="02-snap-a-photo-br-tl" class="02-snap-a-photo-bracket"></div>
+            <div id="02-snap-a-photo-br-tr" class="02-snap-a-photo-bracket"></div>
+            <div id="02-snap-a-photo-br-bl" class="02-snap-a-photo-bracket"></div>
+            <div id="02-snap-a-photo-br-br" class="02-snap-a-photo-bracket"></div>
+
+            <div id="02-snap-a-photo-chiprow">
+              <div id="02-snap-a-photo-chip"><span id="02-snap-a-photo-chipdot"></span>Reading…</div>
+            </div>
+          </div>
+
+          <div id="02-snap-a-photo-thumb"><div id="02-snap-a-photo-thumbfill"></div></div>
+          <div id="02-snap-a-photo-flip">
+            <svg viewBox="0 0 36 36" fill="none" stroke="#2D63F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 14a11 11 0 0 1 19.5-4.5"/>
+              <path d="M27 4v6h-6"/>
+              <path d="M29 22a11 11 0 0 1-19.5 4.5"/>
+              <path d="M9 32v-6h6"/>
+            </svg>
+          </div>
+          <div id="02-snap-a-photo-burst"></div>
+          <div id="02-snap-a-photo-shutter"><div id="02-snap-a-photo-shutter-core"></div></div>
+          <div id="02-snap-a-photo-home"></div>
+
+          <div id="02-snap-a-photo-flash"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var FID = "02-snap-a-photo";
+  var DURATION = 2.709;
+  function q(name) { return '[id="' + FID + "-" + name + '"]'; }
+
+  window.__timelines = window.__timelines || {};
+  var tl = gsap.timeline({ paused: true });
+
+  // ---- virtual camera: slow steady push under the whole shot ----
+  tl.fromTo(q("cam"), { scale: 1 }, { scale: 1.035, duration: DURATION, ease: "sine.inOut" }, 0);
+  tl.fromTo(q("halo"), { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.9, ease: "power2.out" }, 0);
+
+  // ---- Scene 1 (0.0-1.2s) "Open Drivee": phone rises into center ----
+  tl.fromTo(q("phone"), { y: 360, rotation: 3 }, { y: 0, rotation: 0, duration: 0.75, ease: "power3.out" }, 0);
+  tl.fromTo(q("phone"), { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out" }, 0);
+
+  // app header: D mark + name
+  tl.fromTo([q("logo"), q("brand")], { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out", stagger: 0.08 }, 0.3);
+
+  // viewfinder + brackets open wide at the viewfinder corners
+  tl.fromTo(q("vf"), { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0.4);
+  var WIDE = {
+    "br-tl": { x: -39, y: -64 },
+    "br-tr": { x: 39, y: -64 },
+    "br-bl": { x: -39, y: 114 },
+    "br-br": { x: 39, y: 114 }
+  };
+  Object.keys(WIDE).forEach(function (k, i) {
+    var w = WIDE[k];
+    tl.fromTo(q(k),
+      { x: w.x * 1.25, y: w.y * 1.15, opacity: 0 },
+      { x: w.x, y: w.y, opacity: 1, duration: 0.4, ease: "power3.out" },
+      0.55 + i * 0.04);
+  });
+
+  // camera controls spring in
+  tl.fromTo([q("thumb"), q("shutter"), q("flip")],
+    { scale: 0.7, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)", stagger: 0.06 }, 0.7);
+
+  // ---- Scene 2 (1.2-2.1s) "snap a photo": ticket settles, brackets tighten ----
+  tl.fromTo(q("ticket"),
+    { y: 690, x: 30, rotation: 10, scale: 1.08 },
+    { y: 0, x: 0, rotation: -3, scale: 1, duration: 0.65, ease: "power3.out" }, 1.2);
+  tl.fromTo(q("ticket"), { filter: "blur(8px)" }, { filter: "blur(0px)", duration: 0.55, ease: "power2.out" }, 1.3);
+
+  Object.keys(WIDE).forEach(function (k) {
+    tl.to(q(k), { x: 0, y: 0, duration: 0.42, ease: "power3.inOut" }, 1.6);
+  });
+
+  // ---- Scene 3 (2.1-end) shutter: press-release-spring + flash + chip ----
+  var PRESS_START = 2.1, PRESS_DUR = 0.1, RELEASE_DUR = 0.5;
+  var RELEASE_START = PRESS_START + PRESS_DUR;
+  tl.to(q("shutter"), { scale: 0.88, boxShadow: "0 3px 8px rgba(45, 99, 240, 0.22)", duration: PRESS_DUR, ease: "power1.in" }, PRESS_START);
+  tl.to(q("shutter"), { scale: 1, boxShadow: "0 12px 26px rgba(45, 99, 240, 0.28)", duration: RELEASE_DUR, ease: "back.out(2)" }, RELEASE_START);
+  tl.fromTo(q("burst"), { scale: 1, opacity: 0 }, { scale: 1.9, opacity: 0.6, duration: 0.22, ease: "power2.out" }, RELEASE_START);
+  tl.to(q("burst"), { opacity: 0, duration: 0.25, ease: "power2.in" }, RELEASE_START + 0.22);
+  tl.to(q("glow"), { opacity: 0.25, duration: 0.5, ease: "power2.out" }, RELEASE_START);
+
+  // one white flash on the screen
+  tl.fromTo(q("flash"), { opacity: 0 }, { opacity: 0.92, duration: 0.05, ease: "none" }, RELEASE_START);
+  tl.to(q("flash"), { opacity: 0, duration: 0.3, ease: "power2.out" }, RELEASE_START + 0.05);
+
+  // captured shot lands in the gallery thumb
+  tl.fromTo(q("thumbfill"), { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.8)" }, RELEASE_START + 0.04);
+
+  // "Reading…" chip under the ticket
+  tl.fromTo(q("chip"), { y: 16, scale: 0.85, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.32, ease: "back.out(1.7)" }, RELEASE_START + 0.08);
+
+  // pad timeline to the full frame length (hold)
+  tl.set({}, {}, DURATION);
+
+  window.__timelines[FID] = tl;
+})();
+</script>
+</template>
