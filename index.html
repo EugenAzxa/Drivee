@@ -917,12 +917,11 @@
   .review-card {
     background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
     padding: 26px; display: flex; flex-direction: column; gap: 16px;
-    box-shadow: 0 10px 30px rgba(11,20,48,0.05);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
   }
-  .review-card:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(11,20,48,0.10); }
+
   .review-stars { color: var(--amber); font-size: 15px; letter-spacing: 2px; }
-  .review-text { font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; }
+  .review-text { font-family: var(--serif); font-size: 18px; line-height: 1.55; color: var(--ink); margin: 0; }
   .review-text b { color: var(--blue-d); font-weight: 700; }
   .review-proof {
     margin-top: auto;
@@ -942,7 +941,7 @@
   }
   .review-name { font-weight: 700; font-size: 14px; color: var(--ink); display: flex; align-items: center; gap: 6px; }
   .review-verified { color: var(--blue); font-size: 12px; }
-  .review-loc { font-size: 12px; color: var(--ink3); font-family: var(--mono); letter-spacing: 0.5px; }
+  .review-loc { font-size: 13px; color: var(--ink3); }
 
   /* ── Live "drivers online" counter ── */
   .online-bar {
@@ -992,21 +991,12 @@
     padding: 32px; position: relative; overflow: hidden;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   }
-  .feature:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 24px 48px -24px rgba(11,20,48,0.18);
-    border-color: var(--blue-s);
-  }
+  .feature:hover { border-color: var(--blue-s); }
   .feature .num {
     font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--ink3);
   }
-  .feature .icon-box {
-    width: 48px; height: 48px; border-radius: 12px;
-    background: var(--blue-50); color: var(--blue);
-    display: flex; align-items: center; justify-content: center;
-    margin-top: 24px;
-  }
-  .feature h3 { margin-top: 18px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .feature .icon-box { color: var(--blue); display: flex; }
+  .feature h3 { margin-top: 14px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
   .feature p { margin-top: 10px; font-size: 14px; color: var(--ink2); line-height: 1.55; }
 
   .feature-tag {
@@ -1158,8 +1148,8 @@
   }
   .stat-cell { padding: 32px; border-right: 1px solid var(--line); }
   .stat-cell:last-child { border-right: none; }
-  .stat-cell .k { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; font-weight: 700; color: var(--ink2); }
-  .stat-cell .v { font-size: 56px; font-weight: 800; letter-spacing: -2.5px; margin-top: 10px; font-family: var(--mono); }
+  .stat-cell .k { font-size: 13px; font-weight: 700; color: var(--ink2); }
+  .stat-cell .v { font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-top: 8px; font-variant-numeric: tabular-nums; }
   .stat-cell .v.blue { color: var(--blue); }
   .stat-cell .v.green { color: var(--green); }
   .stat-cell .sub { font-size: 12px; color: var(--ink2); margin-top: 4px; }
@@ -1203,10 +1193,7 @@
   }
   .cta-block > * { position: relative; }
   .cta-block h2 { font-size: 80px; font-weight: 800; letter-spacing: -3.5px; line-height: 0.96; }
-  .cta-block .grad {
-    background: linear-gradient(90deg, #7A5CF0, var(--blue), var(--green));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
+  .cta-block .grad { color: var(--blue); }
   .cta-block p { margin-top: 22px; font-size: 18px; color: var(--ink2); max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.55; }
   .cta-block .row { margin-top: 36px; display: flex; gap: 12px; justify-content: center; }
 
@@ -1565,21 +1552,14 @@
     position: relative; overflow: hidden;
     display: flex; align-items: center; gap: 16px;
     margin-top: 30px; padding: 18px 24px 18px 18px;
-    border-radius: 20px; text-decoration: none; color: #fff;
-    background: linear-gradient(180deg, #3E72FF, var(--blue-d));
-    box-shadow: 0 18px 40px -10px rgba(45,99,240,0.65), inset 0 1px 0 rgba(255,255,255,0.25);
-    animation: hsbPulse 2.6s ease-in-out infinite;
-    transition: transform 0.2s cubic-bezier(.2,.8,.3,1);
+    border-radius: 14px; text-decoration: none; color: #fff;
+    background: var(--blue-d);
+    transition: background 0.2s;
   }
-  .hero-scan-btn:hover { transform: translateY(-3px); }
-  .hero-scan-btn::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,0.32) 50%, transparent 68%);
-    transform: translateX(-120%); animation: badgeShine 4.5s 1.2s infinite;
-  }
+  .hero-scan-btn:hover { background: var(--ink); }
   .hsb-ic {
     flex: none; width: 54px; height: 54px; border-radius: 15px;
-    display: grid; place-items: center; background: rgba(255,255,255,0.16);
+    display: grid; place-items: center;
   }
   .hsb-ic svg { width: 28px; height: 28px; }
   .hsb-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -1640,7 +1620,7 @@
   }
 
   /* services: the car report and mechanic tags are links */
-  a.feature-go { text-decoration: none; color: var(--blue); }
+  a.feature-go { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--blue); text-decoration: none; }
   a.feature-go:hover { text-decoration: underline; }
 
   /* partner firm, in place of the sample firm list */
@@ -1807,10 +1787,6 @@
 
     <!-- Centered hero copy sits above the animation. -->
     <div class="hero-content">
-      <div class="anim a1 eyebrow">
-        <span class="dot"></span>
-        <span>NOW LIVE IN TORONTO</span>
-      </div>
       <h1 class="hero-title">
         <span class="anim a2">Scan, pay,</span><br/>
         <span class="anim a3">dispute - </span>
@@ -1870,10 +1846,6 @@
           </svg>
         </a>
       </div>
-      <div class="hero-meta anim a5">
-        <div><b>$142</b> SAVED YTD</div>
-        <div><b>74%</b> DISPUTES WON</div>
-      </div>
     </div>
   </section>
 
@@ -1881,8 +1853,8 @@
   <section class="block reveal" id="video">
     <div class="section-head">
       <div>
-        <div class="section-kicker"><span class="num">02</span>SEE IT IN ACTION</div>
-        <h2 class="section-title">60 seconds.<br/>One ticket. Sorted.</h2>
+        <div class="section-kicker">SEE IT IN ACTION</div>
+        <h2 class="section-title">Watch a ticket<br/>get scanned.</h2>
       </div>
       <div>
         <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight - before you can finish reading this paragraph.</p>
@@ -1920,12 +1892,12 @@
 
   <!-- LOGO STRIP -->
   <div class="strip">
-    <span class="label">CONNECTS DIRECTLY TO</span>
-    <span class="pill"><span class="dot"></span>City of Toronto</span>
-    <span class="pill"><span class="dot"></span>Court Services</span>
-    <span class="pill"><span class="dot"></span>Green P</span>
-    <span class="pill"><span class="dot"></span>MTO Ontario</span>
-    <span class="pill"><span class="dot"></span>311 Toronto</span>
+    <span class="label">READS TICKETS FROM</span>
+    <span class="pill">City of Toronto</span>
+    <span class="pill">Provincial Offences Court</span>
+    <span class="pill">Green P</span>
+    <span class="pill">MTO Ontario</span>
+    <span class="pill">407 ETR</span>
   </div>
 
   <!-- FOUNDER STORY SECTION - "Why I built Drivee" -->
@@ -1937,7 +1909,7 @@
       </div>
       -->
       <div class="founder-body">
-        <div class="section-kicker"><span class="num">03</span>WHO BUILT THIS</div>
+        <div class="section-kicker">WHO BUILT THIS</div>
         <h2 class="section-title">Why we built<br/>Drivee.</h2>
         <p class="founder-p">
           Hi, I'm Evgenka. We're Toronto drivers, like you. A few years and a stack of tickets later,
@@ -1959,8 +1931,8 @@
   <section class="block reveal" id="features">
     <div class="section-head">
       <div>
-        <div class="section-kicker"><span class="num">01</span>WHAT IT DOES · SERVICES</div>
-        <h2 class="section-title">Seven features.<br/>One driver.</h2>
+        <div class="section-kicker">WHAT IT DOES · SERVICES</div>
+        <h2 class="section-title">What Drivee<br/>does for you.</h2>
       </div>
       <div>
         <p class="section-sub">Drivee replaces the City of Toronto, MTO, court portals, and a parking lawyer with one calm app - for drivers anywhere in Ontario. We handle the paperwork; you handle the wheel.</p>
@@ -1969,67 +1941,55 @@
 
     <div class="feature-grid">
       <div class="feature">
-        <div class="num">01</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>
         </div>
         <h3>AI ticket scanner</h3>
         <p>Snap any Ontario parking ticket, camera fine, toll bill or summons. We read the charge, amount and deadline - and tell you when the photo was too poor to be sure.</p>
-        <div class="feature-tag">CLAUDE VISION · ~8 SECONDS</div>
       </div>
       <div class="feature">
-        <div class="num">02</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-12a8 8 0 0 1 16 0c0 7.5-8 12-8 12Z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
         <h3>Live officer radar</h3>
         <p>See parking-enforcement zones light up in real time from 8am–8pm, with a live officer count for downtown Toronto and community-reported enforcement pins.</p>
-        <div class="feature-tag">LIVE · 8AM–8PM · DOWNTOWN</div>
       </div>
       <div class="feature">
-        <div class="num">03</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
         </div>
         <h3>AI legal verdict</h3>
         <p>Pay or fight, in plain English - plus the demerit points, what a conviction costs you in insurance, and what representation runs for that charge.</p>
-        <div class="feature-tag">PAY OR FIGHT · PLAIN ENGLISH</div>
       </div>
       <div class="feature">
-        <div class="num">04</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <h3>Late-fee shield</h3>
         <p>We track every deadline. In Toronto that is the exact day-16, day-31 and day-60 fee ladder; elsewhere in Ontario it is the window printed on your ticket.</p>
-        <div class="feature-tag">SAVES $79.59 AVG</div>
       </div>
       <div class="feature">
-        <div class="num">05</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13"/><path d="M2.5 6.253c4.5-1.5 9.5-1.5 9.5 0M21.5 6.253c-4.5-1.5-9.5-1.5-9.5 0"/></svg>
         </div>
         <h3>Paralegal &amp; lawyer matching</h3>
         <p>Only Ontario firms licensed for your charge, cheapest first. Free case reviews, no commission, and your details go to the one firm you pick.</p>
-        <div class="feature-tag">LICENCE-CHECKED · ONTARIO</div>
       </div>
       <div class="feature">
-        <div class="num">06</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-5H7l-2 5v5Z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/><path d="M5 12h14"/></svg>
         </div>
         <h3>Free car report</h3>
         <p>Buying used? Enter the VIN for specs, open safety recalls, a market value estimate and the known weak points for that make.</p>
-        <a class="feature-tag feature-go" href="/report.html">CHECK A VIN →</a>
+        <a class="feature-go" href="/report.html">Check a VIN →</a>
       </div>
       <div class="feature">
-        <div class="num">07</div>
         <div class="icon-box">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>
         </div>
         <h3>Mobile mechanic</h3>
         <p>A mechanic meets you at the seller anywhere in the GTA - OBD scan, cold start, leaks, rust, brakes and a test drive before you hand over cash. $100–150.</p>
-        <a class="feature-tag feature-go" href="/mechanic.html">BOOK AN INSPECTION →</a>
+        <a class="feature-go" href="/mechanic.html">Book an inspection →</a>
       </div>
     </div>
   </section>
@@ -2038,24 +1998,24 @@
   <section class="block reveal" style="padding-top: 0;">
     <div class="stat-strip">
       <div class="stat-cell">
-        <div class="k">DRIVERS PROTECTED</div>
-        <div class="v" data-counter="1247">0</div>
-        <div class="sub">across Toronto &amp; the GTA</div>
+        <div class="k">To respond</div>
+        <div class="v">15 days</div>
+        <div class="sub">for a Toronto parking ticket, from the issue date</div>
       </div>
       <div class="stat-cell">
-        <div class="k">SAVED FROM FINES</div>
-        <div class="v blue" data-counter="187" data-suffix="K" data-prefix="$">$0</div>
-        <div class="sub">since launch · April 2025</div>
+        <div class="k">Late fees if ignored</div>
+        <div class="v">$79.59</div>
+        <div class="sub">added by day 60 in Toronto</div>
       </div>
       <div class="stat-cell">
-        <div class="k">DISPUTES WON</div>
-        <div class="v green" data-counter="67" data-suffix="%">0%</div>
-        <div class="sub">vs 12% city average</div>
+        <div class="k">To scan a ticket</div>
+        <div class="v">$0</div>
+        <div class="sub">no signup, no commission</div>
       </div>
       <div class="stat-cell">
-        <div class="k">AVG SCAN TIME</div>
-        <div class="v" data-counter="6.8" data-suffix="s">0s</div>
-        <div class="sub">photo to verdict</div>
+        <div class="k">Photo to verdict</div>
+        <div class="v">~8s</div>
+        <div class="sub">typical scan time</div>
       </div>
     </div>
   </section>
@@ -2068,7 +2028,7 @@
     <span id="scan" class="scan-anchor" aria-hidden="true"></span>
     <div class="split right scan-split">
       <div class="split-text">
-        <div class="section-kicker"><span class="num">02</span>SCAN YOUR TICKET</div>
+        <div class="section-kicker">SCAN YOUR TICKET</div>
         <h2 style="margin-top: 14px;">Got a ticket?<br/>Find out what it really costs.</h2>
         <p style="margin-top: 22px;">Upload a photo of any Ontario parking or traffic ticket. Drivee reads the charge, the deadline and the amount, works out what it truly costs you once demerit points and insurance are counted, and shows you the licensed Ontario lawyers and paralegals who can take it - free case review, no signup.</p>
         <div class="timeline scan-timeline" style="margin-top: 36px;">
@@ -2132,8 +2092,8 @@
   <section class="block reveal" id="hotspots">
     <div class="section-head">
       <div>
-        <div class="section-kicker"><span class="num">03</span>HOTSPOTS · LIVE</div>
-        <h2 class="section-title">14,283 pins.<br/>One Toronto.</h2>
+        <div class="section-kicker">HOTSPOTS · LIVE</div>
+        <h2 class="section-title">Where tickets<br/>get written.</h2>
       </div>
       <div>
         <p class="section-sub">Every bike lane, fire route, permit-only block, and rush-hour stop-tow zone - mapped, color-coded, and updated by other Drivee drivers in real time.</p>
@@ -2220,7 +2180,7 @@
   <section class="block reveal" id="legal">
     <div class="split">
       <div>
-        <div class="section-kicker"><span class="num">04</span>LEGAL · FIND A LAWYER</div>
+        <div class="section-kicker">LEGAL · FIND A LAWYER</div>
         <h2 style="margin-top: 14px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;">Pay it. Or<br/>fight it. We'll<br/>tell you which.</h2>
         <p style="margin-top: 22px; font-size: 17px; color: var(--ink2); line-height: 1.55;">Drivee crosses your specific ticket against thousands of historical Toronto disputes - then issues a verdict in plain English. If we say "fight it," you'll have a printable letter in 30 seconds.</p>
         <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -2267,7 +2227,7 @@
   <section class="block reveal" id="app">
     <div class="section-head">
       <div>
-        <div class="section-kicker"><span class="num">05</span>GET DRIVEE · APP</div>
+        <div class="section-kicker">GET DRIVEE · APP</div>
         <h2 class="section-title">Your tickets,<br/>in your pocket.</h2>
       </div>
       <div>
@@ -2368,93 +2328,41 @@
   <section class="block reveal" id="reviews">
     <div class="section-head">
       <div>
-        <div class="section-kicker"><span class="num">06</span>WHAT DRIVERS SAY</div>
+        <div class="section-kicker">WHAT DRIVERS SAY</div>
         <h2 class="section-title">Loved by Toronto<br/>drivers.</h2>
       </div>
-      <p class="section-sub">Real people, real tickets, real money saved. Every review is from a verified Drivee user who scanned a ticket and got a verdict.</p>
     </div>
 
     <div class="reviews-grid">
-      <!-- 1 -->
       <div class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-text">Got a $150 ticket on King St. Drivee told me it was <b>issued on the wrong bylaw</b> and walked me through the dispute. Cancelled two weeks later.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $150</div>
+        <p class="review-text">Got a $150 ticket on King St. Drivee told me it was issued on the wrong bylaw and walked me through the dispute. Cancelled two weeks later.</p>
         <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#2D63F0,#6B4EE0)">MR</div>
           <div>
-            <div class="review-name">Marcus R. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-name">Marcus R.</div>
             <div class="review-loc">TORONTO · ON</div>
           </div>
         </div>
       </div>
 
-      <!-- 2 -->
       <div class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-text">I had <b>three tickets</b> pinned to my fridge for months. Scanned them in a coffee break - Drivee told me which to pay and which to fight. Zero stress.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> 3 TICKETS · SAVED $212</div>
+        <p class="review-text">I had three tickets pinned to my fridge for months. Scanned them in a coffee break - Drivee told me which to pay and which to fight. Zero stress.</p>
         <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#16A34A,#0EA5A0)">SL</div>
           <div>
-            <div class="review-name">Sofia L. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-name">Sofia L.</div>
             <div class="review-loc">NORTH YORK · ON</div>
           </div>
         </div>
       </div>
 
-      <!-- 3 -->
       <div class="review-card">
         <div class="review-stars">★★★★★</div>
-        <p class="review-text">The <b>deadline reminder</b> alone is worth it. I always used to miss the early-resolution window and pay the late fees. Not anymore.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> AVOIDED $79 IN LATE FEES</div>
+        <p class="review-text">The deadline reminder alone is worth it. I always used to miss the early-resolution window and pay the late fees. Not anymore.</p>
         <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#E89B22,#E1473D)">DK</div>
           <div>
-            <div class="review-name">David K. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-name">David K.</div>
             <div class="review-loc">SCARBOROUGH · ON</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4 -->
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">Snapped a confusing parking sign near the hospital. Drivee read it and said <b>"you're fine after 6pm."</b> Saved me from a ticket I didn't even have yet.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> SIGN SCAN · TICKET AVOIDED</div>
-        <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#6B4EE0,#B14EE0)">AP</div>
-          <div>
-            <div class="review-name">Aisha P. <span class="review-verified" title="Verified user">✔ verified</span></div>
-            <div class="review-loc">ETOBICOKE · ON</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5 -->
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">Finally an app that explains the fine in <b>plain English</b> instead of legal jargon. Paid a legit ticket in 60 seconds and fought a bogus one. Both handled.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $65</div>
-        <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#0EA5A0,#2D63F0)">JT</div>
-          <div>
-            <div class="review-name">James T. <span class="review-verified" title="Verified user">✔ verified</span></div>
-            <div class="review-loc">DOWNTOWN · ON</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6 -->
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">My partner and I both use it now. It caught that one of our tickets <b>had the wrong plate</b> - instant grounds to cancel. Unreal.</p>
-        <div class="review-proof"><span aria-hidden="true">✓</span> ERROR FOUND · SAVED $120</div>
-        <div class="review-user">
-          <div class="review-avatar" style="background:linear-gradient(135deg,#E1473D,#E89B22)">NC</div>
-          <div>
-            <div class="review-name">Nadia C. <span class="review-verified" title="Verified user">✔ verified</span></div>
-            <div class="review-loc">EAST YORK · ON</div>
           </div>
         </div>
       </div>
@@ -2463,7 +2371,7 @@
 
   <!-- FAQ - keep in sync with the FAQPage schema in <head> -->
   <section class="block reveal" id="faq">
-    <div class="section-kicker"><span class="num">07</span>QUESTIONS</div>
+    <div class="section-kicker">QUESTIONS</div>
     <h2 class="section-title">Fighting a ticket<br/>in Ontario.</h2>
     <div class="faq-list">
       <details open>
@@ -2509,7 +2417,7 @@
   <section class="block reveal" id="payoff">
     <div class="payoff-grid" style="grid-template-columns:1fr">
       <div class="payoff-body">
-        <div class="section-kicker"><span class="num">08</span>THE PAYOFF</div>
+        <div class="section-kicker">THE PAYOFF</div>
         <h2 class="section-title">From "I&nbsp;owe<br/>what?!" to handled.</h2>
         <p class="founder-p">
           One scan. One verdict. One paid (or fought) ticket. The way it should
@@ -2527,14 +2435,6 @@
       -->
     </div>
   </section>
-
-  <!-- LIVE ONLINE COUNTER -->
-  <div class="online-bar">
-    <div class="online-pill">
-      <span class="online-dot"></span>
-      <span><b id="online-count">312</b> drivers online right now</span>
-    </div>
-  </div>
 
   <!-- FOOTER -->
   <footer>
@@ -2565,7 +2465,6 @@
   </footer>
   <div class="legal">
     <span>© 2026 DRIVEE TECHNOLOGIES INC. · TORONTO, ON</span>
-    <span>v3.2.0 · BUILT 30.04.2026</span>
   </div>
 </div>
 
@@ -2592,26 +2491,6 @@
   revealHero();
   if (intro) { intro.classList.add("gone"); intro.style.display = "none"; }
 
-  // ─────── Live "drivers online" counter ───────
-  // Picks a fresh number each day (deterministic per date, ~300–520) then
-  // gently wanders every few seconds so it feels live. New day = new number.
-  (function () {
-    var el = document.getElementById("online-count");
-    if (!el) return;
-    var now  = new Date();
-    var seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
-    var x    = Math.sin(seed) * 10000;
-    var rnd  = x - Math.floor(x);                 // stable 0..1 for today
-    var base = 300 + Math.floor(rnd * 220);       // 300–519, changes daily
-    var current = base;
-    var render = function () { el.textContent = current.toLocaleString(); };
-    render();
-    setInterval(function () {
-      var drift = Math.floor(Math.random() * 7) - 3;         // -3..+3
-      current = Math.max(300, Math.min(base + 40, current + drift));
-      render();
-    }, 4000);
-  })();
 
   var _skip = document.getElementById("skipIntro");
   if (_skip) _skip.addEventListener("click", () => {
