@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script>
+  (function () {
+    var r = document.documentElement;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    r.classList.add("sky-pre");
+    setTimeout(function () { r.classList.remove("sky-pre"); }, 3500);
+  })();
+</script>
 <!-- The website is the homepage (/). The web app lives at /app.html.
      Forward to the app only when it was asked for: an old /?app=1 link, or a
      session that is already in the app (the Google sign-in round-trip
@@ -1650,31 +1658,6 @@
     .app-shots img { width: 62vw; border-radius: 18px; }
   }
 
-  /* ── Intro video: officer → ticket → the app, on every homepage load ──
-     16:9 on wide screens, 9:16 on phones; ends on the hero video's last
-     frame, so the page underneath picks up where the clip stops. */
-  .dv-intro { position: fixed; inset: 0; z-index: 1000; background: #FEFEFE; transition: opacity 0.6s ease; }
-  .dv-intro[hidden] { display: none; }
-  .dv-intro video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dv-intro.out { opacity: 0; pointer-events: none; }
-  .dv-intro-skip {
-    position: absolute; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom));
-    min-height: 44px; padding: 0 18px; border-radius: 999px;
-    border: 1px solid rgba(11,20,48,0.15); background: rgba(255,255,255,0.88); color: #0B1430;
-    font: 600 14px var(--font, system-ui, sans-serif); cursor: pointer;
-  }
-  .dv-intro-skip:hover { background: #fff; }
-  .dv-intro-skip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
-  html.dv-intro-on { overflow: hidden; }
-  /* the headline and buttons rise in once the clip hands over */
-  .hero-content > * { transition: opacity 0.6s ease, transform 0.6s ease; }
-  .hero-content > *:nth-child(2) { transition-delay: 0.12s; }
-  .hero-content > *:nth-child(3) { transition-delay: 0.24s; }
-  .hero-content > *:nth-child(4) { transition-delay: 0.36s; }
-  .hero-content > *:nth-child(5) { transition-delay: 0.48s; }
-  html.dv-intro-on .hero-content > * { opacity: 0; transform: translateY(18px); }
-  @media (prefers-reduced-motion: reduce) { .hero-content > * { transition: none; } }
-
   /* ── Late-fee ladder (pinned scroll story) ── */
   .ladder-pin { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
   .ladder-head .section-sub { margin-top: 20px; }
@@ -1717,6 +1700,68 @@
     html.ladder-js .ladder-pin { padding: 24px 0; align-content: center; }
     html.ladder-js .ladder-head .section-sub { display: none; }
   }
+
+  /* ── Sky opening: Drivee over a painted sky, tickets drifting; scrolling
+     scatters them and the sky sinks into the white hero below ── */
+  .sky-intro {
+    position: relative; height: 100vh; height: 100svh; overflow: hidden;
+    background: #9CCBEE;
+  }
+  .sky-bg {
+    position: absolute; inset: 0;
+    background: url(/assets/sky/sky-wide.webp) center / cover no-repeat;
+    will-change: transform;
+  }
+  @media (max-aspect-ratio: 3/4) { .sky-bg { background-image: url(/assets/sky/sky-tall.webp); } }
+  /* the bottom edge melts into the hero's white, so the hand-over has no seam */
+  .sky-intro::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26%; z-index: 3;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), #FFFFFF 92%);
+    pointer-events: none;
+  }
+  .sky-tickets { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .sky-tk {
+    position: absolute; left: var(--x); top: var(--y);
+    width: calc(var(--w) * 1vw); margin: calc(var(--w) * -0.75vw) 0 0 calc(var(--w) * -0.5vw);
+  }
+  .sky-tk img {
+    display: block; width: 100%; height: auto; transform: rotate(var(--r));
+    filter: drop-shadow(0 12px 18px rgba(25,70,140,0.18));
+  }
+  .sky-copy {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 20px; text-align: center;
+  }
+  .sky-logo {
+    font-family: var(--font); font-weight: 800; line-height: 0.95;
+    font-size: clamp(88px, 15vw, 250px); letter-spacing: -0.045em;
+    color: #1F50D8; -webkit-text-stroke: 2px #0B1F5C; paint-order: stroke fill;
+  }
+  .sky-tag {
+    margin-top: clamp(14px, 2vw, 30px);
+    font-family: var(--font); font-weight: 700; letter-spacing: -0.01em;
+    font-size: clamp(19px, 2.4vw, 38px); color: #0B1A4A;
+  }
+  .sky-hint {
+    position: absolute; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom)); z-index: 4;
+    transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #0B1A4A; opacity: 0.7; text-decoration: none;
+  }
+  .sky-hint svg { width: 18px; height: 18px; animation: skyHint 1.8s ease-in-out infinite; }
+  @keyframes skyHint { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  /* the menu waits until the visitor has scrolled off the sky */
+  nav.top { transition: backdrop-filter 0.3s, background 0.3s, border-color 0.3s, opacity 0.35s, transform 0.35s; }
+  html.sky-top nav.top { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+  @media (max-width: 700px) {
+    .sky-tk { width: calc(var(--w) * 2.3vw); margin: calc(var(--w) * -1.7vw) 0 0 calc(var(--w) * -1.15vw); }
+    .sky-tk:nth-child(n+7) { display: none; }
+    .sky-logo { -webkit-text-stroke-width: 1.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sky-hint svg { animation: none; } }
+  /* held back from the first paint until the entrance animation takes over */
+  html.sky-pre .sky-logo, html.sky-pre .sky-tag, html.sky-pre .sky-tk img, html.sky-pre .sky-hint { opacity: 0; }
 </style>
 <script>
   (function(){
@@ -1740,67 +1785,6 @@
 </script>
 </head>
 <body>
-
-<!-- Intro video. Plays on every homepage load, before the page; skipped for deep
-     links, reduced motion and data saver. Sources: assets/intro/. -->
-<div class="dv-intro" id="dvIntro" hidden>
-  <video id="dvIntroVideo" muted playsinline preload="auto" aria-label="Drivee intro: a parking officer's ticket becomes a disputed ticket in the Drivee app"></video>
-  <button class="dv-intro-skip" id="dvIntroSkip" type="button">Skip intro</button>
-</div>
-<script>
-  (function () {
-    var box = document.getElementById("dvIntro");
-    var vid = document.getElementById("dvIntroVideo");
-    var play = false;
-    try {
-      play = !location.hash &&
-             !/[?&]app(=|&|$)/.test(location.search) &&
-             !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) &&
-             !(navigator.connection && navigator.connection.saveData);
-    } catch (e) {}
-    if (!play) { box.remove(); return; }
-
-    var shape = window.innerHeight > window.innerWidth ? "9x16" : "16x9";
-    vid.poster = "/assets/intro/poster-" + shape + ".jpg";
-    vid.src = "/assets/intro/intro-" + shape + ".mp4";
-    box.hidden = false;
-    document.documentElement.classList.add("dv-intro-on");
-
-    var done = false;
-    function landHero() {
-      // the clip ends on the hero video's final frame: hold the hero there
-      var hero = document.getElementById("hero-bg-video");
-      if (!hero) return;
-      var hold = function () {
-        try {
-          hero.pause();
-          var seeked = false;
-          hero.addEventListener("seeked", function () { seeked = true; }, { once: true });
-          hero.currentTime = Math.max(0, hero.duration - 0.05);
-          // a server without range requests can't seek: just let the hero play
-          setTimeout(function () { if (!seeked) hero.play().catch(function () {}); }, 1500);
-        } catch (e) { hero.play().catch(function () {}); }
-      };
-      if (hero.readyState >= 1) hold(); else hero.addEventListener("loadedmetadata", hold, { once: true });
-    }
-    function finish() {
-      if (done) return;
-      done = true;
-      landHero();
-      box.classList.add("out");
-      document.documentElement.classList.remove("dv-intro-on");
-      setTimeout(function () { box.remove(); }, 700);
-    }
-    vid.addEventListener("ended", finish);
-    vid.addEventListener("error", finish);
-    document.getElementById("dvIntroSkip").addEventListener("click", finish);
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") finish(); });
-    var p = vid.play();
-    if (p && p.catch) p.catch(finish);   // autoplay refused: go straight to the page
-    setTimeout(finish, 9000);            // never hold the page longer than this
-  })();
-</script>
-
 
 <!-- Phones now stay on the marketing site (they no longer redirect into the
      web app). The web app opens only via the nav "Open the app", the payoff
@@ -1901,7 +1885,33 @@
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
+
+  <!-- SKY OPENING - Drivee over a painted sky with drifting tickets. Scrolling
+       scatters the tickets and the sky sinks into the hero. Images: assets/sky/. -->
+  <section class="sky-intro" id="sky" aria-label="Drivee: scan, pay, dispute - in seconds">
+    <div class="sky-bg" aria-hidden="true"></div>
+    <div class="sky-tickets" aria-hidden="true">
+      <div class="sky-tk" data-dir="-1" style="--x:45%;--y:9%;--w:12;--r:-14deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="1" style="--x:68%;--y:5%;--w:9;--r:22deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="1" style="--x:61%;--y:27%;--w:10;--r:12deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="1" style="--x:86%;--y:70%;--w:17;--r:-10deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="-1" style="--x:48%;--y:86%;--w:11;--r:8deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="-1" style="--x:26%;--y:92%;--w:14;--r:-18deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="-1" style="--x:12%;--y:30%;--w:10;--r:16deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="1" style="--x:90%;--y:24%;--w:9;--r:-24deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+      <div class="sky-tk" data-dir="-1" style="--x:17%;--y:64%;--w:8;--r:20deg"><img src="/assets/sky/ticket.webp" alt="" width="347" height="520" decoding="async"/></div>
+    </div>
+    <div class="sky-copy">
+      <div class="sky-logo">Drivee</div>
+      <p class="sky-tag">Scan, pay, dispute - in seconds.</p>
+    </div>
+    <a class="sky-hint" href="#scan-start" aria-label="Scroll to the site">
+      Scroll
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <section class="hero" id="scan-start">
     <!-- Full-bleed background animation. The video's own background is
          clean white, so it blends naturally with the page bg (#FAFBFD).
          A subtle radial mask on the edges insures against any minor
@@ -2720,6 +2730,54 @@
     });
     // the intro and late-loading media change the page height
     window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+  })();
+</script>
+
+<!-- Sky opening: entrance on load, scatter on scroll (GSAP + ScrollTrigger).
+     Without GSAP or with reduced motion it is a still scene. -->
+<script>
+  (function () {
+    var sky = document.getElementById("sky");
+    if (!sky) return;
+    var root = document.documentElement;
+    function navState() { root.classList.toggle("sky-top", window.scrollY < sky.offsetHeight * 0.55); }
+    navState();
+    window.addEventListener("scroll", navState, { passive: true });
+    if (!window.gsap) return;
+
+    var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var tks = gsap.utils.toArray(".sky-tk").filter(function (el) { return el.offsetParent !== null; });
+
+    root.classList.remove("sky-pre");
+    if (!still) {
+      // entrance: sky settles, Drivee rises, the line follows, tickets blow in
+      var tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.from(".sky-bg", { scale: 1.12, duration: 1.8, ease: "power2.out" }, 0)
+        .from(".sky-logo", { y: 50, opacity: 0, duration: 1 }, 0.3)
+        .from(".sky-tag", { y: 26, opacity: 0, duration: 0.8 }, 0.9)
+        .from(".sky-hint", { opacity: 0, duration: 0.6 }, 1.9);
+      tks.forEach(function (el, i) {
+        var img = el.firstElementChild, dir = parseFloat(el.dataset.dir) || 1;
+        tl.from(img, { x: dir * innerWidth * 0.7, y: -innerHeight * 0.6, rotation: "+=" + (dir * -120), opacity: 0, duration: 1.6, ease: "power2.out" }, 1.1 + i * 0.09);
+        // then they keep drifting on the wind
+        gsap.to(img, { y: "+=" + (14 + (i % 3) * 9), rotation: "+=" + (i % 2 ? 6 : -6), duration: 2.6 + (i % 4) * 0.6,
+          ease: "sine.inOut", yoyo: true, repeat: -1, delay: 2.8 + i * 0.12 });
+      });
+    }
+
+    if (window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      var whole = { trigger: sky, start: "top top", end: "bottom top", scrub: 0.6 };
+      gsap.to(".sky-bg", { yPercent: 30, ease: "none", scrollTrigger: whole });
+      gsap.to(".sky-copy", { yPercent: -40, opacity: 0, ease: "none",
+        scrollTrigger: { trigger: sky, start: "top top", end: "55% top", scrub: 0.6 } });
+      gsap.to(".sky-hint", { opacity: 0, ease: "none", scrollTrigger: { trigger: sky, start: "top top", end: "12% top", scrub: true } });
+      tks.forEach(function (el, i) {
+        var dir = parseFloat(el.dataset.dir) || 1;
+        gsap.to(el, { x: dir * innerWidth * (0.45 + (i % 3) * 0.12), y: -innerHeight * (0.5 + (i % 2) * 0.25),
+          scale: 1.9, rotation: dir * 40, opacity: 0, ease: "none", scrollTrigger: whole });
+      });
+    }
   })();
 </script>
 </body>

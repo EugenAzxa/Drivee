@@ -10,20 +10,17 @@ Drivee is a new app currently under development.
 
 More details will be added as the project grows.
 
-## Intro video
+## Sky opening
 
-The homepage opens with a 5-second clip on every load: a Toronto parking
-officer holds up a ticket and points at a No Stopping sign, the camera pushes
-into the ticket, and it lands on the Drivee app showing "Dispute won". It
-ends on the last frame of the hero video (`parking-ticket-2.mp4`), so the page
-picks up exactly where the clip stops, and the headline and buttons rise in.
+The homepage opens on a painted sky: "Drivee" rises in, "Scan, pay, dispute -
+in seconds." follows underneath, and penalty-notice tickets blow in and drift.
+Scrolling scatters the tickets, lifts the title away and sinks the sky into the
+white hero, which rises into view. The top menu stays hidden until then.
 
-- `assets/intro/intro-16x9.mp4` for laptops, `intro-9x16.mp4` for phones
-  (chosen by screen shape), with `poster-*.jpg` stills
-- made with Kling 3.0 at 1080p on Higgsfield, from `start-*.png` (the
-  officer, generated with GPT Image 2.5) to `end-*.png` (the hero video's
-  final frame); the raw downloads, `raw-*.mp4`, are kept out of git
-- skipped for deep links (`/#scan`), `?app`, reduced motion and data saver;
-  a Skip button and a 9-second cap mean it never holds the page
-- holding the hero on its last frame needs range requests, which Vercel
-  serves; `_dev-server.js` doesn't, so locally the hero just keeps playing
+- `assets/sky/sky-wide.webp` (laptops) and `sky-tall.webp` (phones, chosen by
+  aspect ratio), `ticket.webp` (transparent); full-size PNGs in
+  `design-sources/sky/`. Made with GPT Image 2.5 on Higgsfield from the brand
+  sky artwork, with the text removed so the title is live HTML.
+- The ticket is fictional: no real plate, officer or ticket number.
+- GSAP + ScrollTrigger (already loaded for the late-fee section). Without
+  them, or with reduced motion, it is a still scene with the same text.
