@@ -1649,6 +1649,31 @@
     .app-shots { gap: 12px; margin-top: 28px; }
     .app-shots img { width: 62vw; border-radius: 18px; }
   }
+
+  /* ── Intro video: officer → ticket → the app, once per visit ──
+     16:9 on wide screens, 9:16 on phones; ends on the hero video's last
+     frame, so the page underneath picks up where the clip stops. */
+  .dv-intro { position: fixed; inset: 0; z-index: 1000; background: #FEFEFE; transition: opacity 0.6s ease; }
+  .dv-intro[hidden] { display: none; }
+  .dv-intro video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dv-intro.out { opacity: 0; pointer-events: none; }
+  .dv-intro-skip {
+    position: absolute; right: 20px; bottom: calc(20px + env(safe-area-inset-bottom));
+    min-height: 44px; padding: 0 18px; border-radius: 999px;
+    border: 1px solid rgba(11,20,48,0.15); background: rgba(255,255,255,0.88); color: #0B1430;
+    font: 600 14px var(--font, system-ui, sans-serif); cursor: pointer;
+  }
+  .dv-intro-skip:hover { background: #fff; }
+  .dv-intro-skip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  html.dv-intro-on { overflow: hidden; }
+  /* the headline and buttons rise in once the clip hands over */
+  .hero-content > * { transition: opacity 0.6s ease, transform 0.6s ease; }
+  .hero-content > *:nth-child(2) { transition-delay: 0.12s; }
+  .hero-content > *:nth-child(3) { transition-delay: 0.24s; }
+  .hero-content > *:nth-child(4) { transition-delay: 0.36s; }
+  .hero-content > *:nth-child(5) { transition-delay: 0.48s; }
+  html.dv-intro-on .hero-content > * { opacity: 0; transform: translateY(18px); }
+  @media (prefers-reduced-motion: reduce) { .hero-content > * { transition: none; } }
 </style>
 <script>
   (function(){
@@ -1672,6 +1697,68 @@
 </script>
 </head>
 <body>
+
+<!-- Intro video. Plays once per visit, before the page; skipped for deep
+     links, reduced motion and data saver. Sources: assets/intro/. -->
+<div class="dv-intro" id="dvIntro" hidden>
+  <video id="dvIntroVideo" muted playsinline preload="auto" aria-label="Drivee intro: a parking officer's ticket becomes a disputed ticket in the Drivee app"></video>
+  <button class="dv-intro-skip" id="dvIntroSkip" type="button">Skip intro</button>
+</div>
+<script>
+  (function () {
+    var box = document.getElementById("dvIntro");
+    var vid = document.getElementById("dvIntroVideo");
+    var play = false;
+    try {
+      play = !sessionStorage.getItem("drivee_intro") && !location.hash &&
+             !/[?&]app(=|&|$)/.test(location.search) &&
+             !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) &&
+             !(navigator.connection && navigator.connection.saveData);
+    } catch (e) {}
+    if (!play) { box.remove(); return; }
+    try { sessionStorage.setItem("drivee_intro", "1"); } catch (e) {}
+
+    var shape = window.innerHeight > window.innerWidth ? "9x16" : "16x9";
+    vid.poster = "/assets/intro/poster-" + shape + ".jpg";
+    vid.src = "/assets/intro/intro-" + shape + ".mp4";
+    box.hidden = false;
+    document.documentElement.classList.add("dv-intro-on");
+
+    var done = false;
+    function landHero() {
+      // the clip ends on the hero video's final frame: hold the hero there
+      var hero = document.getElementById("hero-bg-video");
+      if (!hero) return;
+      var hold = function () {
+        try {
+          hero.pause();
+          var seeked = false;
+          hero.addEventListener("seeked", function () { seeked = true; }, { once: true });
+          hero.currentTime = Math.max(0, hero.duration - 0.05);
+          // a server without range requests can't seek: just let the hero play
+          setTimeout(function () { if (!seeked) hero.play().catch(function () {}); }, 1500);
+        } catch (e) { hero.play().catch(function () {}); }
+      };
+      if (hero.readyState >= 1) hold(); else hero.addEventListener("loadedmetadata", hold, { once: true });
+    }
+    function finish() {
+      if (done) return;
+      done = true;
+      landHero();
+      box.classList.add("out");
+      document.documentElement.classList.remove("dv-intro-on");
+      setTimeout(function () { box.remove(); }, 700);
+    }
+    vid.addEventListener("ended", finish);
+    vid.addEventListener("error", finish);
+    document.getElementById("dvIntroSkip").addEventListener("click", finish);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") finish(); });
+    var p = vid.play();
+    if (p && p.catch) p.catch(finish);   // autoplay refused: go straight to the page
+    setTimeout(finish, 9000);            // never hold the page longer than this
+  })();
+</script>
+
 
 <!-- Phones now stay on the marketing site (they no longer redirect into the
      web app). The web app opens only via the nav "Open the app", the payoff

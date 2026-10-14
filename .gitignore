@@ -13,3 +13,6 @@ APP Design/
 # Ticket photos may contain a plate, a name, an address. Never commit them.
 tools/tickets/*
 !tools/tickets/README.md
+
+# raw Higgsfield downloads; the site serves the compressed intro-*.mp4
+assets/intro/raw-*.mp4
