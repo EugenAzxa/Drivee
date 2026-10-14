@@ -1674,6 +1674,49 @@
   .hero-content > *:nth-child(5) { transition-delay: 0.48s; }
   html.dv-intro-on .hero-content > * { opacity: 0; transform: translateY(18px); }
   @media (prefers-reduced-motion: reduce) { .hero-content > * { transition: none; } }
+
+  /* ── Late-fee ladder (pinned scroll story) ── */
+  .ladder-pin { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .ladder-head .section-sub { margin-top: 20px; }
+  .ladder-card {
+    background: var(--paper, #fff); border: 1px solid var(--line); border-radius: 20px;
+    padding: 32px; box-shadow: 0 30px 60px -30px rgba(11,20,48,0.18);
+  }
+  .ladder-meter { padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+  .ladder-day { font-size: 14px; font-weight: 700; color: var(--ink2); font-variant-numeric: tabular-nums; }
+  .ladder-amt {
+    font-size: clamp(56px, 7vw, 88px); font-weight: 800; letter-spacing: -3px; line-height: 1;
+    margin-top: 6px; font-variant-numeric: tabular-nums; color: var(--ink); transition: color 0.3s;
+  }
+  .ladder-amt.is-late { color: #C8372D; }
+  .ladder-bar { margin-top: 18px; height: 6px; border-radius: 999px; background: var(--bg2, #E4EAF6); overflow: hidden; }
+  .ladder-bar span { display: block; height: 100%; width: 100%; background: var(--blue); border-radius: inherit; transform-origin: left; }
+  .ladder-amt.is-late ~ .ladder-bar span { background: #C8372D; }
+  .ladder-steps { list-style: none; margin: 8px 0 0; padding: 0; }
+  .ladder-steps li {
+    display: grid; grid-template-columns: 92px 1fr auto; gap: 14px; align-items: baseline;
+    padding: 14px 0; border-bottom: 1px solid var(--line-s, rgba(11,20,48,0.05));
+    color: var(--ink3, #8C95A7); transition: color 0.3s;
+  }
+  .ladder-steps li.is-on { color: var(--ink); }
+  .ladder-steps b { font-size: 14px; }
+  .ladder-steps span { font-size: 14px; line-height: 1.45; }
+  .ladder-steps em { font-style: normal; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .ladder-cta {
+    display: inline-block; margin-top: 22px; padding: 14px 22px; border-radius: 12px;
+    background: var(--blue-d, #1B45C2); color: #fff; font-weight: 800; text-decoration: none; transition: background 0.2s;
+  }
+  .ladder-cta:hover { background: var(--ink); }
+  .ladder-src { margin-top: 12px; font-size: 12px; color: var(--ink3, #8C95A7); }
+  /* scroll mode: the section fills the screen while it plays */
+  html.ladder-js .ladder-pin { min-height: 100vh; min-height: 100svh; padding: 40px 0; }
+  @media (max-width: 900px) {
+    .ladder-pin { grid-template-columns: 1fr; gap: 28px; }
+    .ladder-card { padding: 22px; }
+    .ladder-steps li { grid-template-columns: 74px 1fr auto; gap: 10px; }
+    html.ladder-js .ladder-pin { padding: 24px 0; align-content: center; }
+    html.ladder-js .ladder-head .section-sub { display: none; }
+  }
 </style>
 <script>
   (function(){
@@ -2081,28 +2124,30 @@
     </div>
   </section>
 
-  <!-- STAT STRIP -->
-  <section class="block reveal" style="padding-top: 0;">
-    <div class="stat-strip">
-      <div class="stat-cell">
-        <div class="k">To respond</div>
-        <div class="v">15 days</div>
-        <div class="sub">for a Toronto parking ticket, from the issue date</div>
+  <!-- LATE FEES - one $30 Toronto ticket aged by scrolling (GSAP ScrollTrigger).
+       Amounts are the City's published fee schedule (assets/js/ontario.js).
+       Without JS or with reduced motion it is a static list. -->
+  <section class="block ladder" id="late-fees">
+    <div class="ladder-pin">
+      <div class="ladder-head">
+        <div class="section-kicker">IF YOU IGNORE IT</div>
+        <h2 class="section-title">A $30 ticket<br/>doesn't stay $30.</h2>
+        <p class="section-sub">Toronto adds fees on a fixed schedule. Here is one ticket, left alone for two months.</p>
       </div>
-      <div class="stat-cell">
-        <div class="k">Late fees if ignored</div>
-        <div class="v">$79.59</div>
-        <div class="sub">added by day 60 in Toronto</div>
-      </div>
-      <div class="stat-cell">
-        <div class="k">To scan a ticket</div>
-        <div class="v">$0</div>
-        <div class="sub">no signup, no commission</div>
-      </div>
-      <div class="stat-cell">
-        <div class="k">Photo to verdict</div>
-        <div class="v">~8s</div>
-        <div class="sub">typical scan time</div>
+      <div class="ladder-card">
+        <div class="ladder-meter" aria-hidden="true">
+          <div class="ladder-day">Day <span id="ladderDay">60</span></div>
+          <div class="ladder-amt" id="ladderAmt">$109.59</div>
+          <div class="ladder-bar"><span id="ladderBar"></span></div>
+        </div>
+        <ol class="ladder-steps">
+          <li class="is-on"><b>Day 1–15</b><span>Pay it, or request a screening review</span><em>$30.00</em></li>
+          <li class="is-on"><b>Day 16</b><span>Address search fee, +$15.39</span><em>$45.39</em></li>
+          <li class="is-on"><b>Day 31</b><span>Late payment fee, +$32.10</span><em>$77.49</em></li>
+          <li class="is-on"><b>Day 60</b><span>Plate denial: your plate can't be renewed, +$32.10</span><em>$109.59</em></li>
+        </ol>
+        <a class="ladder-cta" href="#scan">Scan it before day 16 →</a>
+        <p class="ladder-src">Source: City of Toronto published fee schedule.</p>
       </div>
     </div>
   </section>
@@ -2630,5 +2675,53 @@
 <script src="/assets/js/lawyers.js" defer></script>
 <script src="/assets/js/account.js" defer></script>
 <script src="/assets/js/scanner.js" defer></script>
+
+<!-- Late-fee ladder: GSAP + ScrollTrigger (cdnjs). If they fail to load, the
+     section simply stays a static list. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  (function () {
+    var sec = document.getElementById("late-fees");
+    if (!sec || !window.gsap || !window.ScrollTrigger) return;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+    document.documentElement.classList.add("ladder-js");
+
+    var days = [1, 16, 31, 60];
+    var amounts = [30, 45.39, 77.49, 109.59];
+    var steps = sec.querySelectorAll(".ladder-steps li");
+    var amt = document.getElementById("ladderAmt");
+    var day = document.getElementById("ladderDay");
+    var bar = document.getElementById("ladderBar");
+
+    function render(p) {               // p runs 0 → 3 across the four stages
+      var i = Math.min(2, Math.floor(p)), f = Math.min(1, p - i);
+      // the day ticks over evenly; the fee lands when the day is reached
+      var d = p >= 3 ? 60 : Math.round(days[i] + (days[i + 1] - days[i]) * f);
+      var stage = 0;
+      for (var k = 0; k < 4; k++) if (d >= days[k]) stage = k;
+      day.textContent = d;
+      amt.textContent = "$" + amounts[stage].toFixed(2);
+      amt.classList.toggle("is-late", stage >= 2);
+      bar.style.transform = "scaleX(" + ((d - 1) / 59) + ")";
+      steps.forEach(function (li, k) { li.classList.toggle("is-on", k <= stage); });
+    }
+    render(0);
+
+    var state = { p: 0 };
+    gsap.to(state, {
+      p: 3, ease: "none",
+      onUpdate: function () { render(state.p); },
+      scrollTrigger: {
+        trigger: sec, pin: sec.querySelector(".ladder-pin"),
+        start: "top top", end: "+=" + Math.round(window.innerHeight * 1.6),
+        scrub: 0.5, invalidateOnRefresh: true
+      }
+    });
+    // the intro and late-loading media change the page height
+    window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+  })();
+</script>
 </body>
 </html>
