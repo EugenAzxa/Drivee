@@ -1631,23 +1631,34 @@
   a.feature-go { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--blue); text-decoration: none; }
   a.feature-go:hover { text-decoration: underline; }
 
-  /* partner firm, in place of the sample firm list */
-  .partner-box { background: white; border: 1px solid rgba(232,155,34,0.55); border-radius: 20px; padding: 28px; box-shadow: 0 30px 60px -30px rgba(11,20,48,0.18); }
-  .pb-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .pb-badge { font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1.2px; padding: 5px 10px; border-radius: 999px; background: #E89B22; color: #1A1206; }
-  .pb-free { font-family: var(--mono); font-size: 11px; font-weight: 800; color: #96610a; }
-  .pb-name { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-top: 16px; }
-  .pb-claim { font-size: 14px; color: var(--ink2); margin-top: 6px; font-style: italic; }
-  .pb-contact { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 14px; font-weight: 600; }
-  .pb-contact a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
-  .pb-contact a:hover { border-color: #E89B22; }
-  .pb-perks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-  .pb-perks span { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink2); }
-  .pb-cta { display: block; margin-top: 20px; padding: 15px 18px; border-radius: 999px; background: #E89B22; color: #1A1206; text-align: center; font-weight: 800; text-decoration: none; }
-  .pb-cta:hover { filter: brightness(1.05); }
-  .pb-more { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink2); line-height: 1.5; }
-  .pb-more b { color: var(--ink); }
-  .pb-fine { font-size: 11.5px; color: var(--ink2); opacity: .8; margin-top: 10px; }
+  /* lawyer section: the four answers as a plain list, the partner as a contact card */
+  .legal-title { margin-top: 14px; font-size: clamp(34px, 4.6vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1.02; }
+  .legal-lede { margin-top: 20px; font-size: 17px; color: var(--ink2); line-height: 1.6; max-width: 540px; }
+  .verdicts { margin: 28px 0 0; }
+  .verdicts > div { display: grid; grid-template-columns: 180px 1fr; gap: 16px; padding: 16px 0; border-top: 1px solid var(--line); }
+  .verdicts > div:last-child { border-bottom: 1px solid var(--line); }
+  .verdicts dt { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; }
+  .verdicts dt::before { content: ""; flex: none; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  .verdicts dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink2); }
+  .v-red dt { color: #C8372D; } .v-amber dt { color: #A85F00; } .v-green dt { color: #15803D; }
+  .partner-box { background: white; border: 1px solid var(--line); border-top: 4px solid #E89B22; border-radius: 16px; padding: 28px; }
+  .pb-kicker { margin: 0; font-size: 13px; font-weight: 700; color: #96610a; }
+  .pb-name { margin-top: 6px; font-family: var(--serif); font-size: 28px; font-weight: 700; }
+  .pb-claim { margin-top: 8px; font-size: 15px; line-height: 1.5; color: var(--ink2); }
+  .pb-details { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .pb-details li { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink); }
+  .pb-details span { color: var(--ink2); }
+  .pb-details a { color: var(--ink); font-weight: 600; text-decoration: none; word-break: break-word; }
+  .pb-details a:hover { color: var(--blue); text-decoration: underline; }
+  .pb-cta { display: inline-block; margin-top: 20px; padding: 14px 22px; border-radius: 12px; background: var(--ink); color: #fff; font-weight: 800; text-decoration: none; transition: background 0.2s; }
+  .pb-cta:hover { background: var(--blue-d); }
+  .pb-more { margin-top: 18px; font-size: 14px; line-height: 1.55; color: var(--ink2); }
+  .pb-fine { margin-top: 8px; font-size: 12px; color: var(--ink3); }
+  @media (max-width: 560px) {
+    .verdicts > div { grid-template-columns: 1fr; gap: 4px; }
+    .partner-box { padding: 22px; }
+    .pb-cta { display: block; text-align: center; }
+  }
 
   /* the app: store badges and a swipeable row of the listing's screenshots */
   .app-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
@@ -1762,6 +1773,36 @@
   @media (prefers-reduced-motion: reduce) { .sky-hint svg { animation: none; } }
   /* held back from the first paint until the entrance animation takes over */
   html.sky-pre .sky-logo, html.sky-pre .sky-tag, html.sky-pre .sky-tk img, html.sky-pre .sky-hint { opacity: 0; }
+
+  /* ── phone fixes: a real menu, plain store badges, a compact source strip ── */
+  .nav-menu { display: none; }
+  @media (max-width: 760px) {
+    nav.top .links { display: none !important; }
+    .nav-menu {
+      display: inline-flex; align-items: center; gap: 8px; margin-left: auto; min-height: 44px; padding: 0 14px;
+      border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,0.92);
+      font: 700 14px var(--font); color: var(--ink); cursor: pointer;
+    }
+    .nav-menu svg { width: 18px; height: 18px; }
+    html.nav-open nav.top .links {
+      display: flex !important; position: absolute; top: 100%; left: 12px; right: 12px;
+      flex-direction: column; gap: 0; max-width: none; margin: 6px 0 0; padding: 6px; overflow: visible;
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      box-shadow: 0 20px 40px -20px rgba(11,20,48,0.35);
+    }
+    html.nav-open nav.top .links a { padding: 13px 12px; font-size: 16px; border-radius: 8px; }
+    html.nav-open nav.top .links a:hover { background: var(--bg2); }
+
+    .hero-actions, .hero-content .hero-actions { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 10px; }
+    .hero-content { padding: 0 2px; }   /* .hero already has the side padding on phones */
+    .appstore-badge { width: auto; background: none; padding: 0; box-shadow: none; animation: none; overflow: visible; }
+    .appstore-badge::after { display: none; }
+    .appstore-badge svg { height: 50px; }
+
+    .strip { gap: 8px; padding: 20px 16px; }
+    .strip .label { flex-basis: 100%; text-align: center; margin-bottom: 4px; }
+    .strip .pill { font-size: 11px; padding: 5px 10px; }
+  }
 </style>
 <script>
   (function(){
@@ -1873,7 +1914,7 @@
 
   <nav class="top" id="topnav">
     <div class="brand">Drivee<span class="dot">.</span></div>
-    <div class="links">
+    <div class="links" id="navLinks">
       <a href="#scan">Scan a ticket</a>
       <a href="#legal">Find a lawyer</a>
       <a href="#features">Services</a>
@@ -1881,6 +1922,10 @@
       <a href="/blog/">Guides</a>
       <a href="#app">Get the app</a>
     </div>
+    <button class="nav-menu" id="navMenu" type="button" aria-expanded="false" aria-controls="navLinks">
+      Menu
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
     <a href="#scan" class="cta" style="text-decoration: none;">Scan your ticket →</a>
   </nav>
 
@@ -2319,47 +2364,32 @@
 
   <!-- LEGAL SECTION -->
   <section class="block reveal" id="legal">
-    <div class="split">
+    <div class="split legal-split">
       <div>
-        <div class="section-kicker">LEGAL · FIND A LAWYER</div>
-        <h2 style="margin-top: 14px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;">Pay it. Or<br/>fight it. We'll<br/>tell you which.</h2>
-        <p style="margin-top: 22px; font-size: 17px; color: var(--ink2); line-height: 1.55;">Drivee crosses your specific ticket against thousands of historical Toronto disputes - then issues a verdict in plain English. If we say "fight it," you'll have a printable letter in 30 seconds.</p>
-        <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
-            <span class="stamp red">URGENT</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Don't pay yet - court referral risk.</div>
-          </div>
-          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
-            <span class="stamp amber">SERIOUS</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Worth fighting - hire a lawyer.</div>
-          </div>
-          <div style="padding: 16px; background: var(--blue-50); border: 2px solid var(--blue); border-radius: 12px;">
-            <span class="stamp blue">CONTEST</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">DIY dispute - we draft the letter.</div>
-          </div>
-          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
-            <span class="stamp green">MINOR</span>
-            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Just pay it. It's cheaper than time.</div>
-          </div>
-        </div>
+        <div class="section-kicker">FIND A LAWYER</div>
+        <h2 class="legal-title">Should you pay it,<br/>or fight it?</h2>
+        <p class="legal-lede">After a scan, Drivee reads the charge, the amount and the deadline and gives you a plain-English answer. It is general information, not legal advice; for anything with demerit points, a licensed paralegal or lawyer can tell you for certain. Most answers are one of these:</p>
+        <dl class="verdicts">
+          <div class="v-red"><dt>Act now</dt><dd>The deadline has passed or is days away. Don't just pay it; get advice today.</dd></div>
+          <div class="v-red"><dt>Get representation</dt><dd>Demerit points or a criminal record are on the line. A paralegal usually costs less than the insurance increase.</dd></div>
+          <div class="v-amber"><dt>Worth disputing</dt><dd>Charges like this are often reduced or withdrawn at a screening review or early resolution.</dd></div>
+          <div class="v-green"><dt>Probably just pay</dt><dd>A small fine with no points. Disputing it would cost you more time than it saves.</dd></div>
+        </dl>
       </div>
 
       <div class="partner-box">
-        <div class="pb-top">
-          <span class="pb-badge">DRIVEE PARTNER</span>
-          <span class="pb-free">FREE CONSULTATION</span>
-        </div>
-        <div class="pb-name">Bajwa Law Firm</div>
-        <div class="pb-claim">Lawyers: criminal defence, impaired driving and car accident claims</div>
-        <div class="pb-contact">
-          <a href="mailto:info@bajwalawfirm.ca">info@bajwalawfirm.ca</a>
-          <a href="tel:4164682245">(416) 468-2245</a>
-          <a href="https://bajwalawfirm.ca/" target="_blank" rel="noopener">bajwalawfirm.ca ↗</a>
-        </div>
-        <div class="pb-perks"><span>LAWYERS</span><span>TORONTO · 1280 FINCH AVE W</span><span>24/7 BAIL LINE</span></div>
-        <a class="pb-cta" href="#scan">Scan my ticket, then contact them free →</a>
-        <div class="pb-more"><b>Plus 5 more licensed Ontario firms.</b> Scan your ticket to see which handle your charge, with prices. A free account unlocks the full list.</div>
-        <div class="pb-fine">Quoted lines are each firm's own public claims, not Drivee's assessment.</div>
+        <p class="pb-kicker">Our partner firm</p>
+        <h3 class="pb-name">Bajwa Law Firm</h3>
+        <p class="pb-claim">Criminal defence, impaired driving and car accident claims. The first consultation is free.</p>
+        <ul class="pb-details">
+          <li><span>Phone</span><a href="tel:4164682245">(416) 468-2245</a></li>
+          <li><span>Email</span><a href="mailto:info@bajwalawfirm.ca">info@bajwalawfirm.ca</a></li>
+          <li><span>Website</span><a href="https://bajwalawfirm.ca/" target="_blank" rel="noopener">bajwalawfirm.ca</a></li>
+          <li><span>Office</span>1280 Finch Ave W, Toronto · 24/7 bail line</li>
+        </ul>
+        <a class="pb-cta" href="#scan">Scan my ticket first →</a>
+        <p class="pb-more">After a scan you'll also see 5 more licensed Ontario firms that handle your charge, with their prices. A free account shows the full list.</p>
+        <p class="pb-fine">Firm descriptions are their own, not Drivee's assessment.</p>
       </div>
     </div>
   </section>
@@ -2778,6 +2808,19 @@
           scale: 1.9, rotation: dir * 40, opacity: 0, ease: "none", scrollTrigger: whole });
       });
     }
+  })();
+</script>
+
+<script>
+  // phone menu: open and close the nav links
+  (function () {
+    var btn = document.getElementById("navMenu"), links = document.getElementById("navLinks");
+    if (!btn || !links) return;
+    var root = document.documentElement;
+    function set(open) { root.classList.toggle("nav-open", open); btn.setAttribute("aria-expanded", open ? "true" : "false"); }
+    btn.addEventListener("click", function () { set(!root.classList.contains("nav-open")); });
+    links.addEventListener("click", function (e) { if (e.target.closest("a")) set(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
   })();
 </script>
 </body>
