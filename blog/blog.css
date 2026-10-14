@@ -315,3 +315,23 @@ h1.article-title {
   .post-card { padding: 22px 22px; }
   .post-card h2 { font-size: 22px; }
 }
+
+/* "Take a picture of the sign with the Drivee app" — on the sign pages */
+.sign-app {
+  display: flex; align-items: center; gap: 24px;
+  margin: 28px auto; max-width: 760px; padding: 22px 26px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
+}
+.sign-app-shot { flex: none; width: 112px; height: auto; border-radius: 14px; border: 1px solid var(--line); }
+.sign-app-txt h3 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; color: var(--ink); }
+.sign-app-txt p { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--ink2); }
+.sign-app-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.sign-app-badges a { display: inline-flex; line-height: 0; }
+.sign-app-badges a:hover { text-decoration: none; opacity: 0.88; }
+.sign-app-badges svg { height: 44px; width: auto; }
+.sg-cta a + a { margin-left: 10px; }
+@media (max-width: 600px) {
+  .sign-app { margin-left: 20px; margin-right: 20px; padding: 18px; gap: 16px; align-items: flex-start; }
+  .sign-app-shot { width: 84px; }
+  .sign-app-txt h3 { font-size: 18px; }
+}
