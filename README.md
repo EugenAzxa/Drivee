@@ -12,7 +12,7 @@ More details will be added as the project grows.
 
 ## Intro video
 
-The homepage opens with a 5-second clip, once per visit: a Toronto parking
+The homepage opens with a 5-second clip on every load: a Toronto parking
 officer holds up a ticket and points at a No Stopping sign, the camera pushes
 into the ticket, and it lands on the Drivee app showing "Dispute won". It
 ends on the last frame of the hero video (`parking-ticket-2.mp4`), so the page

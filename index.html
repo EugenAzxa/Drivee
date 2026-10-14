@@ -1650,7 +1650,7 @@
     .app-shots img { width: 62vw; border-radius: 18px; }
   }
 
-  /* ── Intro video: officer → ticket → the app, once per visit ──
+  /* ── Intro video: officer → ticket → the app, on every homepage load ──
      16:9 on wide screens, 9:16 on phones; ends on the hero video's last
      frame, so the page underneath picks up where the clip stops. */
   .dv-intro { position: fixed; inset: 0; z-index: 1000; background: #FEFEFE; transition: opacity 0.6s ease; }
@@ -1741,7 +1741,7 @@
 </head>
 <body>
 
-<!-- Intro video. Plays once per visit, before the page; skipped for deep
+<!-- Intro video. Plays on every homepage load, before the page; skipped for deep
      links, reduced motion and data saver. Sources: assets/intro/. -->
 <div class="dv-intro" id="dvIntro" hidden>
   <video id="dvIntroVideo" muted playsinline preload="auto" aria-label="Drivee intro: a parking officer's ticket becomes a disputed ticket in the Drivee app"></video>
@@ -1753,13 +1753,12 @@
     var vid = document.getElementById("dvIntroVideo");
     var play = false;
     try {
-      play = !sessionStorage.getItem("drivee_intro") && !location.hash &&
+      play = !location.hash &&
              !/[?&]app(=|&|$)/.test(location.search) &&
              !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) &&
              !(navigator.connection && navigator.connection.saveData);
     } catch (e) {}
     if (!play) { box.remove(); return; }
-    try { sessionStorage.setItem("drivee_intro", "1"); } catch (e) {}
 
     var shape = window.innerHeight > window.innerWidth ? "9x16" : "16x9";
     vid.poster = "/assets/intro/poster-" + shape + ".jpg";
