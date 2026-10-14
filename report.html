@@ -157,7 +157,7 @@
   nav.top .links { display: flex; gap: 28px; }
   nav.top .links a { color: var(--ink2); font-size: 14px; font-weight: 500; text-decoration: none; }
   nav.top .links a:hover, nav.top .links a.active { color: var(--ink); }
-  nav.top .cta { padding: 10px 18px; background: var(--ink-fill, var(--ink)); color: white; border-radius: 999px; font-size: 14px; font-weight: 700; text-decoration: none; }
+  nav.top .cta { padding: 10px 18px; background: var(--ink); color: white; border-radius: 999px; font-size: 14px; font-weight: 700; text-decoration: none; }
 
   main { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
   .block { padding: 72px 0 8px; }
@@ -182,12 +182,12 @@
   .vin-form input::placeholder { color: var(--ink3); letter-spacing: 1px; font-weight: 500; }
   .vin-form button {
     border: none; cursor: pointer; padding: 14px 26px; border-radius: 12px;
-    background: var(--ink-fill, var(--ink)); color: #fff; font-family: var(--font); font-size: 15px; font-weight: 800;
+    background: var(--ink); color: #fff; font-family: var(--font); font-size: 15px; font-weight: 800;
   }
   .vin-form button:disabled { opacity: 0.5; cursor: wait; }
   .vin-try { margin-top: 14px; font-size: 13px; color: var(--ink3); }
   .vin-try a { color: var(--blue-d); font-weight: 700; cursor: pointer; text-decoration: none; font-family: var(--mono); font-size: 12px; }
-  .vin-error { margin: 14px auto 0; max-width: 640px; display: none; padding: 12px 18px; border-radius: 12px; background: rgba(225,71,61,0.10); border: 1px solid rgba(225,71,61,0.25); color: #FF8C82; font-size: 14px; font-weight: 600; }
+  .vin-error { margin: 14px auto 0; max-width: 640px; display: none; padding: 12px 18px; border-radius: 12px; background: rgba(225,71,61,0.10); border: 1px solid rgba(225,71,61,0.25); color: #9c2a22; font-size: 14px; font-weight: 600; }
 
   /* results */
   #vin-results { display: none; margin-top: 40px; text-align: left; }
@@ -324,7 +324,7 @@
   /* locked tier */
   .locked-wrap { margin-top: 18px; }
   .locked-title { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; font-size: 17px; font-weight: 800; }
-  .locked-title .tag { padding: 4px 10px; border-radius: 999px; background: rgba(232,155,34,0.14); color: #F5BB63; font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+  .locked-title .tag { padding: 4px 10px; border-radius: 999px; background: rgba(232,155,34,0.14); color: #96610a; font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
   .locked-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
   .locked-card { position: relative; padding: 18px; overflow: hidden; }
   .locked-card .lc-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; }
@@ -415,7 +415,7 @@
   .stage3d.pop .s3-bg, .stage3d.pop .s3-van, .stage3d.pop .s3-refl { display: block; }
   .stage3d.pop .g-main { cursor: grab; }
   .stage3d.pop .g-main:active { cursor: grabbing; }
-  #g-spin-hint { display: none; background: var(--blue-fill, var(--blue)) !important; }
+  #g-spin-hint { display: none; background: var(--blue) !important; }
   .stage3d.pop ~ * #g-spin-hint { display: inline-block; }
   .stage3d.pop #g-spin-hint { display: inline-block; }
   /* idle float when not hovered */
@@ -452,12 +452,12 @@
   .clean-pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: rgba(22,163,74,0.10); color: var(--green); border: 1px solid rgba(22,163,74,0.22); font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; }
   .unit-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--bg2); }
   .unit-toggle button { border: none; background: transparent; padding: 8px 18px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--ink2); cursor: pointer; }
-  .unit-toggle button.on { background: var(--ink-fill, var(--ink)); color: #fff; }
+  .unit-toggle button.on { background: var(--ink); color: #fff; }
   #chart { position: relative; margin-top: 10px; }
   #chart svg { width: 100%; height: auto; display: block; }
   .chart-tip {
     position: absolute; display: none; pointer-events: none; z-index: 5;
-    background: var(--ink-fill, var(--ink)); color: #fff; border-radius: 10px; padding: 8px 12px;
+    background: var(--ink); color: #fff; border-radius: 10px; padding: 8px 12px;
     font-size: 12px; line-height: 1.5; white-space: nowrap; transform: translate(-50%, -110%);
     box-shadow: 0 8px 20px rgba(11,20,48,0.3);
   }
@@ -469,11 +469,11 @@
   .owner { display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
   .owner:first-child { border-top: none; }
   .owner .badge { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
-  .owner .badge .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink-fill, var(--ink)); color: #fff; display: grid; place-items: center; font-size: 13px; flex-shrink: 0; }
+  .owner .badge .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 13px; flex-shrink: 0; }
   .owner .dates { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink2); }
   .owner .facts { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }
   .chip { padding: 6px 12px; border-radius: 999px; background: var(--bg2); font-size: 13px; font-weight: 600; }
-  .chip.warn { background: rgba(232,155,34,0.14); color: #F5BB63; }
+  .chip.warn { background: rgba(232,155,34,0.14); color: #96610a; }
   .chip.blue { background: var(--blue-50); color: var(--blue-d); }
   .owner .note { flex-basis: 100%; margin-top: 2px; font-size: 13px; color: var(--ink2); line-height: 1.55; }
 
@@ -574,7 +574,6 @@
     } catch(e){ window.dvTrack=function(){}; }
   })();
 </script>
-  <link rel="stylesheet" href="/assets/css/theme-bridge.css">
 </head>
 <body>
 
@@ -588,7 +587,7 @@
       <a href="/blog/">Blog</a>
       <a href="/contact.html">Contact</a>
     </div>
-    <a href="/#app" class="cta">Get the app →</a>
+    <a href="/#scan" class="cta">Scan your ticket →</a>
   </nav>
 
   <main>

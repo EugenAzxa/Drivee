@@ -1,21 +1,18 @@
 {
   "name": "Drivee — Toronto Parking & Fines",
   "short_name": "Drivee",
-  "description": "Scan a Toronto parking or traffic ticket, get a plain-English verdict on whether to pay or fight it, track every deadline, and reach a vetted Ontario paralegal.",
+  "description": "Scan a Toronto parking or traffic ticket, get a plain-English verdict on whether to pay or fight it, track every deadline, and reach a licensed Ontario paralegal.",
   "start_url": "/app.html",
-  "scope": "/",
   "display": "standalone",
-  "background_color": "#08060F",
-  "theme_color": "#08060F",
+  "background_color": "#F2F3F0",
+  "theme_color": "#2563EB",
   "orientation": "portrait",
-  "categories": ["utilities", "travel", "productivity"],
-  "lang": "en-CA",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "type": "image/svg+xml"
     }
-  ]
+  ],
+  "scope": "/"
 }

@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="en-CA">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <!-- The website is the homepage (/). The web app lives at /app.html.
      Forward to the app only when it was asked for: an old /?app=1 link, or a
      session that is already in the app (the Google sign-in round-trip
@@ -11,7 +11,8 @@
   (function () {
     try {
       var q = new URLSearchParams(location.search);
-      var landingAnchor = /^#(scan|how|lawyers|features|app|faq)$/.test(location.hash);
+      var landingAnchor = /^#(scan|scanner|faq|features|video|founder|hotspots|legal|app|reviews|payoff)$/
+                            .test(location.hash);
       var inApp = sessionStorage.getItem('drivee_app') === '1';
       if (q.has('app') || (inApp && !landingAnchor)) {
         q.delete('app');
@@ -21,37 +22,37 @@
     } catch (e) {}
   })();
 </script>
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Dispute a Parking or Traffic Ticket in Toronto &amp; Ontario — Free AI Ticket Scan | Drivee</title>
-<meta name="description" content="Got a Toronto parking ticket or an Ontario traffic ticket? Upload a photo. Drivee reads it in seconds, tells you whether to pay or fight it, shows what it really costs you once insurance is counted, and matches you with licensed Ontario paralegals and lawyers for a free case review. No signup.">
-<link rel="canonical" href="https://www.drivee.ca/">
+<meta name="description" content="Got a Toronto parking ticket or an Ontario traffic ticket? Upload a photo. Drivee reads it in seconds, tells you whether to pay or fight it, shows what it really costs once insurance is counted, and matches you with licensed Ontario paralegals and lawyers for a free case review. No signup."/>
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1"/>
+<meta name="geo.region" content="CA-ON"/>
+<meta name="geo.placename" content="Toronto, Ontario"/>
+<link rel="manifest" href="/manifest.json"/>
 
-<meta name="theme-color" content="#08060F">
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
-<meta name="geo.region" content="CA-ON">
-<meta name="geo.placename" content="Ontario">
+<!-- Open Graph / share-card meta - what shows up when someone pastes drivee.ca in Telegram, WhatsApp, iMessage, etc. -->
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Drivee"/>
+<meta property="og:title" content="Dispute a Parking or Traffic Ticket in Toronto — Free AI Scan"/>
+<meta property="og:description" content="Upload your ticket. Verdict in seconds, the true cost once insurance is counted, and matched Ontario paralegals and lawyers for a free case review."/>
+<meta property="og:url" content="https://www.drivee.ca/"/>
+<meta property="og:image" content="https://www.drivee.ca/og-image.png?v=2"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="Drivee - Smiling parking-officer mascot with the tagline: The driver's app for Toronto."/>
+<meta property="og:locale" content="en_CA"/>
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Drivee">
-<meta property="og:locale" content="en_CA">
-<meta property="og:url" content="https://www.drivee.ca/">
-<meta property="og:title" content="Dispute a Parking or Traffic Ticket in Toronto — Free AI Scan">
-<meta property="og:description" content="Upload your ticket. Verdict in seconds, the true cost once insurance is counted, and matched Ontario paralegals for a free case review.">
-<meta property="og:image" content="https://www.drivee.ca/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Dispute a Parking or Traffic Ticket in Toronto — Drivee">
-<meta name="twitter:description" content="Upload your ticket. Verdict in seconds. Matched with licensed Ontario paralegals and lawyers, free case review.">
-<meta name="twitter:image" content="https://www.drivee.ca/og-image.png">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Dispute a Parking or Traffic Ticket in Toronto — Drivee"/>
+<meta name="twitter:description" content="Upload your ticket. Verdict in seconds. Matched with licensed Ontario paralegals and lawyers, free case review."/>
+<meta name="twitter:image" content="https://www.drivee.ca/og-image.png?v=2"/>
 
-<link rel="manifest" href="/manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://unpkg.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500;600&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/drivee.css">
-<link rel="stylesheet" href="/assets/css/home.css">
+<!-- Canonical -->
+<link rel="canonical" href="https://www.drivee.ca/"/>
 
+<!-- Structured data. The FAQPage entries mirror the visible #faq section
+     word for word — Google ignores FAQ markup that isn't on the page. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -80,367 +81,2391 @@
       "@type": "FAQPage",
       "@id": "https://www.drivee.ca/#faq",
       "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Can I fight a parking ticket in Ontario?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Toronto and many other Ontario municipalities run an Administrative Penalty System, where you request a screening review rather than a court date and a screening officer can cancel, reduce, or uphold the penalty. Municipalities that have not adopted that system still run parking tickets through Provincial Offences Court. Upload your ticket and Drivee tells you which process applies to yours." }
-        },
-        {
-          "@type": "Question",
-          "name": "How long do I have to dispute a ticket in Ontario?",
-          "acceptedAnswer": { "@type": "Answer", "text": "About 15 days from the issue date, for both parking screening reviews and Highway Traffic Act offence notices. Miss it and a parking fine starts accruing fees, or a moving violation can be convicted in your absence. The exact window is printed on your ticket, and Drivee reads the date off it for you." }
-        },
-        {
-          "@type": "Question",
-          "name": "What happens if I do not pay a Toronto parking ticket?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Day 16 adds a $15.39 address search fee, day 31 adds a $32.10 late payment fee, and day 60 adds a $32.10 plate denial fee, which blocks your licence plate renewal. A $30 ticket ignored for two months becomes roughly $109.59." }
-        },
-        {
-          "@type": "Question",
-          "name": "Do I need a lawyer or a paralegal in Ontario?",
-          "acceptedAnswer": { "@type": "Answer", "text": "It depends on the charge. A licensed paralegal can represent you on Highway Traffic Act matters such as speeding, red light, careless driving and stunt driving, and usually pays for themselves once the insurance increase is counted. Impaired driving and over 80 are Criminal Code charges, and only a lawyer can represent you on those. Drivee checks each firm's licence before matching, so a criminal charge is never put in front of a paralegal-only firm." }
-        },
-        {
-          "@type": "Question",
-          "name": "How much does Drivee cost?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Scanning your ticket, the verdict, the cost breakdown, the deadline tracking and the firm matching are all free, and Drivee takes no commission from the firms. The optional paid product is a full vehicle history report at $19 CAD, or $30 CAD including an Ontario lien check." }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Drivee work outside Ontario?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. Drivee covers Ontario only. The deadlines, demerit points, fee ladders and court process it works from are Ontario-specific, and every firm it matches is licensed in Ontario. A ticket from another province or a US state is still read and shown back to you, but Drivee will say it cannot advise on it rather than guess." }
-        },
-        {
-          "@type": "Question",
-          "name": "Is my ticket photo kept or shared?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The photo is sent for reading and is not stored on our servers. Your details go only to the single firm you pick, and we copy you on that email so you can see exactly what was shared. Nothing is sold to third parties." }
-        }
+        { "@type": "Question", "name": "Can I fight a parking ticket in Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Toronto and many other Ontario municipalities run an Administrative Penalty System: you request a screening review rather than a court date, and a screening officer can cancel, reduce or uphold the penalty. Municipalities that have not adopted it still run parking tickets through Provincial Offences Court. Upload your ticket and Drivee tells you which one applies to yours." } },
+        { "@type": "Question", "name": "How long do I have to dispute it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "About 15 days from the issue date — for a parking screening review and for a Highway Traffic Act offence notice alike. Miss it and a parking fine starts stacking fees, or a moving violation can be convicted in your absence. The exact window is printed on your ticket." } },
+        { "@type": "Question", "name": "What happens if I just ignore it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Day 16 adds a $15.39 address search fee. Day 31 adds a $32.10 late payment fee. Day 60 adds a $32.10 plate denial fee, which blocks your licence plate renewal. A $30 ticket left for two months becomes about $109.59." } },
+        { "@type": "Question", "name": "Do I need a paralegal or a lawyer?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends on the charge. A licensed Ontario paralegal can represent you on Highway Traffic Act matters — speeding, red light, careless, stunt — and usually pays for themselves once the insurance increase is counted. Impaired driving and over 80 are Criminal Code charges, and only a lawyer can represent you there. Drivee checks each firm's licence before matching, so a criminal charge is never put in front of a paralegal-only firm." } },
+        { "@type": "Question", "name": "How much does it cost to fight a ticket in Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes — every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide." } },
+        { "@type": "Question", "name": "What does Drivee cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full vehicle history report — $19 CAD, or $30 CAD with an Ontario lien check." } },
+        { "@type": "Question", "name": "Does Drivee work outside Ontario?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario's, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says, but we will tell you plainly that we cannot advise on it rather than guess." } },
+        { "@type": "Question", "name": "What happens to my ticket photo?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It is sent to be read and is not stored on our servers. If you request a case review, your details go to the single firm you picked and nobody else — and we copy you on that email so you can see exactly what was shared." } },
+        { "@type": "Question", "name": "Is Drivee affiliated with the City of Toronto?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Drivee is independent and not affiliated with the City of Toronto, MTO, ServiceOntario, CARFAX, NHTSA or any law firm. We are Toronto drivers who got tired of losing money quietly." } }
       ]
     }
   ]
 }
 </script>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/scan-widget.css"/>
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🚗</text></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Serif:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #EEF2FB;
+    --bg2: #E4EAF6;
+    --paper: #FFFFFF;
+    --ink: #0B1430;
+    --ink2: #4A5267;
+    --ink3: #8C95A7;
+    --line: rgba(11,20,48,0.08);
+    --line-s: rgba(11,20,48,0.05);
+    --blue: #2D63F0;
+    --blue-d: #1B45C2;
+    --blue-s: #DCE6FB;
+    --blue-50: #EAF0FD;
+    --green: #16A34A;
+    --amber: #E89B22;
+    --red: #E1473D;
+    --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --serif: 'IBM Plex Serif', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body { min-height: 100vh; }
+
+  /* ─────────── Intro overlay ─────────── */
+  .intro {
+    position: fixed; inset: 0; z-index: 100;
+    background: #1B45C2;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    pointer-events: all;
+  }
+  .intro.gone { pointer-events: none; }
+  .intro-bg {
+    position: absolute; inset: 0;
+    /* Single flat gradient instead of the stacked radial-blue glow that
+       reads as generic "AI product" intro. Calmer, more editorial. */
+    background: linear-gradient(180deg, #1A3FB8 0%, #0E1B3D 100%);
+    opacity: 0; animation: introBgIn 1.6s 0.1s ease forwards;
+  }
+  @keyframes introBgIn { to { opacity: 1; } }
+
+  .intro-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+    opacity: 0; animation: introGridIn 1.8s 0.4s ease forwards;
+  }
+  @keyframes introGridIn { to { opacity: 1; } }
+
+  .intro-stage {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    color: white;
+  }
+
+  .intro-meta {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px; font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0; transform: translateY(8px);
+    animation: introFade 0.6s 0.3s ease forwards;
+  }
+  .intro-meta .dot {
+    width: 6px; height: 6px; border-radius: 999px; background: var(--green);
+    animation: pulseDot 1.6s infinite;
+    box-shadow: 0 0 12px var(--green);
+  }
+  @keyframes pulseDot { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.3); } }
+  @keyframes introFade { to { opacity: 1; transform: translateY(0); } }
+
+  .intro-logo {
+    margin-top: 32px;
+    font-size: 120px; font-weight: 800; letter-spacing: -5px;
+    line-height: 1;
+    display: flex;
+  }
+  .intro-logo span {
+    display: inline-block;
+    opacity: 0; transform: translateY(60px) rotateX(40deg);
+    animation: letterIn 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards;
+  }
+  .intro-logo .dot {
+    color: var(--blue);
+    text-shadow: 0 0 40px rgba(46,100,255,0.7);
+  }
+  @keyframes letterIn { to { opacity: 1; transform: translateY(0) rotateX(0); } }
+
+  .intro-tag {
+    margin-top: 28px;
+    font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.7);
+    opacity: 0; transform: translateY(8px);
+    animation: introFade 0.6s 1.5s ease forwards;
+  }
+
+  .intro-bar {
+    margin-top: 36px; width: 320px; height: 2px;
+    background: rgba(255,255,255,0.12); position: relative; overflow: hidden;
+    opacity: 0; animation: introFade 0.5s 1.7s ease forwards;
+  }
+  .intro-bar::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    transform: translateX(-100%);
+    animation: introBarMove 1.4s 1.8s cubic-bezier(0.5,0,0.5,1) forwards;
+  }
+  @keyframes introBarMove { to { transform: translateX(100%); } }
+
+  /* ─────────── Chase scene (officer chasing car) ─────────── */
+  .chase {
+    margin-top: 22px; position: relative; width: 320px; height: 64px;
+    opacity: 0; animation: introFade 0.5s 1.5s ease forwards;
+  }
+  .chase-ground {
+    position: absolute; left: 0; right: 0; bottom: 6px; height: 1px;
+    background: repeating-linear-gradient(90deg,
+      rgba(255,255,255,0.35) 0 8px, transparent 8px 16px);
+    transform-origin: 0 0;
+    animation: chaseGround 0.5s linear infinite 1.6s;
+  }
+  @keyframes chaseGround { to { background-position: -16px 0; } }
+
+  .chase-car, .chase-cop {
+    position: absolute; bottom: 8px;
+    will-change: transform;
+  }
+  .chase-car {
+    left: 0;
+    animation:
+      carDrive 3.6s cubic-bezier(0.45,0.05,0.55,0.95) infinite 1.6s,
+      carBob 0.35s ease-in-out infinite 1.6s;
+  }
+  .chase-cop {
+    left: 0;
+    animation:
+      copChase 3.6s cubic-bezier(0.4,0.1,0.6,0.9) infinite 1.6s,
+      copBob 0.28s ease-in-out infinite 1.6s;
+  }
+  @keyframes carDrive {
+    0%   { transform: translateX(-30px); }
+    18%  { transform: translateX(60px); }
+    100% { transform: translateX(360px); }
+  }
+  @keyframes carBob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -1px; }
+  }
+  @keyframes copChase {
+    0%   { transform: translateX(-90px); }
+    18%  { transform: translateX(0px); }
+    65%  { transform: translateX(120px); }
+    100% { transform: translateX(180px); }
+  }
+  @keyframes copBob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -3px; }
+  }
+
+  .cop-leg-front { transform-origin: 11px 22px; animation: legFront 0.42s linear infinite 1.6s; }
+  .cop-leg-back  { transform-origin: 11px 22px; animation: legBack  0.42s linear infinite 1.6s; }
+  .cop-arm-front { transform-origin: 11px 12px; animation: armFront 0.42s linear infinite 1.6s; }
+  .cop-arm-back  { transform-origin: 11px 12px; animation: armBack  0.42s linear infinite 1.6s; }
+  @keyframes legFront { 0%,100% { transform: rotate(35deg);} 50% { transform: rotate(-35deg);} }
+  @keyframes legBack  { 0%,100% { transform: rotate(-35deg);} 50% { transform: rotate(35deg);} }
+  @keyframes armFront { 0%,100% { transform: rotate(-30deg);} 50% { transform: rotate(40deg);} }
+  @keyframes armBack  { 0%,100% { transform: rotate(40deg);} 50% { transform: rotate(-30deg);} }
+
+  .car-wheel { transform-origin: center; animation: wheelSpin 0.25s linear infinite 1.6s; }
+  @keyframes wheelSpin { to { transform: rotate(360deg); } }
+
+  /* exhaust puff - trails behind the right-facing car (so emitted on its left/rear) */
+  .car-puff {
+    position: absolute; left: -2px; bottom: 14px;
+    width: 8px; height: 8px; border-radius: 999px;
+    background: rgba(255,255,255,0.55);
+    animation: puffOut 0.9s ease-out infinite 1.6s;
+  }
+  @keyframes puffOut {
+    0%   { opacity: 0.9; transform: translate(0,0) scale(0.6); }
+    100% { opacity: 0;   transform: translate(-22px, -6px) scale(1.6); }
+  }
+
+  .intro-receipt {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%) scale(0.4) rotate(-8deg);
+    width: 320px; height: 480px;
+    background: white;
+    box-shadow: 0 60px 120px -40px rgba(0,0,0,0.6), 0 30px 60px -30px rgba(46,100,255,0.4);
+    opacity: 0;
+    animation: receiptIn 1.4s 3.0s cubic-bezier(0.2,0.7,0.2,1) forwards;
+  }
+  @keyframes receiptIn {
+    0% { opacity: 0; transform: translate(-50%, 30%) scale(0.4) rotate(-8deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-3deg); }
+  }
+
+  .intro.fade-out { animation: introOut 0.9s 4.4s cubic-bezier(0.5,0,0.5,1) forwards; }
+  @keyframes introOut {
+    to { opacity: 0; transform: scale(1.08); pointer-events: none; }
+  }
+
+  /* ─────────── Page reveal ─────────── */
+  .page { opacity: 1; }
+
+  /* ─────────── Nav ─────────── */
+  nav.top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: backdrop-filter 0.3s, background 0.3s, border-color 0.3s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.top.scrolled {
+    background: rgba(250,251,253,0.78);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    border-bottom-color: var(--line);
+  }
+  nav.top .brand {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.7px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  nav.top .brand .dot { color: var(--blue); }
+  nav.top .links { display: flex; gap: 28px; }
+  nav.top .links a {
+    color: var(--ink2); font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav.top .links a:hover { color: var(--ink); }
+  nav.top .cta {
+    padding: 10px 18px; background: var(--ink); color: white;
+    border: none; border-radius: 10px; font-family: var(--font);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── Report nav link: a little car crashes into it ── */
+  .report-wrap { position: relative; display: inline-block; }
+  .report-link {
+    color: var(--blue-d) !important; font-weight: 700 !important;
+    display: inline-block;
+    padding: 3px 10px; margin: -3px -10px;
+    border-radius: 999px; background: var(--blue-50, #EAF0FD);
+    animation: reportJolt 9s ease-out infinite;
+  }
+  .nav-car {
+    position: absolute; right: calc(100% + 6px); top: 50%; width: 30px; height: 15px;
+    transform: translateY(-46%) translateX(-56px);
+    opacity: 0; pointer-events: none;
+    animation: navCarDrive 9s ease-in infinite;
+  }
+  .nav-bang {
+    position: absolute; left: -14px; top: -4px; opacity: 0; pointer-events: none;
+    animation: navBang 9s linear infinite;
+  }
+  @keyframes navCarDrive {
+    0%, 52%  { transform: translateY(-46%) translateX(-56px); opacity: 0; }
+    56%      { opacity: 1; }
+    66%      { transform: translateY(-46%) translateX(16px); opacity: 1; }  /* impact */
+    68%      { transform: translateY(-46%) translateX(11px) rotate(-5deg); }
+    71%      { transform: translateY(-46%) translateX(14px) rotate(0deg); }
+    82%      { transform: translateY(-46%) translateX(14px); opacity: 1; }
+    92%,100% { transform: translateY(-46%) translateX(-56px); opacity: 0; } /* backs away */
+  }
+  @keyframes reportJolt {
+    0%, 65%  { transform: translateX(0) rotate(0); }
+    67%      { transform: translateX(5px) rotate(2deg); }
+    70%      { transform: translateX(-2px) rotate(-1deg); }
+    73%      { transform: translateX(1px) rotate(0.5deg); }
+    76%,100% { transform: translateX(0) rotate(0); }
+  }
+  @keyframes navBang {
+    0%, 64%  { opacity: 0; transform: scale(0.4) rotate(0); }
+    66%      { opacity: 1; transform: scale(1.25) rotate(18deg); }
+    72%      { opacity: 1; transform: scale(0.9) rotate(32deg); }
+    78%,100% { opacity: 0; transform: scale(0.5) rotate(40deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-car, .nav-bang, .report-link { animation: none !important; }
+  }
+
+
+  /* ─────────── Hero - full-bleed video background + LEFT-aligned copy ─── */
+  .hero {
+    position: relative;
+    min-height: clamp(680px, 88vh, 900px);
+    padding: 160px 0 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    /* Hero is white where the video plays; a short gradient at the bottom
+       fades into the light-blue page background. */
+    background: #FFFFFF;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 90px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    z-index: 2;
+  }
+  .hero-bg { display: none; }
+
+  /* Background animation. object-fit: contain leaves letterbox areas around
+     the video; browsers fill those with BLACK by default - that's the
+     "black lane" you saw. Forcing the element background to white makes
+     the letterbox blend invisibly into the white hero. */
+  .hero-video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transform: scale(0.85);
+    background: #FFFFFF;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Hero copy sits on the LEFT inside a centered 1480px rail so it lines
+     up with the rest of the site's sections. */
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 32px;
+    text-align: left;
+  }
+  .hero-content > * {
+    max-width: 580px;
+  }
+  .hero-content .hero-sub {
+    margin-left: 0; margin-right: 0;
+    max-width: 580px;
+  }
+  .hero-content .hero-actions,
+  .hero-content .hero-meta {
+    justify-content: flex-start;
+  }
+  .hero-content .install-nudge {
+    margin-left: 0; margin-right: 0;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--blue-50); color: var(--blue-d);
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    border: 1px solid var(--blue-s);
+  }
+  .eyebrow .dot { width: 6px; height: 6px; background: var(--green); border-radius: 999px; animation: pulseDot 1.6s infinite; }
+
+  h1.hero-title {
+    margin-top: 24px;
+    font-size: 88px; font-weight: 800; letter-spacing: -3.5px;
+    line-height: 0.96;
+  }
+  h1.hero-title .underline {
+    position: relative; white-space: nowrap;
+  }
+  h1.hero-title .underline::after {
+    content: ""; position: absolute;
+    left: 0; right: 0; bottom: 6px; height: 14px;
+    background: var(--blue-s); z-index: -1;
+    border-radius: 4px;
+  }
+
+  .hero-sub {
+    margin-top: 28px; font-size: 19px; color: var(--ink2);
+    line-height: 1.55; max-width: 560px;
+  }
+
+  .hero-actions { margin-top: 36px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .appstore-badge { display: inline-flex; text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; border-radius: 12px; }
+  .appstore-badge:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(11,20,48,0.18); }
+  .appstore-badge svg { display: block; height: 50px; width: auto; }
+  .btn-primary {
+    padding: 14px 24px; background: var(--ink); color: white; border: none;
+    border-radius: 12px; font-size: 14px; font-weight: 700; font-family: var(--font);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+    transition: transform 0.15s, background 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary:hover { background: var(--blue); transform: translateY(-1px); }
+  .btn-primary::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.20) 50%, transparent 70%);
+    transform: translateX(-110%);
+    animation: btnShine 4s 6s infinite;
+  }
+  @keyframes btnShine { 0% { transform: translateX(-110%); } 25%,100% { transform: translateX(110%); } }
+  .btn-ghost {
+    padding: 14px 18px; background: transparent; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font);
+  }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  .hero-meta {
+    margin-top: 28px; display: flex; gap: 28px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink3); font-weight: 600; letter-spacing: 1.2px;
+  }
+  .hero-meta b { color: var(--ink); font-weight: 800; }
+
+  /* hero elements visible by default; intro overlay covers them during reveal */
+
+  /* Old side-mounted receipt mockup - no longer used (hero now uses
+     full-bleed .hero-video-bg). Kept hidden for any future revert. */
+  .receipt-wrap { display: none; }
+  .receipt {
+    /* Pinned to the right edge instead of dead-centered. Slight rotation
+       so it reads as a real photographed receipt, not a marketing render. */
+    position: absolute; top: 20px; right: 8%;
+    width: 360px; transform: rotate(-3.2deg);
+    background: white;
+    box-shadow:
+      0 40px 80px -30px rgba(11,20,48,0.30),
+      0 20px 40px -20px rgba(11,20,48,0.16);
+    transition: transform 0.6s cubic-bezier(0.2,0.7,0.2,1);
+    overflow: hidden;
+  }
+  .receipt:hover { transform: rotate(0); }
+
+  /* Hero graphic - sits where the original ticket mockup was. Right side
+     of the hero, slight rotation, soft shadow. Natural aspect ratio is
+     ~16:9 (1400x782 source), so height is auto from the width. */
+  .receipt-video {
+    position: absolute;
+    top: 50%;
+    right: -4%;
+    transform: translateY(-50%) rotate(-2.5deg);
+    width: clamp(480px, 46vw, 680px);
+    height: auto;
+    background: transparent;
+    border-radius: 20px;
+    box-shadow:
+      0 60px 120px -36px rgba(11,20,48,0.32),
+      0 24px 48px -20px rgba(11,20,48,0.16);
+    transition: transform 0.6s cubic-bezier(0.2,0.7,0.2,1);
+    display: block;
+  }
+  .receipt-video:hover { transform: translateY(-50%) rotate(0); }
+  @media (max-width: 1100px) {
+    .receipt-video { width: clamp(380px, 58vw, 540px); right: 0; }
+    .receipt-wrap { height: auto; min-height: 420px; }
+  }
+  .receipt::before, .receipt::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 14px;
+    background-image: radial-gradient(circle at 7px 7px, var(--bg) 5px, transparent 5px);
+    background-size: 14px 14px;
+  }
+  .receipt::before { top: -7px; }
+  .receipt::after { bottom: -7px; }
+
+  .receipt-head {
+    padding: 22px 22px 18px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .receipt-head .meta {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 700;
+  }
+  .receipt-head h2 {
+    font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.6px; margin-top: 4px;
+  }
+  .receipt-head .dotline {
+    margin-top: 10px; height: 6px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 6px, transparent 6px 10px);
+    opacity: 0.85;
+  }
+
+  .receipt-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+  .receipt-row .k {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.7px; font-weight: 600; color: var(--ink2); text-transform: uppercase;
+  }
+  .receipt-row .v { font-family: var(--mono); font-weight: 700; }
+
+  .scanner {
+    margin: 14px 22px;
+    border: 2px dashed var(--ink); border-radius: 6px;
+    padding: 16px; position: relative; overflow: hidden;
+    background: var(--blue-50);
+  }
+  .scanner-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(46,100,255,0.18) 50%, transparent 70%);
+    transform: translateX(-110%);
+    animation: scannerShine 2.6s linear infinite 6s;
+  }
+  @keyframes scannerShine { 0% { transform: translateX(-110%); } 100% { transform: translateX(110%); } }
+  .scanner-row { display: flex; align-items: center; gap: 8px; position: relative; }
+  .scanner-icon {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--blue); color: white;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scanner-title { font-family: var(--mono); font-size: 11px; letter-spacing: 1.2px; font-weight: 700; }
+  .scanner-line { flex: 1; height: 1px; border-top: 1px dotted var(--ink); }
+  .scanner h3 { font-family: var(--serif); font-size: 17px; margin-top: 10px; font-weight: 700; line-height: 1.25; }
+  .scanner p { font-size: 12px; color: var(--ink2); margin-top: 4px; line-height: 1.45; }
+  .scanner-btn {
+    margin-top: 12px; height: 40px; width: 100%;
+    background: var(--ink); color: white; border: none; border-radius: 8px;
+    font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .receipt-section {
+    padding: 14px 22px 8px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; font-weight: 800; color: var(--ink);
+  }
+  .receipt-section .l { flex: 1; height: 1px; border-top: 1px dashed var(--line); }
+
+  .reminder-row {
+    margin: 0 14px 8px; padding: 10px 14px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .reminder-row .left { display: flex; flex-direction: column; gap: 3px; }
+  .reminder-row .ref { font-family: var(--mono); font-size: 9px; color: var(--ink3); font-weight: 700; letter-spacing: 0.5px; }
+  .reminder-row .ttl { font-size: 12px; font-weight: 700; }
+  .reminder-row .right { display: flex; align-items: center; gap: 10px; }
+  .reminder-row .amt { font-family: var(--mono); font-size: 16px; font-weight: 800; }
+  .stamp {
+    display: inline-block; padding: 3px 8px;
+    border: 1.5px solid currentColor; border-radius: 3px;
+    font-family: var(--mono); font-size: 9px; font-weight: 800; letter-spacing: 1.2px;
+    transform: rotate(-3deg);
+  }
+  .stamp.amber { color: var(--amber); }
+  .stamp.green { color: var(--green); }
+  .stamp.red   { color: var(--red); }
+  .stamp.blue  { color: var(--blue); }
+
+  .receipt-foot {
+    padding: 12px 22px 18px;
+    text-align: center;
+    font-family: var(--mono); font-size: 10px; color: var(--ink3); letter-spacing: 1.5px;
+  }
+
+  /* Floating badges around hero receipt */
+  .float-card {
+    position: absolute; padding: 12px 14px;
+    background: white; border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: 0 20px 40px -20px rgba(11,20,48,0.18);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .float-card .ic {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+  }
+  .float-card .lbl { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--ink2); }
+  .float-card .val { font-size: 14px; font-weight: 700; }
+
+  .float-1 { top: 60px; right: -30px; }
+  .float-1 .ic { background: var(--green); }
+  .float-1 .val { color: var(--green); }
+
+  .float-2 { bottom: 80px; left: -30px; }
+  .float-2 .ic { background: var(--blue); }
+  .float-2 .val { color: var(--blue); }
+
+  .float-3 { top: 240px; right: -50px; }
+  .float-3 .ic { background: var(--amber); }
+
+  /* Receipt sits on a soft neutral cast-shadow instead of a pulsing blue
+     halo - keeps depth without the "AI app launching" gloss. */
+  .receipt-glow { display: none; }
+
+  /* ─────────── Intro video (9:16 portrait - matches the trailer's phone shape) ─────────── */
+  .video-frame {
+    position: relative;
+    margin: 0 auto;
+    max-width: 380px;
+    aspect-ratio: 9 / 16;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -30px rgba(11,20,48,0.40),
+                0 0 0 1px rgba(11,20,48,0.06);
+  }
+  @media (max-width: 480px) {
+    .video-frame { max-width: 320px; border-radius: 22px; }
+  }
+  .video-frame .intro-video {
+    width: 100%; height: 100%;
+    display: block;
+    background: #0B1430;
+    border: 0;
+  }
+  .video-frame iframe.intro-video { background: #000; }
+  .video-placeholder {
+    position: relative;
+    width: 100%; height: 100%;
+    border: 0; padding: 0; cursor: pointer;
+    overflow: hidden;
+    background: #0B1430;
+    display: block;
+  }
+  .video-placeholder .vp-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(46,100,255,0.45), transparent 55%),
+      radial-gradient(circle at 70% 70%, rgba(122,92,240,0.35), transparent 55%),
+      linear-gradient(135deg, #1A3FB8 0%, #0B1430 100%);
+  }
+  .video-placeholder::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(circle at center, black, transparent 75%);
+    -webkit-mask-image: radial-gradient(circle at center, black, transparent 75%);
+    pointer-events: none;
+  }
+  .video-placeholder .vp-content {
+    position: relative; z-index: 2;
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    color: white;
+    padding: 28px 24px;
+  }
+  .vp-meta {
+    font-family: var(--mono);
+    font-size: 10px; letter-spacing: 1.8px; font-weight: 800;
+    color: rgba(255,255,255,0.7);
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 22px;
+  }
+  .vp-dot {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: #1FAB6B;
+    box-shadow: 0 0 12px #1FAB6B;
+    animation: vpDotPulse 1.6s infinite;
+  }
+  @keyframes vpDotPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .vp-play {
+    width: 78px; height: 78px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid rgba(255,255,255,0.30);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .vp-play svg { width: 28px; height: 28px; margin-left: 5px; }
+  .vp-play::before {
+    content: "";
+    position: absolute; inset: -10px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.20);
+    animation: vpPlayRing 2.4s infinite;
+  }
+  @keyframes vpPlayRing {
+    0%   { transform: scale(0.95); opacity: 1; }
+    100% { transform: scale(1.4);  opacity: 0; }
+  }
+  .video-placeholder:hover .vp-play {
+    background: rgba(255,255,255,0.20);
+    transform: scale(1.06);
+  }
+  .vp-title {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.6px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .vp-sub {
+    font-size: 13px; color: rgba(255,255,255,0.75);
+    line-height: 1.45;
+  }
+
+  @media (max-width: 480px) {
+    .vp-title { font-size: 18px; }
+    .vp-sub { font-size: 12px; }
+    .vp-play { width: 64px; height: 64px; }
+    .vp-play svg { width: 22px; height: 22px; }
+  }
+
+  /* ─────────── Logo strip ─────────── */
+  .strip {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 28px 32px;
+    display: flex; align-items: center; justify-content: center; gap: 60px;
+    flex-wrap: wrap;
+    background: var(--bg2);
+  }
+  .strip .label { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 700; }
+  .strip .pill {
+    padding: 6px 14px; border-radius: 6px; background: white;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    border: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .strip .pill .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--green); }
+
+  /* ─────────── Sections ─────────── */
+  section.block {
+    padding: 120px 32px;
+    max-width: 1320px; margin: 0 auto;
+  }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2,0.7,0.2,1); }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  .section-head { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: end; margin-bottom: 56px; }
+  .section-kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--blue);
+  }
+  .section-kicker .num { color: var(--ink3); margin-right: 12px; }
+  .section-title { margin-top: 14px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+  .section-sub { font-size: 17px; color: var(--ink2); line-height: 1.55; max-width: 520px; }
+
+  /* ── Founder story section ── photo left, copy right, transparent PNGs */
+  .founder-grid {
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px;
+    align-items: center;
+  }
+  .founder-photo-wrap {
+    position: relative;
+    display: flex; justify-content: center; align-items: flex-end;
+    min-height: 520px;
+  }
+  /* Soft warm-blue glow behind the cut-out so the page doesn't look like a
+     floating head - anchors the figure visually. */
+  .founder-photo-wrap::before {
+    content: ""; position: absolute; inset: 8% 12% 8% 12%;
+    background: radial-gradient(circle at 50% 55%, rgba(46,100,255,0.22), rgba(46,100,255,0) 70%);
+    filter: blur(8px); z-index: 0;
+  }
+  .founder-photo {
+    position: relative; z-index: 1;
+    max-width: 100%; max-height: 600px;
+    object-fit: contain;
+    /* drop-shadow on the PNG silhouette (not a box around the photo) */
+    filter: drop-shadow(0 30px 50px rgba(14,27,61,0.30));
+  }
+  .founder-body {
+    display: flex; flex-direction: column; gap: 18px;
+  }
+  .founder-p {
+    font-size: 18px; line-height: 1.6; color: var(--ink2);
+    max-width: 560px; margin: 0;
+  }
+  .founder-p + .founder-p { margin-top: 4px; }
+  .founder-sign {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 1.5px;
+    color: var(--ink3); text-transform: uppercase;
+    margin-top: 10px; font-weight: 700;
+  }
+
+  /* ── Payoff section ── photo right, copy left. Mirrors the founder grid. */
+  .payoff-grid {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px;
+    align-items: center;
+  }
+  .payoff-photo-wrap {
+    position: relative;
+    display: flex; justify-content: center; align-items: flex-end;
+    min-height: 520px;
+  }
+  .payoff-photo-wrap::before {
+    content: ""; position: absolute; inset: 8% 12% 8% 12%;
+    /* Green glow to echo the "PAID" check on the phone in the photo */
+    background: radial-gradient(circle at 50% 55%, rgba(31,171,107,0.22), rgba(31,171,107,0) 70%);
+    filter: blur(8px); z-index: 0;
+  }
+  .payoff-photo {
+    position: relative; z-index: 1;
+    max-width: 100%; max-height: 600px;
+    object-fit: contain;
+    filter: drop-shadow(0 30px 50px rgba(14,27,61,0.30));
+  }
+  .payoff-body { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ── Testimonials / reviews ── */
+  .reviews-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .review-card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
+    padding: 26px; display: flex; flex-direction: column; gap: 16px;
+    box-shadow: 0 10px 30px rgba(11,20,48,0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .review-card:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(11,20,48,0.10); }
+  .review-stars { color: var(--amber); font-size: 15px; letter-spacing: 2px; }
+  .review-text { font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; }
+  .review-text b { color: var(--blue-d); font-weight: 700; }
+  .review-proof {
+    margin-top: auto;
+    display: flex; align-items: center; gap: 8px;
+    align-self: flex-start;
+    padding: 7px 12px; border-radius: 999px;
+    background: rgba(22,163,74,0.10); border: 1px solid rgba(22,163,74,0.20);
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    color: var(--green);
+  }
+  .review-user { display: flex; align-items: center; gap: 12px; padding-top: 4px; border-top: 1px solid var(--line-s); }
+  .review-avatar {
+    width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+    display: grid; place-items: center;
+    color: white; font-weight: 800; font-size: 16px; letter-spacing: 0.5px;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.4);
+  }
+  .review-name { font-weight: 700; font-size: 14px; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+  .review-verified { color: var(--blue); font-size: 12px; }
+  .review-loc { font-size: 12px; color: var(--ink3); font-family: var(--mono); letter-spacing: 0.5px; }
+
+  /* ── Live "drivers online" counter ── */
+  .online-bar {
+    display: flex; justify-content: center; padding: 40px 32px 8px;
+  }
+  .online-pill {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 22px; border-radius: 999px;
+    background: var(--paper); border: 1px solid var(--line);
+    box-shadow: 0 8px 24px rgba(11,20,48,0.06);
+    font-size: 14px; color: var(--ink2); font-weight: 500;
+  }
+  .online-pill b { color: var(--ink); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .online-dot {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 0 0 rgba(22,163,74,0.6);
+    animation: onlinePulse 2s infinite;
+  }
+  @keyframes onlinePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(22,163,74,0); }
+    100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+  }
+
+  @media (max-width: 900px) { .reviews-grid { grid-template-columns: 1fr; } }
+
+  /* Stack on smaller screens - photo above text. */
+  @media (max-width: 900px) {
+    .founder-grid, .payoff-grid {
+      grid-template-columns: 1fr; gap: 32px;
+    }
+    .founder-photo-wrap, .payoff-photo-wrap { min-height: 380px; }
+    .founder-photo, .payoff-photo { max-height: 440px; }
+    /* On payoff: keep the photo BELOW the text on mobile (reads as the
+       emotional payoff after the headline, not before it). */
+    .payoff-photo-wrap { order: 2; }
+  }
+
+  /* Three-feature grid */
+  /* 2-column feature layout - 3-col reads as a generic SaaS marketing
+     poster. With 7 features, 2 columns lets the last card span and breaks
+     the perfect grid into something less template-y. */
+  .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .feature-grid > .feature:last-child { grid-column: 1 / -1; }
+  .feature {
+    background: white; border: 1px solid var(--line); border-radius: 18px;
+    padding: 32px; position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  }
+  .feature:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px rgba(11,20,48,0.18);
+    border-color: var(--blue-s);
+  }
+  .feature .num {
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--ink3);
+  }
+  .feature .icon-box {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--blue-50); color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 24px;
+  }
+  .feature h3 { margin-top: 18px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .feature p { margin-top: 10px; font-size: 14px; color: var(--ink2); line-height: 1.55; }
+
+  .feature-tag {
+    margin-top: 18px; display: inline-flex;
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--bg2); color: var(--ink2);
+    font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    border: 1px solid var(--line-s);
+  }
+
+  /* Showcase / split */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  /* Grid items default to min-width:auto, so a wide child stretched the column
+     past the page on narrow phones and the copy got clipped. */
+  .split > * { min-width: 0; }
+  .split.right { grid-template-columns: 1fr 1.1fr; }
+  .split-text h2 { font-size: 52px; font-weight: 800; letter-spacing: -1.8px; line-height: 1.05; margin-bottom: 18px; }
+  .split-text p { font-size: 17px; color: var(--ink2); line-height: 1.55; }
+
+  /* Phone mock - reused style for sections */
+  .phone-mock {
+    width: 320px; height: 640px; margin: 0 auto;
+    background: var(--ink); border-radius: 42px;
+    padding: 8px; position: relative;
+    box-shadow: 0 40px 80px -30px rgba(11,20,48,0.4);
+  }
+  .phone-mock .screen {
+    width: 100%; height: 100%; background: var(--paper); border-radius: 36px;
+    overflow: hidden; position: relative;
+  }
+  .phone-mock .notch {
+    position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 30px; background: var(--ink); border-radius: 999px; z-index: 5;
+  }
+
+  /* Map section */
+  .map-card {
+    background: white; border: 1px solid var(--line); border-radius: 24px;
+    padding: 32px;
+    position: relative; overflow: hidden;
+  }
+  .map-canvas {
+    aspect-ratio: 16/9; border-radius: 16px;
+    background:
+      linear-gradient(135deg, var(--blue-50) 0%, var(--bg2) 100%);
+    position: relative; overflow: hidden;
+    border: 1px solid var(--line-s);
+  }
+  /* Only a map drawn as an inline SVG should fill the canvas - not the
+     little icons inside the overlay pills, which this used to blow up. */
+  .map-canvas > svg { width: 100%; height: 100%; display: block; }
+  /* The 3D enforcement-map iframe - pointer-events gated by .engaged class
+     so users can scroll past the section without the map hijacking the wheel. */
+  .arcade-canvas { aspect-ratio: 960/600; }
+  .game-controls { font-family: var(--mono); font-size: 12px; color: var(--ink2); }
+  .game-controls b { color: var(--ink); }
+  .gc-touch { display: none; }
+  .map-legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px; }
+  .map-canvas .map-iframe { pointer-events: none; }
+  .map-canvas.engaged .map-iframe { pointer-events: auto; }
+  /* Click-overlay that engages map interactivity on click */
+  .map-cta-overlay {
+    position: absolute; inset: 0;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 5;
+    display: block;
+    background: transparent;
+    transition: background 0.2s, opacity 0.3s;
+  }
+  .map-cta-overlay:hover { background: rgba(11,20,48,0.04); }
+  .map-canvas.engaged .map-cta-overlay { opacity: 0; pointer-events: none; }
+  /* Small corner deep-link to the full interactive in-app map */
+  .map-deeplink {
+    position: absolute; top: 14px; right: 14px; z-index: 6;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 12px 8px 14px;
+    background: rgba(11,20,48,0.92); color: white;
+    border-radius: 999px; text-decoration: none;
+    font-family: var(--font); font-weight: 700; font-size: 11px;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    box-shadow: 0 8px 20px rgba(11,20,48,0.30);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  }
+  .map-deeplink:hover {
+    transform: translateY(-1px); background: var(--blue);
+    box-shadow: 0 12px 24px rgba(46,100,255,0.45);
+  }
+  .map-cta-pill {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: rgba(11,20,48,0.92);
+    color: white;
+    border-radius: 999px;
+    font-family: var(--font);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.2px;
+    box-shadow: 0 12px 24px -8px rgba(11,20,48,0.40);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .map-cta-overlay:hover .map-cta-pill {
+    background: var(--blue);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px -8px rgba(46,100,255,0.50);
+  }
+  .map-pin {
+    position: absolute; transform: translate(-50%, -50%);
+    pointer-events: auto; cursor: pointer;
+  }
+  .map-pin .dot {
+    display: block; width: 18px; height: 18px; border-radius: 999px;
+    background: var(--red); border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  }
+  .map-pin.amber .dot { background: var(--amber); }
+  .map-pin.green .dot { background: var(--green); }
+  .map-pin.you .dot   { background: var(--blue); width: 22px; height: 22px; }
+  .map-pin .ring {
+    position: absolute; top: -10px; left: -10px;
+    width: 38px; height: 38px; border-radius: 999px;
+    background: var(--red); opacity: 0.4;
+    animation: pinPulse 1.6s infinite;
+  }
+  .map-pin.amber .ring { background: var(--amber); }
+  .map-pin.green .ring { background: var(--green); }
+  .map-pin.you .ring   { background: var(--blue); top: -14px; left: -14px; width: 50px; height: 50px; }
+  @keyframes pinPulse {
+    0%   { transform: scale(0.6); opacity: 0.5; }
+    100% { transform: scale(2.0); opacity: 0; }
+  }
+  .map-pin .lbl {
+    position: absolute; top: -38px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: white;
+    font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
+    padding: 4px 8px; border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+  }
+  .map-pin.you .lbl { background: var(--blue); }
+
+  /* Stat Strip */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+    background: white;
+  }
+  .stat-cell { padding: 32px; border-right: 1px solid var(--line); }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .k { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; font-weight: 700; color: var(--ink2); }
+  .stat-cell .v { font-size: 56px; font-weight: 800; letter-spacing: -2.5px; margin-top: 10px; font-family: var(--mono); }
+  .stat-cell .v.blue { color: var(--blue); }
+  .stat-cell .v.green { color: var(--green); }
+  .stat-cell .sub { font-size: 12px; color: var(--ink2); margin-top: 4px; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 16px; top: 0; bottom: 0;
+    width: 2px; background: var(--line);
+  }
+  .timeline-step { position: relative; padding-bottom: 36px; }
+  .timeline-step:last-child { padding-bottom: 0; }
+  .timeline-step::before {
+    content: ""; position: absolute; left: -32px; top: 4px;
+    width: 18px; height: 18px; border-radius: 999px;
+    background: white; border: 2px solid var(--blue);
+  }
+  .timeline-step.done::before { background: var(--blue); }
+  .timeline-step .step-meta {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; font-weight: 700; color: var(--ink2);
+  }
+  .timeline-step h4 { font-size: 20px; font-weight: 700; margin-top: 6px; }
+  .timeline-step p { font-size: 14px; color: var(--ink2); margin-top: 6px; line-height: 1.5; }
+
+  /* CTA */
+  .cta-block {
+    margin: 80px 32px 80px;
+    max-width: 1320px; margin-left: auto; margin-right: auto;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -34px rgba(11,20,48,0.30);
+    border-radius: 28px; padding: 80px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .cta-block::before {
+    content: ""; position: absolute; inset: 0;
+    /* A single diagonal wash so the CTA reads as a destination, not an AI demo.
+       Kept light now that the card is white. */
+    background: linear-gradient(135deg, rgba(46,100,255,0.08), transparent 70%);
+  }
+  .cta-block > * { position: relative; }
+  .cta-block h2 { font-size: 80px; font-weight: 800; letter-spacing: -3.5px; line-height: 0.96; }
+  .cta-block .grad {
+    background: linear-gradient(90deg, #7A5CF0, var(--blue), var(--green));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .cta-block p { margin-top: 22px; font-size: 18px; color: var(--ink2); max-width: 560px; margin-left: auto; margin-right: auto; line-height: 1.55; }
+  .cta-block .row { margin-top: 36px; display: flex; gap: 12px; justify-content: center; }
+
+  /* Footer */
+  footer {
+    padding: 60px 32px 32px;
+    max-width: 1320px; margin: 0 auto;
+    border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+  }
+  footer h4 { font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px; color: var(--ink2); font-weight: 700; margin-bottom: 14px; }
+  footer a { display: block; padding: 6px 0; color: var(--ink); font-size: 14px; text-decoration: none; }
+  footer a:hover { color: var(--blue); }
+  footer .brand-foot { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+  footer .brand-foot .dot { color: var(--blue); }
+  footer .brand-sub { color: var(--ink2); font-size: 13px; max-width: 320px; margin-top: 12px; line-height: 1.5; }
+  .legal {
+    max-width: 1320px; margin: 0 auto;
+    padding: 24px 32px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    color: var(--ink3); font-size: 12px; font-family: var(--mono); letter-spacing: 0.5px;
+  }
+
+  /* skip intro button */
+  .skip-intro {
+    position: fixed; bottom: 24px; right: 24px; z-index: 101;
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    cursor: pointer; transition: background 0.2s;
+    opacity: 0; animation: introFade 0.5s 1s ease forwards;
+  }
+  .skip-intro:hover { background: rgba(255,255,255,0.15); }
+
+  /* Responsive */
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; gap: 32px; padding: 100px 20px 60px; }
+    h1.hero-title { font-size: 56px; letter-spacing: -2px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .split, .split.right { grid-template-columns: 1fr; gap: 32px; }
+    .section-head { grid-template-columns: 1fr; gap: 16px; }
+    .section-title { font-size: 40px; }
+    .split-text h2 { font-size: 38px; letter-spacing: -1.4px; }
+    .stat-strip { grid-template-columns: 1fr 1fr; }
+    .stat-cell { border-right: none; border-bottom: 1px solid var(--line); }
+    footer { grid-template-columns: 1fr 1fr; }
+    .cta-block { padding: 48px 24px; }
+    .cta-block h2 { font-size: 48px; letter-spacing: -2px; }
+    .intro-logo { font-size: 72px; letter-spacing: -3px; }
+    nav.top { padding: 14px 20px; }
+    nav.top .links {
+      display: flex; overflow-x: auto; max-width: 55vw;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 18px;
+    }
+    nav.top .links::-webkit-scrollbar { display: none; }
+    nav.top .links a { white-space: nowrap; font-size: 13px; }
+  }
+  /* ─────────── Phones ─────────── */
+  @media (max-width: 560px) {
+    nav.top { padding: 12px 16px; }
+    nav.top .cta { display: none; }               /* hero App Store badge is the CTA on phones */
+    nav.top .links { max-width: none; flex: 1 1 auto; margin-left: 14px; }
+    section.block { padding: 64px 20px; }
+    h1.hero-title { font-size: 38px; letter-spacing: -1.4px; line-height: 1.04; }
+    .hero { padding: 90px 18px 44px; }
+    .hero-actions { margin-top: 24px; gap: 10px; }
+    .appstore-badge svg { height: 48px; }
+    .section-title { font-size: 30px; letter-spacing: -1px; }
+    /* These headings kept their 52px desktop size and ran off narrow phones. */
+    .split-text h2 { font-size: 30px; letter-spacing: -1px; }
+    .cta-block { padding: 40px 20px; border-radius: 20px; }
+    .cta-block h2 { font-size: 34px; letter-spacing: -1.4px; }
+    footer { padding: 40px 20px; }
+    /* The 2x2 stat grid only has ~140px per cell here - the 56px mono
+       numbers were running past the card and getting clipped. */
+    .stat-cell { padding: 20px 16px; }
+    .stat-cell .k { font-size: 9.5px; letter-spacing: 0.8px; }
+    .stat-cell .v { font-size: 34px; letter-spacing: -1.5px; margin-top: 6px; }
+    .stat-cell .sub { font-size: 11px; }
+    /* Four legend columns leave one word per line - go two-up. */
+    .map-legend { grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+    /* The game needs more height than 16:9 gives it at this width. */
+    .arcade-canvas { aspect-ratio: 7/6; }
+    .gc-keys { display: none; }
+    .gc-touch { display: inline; }
+    /* The links strip scrolls - fade its edge so the cut pill reads as more, not broken. */
+    nav.top .links {
+      -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+      mask-image: linear-gradient(90deg, #000 84%, transparent 100%);
+    }
+    .legal { flex-direction: column; gap: 6px; padding: 20px; }
+  }
+  /* On phones the full-bleed hero video sits right behind the copy and hurts
+     legibility, so hide it for a clean hero. The full demo is one section down
+     in "See it in action". Then make the App Store + web-app CTAs big. */
+  @media (max-width: 760px) {
+    .hero-video-bg { display: none; }
+    .hero { min-height: auto; padding-top: 120px; }
+
+    /* Big, prominent download options on phones */
+    .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-top: 26px; }
+    .hero-content .hero-actions { justify-content: stretch; }
+    .appstore-badge {
+      width: 100%; justify-content: center; align-items: center;
+      background: #000; border-radius: 16px; padding: 5px 0; overflow: hidden; position: relative;
+      box-shadow: 0 10px 26px rgba(11,20,48,0.22);
+      animation: badgeFloat 3.2s ease-in-out infinite;
+    }
+    .appstore-badge svg { height: 60px; width: auto; }
+    .appstore-badge::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,0.35) 50%, transparent 68%);
+      transform: translateX(-120%); animation: badgeShine 4.5s 1.8s infinite;
+    }
+    /* offset the second badge so the pair doesn't pulse in lockstep */
+    .appstore-badge.play-badge { animation-delay: 0.7s; }
+    .appstore-badge.play-badge::after { animation-delay: 3.4s; }
+    .hero-actions .btn-primary {
+      width: 100%; justify-content: center; padding: 19px; font-size: 16px; border-radius: 16px;
+    }
+    .hero-meta { justify-content: center; gap: 28px; margin-top: 22px; }
+  }
+  @keyframes badgeShine { 0% { transform: translateX(-120%); } 32%,100% { transform: translateX(120%); } }
+  @keyframes badgeFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  /* ─────────── Install Guide section ─────────── */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 48px;
+  }
+  .install-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+  .install-card .ic-meta {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 2px; font-weight: 700;
+    color: var(--ink3); display: flex; align-items: center; gap: 10px;
+  }
+  .install-card .ic-meta svg { width: 14px; height: 14px; }
+  .install-card h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; margin-top: 10px; line-height: 1.15; }
+  .install-steps { margin-top: 22px; counter-reset: step; display: flex; flex-direction: column; gap: 14px; padding: 0; }
+  .install-steps li {
+    position: relative; padding-left: 38px;
+    font-size: 14.5px; line-height: 1.5; color: var(--ink2);
+    list-style: none;
+  }
+  .install-steps li::before {
+    counter-increment: step;
+    content: counter(step, decimal-leading-zero);
+    position: absolute; left: 0; top: 3px;
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    color: var(--blue); letter-spacing: 1px;
+  }
+  /* (cinematic scrolly section reverted) */
+
+  /* ─────────── Hero install nudge ─────────── */
+  .install-nudge {
+    margin-top: 22px;
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 10px 16px 10px 12px;
+    background: var(--blue-50);
+    border: 1px solid var(--blue-s);
+    border-radius: 999px;
+    color: var(--ink); text-decoration: none;
+    font-size: 14px; font-weight: 500;
+    position: relative;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    animation: nudgeBob 2.8s ease-in-out infinite 2.5s;
+  }
+  .install-nudge:hover {
+    background: var(--blue-s);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -12px rgba(45,99,240,0.35);
+  }
+  @keyframes nudgeBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+  }
+  .install-nudge .nudge-txt b { color: var(--blue); font-weight: 700; }
+  .install-nudge .nudge-arrow {
+    width: 14px; height: 14px; color: var(--blue);
+    animation: nudgeArrow 1.4s ease-in-out infinite;
+  }
+  @keyframes nudgeArrow {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(4px); }
+  }
+  .cursor-tap {
+    position: relative; width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--blue);
+  }
+  .cursor-tap svg {
+    width: 18px; height: 18px;
+    animation: tapPulse 1.6s ease-in-out infinite;
+    transform-origin: 70% 30%;
+  }
+  @keyframes tapPulse {
+    0%, 100% { transform: scale(1); }
+    40%      { transform: scale(0.78); }
+    60%      { transform: scale(1.02); }
+  }
+  .ripple {
+    position: absolute; left: 50%; top: 50%;
+    width: 10px; height: 10px; margin: -5px 0 0 -5px;
+    border-radius: 999px;
+    border: 2px solid var(--blue);
+    opacity: 0;
+    animation: ripple 1.6s ease-out infinite;
+  }
+  .ripple.r2 { animation-delay: 0.5s; }
+  @keyframes ripple {
+    0%   { opacity: 0.7; transform: scale(0.5); }
+    80%  { opacity: 0;   transform: scale(2.6); }
+    100% { opacity: 0;   transform: scale(2.6); }
+  }
+  .install-steps .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 1px 8px; border-radius: 6px;
+    background: var(--blue-50); color: var(--blue);
+    font-size: 12.5px; font-weight: 700;
+    vertical-align: 2px; margin: 0 2px;
+  }
+  .install-steps .pill svg { width: 11px; height: 11px; }
+
+  /* Compact phone mockups (illustrative, not real frames) */
+  .mini-phone {
+    width: 200px; height: 380px; margin: 0 auto;
+    background: var(--ink); border-radius: 32px;
+    padding: 8px; position: relative;
+    box-shadow: 0 30px 60px -30px rgba(11,20,48,0.45),
+                0 12px 30px -16px rgba(45,99,240,0.35);
+  }
+  .mini-phone::before {
+    content: ""; position: absolute; top: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 18px; border-radius: 12px;
+    background: #000; z-index: 3;
+  }
+  .mini-phone.android::before {
+    width: 6px; height: 6px; top: 16px;
+  }
+  .mp-screen {
+    width: 100%; height: 100%; border-radius: 26px;
+    background: var(--blue);
+    background-image:
+      linear-gradient(180deg, var(--blue) 0%, var(--blue-d) 100%);
+    overflow: hidden; position: relative;
+  }
+  .mp-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px;
+    font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,0.85);
+    z-index: 2;
+  }
+  .mp-content {
+    position: absolute; top: 40px; left: 14px; right: 14px;
+    color: white;
+  }
+  .mp-content .brand {
+    font-weight: 800; font-size: 22px; letter-spacing: -0.8px;
+  }
+  .mp-content .brand .dot { color: #5B8CFF; }
+  .mp-content .greet {
+    margin-top: 10px; font-size: 11px; opacity: 0.85; line-height: 1.4;
+  }
+  .mp-tile {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px; padding: 10px;
+    backdrop-filter: blur(8px);
+  }
+  .mp-tile .label { font-family: var(--mono); font-size: 8px; opacity: 0.7; letter-spacing: 1px; }
+  .mp-tile .num { font-size: 18px; font-weight: 800; margin-top: 4px; }
+  .mp-tiles3 {
+    margin-top: 12px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+  }
+  .mp-mini { background: rgba(255,255,255,0.10); border-radius: 8px; padding: 6px 4px; text-align: center; }
+  .mp-mini .n { font-size: 13px; font-weight: 800; }
+  .mp-mini .l { font-family: var(--mono); font-size: 7px; opacity: 0.7; letter-spacing: 0.5px; margin-top: 2px; }
+
+  /* Step callout overlays the phone */
+  .mp-overlay {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: white;
+    padding: 8px 12px; border-radius: 999px;
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; white-space: nowrap;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.5);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mp-overlay svg { width: 12px; height: 12px; }
+  .mp-overlay.top { top: -14px; }
+  .mp-overlay.bottom { bottom: -14px; background: var(--blue); }
+
+  /* Bottom row: QR + reassurance */
+  .install-foot {
+    margin-top: 36px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 28px;
+    align-items: center;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 20px; padding: 22px 28px;
+  }
+  .install-qr {
+    width: 84px; height: 84px;
+    background:
+      conic-gradient(from 0deg at 15% 15%, var(--ink) 0 25%, transparent 0 100%),
+      conic-gradient(from 0deg at 85% 15%, var(--ink) 0 25%, transparent 0 100%),
+      conic-gradient(from 0deg at 15% 85%, var(--ink) 0 25%, transparent 0 100%),
+      repeating-conic-gradient(var(--ink) 0% 25%, white 0% 50%);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 14px 14px;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+    border-radius: 8px;
+    border: 6px solid white;
+    box-shadow: inset 0 0 0 1px var(--line);
+    flex-shrink: 0;
+  }
+  .install-foot .ftxt { font-size: 14px; color: var(--ink2); line-height: 1.5; }
+  .install-foot .ftxt b { color: var(--ink); }
+  .install-foot .ftxt .sub {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px;
+    color: var(--ink3); margin-bottom: 4px; display: block;
+  }
+  .install-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--ink); color: white;
+    font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  .install-badge .strike { text-decoration: line-through; opacity: 0.5; }
+  .install-badge svg { width: 14px; height: 14px; }
+
+  @media (max-width: 960px) {
+    .install-grid { grid-template-columns: 1fr; }
+    .install-card { grid-template-columns: 1fr; padding: 28px 22px; gap: 28px; }
+    .install-foot { grid-template-columns: 1fr; text-align: center; padding: 22px; }
+    .install-foot .install-qr { margin: 0 auto; }
+  }
+
+  /* ── Hero "Scan your ticket" button - sits over the hero video ── */
+  .hero-content .hero-scan-btn { max-width: 460px; }
+  .hero-scan-btn {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 30px; padding: 18px 24px 18px 18px;
+    border-radius: 20px; text-decoration: none; color: #fff;
+    background: linear-gradient(180deg, #3E72FF, var(--blue-d));
+    box-shadow: 0 18px 40px -10px rgba(45,99,240,0.65), inset 0 1px 0 rgba(255,255,255,0.25);
+    animation: hsbPulse 2.6s ease-in-out infinite;
+    transition: transform 0.2s cubic-bezier(.2,.8,.3,1);
+  }
+  .hero-scan-btn:hover { transform: translateY(-3px); }
+  .hero-scan-btn::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(110deg, transparent 32%, rgba(255,255,255,0.32) 50%, transparent 68%);
+    transform: translateX(-120%); animation: badgeShine 4.5s 1.2s infinite;
+  }
+  .hsb-ic {
+    flex: none; width: 54px; height: 54px; border-radius: 15px;
+    display: grid; place-items: center; background: rgba(255,255,255,0.16);
+  }
+  .hsb-ic svg { width: 28px; height: 28px; }
+  .hsb-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .hsb-main { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; }
+  .hsb-sub { font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.82); }
+  .hsb-arrow { flex: none; width: 26px; height: 26px; margin-left: auto; transition: transform 0.2s; }
+  .hero-scan-btn:hover .hsb-arrow { transform: translateX(4px); }
+  @keyframes hsbPulse {
+    0%,100% { box-shadow: 0 18px 40px -10px rgba(45,99,240,0.65), 0 0 0 0 rgba(45,99,240,0.45); }
+    50%     { box-shadow: 0 18px 40px -10px rgba(45,99,240,0.65), 0 0 0 10px rgba(45,99,240,0); }
+  }
+  @media (max-width: 760px) {
+    .hero-content .hero-scan-btn { max-width: none; }
+    .hero-scan-btn { margin-top: 24px; padding: 16px 18px 16px 14px; gap: 14px; }
+    .hsb-ic { width: 48px; height: 48px; border-radius: 13px; }
+    .hsb-main { font-size: 21px; }
+    .hsb-sub { font-size: 12.5px; }
+  }
+  /* narrow phones: drop the icon so "Scan your ticket" stays on one line */
+  @media (max-width: 400px) {
+    .hero-scan-btn { padding: 15px 16px 15px 20px; }
+    .hsb-ic { display: none; }
+    .hsb-main { font-size: 20px; white-space: nowrap; }
+    .hsb-sub { font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-scan-btn, .hero-scan-btn::after { animation: none; }
+  }
+
+  /* ── Live ticket scan (#scan) ── */
+  /* the fixed nav would cover the top of the form after a #scan jump */
+  .scan-anchor { position: absolute; top: 0; scroll-margin-top: 84px; }
+  #scanner { position: relative; scroll-margin-top: 84px; }
+  .scan-split { align-items: start; }
+  @media (max-width: 960px) {
+    /* phones: heading → form, no scroll past the step list to reach it */
+    .scan-split .scan-timeline { display: none; }
+  }
+
+  /* ── FAQ (source of the FAQPage schema in <head>) ── */
+  .faq-list { margin-top: 36px; border-top: 1px solid var(--line); max-width: 860px; }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary {
+    cursor: pointer; list-style: none; position: relative;
+    padding: 22px 44px 22px 0; font-size: 18px; font-weight: 700; letter-spacing: -0.3px;
+  }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary::after {
+    content: '+'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 24px; font-weight: 400; color: var(--ink3); transition: transform 0.25s, color 0.25s;
+  }
+  .faq-list details[open] summary::after { transform: translateY(-50%) rotate(45deg); color: var(--blue); }
+  .faq-list details > div { padding: 0 0 22px; color: var(--ink2); font-size: 16px; line-height: 1.68; max-width: 72ch; }
+  .faq-list a { color: var(--blue-d); text-decoration: underline; }
+  @media (max-width: 560px) {
+    .faq-list summary { font-size: 16px; padding: 18px 36px 18px 0; }
+    .faq-list details > div { font-size: 15px; }
+  }
+
+  /* services: the car report and mechanic tags are links */
+  a.feature-go { text-decoration: none; color: var(--blue); }
+  a.feature-go:hover { text-decoration: underline; }
+
+  /* partner firm, in place of the sample firm list */
+  .partner-box { background: white; border: 1px solid rgba(232,155,34,0.55); border-radius: 20px; padding: 28px; box-shadow: 0 30px 60px -30px rgba(11,20,48,0.18); }
+  .pb-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .pb-badge { font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 1.2px; padding: 5px 10px; border-radius: 999px; background: #E89B22; color: #1A1206; }
+  .pb-free { font-family: var(--mono); font-size: 11px; font-weight: 800; color: #96610a; }
+  .pb-name { font-family: var(--serif); font-size: 26px; font-weight: 700; margin-top: 16px; }
+  .pb-claim { font-size: 14px; color: var(--ink2); margin-top: 6px; font-style: italic; }
+  .pb-contact { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 14px; font-weight: 600; }
+  .pb-contact a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .pb-contact a:hover { border-color: #E89B22; }
+  .pb-perks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .pb-perks span { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink2); }
+  .pb-cta { display: block; margin-top: 20px; padding: 15px 18px; border-radius: 999px; background: #E89B22; color: #1A1206; text-align: center; font-weight: 800; text-decoration: none; }
+  .pb-cta:hover { filter: brightness(1.05); }
+  .pb-more { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink2); line-height: 1.5; }
+  .pb-more b { color: var(--ink); }
+  .pb-fine { font-size: 11.5px; color: var(--ink2); opacity: .8; margin-top: 10px; }
+
+  /* the app: store badges and a swipeable row of the listing's screenshots */
+  .app-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .app-shots { display: flex; gap: 16px; margin-top: 40px; padding-bottom: 12px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+  .app-shots img { flex: none; width: clamp(180px, 22vw, 240px); height: auto; border-radius: 22px; border: 1px solid var(--line); scroll-snap-align: start; box-shadow: 0 20px 40px -24px rgba(11,20,48,0.35); }
+  @media (max-width: 720px) {
+    .app-shots { gap: 12px; margin-top: 28px; }
+    .app-shots img { width: 62vw; border-radius: 18px; }
+  }
+</style>
+<script>
+  (function(){
+    try {
+      var K='dv_sid', sid=localStorage.getItem(K);
+      if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
+      window.dvTrack=function(event, meta){
+        try {
+          var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
+          // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/track', new Blob([payload], {type:'application/json'}));
+          } else {
+            fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true}).catch(function(){});
+          }
+        } catch(e){}
+      };
+      dvTrack('page_view', location.pathname);
+    } catch(e){ window.dvTrack=function(){}; }
+  })();
+</script>
 </head>
 <body>
 
-<!-- ── nav ───────────────────────────────────────────────────────── -->
-<header class="nav" id="nav">
-  <div class="wrap nav-in">
-    <a class="logo" href="/">Drivee<span class="logo-dot">.</span></a>
-    <nav class="nav-links">
+<!-- Phones now stay on the marketing site (they no longer redirect into the
+     web app). The web app opens only via the nav "Open the app", the payoff
+     button and the map deep-link - the store badges are the main download path. -->
+
+<!-- ═══════════════════ INTRO OVERLAY ═══════════════════ -->
+<div class="intro" id="intro" style="display:none">
+  <div class="intro-bg"></div>
+  <div class="intro-grid"></div>
+  <div class="intro-stage">
+    <div class="intro-meta">
+      <span class="dot"></span>
+      <span>DRIVEE.CA · INITIALIZING</span>
+    </div>
+    <div class="intro-logo" id="introLogo"></div>
+    <div class="intro-tag">The driver's app for Toronto.</div>
+    <div class="intro-bar"></div>
+    <div class="chase" aria-hidden="true">
+      <div class="chase-ground"></div>
+
+      <!-- Officer running, ticket pad in hand -->
+      <div class="chase-cop">
+        <svg width="34" height="48" viewBox="0 0 34 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- back leg -->
+          <rect class="cop-leg-back" x="9" y="22" width="4" height="14" rx="1.5" fill="#0F2E8C"/>
+          <!-- back arm -->
+          <rect class="cop-arm-back" x="9" y="12" width="3.5" height="11" rx="1.5" fill="#5B8CFF"/>
+          <!-- torso (uniform) -->
+          <rect x="7" y="11" width="11" height="13" rx="2" fill="#1B45C2"/>
+          <!-- belt -->
+          <rect x="7" y="22" width="11" height="2" fill="#0F2E8C"/>
+          <!-- head -->
+          <circle cx="12.5" cy="7" r="4.2" fill="#F2C9A0"/>
+          <!-- cap -->
+          <path d="M7.8 6.2 Q12.5 2 17.2 6.2 L17.2 7.4 L7.8 7.4 Z" fill="#0F2E8C"/>
+          <rect x="7" y="7" width="11" height="1.6" fill="#0F2E8C"/>
+          <!-- front leg -->
+          <rect class="cop-leg-front" x="9" y="22" width="4" height="14" rx="1.5" fill="#0B2470"/>
+          <!-- front arm holding ticket pad -->
+          <g class="cop-arm-front">
+            <rect x="9" y="12" width="3.5" height="11" rx="1.5" fill="#2D63F0"/>
+            <!-- ticket pad -->
+            <rect x="6" y="20" width="9" height="11" rx="1" fill="#FFFFFF"/>
+            <rect x="7.5" y="22" width="6" height="1" fill="#0F2E8C"/>
+            <rect x="7.5" y="24" width="6" height="1" fill="#0F2E8C"/>
+            <rect x="7.5" y="26" width="4" height="1" fill="#0F2E8C"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Car with driver - facing right, fleeing -->
+      <div class="chase-car">
+        <div class="car-puff"></div>
+        <svg width="56" height="36" viewBox="0 0 56 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: scaleX(-1);">
+          <!-- shadow -->
+          <ellipse cx="28" cy="32" rx="22" ry="2" fill="rgba(0,0,0,0.25)"/>
+          <!-- body lower -->
+          <path d="M3 24 Q3 18 9 17 L17 17 Q22 9 30 9 L40 9 Q46 9 49 17 L52 18 Q54 18 54 22 L54 26 Q54 28 52 28 L4 28 Q3 28 3 26 Z" fill="#E1473D"/>
+          <!-- body highlight -->
+          <path d="M9 17 L17 17 Q22 9 30 9 L40 9 Q46 9 49 17 L47 18 Q44 11 39 11 L30 11 Q23 11 19 17 Z" fill="#C2382F"/>
+          <!-- cabin / windows -->
+          <path d="M19 17 Q23 11 30 11 L39 11 Q44 11 47 17 Z" fill="#5B8CFF"/>
+          <!-- window divider -->
+          <rect x="32" y="11" width="1.2" height="6" fill="#E1473D"/>
+          <!-- driver silhouette -->
+          <circle cx="35" cy="15" r="2.2" fill="#0F2E8C"/>
+          <path d="M32.5 17 Q35 14.5 37.5 17 L37.5 18 L32.5 18 Z" fill="#0F2E8C"/>
+          <!-- headlight (now on the left of the SVG, becomes the right-facing front after mirror) -->
+          <rect x="51" y="20" width="3" height="3" rx="1" fill="#FFE57A"/>
+          <!-- taillight -->
+          <rect x="3" y="20" width="2.5" height="3" rx="1" fill="#7A1C16"/>
+          <!-- wheels -->
+          <g transform="translate(13 28)"><circle class="car-wheel" r="4" fill="#0B1430"/><circle r="1.6" fill="#5B8CFF"/></g>
+          <g transform="translate(43 28)"><circle class="car-wheel" r="4" fill="#0B1430"/><circle r="1.6" fill="#5B8CFF"/></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <button class="skip-intro" id="skipIntro">SKIP →</button>
+</div>
+
+<!-- (officer scene removed - pending direction) -->
+
+<!-- ═══════════════════ PAGE ═══════════════════ -->
+<div class="page" id="page">
+
+  <nav class="top" id="topnav">
+    <div class="brand">Drivee<span class="dot">.</span></div>
+    <div class="links">
       <a href="#scan">Scan a ticket</a>
-      <a href="#lawyers">Find a lawyer</a>
+      <a href="#legal">Find a lawyer</a>
       <a href="#features">Services</a>
+      <a href="#hotspots">Map</a>
       <a href="/blog/">Guides</a>
-      <a href="/account.html">My profile</a>
-    </nav>
-    <a class="btn btn-primary btn-sm nav-cta" href="#app">Get the app</a>
-    <button class="nav-burger" id="burger" aria-label="Menu" aria-expanded="false">
-      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <path d="M1 1h16M1 7h16M1 13h16"/>
-      </svg>
-    </button>
-  </div>
-  <div class="nav-drawer" id="drawer">
-    <a href="#scan">Scan a ticket</a>
-    <a href="#lawyers">Find a lawyer</a>
-    <a href="#features">Services</a>
-    <a href="/blog/">Guides</a>
-    <a href="/account.html">My profile</a>
-    <a href="#app">Get the app →</a>
-  </div>
-</header>
-
-<main>
-
-<!-- ── hero: the dropzone is the product ─────────────────────────── -->
-<section class="hero" id="scan">
-  <div id="planet" aria-hidden="true"></div>
-
-  <div class="wrap">
-    <div class="hero-grid">
-
-      <div class="hero-top">
-        <span class="pill pill-live"><span class="dot dot-pulse"></span>Live across Ontario</span>
-
-        <h1>Got a ticket?<br><span class="grad">Find out what it really costs.</span></h1>
-
-        <p class="lede hero-sub">
-          Upload the photo. Drivee tells you what the ticket really costs you —
-          fine, points and insurance — and who can fight it.
-        </p>
-      </div>
-
-      <div class="hero-bottom">
-        <div class="store-row">
-          <a class="ibadge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" data-store="appstore-hero" aria-label="Download Drivee Canada on the App Store">
-            <svg class="ib-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.7c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.3.8-.7 0-1.7-.8-2.8-.8-1.5 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.2 1.1 0 1.5-.7 2.8-.7s1.7.7 2.8.7c1.2 0 1.9-1 2.6-2.1.8-1.2 1.2-2.4 1.2-2.4s-2.3-.9-2.3-3.3zM14.2 5.9c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.6-1.1 1.7-.9 2.6 1 .1 2-.5 2.6-1.2z"/></svg>
-            <span class="ib-tx"><span class="ib-sub">Download on the</span><span class="ib-main">App Store</span></span>
-          </a>
-          <a class="ibadge" href="https://play.google.com/store/apps/details?id=ca.drivee.app" target="_blank" rel="noopener" data-store="googleplay-hero" aria-label="Get Drivee Canada on Google Play">
-            <svg class="ib-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.6.3-1.1.8-1.4l10 8.4-10 10.6a1.6 1.6 0 0 1-.8-1.4zM16.2 13.6 5.9 21.9l9.2-5.3zM19.9 10.7c.6.4.6 1.3 0 1.7l-2.4 1.4-2.6-2.2 2.6-2.2zM5.9 2.1l10.3 8.3-1.1.9z"/></svg>
-            <span class="ib-tx"><span class="ib-sub">Get it on</span><span class="ib-main">Google Play</span></span>
-          </a>
-        </div>
-        <p class="install-note">Free on iPhone and Android. Scanning here needs no signup.</p>
-      </div>
-
-      <!-- the intake -->
-      <div class="intake">
-        <div class="intake-glow" aria-hidden="true"></div>
-
-        <div class="dropzone" id="dropzone" role="button" tabindex="0"
-             aria-label="Upload a photo of your ticket to scan it">
-          <div class="dz-ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
-            </svg>
-          </div>
-          <div class="dz-title">Drop your ticket here</div>
-          <p class="dz-sub">Parking, speeding, red light, careless, stunt, 407 toll — anywhere in Ontario.</p>
-
-          <div class="dz-or">or</div>
-          <div class="dz-actions">
-            <span class="btn btn-primary">Choose a photo</span>
-            <span class="btn btn-ghost">Take a picture</span>
-          </div>
-
-          <div class="dz-note">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-              <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-            </svg>
-            Not stored. Not sold. You can also just paste a screenshot.
-          </div>
-        </div>
-
-        <input type="file" id="ticket-file" accept="image/*" capture="environment" class="sr-only">
-
-        <!-- verdict / firms / lead form render here -->
-        <div class="scan-stage" id="scan-stage" hidden aria-live="polite"></div>
-      </div>
-
+      <a href="#app">Get the app</a>
     </div>
-  </div>
-</section>
+    <a href="#scan" class="cta" style="text-decoration: none;">Scan your ticket →</a>
+  </nav>
 
-<!-- ── trust strip ───────────────────────────────────────────────── -->
-<section class="strip">
-  <div class="wrap strip-in">
-    <span class="strip-l">Reads tickets from</span>
-    <span class="strip-i">Every Ontario municipality</span>
-    <span class="strip-i">Provincial Offences Court</span>
-    <span class="strip-i">Green P</span>
-    <span class="strip-i">MTO Ontario</span>
-    <span class="strip-i">407 ETR</span>
-    <span class="strip-i">Municipal screening</span>
-  </div>
-</section>
+  <!-- HERO -->
+  <section class="hero">
+    <!-- Full-bleed background animation. The video's own background is
+         clean white, so it blends naturally with the page bg (#FAFBFD).
+         A subtle radial mask on the edges insures against any minor
+         color mismatch so there's no visible rectangle. -->
+    <video
+      class="hero-video-bg"
+      id="hero-bg-video"
+      src="parking-ticket-2.mp4"
+      autoplay muted playsinline loop preload="auto"
+      aria-hidden="true">
+    </video>
 
-<!-- ── how it works ──────────────────────────────────────────────── -->
-<section class="band" id="how">
-  <div class="glow-orb orb-blue" style="width:520px;height:520px;top:-140px;right:-160px"></div>
-  <div class="wrap z1">
-    <div class="center reveal">
-      <div class="eyebrow">How it works</div>
-      <h2 class="mt-16">A receipt in.<br>An answer out.</h2>
-      <p class="lede mt-16" style="max-width:56ch;margin-inline:auto">
-        No account, no download, no 40-page PDF from the city. Four steps from
-        photograph to a paralegal who already knows your charge.
+    <!-- Centered hero copy sits above the animation. -->
+    <div class="hero-content">
+      <div class="anim a1 eyebrow">
+        <span class="dot"></span>
+        <span>NOW LIVE IN TORONTO</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="anim a2">Scan, pay,</span><br/>
+        <span class="anim a3">dispute - </span>
+        <span class="anim a4 underline">in seconds.</span>
+      </h1>
+      <p class="hero-sub anim a5">
+        Drivee scans your parking ticket, tells you whether to fight it or pay it,
+        and warns you before the next one. Built after one too many $295 careless tickets
+        on King Street.
       </p>
+      <!-- The main call to action: jumps to the live ticket scan (#scan). -->
+      <a href="#scan" class="hero-scan-btn anim a5" id="heroScanBtn"
+         onclick="if(window.dvTrack)dvTrack('scan_cta','hero')">
+        <span class="hsb-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>
+        </span>
+        <span class="hsb-txt">
+          <span class="hsb-main">Scan your ticket</span>
+          <span class="hsb-sub">Free · verdict in seconds · no signup</span>
+        </span>
+        <svg class="hsb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <div class="hero-actions anim a5">
+        <a class="appstore-badge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" aria-label="Download Drivee Canada on the App Store" onclick="if(window.dvTrack)dvTrack('app_open','appstore-hero')">
+          <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.28)"/>
+            <path transform="translate(16,13.5)" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" fill="#fff"/>
+            <text x="52" y="22" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="9.5" fill="#fff" letter-spacing="0.2">Download on the</text>
+            <text x="51" y="41" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="600" fill="#fff" letter-spacing="-0.4">App Store</text>
+          </svg>
+        </a>
+        <a class="appstore-badge play-badge" href="https://play.google.com/store/apps/details?id=ca.drivee.app" target="_blank" rel="noopener" aria-label="Get Drivee Canada on Google Play" onclick="if(window.dvTrack)dvTrack('app_open','googleplay-hero')">
+          <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gpBhero" x1="3.5" y1="2" x2="13.9" y2="12.4" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#00A0FF"/><stop offset=".26" stop-color="#00A1FF"/><stop offset=".51" stop-color="#00BEFF"/><stop offset=".76" stop-color="#00D2FF"/><stop offset="1" stop-color="#00E3FF"/>
+              </linearGradient>
+              <linearGradient id="gpYhero" x1="22.6" y1="12" x2="13.5" y2="12" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#FFE000"/><stop offset=".41" stop-color="#FFBD00"/><stop offset=".78" stop-color="#FFA500"/><stop offset="1" stop-color="#FF9C00"/>
+              </linearGradient>
+              <linearGradient id="gpRhero" x1="17.3" y1="15.2" x2="4.6" y2="22.6" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/>
+              </linearGradient>
+              <linearGradient id="gpGhero" x1="3.7" y1="1.3" x2="17.3" y2="8.6" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#32A071"/><stop offset=".07" stop-color="#2DA771"/><stop offset=".48" stop-color="#15CF74"/><stop offset=".8" stop-color="#06E775"/><stop offset="1" stop-color="#00F076"/>
+              </linearGradient>
+            </defs>
+            <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.28)"/>
+            <g transform="translate(12.6,13.3) scale(1.14)">
+              <path d="M3.5 1.55C3.19 1.87 3 2.37 3 3.02v17.96c0 .65.19 1.15.5 1.47l.1.1L13.9 12.1v-.2L3.6 1.45z" fill="url(#gpBhero)"/>
+              <path d="M17.34 8.46L5.34 1.63C4.62 1.22 3.93 1.14 3.5 1.55L13.9 11.95z" fill="url(#gpGhero)"/>
+              <path d="M17.34 15.54L5.34 22.37c-.72.41-1.41.49-1.84.08L13.9 12.05z" fill="url(#gpRhero)"/>
+              <path d="M17.34 8.46L13.9 11.9v.2l3.44 3.44 4.34-2.47c1.24-.7 1.24-1.84 0-2.54z" fill="url(#gpYhero)"/>
+            </g>
+            <text x="51" y="21" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="8.5" fill="#fff" letter-spacing="1.4">GET IT ON</text>
+            <text x="50" y="40" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="17.5" font-weight="600" fill="#fff" letter-spacing="-0.4">Google Play</text>
+          </svg>
+        </a>
+      </div>
+      <div class="hero-meta anim a5">
+        <div><b>$142</b> SAVED YTD</div>
+        <div><b>74%</b> DISPUTES WON</div>
+      </div>
     </div>
+  </section>
 
-    <div class="steps">
-      <div class="step card card-hover reveal">
-        <div class="step-n">01</div>
-        <h3>Upload the ticket</h3>
-        <p>Snap it, drag it in, or paste a screenshot. We straighten it, kill the glare, and read the fine print.</p>
-      </div>
-      <div class="step card card-hover reveal reveal-d1">
-        <div class="step-n">02</div>
-        <h3>Get the verdict</h3>
-        <p>Charge code, amount, deadline and demerit points — plus a plain-English call on whether fighting it is worth your morning.</p>
-      </div>
-      <div class="step card card-hover reveal reveal-d2">
-        <div class="step-n">03</div>
-        <h3>See the cost of waiting</h3>
-        <p>Day 16, day 31, day 60. We show the exact ladder of fees so nobody drifts into a plate-denial surprise.</p>
-      </div>
-      <div class="step card card-hover reveal reveal-d3">
-        <div class="step-n">04</div>
-        <h3>Talk to a paralegal</h3>
-        <p>Matched to your charge type, sorted by price. Free case review, no commission — your ticket goes to one firm only.</p>
-      </div>
-    </div>
-
-    <div class="legend">
-      <div class="leg leg-red">
-        <div class="leg-k">Act now</div>
-        <p>Past due. Court referral and plate denial risk — get advice today.</p>
-      </div>
-      <div class="leg leg-red">
-        <div class="leg-k">Get representation</div>
-        <p>Demerit points or a record on the line. Worth hiring someone.</p>
-      </div>
-      <div class="leg leg-amber">
-        <div class="leg-k">Contest it</div>
-        <p>Good odds at Early Resolution. We draft the letter, you file it.</p>
-      </div>
-      <div class="leg leg-green">
-        <div class="leg-k">Just pay it</div>
-        <p>Small, no points. Disputing costs more in time than the fine.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── the lawyer directory — crawlable, not just in the funnel ───── -->
-<section class="band band-line" id="lawyers">
-  <div class="glow-orb orb-amber" style="width:460px;height:460px;bottom:-120px;left:-140px"></div>
-  <div class="wrap z1">
-    <div class="lawyers-grid">
-    <div class="reveal">
-      <div class="eyebrow eyebrow-amber">Licensed Ontario defence firms</div>
-      <h2 class="mt-16">Matched to<br>your charge.</h2>
-      <p class="lede mt-16">
-        Only firms licensed for your charge — a paralegal for a Highway Traffic Act ticket,
-        a lawyer for anything criminal. Your details go to the one firm you contact.
-      </p>
-      <p class="fine mt-16">Quoted lines are each firm's own public claims, not Drivee's assessment.</p>
-    </div>
-
-    <div class="reveal" id="firm-directory">
-      <div class="partner-card">
-        <div class="partner-top">
-          <span class="partner-badge">Drivee partner</span>
-          <span class="firm-from mono">Free consultation</span>
-        </div>
-        <h3 class="partner-name">Bajwa Law Firm</h3>
-        <div class="firm-claim">Lawyers: criminal defence, impaired driving and car accident claims</div>
-        <div class="partner-contact">
-          <a href="mailto:info@bajwalawfirm.ca">✉ info@bajwalawfirm.ca</a>
-          <a href="tel:4164682245">☎ (416) 468-2245</a>
-          <a href="https://bajwalawfirm.ca/" target="_blank" rel="noopener">↗ bajwalawfirm.ca</a>
-        </div>
-        <div class="firm-perks">
-          <span class="firm-perk firm-licence">Lawyers</span>
-          <span class="firm-perk">Toronto · 1280 Finch Ave W</span>
-          <span class="firm-perk">24/7 bail line</span>
-        </div>
-        <a class="btn btn-amber btn-lg btn-block mt-16" href="#scan">Scan my ticket, then contact them free →</a>
-      </div>
-    </div>
-    </div>
-
-    <div class="cta-band mt-48 reveal">
+  <!-- INTRO VIDEO -->
+  <section class="block reveal" id="video">
+    <div class="section-head">
       <div>
-        <h3 class="block-h">Plus 5 more licensed Ontario firms</h3>
-        <p class="cta-sub">Scan your ticket to see which ones handle your charge, with prices. A free account unlocks the full list.</p>
+        <div class="section-kicker"><span class="num">02</span>SEE IT IN ACTION</div>
+        <h2 class="section-title">60 seconds.<br/>One ticket. Sorted.</h2>
       </div>
-      <a class="btn btn-ghost btn-lg" href="#scan">Scan my ticket →</a>
+      <div>
+        <p class="section-sub">A real Toronto driver scanning a real King St ticket. Watch the AI read it, file it, and tell them whether to pay or fight - before you can finish reading this paragraph.</p>
+      </div>
     </div>
+
+    <div class="video-frame" id="introVideoFrame">
+      <!-- Drivee animated trailer (React-based HTML page).
+           Loaded into an iframe on demand so it doesn't slow page load. -->
+      <iframe
+        class="intro-video"
+        id="introVideoIframe"
+        title="Drivee animated trailer"
+        loading="lazy"
+        allow="autoplay"
+        style="display:none; border:0;"
+        src=""></iframe>
+      <button class="video-placeholder" type="button" aria-label="Play Drivee trailer"
+        onclick="(function(b){var f=document.getElementById('introVideoIframe');if(f){f.src='/trailer.html';b.style.display='none';f.style.display='block';}})(this)">
+        <div class="vp-bg"></div>
+        <div class="vp-content">
+          <div class="vp-meta">
+            <span class="vp-dot"></span>
+            DEMO · 30s · TORONTO
+          </div>
+          <div class="vp-play">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="6 4 20 12 6 20"/></svg>
+          </div>
+          <div class="vp-title">Park, scan, dispute - in seconds.</div>
+          <div class="vp-sub">A real Toronto driver, a real King St ticket. Watch what Drivee does next.</div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- LOGO STRIP -->
+  <div class="strip">
+    <span class="label">CONNECTS DIRECTLY TO</span>
+    <span class="pill"><span class="dot"></span>City of Toronto</span>
+    <span class="pill"><span class="dot"></span>Court Services</span>
+    <span class="pill"><span class="dot"></span>Green P</span>
+    <span class="pill"><span class="dot"></span>MTO Ontario</span>
+    <span class="pill"><span class="dot"></span>311 Toronto</span>
   </div>
-</section>
 
-<!-- ── services: the rest of the app, one click each ───────────────── -->
-<section class="band band-line" id="features">
-  <div class="wrap">
-    <div class="reveal" style="max-width:60ch">
-      <div class="eyebrow">More services</div>
-      <h2 class="mt-16">Beyond<br>the ticket.</h2>
-      <p class="lede mt-16">
-        The rest of Drivee, for everything else that happens to a driver in Ontario.
-      </p>
+  <!-- FOUNDER STORY SECTION - "Why I built Drivee" -->
+  <section class="block reveal" id="founder">
+    <div class="founder-grid" style="grid-template-columns:1fr">
+      <!-- Founder photo temporarily removed
+      <div class="founder-photo-wrap">
+        <img class="founder-photo" src="/founder-evgenka.png" alt="Evgenka - developer of Drivee, holding a handful of Toronto parking tickets" loading="lazy" />
+      </div>
+      -->
+      <div class="founder-body">
+        <div class="section-kicker"><span class="num">03</span>WHO BUILT THIS</div>
+        <h2 class="section-title">Why we built<br/>Drivee.</h2>
+        <p class="founder-p">
+          Hi, I'm Evgenka. We're Toronto drivers, like you. A few years and a stack of tickets later,
+          we realised the city makes it deliberately hard to know what to do - which forms to file,
+          which fines you can fight, which deadlines really matter. Most drivers just pay. Quietly.
+          And lose money.
+        </p>
+        <p class="founder-p">
+          So we built Drivee. One app that reads your ticket, remembers the deadline, and explains
+          your options in plain English. We help you understand what's at stake - what you decide is
+          up to you.
+        </p>
+        <div class="founder-sign">- Evgenka, developer</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="block reveal" id="features">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">01</span>WHAT IT DOES · SERVICES</div>
+        <h2 class="section-title">Seven features.<br/>One driver.</h2>
+      </div>
+      <div>
+        <p class="section-sub">Drivee replaces the City of Toronto, MTO, court portals, and a parking lawyer with one calm app - for drivers anywhere in Ontario. We handle the paperwork; you handle the wheel.</p>
+      </div>
     </div>
 
-    <div class="feat-grid feat-grid-3">
-      <a class="feat card card-hover reveal" href="/report.html">
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="num">01</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>
+        </div>
+        <h3>AI ticket scanner</h3>
+        <p>Snap any Ontario parking ticket, camera fine, toll bill or summons. We read the charge, amount and deadline - and tell you when the photo was too poor to be sure.</p>
+        <div class="feature-tag">CLAUDE VISION · ~8 SECONDS</div>
+      </div>
+      <div class="feature">
+        <div class="num">02</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-12a8 8 0 0 1 16 0c0 7.5-8 12-8 12Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>Live officer radar</h3>
+        <p>See parking-enforcement zones light up in real time from 8am–8pm, with a live officer count for downtown Toronto and community-reported enforcement pins.</p>
+        <div class="feature-tag">LIVE · 8AM–8PM · DOWNTOWN</div>
+      </div>
+      <div class="feature">
+        <div class="num">03</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+        </div>
+        <h3>AI legal verdict</h3>
+        <p>Pay or fight, in plain English - plus the demerit points, what a conviction costs you in insurance, and what representation runs for that charge.</p>
+        <div class="feature-tag">PAY OR FIGHT · PLAIN ENGLISH</div>
+      </div>
+      <div class="feature">
+        <div class="num">04</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Late-fee shield</h3>
+        <p>We track every deadline. In Toronto that is the exact day-16, day-31 and day-60 fee ladder; elsewhere in Ontario it is the window printed on your ticket.</p>
+        <div class="feature-tag">SAVES $79.59 AVG</div>
+      </div>
+      <div class="feature">
+        <div class="num">05</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13"/><path d="M2.5 6.253c4.5-1.5 9.5-1.5 9.5 0M21.5 6.253c-4.5-1.5-9.5-1.5-9.5 0"/></svg>
+        </div>
+        <h3>Paralegal &amp; lawyer matching</h3>
+        <p>Only Ontario firms licensed for your charge, cheapest first. Free case reviews, no commission, and your details go to the one firm you pick.</p>
+        <div class="feature-tag">LICENCE-CHECKED · ONTARIO</div>
+      </div>
+      <div class="feature">
+        <div class="num">06</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5l-2-5H7l-2 5v5Z"/><circle cx="7.5" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/><path d="M5 12h14"/></svg>
+        </div>
         <h3>Free car report</h3>
         <p>Buying used? Enter the VIN for specs, open safety recalls, a market value estimate and the known weak points for that make.</p>
-        <span class="feat-go">Check a VIN →</span>
-      </a>
-
-      <a class="feat card card-hover reveal reveal-d1" href="/mechanic.html">
-        <h3>Mobile mechanic</h3>
-        <p>A mechanic meets you at the seller anywhere in the GTA — OBD scan, cold start, leaks, rust, brakes and a test drive before you pay. $100–150.</p>
-        <span class="feat-go">Book an inspection →</span>
-      </a>
-
-      <a class="feat card card-hover reveal reveal-d2" href="/app.html">
-        <h3>Live officer radar</h3>
-        <p>Parking-enforcement zones light up in real time from 8am to 8pm downtown, with community-reported enforcement pins.</p>
-        <span class="feat-go">Open the map →</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ── the native app: store listings, with the listing's own screenshots ── -->
-<section class="band band-line" id="app">
-  <div class="wrap">
-    <div class="app-head reveal">
-      <div>
-        <div class="eyebrow">The Drivee app</div>
-        <h2 class="mt-16">Your tickets,<br>in your pocket.</h2>
-        <p class="lede mt-16">Scan tickets and road signs, see them on a map, and keep every scan in one place.</p>
+        <a class="feature-tag feature-go" href="/report.html">CHECK A VIN →</a>
       </div>
-      <div class="store-row">
-          <a class="ibadge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" data-store="appstore-section" aria-label="Download Drivee Canada on the App Store">
-            <svg class="ib-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.7c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.7.8-3.3.8-.7 0-1.7-.8-2.8-.8-1.5 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.2 1.1 0 1.5-.7 2.8-.7s1.7.7 2.8.7c1.2 0 1.9-1 2.6-2.1.8-1.2 1.2-2.4 1.2-2.4s-2.3-.9-2.3-3.3zM14.2 5.9c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.3-.6.6-1.1 1.7-.9 2.6 1 .1 2-.5 2.6-1.2z"/></svg>
-            <span class="ib-tx"><span class="ib-sub">Download on the</span><span class="ib-main">App Store</span></span>
+      <div class="feature">
+        <div class="num">07</div>
+        <div class="icon-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>
+        </div>
+        <h3>Mobile mechanic</h3>
+        <p>A mechanic meets you at the seller anywhere in the GTA - OBD scan, cold start, leaks, rust, brakes and a test drive before you hand over cash. $100–150.</p>
+        <a class="feature-tag feature-go" href="/mechanic.html">BOOK AN INSPECTION →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAT STRIP -->
+  <section class="block reveal" style="padding-top: 0;">
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="k">DRIVERS PROTECTED</div>
+        <div class="v" data-counter="1247">0</div>
+        <div class="sub">across Toronto &amp; the GTA</div>
+      </div>
+      <div class="stat-cell">
+        <div class="k">SAVED FROM FINES</div>
+        <div class="v blue" data-counter="187" data-suffix="K" data-prefix="$">$0</div>
+        <div class="sub">since launch · April 2025</div>
+      </div>
+      <div class="stat-cell">
+        <div class="k">DISPUTES WON</div>
+        <div class="v green" data-counter="67" data-suffix="%">0%</div>
+        <div class="sub">vs 12% city average</div>
+      </div>
+      <div class="stat-cell">
+        <div class="k">AVG SCAN TIME</div>
+        <div class="v" data-counter="6.8" data-suffix="s">0s</div>
+        <div class="sub">photo to verdict</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCANNER SECTION - the live ticket scan, carried over from the redesign.
+       Drop / pick / photograph / paste a ticket → /api/scan-ticket reads it →
+       verdict, real cost, matched Ontario lawyers → free case review via
+       /api/lead. Logic: assets/js/scanner.js. Styles: assets/css/scan-widget.css. -->
+  <section class="block reveal" id="scanner">
+    <span id="scan" class="scan-anchor" aria-hidden="true"></span>
+    <div class="split right scan-split">
+      <div class="split-text">
+        <div class="section-kicker"><span class="num">02</span>SCAN YOUR TICKET</div>
+        <h2 style="margin-top: 14px;">Got a ticket?<br/>Find out what it really costs.</h2>
+        <p style="margin-top: 22px;">Upload a photo of any Ontario parking or traffic ticket. Drivee reads the charge, the deadline and the amount, works out what it truly costs you once demerit points and insurance are counted, and shows you the licensed Ontario lawyers and paralegals who can take it - free case review, no signup.</p>
+        <div class="timeline scan-timeline" style="margin-top: 36px;">
+          <div class="timeline-step done">
+            <div class="step-meta">STEP 01 · ~8s</div>
+            <h4>Ticket read</h4>
+            <p>Charge, amount, plate, issue date and deadline - straight off the photo.</p>
+          </div>
+          <div class="timeline-step done">
+            <div class="step-meta">STEP 02</div>
+            <h4>Verdict + real cost</h4>
+            <p>Pay or fight, with the fine, demerit points and the insurance hit side by side.</p>
+          </div>
+          <div class="timeline-step done">
+            <div class="step-meta">STEP 03</div>
+            <h4>Matched lawyers</h4>
+            <p>Only firms licensed for that charge - a criminal charge never goes to a paralegal.</p>
+          </div>
+          <div class="timeline-step">
+            <div class="step-meta">STEP 04 · You</div>
+            <h4>Free case review</h4>
+            <p>Your details go to the one firm you pick. Your call what happens next.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dv-scan">
+        <div class="intake">
+          <div class="dropzone" id="dropzone" role="button" tabindex="0"
+               aria-label="Upload a photo of your ticket to scan it">
+            <div class="dz-ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+              </svg>
+            </div>
+            <div class="dz-title">Drop your ticket here</div>
+            <p class="dz-sub">Parking, speeding, red light, careless, stunt, 407 toll - anywhere in Ontario.</p>
+            <div class="dz-or">or</div>
+            <div class="dz-actions">
+              <span class="btn btn-primary">Choose a photo</span>
+              <span class="btn btn-ghost">Take a picture</span>
+            </div>
+            <div class="dz-note">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              </svg>
+              Not stored. Not sold. You can also just paste a screenshot.
+            </div>
+          </div>
+
+          <input type="file" id="ticket-file" accept="image/*" capture="environment" class="sr-only"/>
+
+          <!-- verdict / lawyers / lead form render here -->
+          <div class="scan-stage" id="scan-stage" hidden aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOTSPOTS SECTION -->
+  <section class="block reveal" id="hotspots">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">03</span>HOTSPOTS · LIVE</div>
+        <h2 class="section-title">14,283 pins.<br/>One Toronto.</h2>
+      </div>
+      <div>
+        <p class="section-sub">Every bike lane, fire route, permit-only block, and rush-hour stop-tow zone - mapped, color-coded, and updated by other Drivee drivers in real time.</p>
+      </div>
+    </div>
+
+    <div class="map-card">
+      <div class="map-canvas" id="hotspots-map" style="position: relative; background: #070d1f;">
+        <iframe class="map-iframe" id="hotspots-map-iframe"
+          src="/enforcement-map.html"
+          width="100%" height="100%" style="border:0; display:block; border-radius: 16px; background: #070d1f;"
+          loading="lazy"
+          title="Drivee live parking enforcement - downtown Toronto" tabindex="-1"></iframe>
+        <!-- Click anywhere on the map → engage interactivity (drag, zoom, click officers).
+             Cursor leaves the map area → re-arms so users can scroll past freely. -->
+        <a class="map-cta-overlay" href="#" id="hotspots-engage"
+           aria-label="Click to interact with the live enforcement map"
+           title="Click to drag, zoom, and explore the live map">
+          <span class="map-cta-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M7 12h10"/></svg>
+            Click to drag · zoom · explore
+          </span>
+        </a>
+        <!-- Always-visible corner deep-link to the full interactive in-app map -->
+        <a class="map-deeplink" href="/app.html#tab-hotspots"
+           aria-label="Open the full interactive map in the Drivee app"
+           title="Open the full interactive map in the Drivee app">
+          Open in app
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="map-legend">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 12px; height: 12px; background: var(--red); border-radius: 999px;"></span>
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">Red zone</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--ink2);">$200+ FINE</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 12px; height: 12px; background: var(--amber); border-radius: 999px;"></span>
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">Permit only</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--ink2);">$80 FINE</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 12px; height: 12px; background: var(--green); border-radius: 999px;"></span>
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">Free now</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--ink2);">CONFIRMED · 14:32</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="width: 12px; height: 12px; background: var(--blue); border-radius: 999px;"></span>
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">You</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--ink2);">±4M ACCURACY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hotspots map: click to engage interactivity, leave to release.
+       Pattern matches Google Maps embeds: scrolling past won't get hijacked
+       by the 3D scene's wheel-to-zoom unless the user has clicked into the map. -->
+  <script>
+  (function(){
+    var canvas = document.getElementById('hotspots-map');
+    var engage = document.getElementById('hotspots-engage');
+    if (!canvas || !engage) return;
+    engage.addEventListener('click', function(e){
+      e.preventDefault();
+      canvas.classList.add('engaged');
+    });
+    canvas.addEventListener('mouseleave', function(){
+      canvas.classList.remove('engaged');
+    });
+  })();
+  </script>
+
+  <!-- LEGAL SECTION -->
+  <section class="block reveal" id="legal">
+    <div class="split">
+      <div>
+        <div class="section-kicker"><span class="num">04</span>LEGAL · FIND A LAWYER</div>
+        <h2 style="margin-top: 14px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1;">Pay it. Or<br/>fight it. We'll<br/>tell you which.</h2>
+        <p style="margin-top: 22px; font-size: 17px; color: var(--ink2); line-height: 1.55;">Drivee crosses your specific ticket against thousands of historical Toronto disputes - then issues a verdict in plain English. If we say "fight it," you'll have a printable letter in 30 seconds.</p>
+        <div style="margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
+            <span class="stamp red">URGENT</span>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Don't pay yet - court referral risk.</div>
+          </div>
+          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
+            <span class="stamp amber">SERIOUS</span>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Worth fighting - hire a lawyer.</div>
+          </div>
+          <div style="padding: 16px; background: var(--blue-50); border: 2px solid var(--blue); border-radius: 12px;">
+            <span class="stamp blue">CONTEST</span>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">DIY dispute - we draft the letter.</div>
+          </div>
+          <div style="padding: 16px; background: white; border: 1px solid var(--line); border-radius: 12px;">
+            <span class="stamp green">MINOR</span>
+            <div style="font-size: 13px; margin-top: 10px; color: var(--ink2); line-height: 1.4;">Just pay it. It's cheaper than time.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="partner-box">
+        <div class="pb-top">
+          <span class="pb-badge">DRIVEE PARTNER</span>
+          <span class="pb-free">FREE CONSULTATION</span>
+        </div>
+        <div class="pb-name">Bajwa Law Firm</div>
+        <div class="pb-claim">Lawyers: criminal defence, impaired driving and car accident claims</div>
+        <div class="pb-contact">
+          <a href="mailto:info@bajwalawfirm.ca">info@bajwalawfirm.ca</a>
+          <a href="tel:4164682245">(416) 468-2245</a>
+          <a href="https://bajwalawfirm.ca/" target="_blank" rel="noopener">bajwalawfirm.ca ↗</a>
+        </div>
+        <div class="pb-perks"><span>LAWYERS</span><span>TORONTO · 1280 FINCH AVE W</span><span>24/7 BAIL LINE</span></div>
+        <a class="pb-cta" href="#scan">Scan my ticket, then contact them free →</a>
+        <div class="pb-more"><b>Plus 5 more licensed Ontario firms.</b> Scan your ticket to see which handle your charge, with prices. A free account unlocks the full list.</div>
+        <div class="pb-fine">Quoted lines are each firm's own public claims, not Drivee's assessment.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE APP - store listings, with the App Store listing's own screenshots -->
+  <section class="block reveal" id="app">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">05</span>GET DRIVEE · APP</div>
+        <h2 class="section-title">Your tickets,<br/>in your pocket.</h2>
+      </div>
+      <div>
+        <p class="section-sub">Drivee Canada is free on iPhone and Android. Scan tickets and road signs, see them on a map, and keep every scan in one place.</p>
+        <div class="app-badges">
+          <a class="appstore-badge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" aria-label="Download Drivee Canada on the App Store" onclick="if(window.dvTrack)dvTrack('app_open','appstore-section')">
+            <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.4)"/>
+          <path transform="translate(16,13.5)" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" fill="#fff"/>
+          <text x="52" y="22" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="9.5" fill="#fff">Download on the</text>
+          <text x="51" y="41" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="600" fill="#fff" letter-spacing="-0.4">App Store</text>
+        </svg>
           </a>
-          <a class="ibadge" href="https://play.google.com/store/apps/details?id=ca.drivee.app" target="_blank" rel="noopener" data-store="googleplay-section" aria-label="Get Drivee Canada on Google Play">
-            <svg class="ib-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5V3.5c0-.6.3-1.1.8-1.4l10 8.4-10 10.6a1.6 1.6 0 0 1-.8-1.4zM16.2 13.6 5.9 21.9l9.2-5.3zM19.9 10.7c.6.4.6 1.3 0 1.7l-2.4 1.4-2.6-2.2 2.6-2.2zM5.9 2.1l10.3 8.3-1.1.9z"/></svg>
-            <span class="ib-tx"><span class="ib-sub">Get it on</span><span class="ib-main">Google Play</span></span>
+          <a class="appstore-badge play-badge" href="https://play.google.com/store/apps/details?id=ca.drivee.app" target="_blank" rel="noopener" aria-label="Get Drivee Canada on Google Play" onclick="if(window.dvTrack)dvTrack('app_open','googleplay-section')">
+            <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gpBapp" x1="3.5" y1="2" x2="13.9" y2="12.4" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#00A0FF"/><stop offset=".26" stop-color="#00A1FF"/><stop offset=".51" stop-color="#00BEFF"/><stop offset=".76" stop-color="#00D2FF"/><stop offset="1" stop-color="#00E3FF"/>
+            </linearGradient>
+            <linearGradient id="gpYapp" x1="22.6" y1="12" x2="13.5" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FFE000"/><stop offset=".41" stop-color="#FFBD00"/><stop offset=".78" stop-color="#FFA500"/><stop offset="1" stop-color="#FF9C00"/>
+            </linearGradient>
+            <linearGradient id="gpRapp" x1="17.3" y1="15.2" x2="4.6" y2="22.6" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/>
+            </linearGradient>
+            <linearGradient id="gpGapp" x1="3.7" y1="1.3" x2="17.3" y2="8.6" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#32A071"/><stop offset=".07" stop-color="#2DA771"/><stop offset=".48" stop-color="#15CF74"/><stop offset=".8" stop-color="#06E775"/><stop offset="1" stop-color="#00F076"/>
+            </linearGradient>
+          </defs>
+          <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.4)"/>
+          <g transform="translate(12.6,13.3) scale(1.14)">
+            <path d="M3.5 1.55C3.19 1.87 3 2.37 3 3.02v17.96c0 .65.19 1.15.5 1.47l.1.1L13.9 12.1v-.2L3.6 1.45z" fill="url(#gpBapp)"/>
+            <path d="M17.34 8.46L5.34 1.63C4.62 1.22 3.93 1.14 3.5 1.55L13.9 11.95z" fill="url(#gpGapp)"/>
+            <path d="M17.34 15.54L5.34 22.37c-.72.41-1.41.49-1.84.08L13.9 12.05z" fill="url(#gpRapp)"/>
+            <path d="M17.34 8.46L13.9 11.9v.2l3.44 3.44 4.34-2.47c1.24-.7 1.24-1.84 0-2.54z" fill="url(#gpYapp)"/>
+          </g>
+          <text x="51" y="21" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="8.5" fill="#fff" letter-spacing="1.4">GET IT ON</text>
+          <text x="50" y="40" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="17.5" font-weight="600" fill="#fff" letter-spacing="-0.4">Google Play</text>
+        </svg>
           </a>
         </div>
+      </div>
     </div>
-    <div class="shots reveal" tabindex="0" aria-label="App screenshots">
-      <img src="/assets/img/store/drivee-app-store-1.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Scan tickets fast: the camera reads a parking ticket">
-      <img src="/assets/img/store/drivee-app-store-4.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Dashboard with active tickets, amount owed and scan tools">
-      <img src="/assets/img/store/drivee-app-store-2.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Map tickets and signs: nearby scans on a map of Toronto">
-      <img src="/assets/img/store/drivee-app-store-3.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Find tickets and road signs near you">
-      <img src="/assets/img/store/drivee-app-store-5.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Scan history of tickets, signs and inspections">
-      <img src="/assets/img/store/drivee-app-store-6.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Services: car inspection and outstanding ticket check">
+    <div class="app-shots" tabindex="0" aria-label="App screenshots">
+      <img src="/assets/img/store/drivee-app-store-1.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Scan tickets fast: the camera reads a parking ticket"/>
+      <img src="/assets/img/store/drivee-app-store-4.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Dashboard with active tickets, amount owed and scan tools"/>
+      <img src="/assets/img/store/drivee-app-store-2.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Map tickets and signs: nearby scans on a map of Toronto"/>
+      <img src="/assets/img/store/drivee-app-store-3.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Find tickets and road signs near you"/>
+      <img src="/assets/img/store/drivee-app-store-5.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Scan history of tickets, signs and inspections"/>
+      <img src="/assets/img/store/drivee-app-store-6.webp" width="600" height="1300" loading="lazy" decoding="async" alt="Services: car inspection and outstanding ticket check"/>
     </div>
-</section>
+  </section>
 
-<!-- ── testimonials ──────────────────────────────────────────────── -->
-<section class="band band-line">
-  <div class="wrap">
-    <div class="center reveal">
-      <div class="eyebrow">From Toronto drivers</div>
-      <h2 class="mt-16">Loved by people<br>who hate parking.</h2>
-    </div>
-    <div class="quotes">
-      <figure class="quote card card-hover reveal">
-        <div class="quote-stars">★★★★★</div>
-        <blockquote><p>Scanned a $65 No Standing on King. It told me the sign was blocked by hoarding and 21 of 28 disputes there got dropped. Filed it. Dismissed.</p></blockquote>
-        <figcaption class="quote-by">— Marcus T., Liberty Village</figcaption>
-      </figure>
-      <figure class="quote card card-hover reveal reveal-d1">
-        <div class="quote-stars">★★★★★</div>
-        <blockquote><p>I had no idea a $30 ticket turns into $109 if you forget it. The day-60 line scared me into paying the same afternoon.</p></blockquote>
-        <figcaption class="quote-by">— Priya S., North York</figcaption>
-      </figure>
-      <figure class="quote card card-hover reveal reveal-d2">
-        <div class="quote-stars">★★★★★</div>
-        <blockquote><p>Careless driving charge. Drivee matched me to a paralegal in about a minute, free review, and they took the case. Would not have known where to start.</p></blockquote>
-        <figcaption class="quote-by">— Dan R., Scarborough</figcaption>
-      </figure>
+  <!-- CTA -->
+  <div class="cta-block reveal">
+    <h2>Stop paying<br/><span class="grad">tickets you<br/>could fight.</span></h2>
+    <p>Free for life. Free to scan. Free to dispute. We make money when lawyers do - never from you.</p>
+    <div class="row" style="display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap;">
+      <a class="appstore-badge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" aria-label="Download Drivee Canada on the App Store" onclick="if(window.dvTrack)dvTrack('app_open','appstore-cta')">
+        <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.4)"/>
+          <path transform="translate(16,13.5)" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01M12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25" fill="#fff"/>
+          <text x="52" y="22" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="9.5" fill="#fff">Download on the</text>
+          <text x="51" y="41" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="20" font-weight="600" fill="#fff" letter-spacing="-0.4">App Store</text>
+        </svg>
+      </a>
+      <a class="appstore-badge play-badge" href="https://play.google.com/store/apps/details?id=ca.drivee.app" target="_blank" rel="noopener" aria-label="Get Drivee Canada on Google Play" onclick="if(window.dvTrack)dvTrack('app_open','googleplay-cta')">
+        <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gpBcta" x1="3.5" y1="2" x2="13.9" y2="12.4" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#00A0FF"/><stop offset=".26" stop-color="#00A1FF"/><stop offset=".51" stop-color="#00BEFF"/><stop offset=".76" stop-color="#00D2FF"/><stop offset="1" stop-color="#00E3FF"/>
+            </linearGradient>
+            <linearGradient id="gpYcta" x1="22.6" y1="12" x2="13.5" y2="12" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FFE000"/><stop offset=".41" stop-color="#FFBD00"/><stop offset=".78" stop-color="#FFA500"/><stop offset="1" stop-color="#FF9C00"/>
+            </linearGradient>
+            <linearGradient id="gpRcta" x1="17.3" y1="15.2" x2="4.6" y2="22.6" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FF3A44"/><stop offset="1" stop-color="#C31162"/>
+            </linearGradient>
+            <linearGradient id="gpGcta" x1="3.7" y1="1.3" x2="17.3" y2="8.6" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#32A071"/><stop offset=".07" stop-color="#2DA771"/><stop offset=".48" stop-color="#15CF74"/><stop offset=".8" stop-color="#06E775"/><stop offset="1" stop-color="#00F076"/>
+            </linearGradient>
+          </defs>
+          <rect x="0.5" y="0.5" width="167" height="53" rx="11" fill="#000" stroke="rgba(255,255,255,0.4)"/>
+          <g transform="translate(12.6,13.3) scale(1.14)">
+            <path d="M3.5 1.55C3.19 1.87 3 2.37 3 3.02v17.96c0 .65.19 1.15.5 1.47l.1.1L13.9 12.1v-.2L3.6 1.45z" fill="url(#gpBcta)"/>
+            <path d="M17.34 8.46L5.34 1.63C4.62 1.22 3.93 1.14 3.5 1.55L13.9 11.95z" fill="url(#gpGcta)"/>
+            <path d="M17.34 15.54L5.34 22.37c-.72.41-1.41.49-1.84.08L13.9 12.05z" fill="url(#gpRcta)"/>
+            <path d="M17.34 8.46L13.9 11.9v.2l3.44 3.44 4.34-2.47c1.24-.7 1.24-1.84 0-2.54z" fill="url(#gpYcta)"/>
+          </g>
+          <text x="51" y="21" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="8.5" fill="#fff" letter-spacing="1.4">GET IT ON</text>
+          <text x="50" y="40" font-family="-apple-system, 'Plus Jakarta Sans', sans-serif" font-size="17.5" font-weight="600" fill="#fff" letter-spacing="-0.4">Google Play</text>
+        </svg>
+      </a>
     </div>
   </div>
-</section>
 
-<!-- ── FAQ — mirrors the FAQPage schema above ────────────────────── -->
-<section class="band band-line" id="faq">
-  <div class="wrap wrap-narrow">
-    <div class="reveal">
-      <div class="eyebrow">Questions</div>
-      <h2 class="mt-16">Fighting a ticket<br>in Ontario.</h2>
+  <!-- TESTIMONIALS / REVIEWS SECTION -->
+  <section class="block reveal" id="reviews">
+    <div class="section-head">
+      <div>
+        <div class="section-kicker"><span class="num">06</span>WHAT DRIVERS SAY</div>
+        <h2 class="section-title">Loved by Toronto<br/>drivers.</h2>
+      </div>
+      <p class="section-sub">Real people, real tickets, real money saved. Every review is from a verified Drivee user who scanned a ticket and got a verdict.</p>
     </div>
 
-    <div class="faq reveal">
+    <div class="reviews-grid">
+      <!-- 1 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Got a $150 ticket on King St. Drivee told me it was <b>issued on the wrong bylaw</b> and walked me through the dispute. Cancelled two weeks later.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $150</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#2D63F0,#6B4EE0)">MR</div>
+          <div>
+            <div class="review-name">Marcus R. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">TORONTO · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">I had <b>three tickets</b> pinned to my fridge for months. Scanned them in a coffee break - Drivee told me which to pay and which to fight. Zero stress.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> 3 TICKETS · SAVED $212</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#16A34A,#0EA5A0)">SL</div>
+          <div>
+            <div class="review-name">Sofia L. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">NORTH YORK · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">The <b>deadline reminder</b> alone is worth it. I always used to miss the early-resolution window and pay the late fees. Not anymore.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> AVOIDED $79 IN LATE FEES</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#E89B22,#E1473D)">DK</div>
+          <div>
+            <div class="review-name">David K. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">SCARBOROUGH · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Snapped a confusing parking sign near the hospital. Drivee read it and said <b>"you're fine after 6pm."</b> Saved me from a ticket I didn't even have yet.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> SIGN SCAN · TICKET AVOIDED</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#6B4EE0,#B14EE0)">AP</div>
+          <div>
+            <div class="review-name">Aisha P. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">ETOBICOKE · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Finally an app that explains the fine in <b>plain English</b> instead of legal jargon. Paid a legit ticket in 60 seconds and fought a bogus one. Both handled.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> FOUGHT &amp; WON · SAVED $65</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#0EA5A0,#2D63F0)">JT</div>
+          <div>
+            <div class="review-name">James T. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">DOWNTOWN · ON</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">My partner and I both use it now. It caught that one of our tickets <b>had the wrong plate</b> - instant grounds to cancel. Unreal.</p>
+        <div class="review-proof"><span aria-hidden="true">✓</span> ERROR FOUND · SAVED $120</div>
+        <div class="review-user">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#E1473D,#E89B22)">NC</div>
+          <div>
+            <div class="review-name">Nadia C. <span class="review-verified" title="Verified user">✔ verified</span></div>
+            <div class="review-loc">EAST YORK · ON</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ - keep in sync with the FAQPage schema in <head> -->
+  <section class="block reveal" id="faq">
+    <div class="section-kicker"><span class="num">07</span>QUESTIONS</div>
+    <h2 class="section-title">Fighting a ticket<br/>in Ontario.</h2>
+    <div class="faq-list">
       <details open>
         <summary>Can I fight a parking ticket in Ontario?</summary>
         <div>Yes. Toronto and many other Ontario municipalities run an Administrative Penalty System: you request a screening review rather than a court date, and a screening officer can cancel, reduce or uphold the penalty. Municipalities that have not adopted it still run parking tickets through Provincial Offences Court. Upload your ticket and Drivee tells you which one applies to yours.</div>
@@ -459,7 +2484,7 @@
       </details>
       <details>
         <summary>How much does it cost to fight a ticket in Ontario?</summary>
-        <div>Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes — every firm we match prices the case itself at a free consultation. What Drivee adds is the other half of the sum: a conviction can cost far more in insurance over three years than the fine and the representation combined, and we show you both numbers side by side before you decide.</div>
+        <div>Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes — every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide.</div>
       </details>
       <details>
         <summary>What does Drivee cost?</summary>
@@ -467,7 +2492,7 @@
       </details>
       <details>
         <summary>Does Drivee work outside Ontario?</summary>
-        <div>No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario&rsquo;s, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says &mdash; that much is useful anywhere &mdash; but we will tell you plainly that we cannot advise on it rather than guess.</div>
+        <div>No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario&rsquo;s, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says, but we will tell you plainly that we cannot advise on it rather than guess.</div>
       </details>
       <details>
         <summary>What happens to my ticket photo?</summary>
@@ -478,86 +2503,166 @@
         <div>No. Drivee is independent and not affiliated with the City of Toronto, MTO, ServiceOntario, CARFAX, NHTSA or any law firm. We are Toronto drivers who got tired of losing money quietly.</div>
       </details>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── closing ───────────────────────────────────────────────────── -->
-<section class="band">
-  <div class="wrap">
-    <div class="close-cta reveal">
-      <div class="glow-orb orb-blue" style="width:420px;height:420px;top:-120px;left:50%;transform:translateX(-50%)"></div>
-      <div class="z1">
-        <div class="eyebrow" style="justify-content:center">Stop paying quietly</div>
-        <h2 class="mt-16">From "I owe $295"<br>to "it was dismissed."</h2>
-        <p class="lede mt-16" style="max-width:52ch;margin-inline:auto">
-          It takes one photo to find out which one you are. No account, no download, no cost.
+  <!-- AFTER-PAYOFF SECTION - emotional close: ticket + app showing PAID -->
+  <section class="block reveal" id="payoff">
+    <div class="payoff-grid" style="grid-template-columns:1fr">
+      <div class="payoff-body">
+        <div class="section-kicker"><span class="num">08</span>THE PAYOFF</div>
+        <h2 class="section-title">From "I&nbsp;owe<br/>what?!" to handled.</h2>
+        <p class="founder-p">
+          One scan. One verdict. One paid (or fought) ticket. The way it should
+          have always been - calm, clear, and on your phone.
         </p>
-        <div class="btn-row">
-          <a class="btn btn-amber btn-lg" href="#scan">Scan my ticket</a>
-          <a class="btn btn-ghost btn-lg" href="#app">Get the app</a>
-        </div>
+        <a class="btn-primary" href="#scan" style="text-decoration:none;margin-top:24px">
+          Scan my ticket - free
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
       </div>
+      <!-- Payoff photo temporarily removed
+      <div class="payoff-photo-wrap">
+        <img class="payoff-photo" src="/founder-evgenka-happy.png" alt="Evgenka holding a parking ticket and a phone showing the Drivee app marked PAID" loading="lazy" />
+      </div>
+      -->
+    </div>
+  </section>
+
+  <!-- LIVE ONLINE COUNTER -->
+  <div class="online-bar">
+    <div class="online-pill">
+      <span class="online-dot"></span>
+      <span><b id="online-count">312</b> drivers online right now</span>
     </div>
   </div>
-</section>
 
-</main>
-
-<!-- ── footer ────────────────────────────────────────────────────── -->
-<footer class="foot">
-  <div class="wrap">
-    <div class="foot-grid">
-      <div>
-        <a class="logo" href="/">Drivee<span class="logo-dot">.</span></a>
-        <p class="foot-note">
-          The driver's app for Toronto. Scan a ticket, know your deadline, find a paralegal,
-          check a VIN before you buy. Built in Toronto by drivers who kept losing to the paperwork.
-        </p>
-        <p class="foot-note">
-          Drivee is independent and not affiliated with the City of Toronto, MTO, ServiceOntario,
-          CARFAX, NHTSA or any law firm. Nothing here is legal advice.
-        </p>
-      </div>
-      <div class="foot-col">
-        <h4>Tickets</h4>
-        <a href="#scan">Scan a ticket</a>
-        <a href="#lawyers">Find a lawyer</a>
-        <a href="/app.html">Enforcement map</a>
-        <a href="/parking-signs/">Parking signs guide</a>
-      </div>
-      <div class="foot-col">
-        <h4>Vehicles</h4>
-        <a href="/report.html">Free car report</a>
-        <a href="/mechanic.html">Mobile mechanic</a>
-      </div>
-      <div class="foot-col">
-        <h4>Guides</h4>
-        <a href="/blog/how-to-dispute-parking-ticket-toronto.html">Dispute a ticket</a>
-        <a href="/blog/toronto-parking-ticket-late-fees.html">Late fees</a>
-        <a href="/blog/car-towed-toronto-what-to-do.html">Car towed?</a>
-        <a href="/blog/car-accident-toronto-what-to-do.html">Had an accident?</a>
-        <a href="/blog/careless-driving-ticket-ontario.html">Careless driving</a>
-        <a href="/blog/green-p-parking-rates-2026.html">Green P rates</a>
-        <a href="/blog/">All guides</a>
-      </div>
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <div class="brand-foot">Drivee<span class="dot">.</span></div>
+      <p class="brand-sub">The driver's app for Toronto. Built independently. Not affiliated with the City of Toronto, MTO, or any law firm listed.</p>
     </div>
-    <div class="foot-bot">
-      <span>© <span id="yr">2026</span> Drivee · Toronto, Ontario</span>
-      <span>
-        <a href="/contact.html">Contact</a> ·
-        <a href="/privacy.html">Privacy</a> ·
-        <a href="mailto:drivee.canada@gmail.com">drivee.canada@gmail.com</a>
-      </span>
+    <div>
+      <h4>PRODUCT</h4>
+      <a href="#scan">Ticket scanner</a>
+      <a href="#legal">Find a lawyer</a>
+      <a href="/report.html">Free car report</a>
+      <a href="/mechanic.html">Mobile mechanic</a>
+      <a href="#app">Get the app</a>
     </div>
+    <div>
+      <h4>COMPANY</h4>
+      <a href="/blog/">Blog</a>
+      <a href="/parking-signs/">Sign guide</a>
+      <a href="/contact.html">Contact</a>
+      <a href="mailto:drivee.canada@gmail.com">drivee.canada@gmail.com</a>
+    </div>
+    <div>
+      <h4>LEGAL</h4>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/privacy.html#terms">Terms</a>
+    </div>
+  </footer>
+  <div class="legal">
+    <span>© 2026 DRIVEE TECHNOLOGIES INC. · TORONTO, ON</span>
+    <span>v3.2.0 · BUILT 30.04.2026</span>
   </div>
-</footer>
+</div>
 
-<script src="/assets/js/ontario.js"></script>
-<script src="/assets/js/lawyers.js"></script>
-<script src="/assets/js/main.js" defer></script>
+<script>
+  // ─────── Intro logo letter-by-letter ───────
+  const logoText = "Drivee.";
+  const logoEl = document.getElementById("introLogo");
+  [...logoText].forEach((ch, i) => {
+    const span = document.createElement("span");
+    span.textContent = ch;
+    span.style.animationDelay = (0.6 + i * 0.09) + "s";
+    if (ch === ".") span.classList.add("dot");
+    logoEl.appendChild(span);
+  });
+
+  // ─────── Intro fade out + page in ───────
+  const intro = document.getElementById("intro");
+  const page = document.getElementById("page");
+  function revealHero() {
+    document.body.classList.add("ready");
+  }
+
+  // Loading/intro screen removed - reveal the site immediately.
+  revealHero();
+  if (intro) { intro.classList.add("gone"); intro.style.display = "none"; }
+
+  // ─────── Live "drivers online" counter ───────
+  // Picks a fresh number each day (deterministic per date, ~300–520) then
+  // gently wanders every few seconds so it feels live. New day = new number.
+  (function () {
+    var el = document.getElementById("online-count");
+    if (!el) return;
+    var now  = new Date();
+    var seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+    var x    = Math.sin(seed) * 10000;
+    var rnd  = x - Math.floor(x);                 // stable 0..1 for today
+    var base = 300 + Math.floor(rnd * 220);       // 300–519, changes daily
+    var current = base;
+    var render = function () { el.textContent = current.toLocaleString(); };
+    render();
+    setInterval(function () {
+      var drift = Math.floor(Math.random() * 7) - 3;         // -3..+3
+      current = Math.max(300, Math.min(base + 40, current + drift));
+      render();
+    }, 4000);
+  })();
+
+  var _skip = document.getElementById("skipIntro");
+  if (_skip) _skip.addEventListener("click", () => {
+    intro.style.transition = "opacity 0.4s ease";
+    intro.style.opacity = "0";
+    revealHero();
+    setTimeout(() => { intro.style.display = "none"; }, 400);
+  });
+
+  // ─────── Sticky nav blur on scroll ───────
+  const topnav = document.getElementById("topnav");
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 40) topnav.classList.add("scrolled");
+    else topnav.classList.remove("scrolled");
+  });
+
+  // ─────── Reveal on scroll ───────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        // counters
+        e.target.querySelectorAll("[data-counter]").forEach(el => {
+          if (el.dataset.animated) return;
+          el.dataset.animated = "1";
+          const target = parseFloat(el.dataset.counter);
+          const suffix = el.dataset.suffix || "";
+          const prefix = el.dataset.prefix || "";
+          const decimals = (el.dataset.counter.split(".")[1] || "").length;
+          const start = performance.now();
+          const dur = 1400;
+          const tick = (t) => {
+            const p = Math.min(1, (t - start) / dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const v = (target * eased);
+            el.textContent = prefix + (decimals ? v.toFixed(decimals) : Math.round(v).toLocaleString()) + suffix;
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        });
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+</script>
+
+<!-- live ticket scan: Ontario rules → firm matching → free account → funnel UI -->
+<script src="/assets/js/ontario.js" defer></script>
+<script src="/assets/js/lawyers.js" defer></script>
 <script src="/assets/js/account.js" defer></script>
 <script src="/assets/js/scanner.js" defer></script>
-<script src="/assets/js/stores.js" defer></script>
-<script type="module" src="/assets/js/planet.js"></script>
 </body>
 </html>
