@@ -760,9 +760,9 @@
           <div class="stage3d pop" id="stage3d">
           <figure class="g-main" id="gmain">
             <div class="s3-bg"></div>
-            <img class="s3-van" id="s3van" src="/caravan-spin-0.png" alt="Red Dodge Grand Caravan - 360 view" draggable="false"/>
-            <img class="s3-refl" id="s3refl" src="/caravan-spin-0.png" alt="" aria-hidden="true" draggable="false"/>
-            <img id="g-hero" class="g-photo" src="/caravan-front.jpg" alt="Red Dodge Grand Caravan, front right view"/>
+            <img class="s3-van" id="s3van" src="/caravan-spin-0.webp" alt="Red Dodge Grand Caravan - 360 view" draggable="false"/>
+            <img class="s3-refl" id="s3refl" src="/caravan-spin-0.webp" alt="" aria-hidden="true" draggable="false"/>
+            <img id="g-hero" class="g-photo" src="/caravan-front.webp" alt="Red Dodge Grand Caravan, front right view"/>
             <div class="g-cap"><span id="g-label">FRONT · RIGHT</span><span id="g-count">1 / 4</span><span id="g-spin-hint">DRAG TO SPIN</span></div>
             <button class="g-nav prev" type="button" aria-label="Previous photo" onclick="gStep(-1)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -1349,7 +1349,7 @@
     var lo = Math.round(v * 0.82 / 100) * 100, hi = Math.round(v * 1.18 / 100) * 100;
     document.getElementById('res-value').innerHTML =
       '<div class="res-row"><span class="k">Estimated range</span></div>' +
-      '<div class="value-big">$' + lo.toLocaleString() + ' – $' + hi.toLocaleString() + '</div>' +
+      '<div class="value-big">$' + lo.toLocaleString() + ' - $' + hi.toLocaleString() + '</div>' +
       '<div class="res-row"><span class="k">Currency</span><span class="v">CAD · private sale</span></div>' +
       '<div class="value-bar"><i></i></div>' +
       '<div class="value-note">Rough estimate from age and vehicle segment only - condition, mileage and region move this a lot. Not an appraisal.</div>';
@@ -1550,10 +1550,10 @@
 
   // ═══════════════ PHOTO GALLERY + 3D STAGE ═══════════════
   var PHOTOS = [
-    { mode: 'pop', src: '/caravan-3d.png', label: '3D VIEW', alt: 'Red Dodge Grand Caravan - interactive 3D view', fit: 'contain' },
-    { src: '/caravan-front.jpg', label: 'FRONT · RIGHT', alt: 'Red Dodge Grand Caravan, front right view' },
-    { src: '/caravan-rear.jpg',  label: 'REAR · RIGHT',  alt: 'Red Dodge Grand Caravan, rear right view' },
-    { src: '/caravan-rear2.jpg', label: 'REAR · LEFT',   alt: 'Red Dodge Grand Caravan, rear left view' }
+    { mode: 'pop', src: '/caravan-3d.webp', label: '3D VIEW', alt: 'Red Dodge Grand Caravan - interactive 3D view', fit: 'contain' },
+    { src: '/caravan-front.webp', label: 'FRONT · RIGHT', alt: 'Red Dodge Grand Caravan, front right view' },
+    { src: '/caravan-rear.webp',  label: 'REAR · RIGHT',  alt: 'Red Dodge Grand Caravan, rear right view' },
+    { src: '/caravan-rear2.webp', label: 'REAR · LEFT',   alt: 'Red Dodge Grand Caravan, rear left view' }
   ];
   var gIdx = 0;
   function gShow(i){
@@ -1580,10 +1580,10 @@
 
   // ── 360 spin (drag through angle frames) + cursor tilt ──
   var SPIN = [
-    { src: '/caravan-spin-0.png', label: 'FRONT · RIGHT' },
-    { src: '/caravan-spin-1.png', label: 'REAR · RIGHT' },
-    { src: '/caravan-spin-2.png', label: 'REAR · LEFT' },
-    { src: '/caravan-spin-3.png', label: 'FRONT · LEFT' }
+    { src: '/caravan-spin-0.webp', label: 'FRONT · RIGHT' },
+    { src: '/caravan-spin-1.webp', label: 'REAR · RIGHT' },
+    { src: '/caravan-spin-2.webp', label: 'REAR · LEFT' },
+    { src: '/caravan-spin-3.webp', label: 'FRONT · LEFT' }
   ];
   var spinIdx = 0, spinTouched = false;
   SPIN.forEach(function(f){ var im = new Image(); im.src = f.src; }); // preload
