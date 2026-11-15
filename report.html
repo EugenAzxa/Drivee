@@ -91,7 +91,7 @@
         {
           "@type": "Question",
           "name": "What does the full Drivee report include?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The full report ($19 CAD) covers the specific vehicle's accident and damage history, odometer readings with a rollback check, previous owners and use type, and theft records. It is delivered to your email, usually within a few hours. For $30 it also includes an Ontario lien check." }
+          "acceptedAnswer": { "@type": "Answer", "text": "The full report ($19 CAD) covers the specific vehicle's accident and damage history, odometer readings with a rollback check, previous owners and use type, and theft records. It is delivered to your email, usually within 5-60 minutes. For $30 it also includes an Ontario lien check." }
         },
         {
           "@type": "Question",
@@ -554,6 +554,38 @@
     .pair-stack .res-row { flex-direction: column; align-items: flex-start; gap: 3px; }
     .pair-stack .res-row .v { text-align: left; }
   }
+  /* Buyer guides grid */
+  .guide-grid { margin-top: 28px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .guide-card { display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; text-decoration: none; transition: transform .2s, border-color .2s; }
+  .guide-card:hover { transform: translateY(-2px); border-color: var(--blue); }
+  .guide-card img, .guide-card .gc-ph { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: grid; place-items: center; background: var(--blue-50); }
+  .guide-card span { padding: 12px 14px 14px; font-size: 14px; font-weight: 700; line-height: 1.35; color: var(--ink); }
+  @media (max-width: 900px) { .guide-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .guide-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .guide-card span { font-size: 13px; padding: 10px 11px 12px; } }
+
+  /* After-payment window */
+  .pay-modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(11,20,48,0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .pay-modal.open { display: flex; }
+  .pm-card { position: relative; width: 100%; max-width: 480px; max-height: calc(100vh - 32px); overflow-y: auto; background: var(--paper); border-radius: 22px; padding: 30px 26px 24px; box-shadow: 0 30px 80px rgba(11,20,48,0.35); text-align: left; animation: pmIn .35s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes pmIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+  .pm-close { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 999px; background: var(--bg); color: var(--ink2); cursor: pointer; display: grid; place-items: center; }
+  .pm-ok { width: 54px; height: 54px; border-radius: 999px; background: rgba(22,163,74,0.12); display: grid; place-items: center; margin-bottom: 14px; }
+  .pm-card h2 { font-size: 23px; line-height: 1.2; letter-spacing: -0.4px; margin-bottom: 8px; }
+  .pm-sub { font-size: 14.5px; color: var(--ink2); line-height: 1.55; margin-bottom: 18px; }
+  .pm-eta { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 16px; background: var(--blue-50); margin-bottom: 16px; }
+  .pm-eta .clock { flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: var(--blue); display: grid; place-items: center; }
+  .pm-eta b { display: block; font-size: 18px; color: var(--ink); }
+  .pm-eta span { font-size: 13px; color: var(--ink2); }
+  .pm-steps { list-style: none; display: grid; gap: 12px; margin-bottom: 18px; }
+  .pm-steps li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+  .pm-steps .n { width: 26px; height: 26px; border-radius: 999px; background: var(--bg); color: var(--ink); font: 700 12px var(--mono); display: grid; place-items: center; }
+  .pm-steps b { color: var(--ink); }
+  .pm-mail { font-family: var(--mono); font-size: 13px; color: var(--blue-d); overflow-wrap: anywhere; }
+  #pm-email-wrap .pm-mail { font-weight: 700; font-size: 14px; }
+  .pm-btn { display: block; width: 100%; border: 0; border-radius: 14px; padding: 15px; background: var(--ink); color: #fff; font: 700 15px var(--font); cursor: pointer; }
+  .pm-help { margin-top: 12px; font-size: 12.5px; color: var(--ink3); text-align: center; line-height: 1.5; }
+  .pm-help a { color: var(--blue-d); font-weight: 700; }
+  @media (prefers-reduced-motion: reduce) { .pm-card { animation: none; } }
 </style>
 <script>
   (function(){
@@ -577,6 +609,26 @@
 </script>
 </head>
 <body>
+
+  <div class="pay-modal" id="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+    <div class="pm-card">
+      <button class="pm-close" type="button" aria-label="Close" onclick="closePayModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <div class="pm-ok"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h2 id="pm-title">Payment received - thank you!</h2>
+      <p class="pm-sub" id="pm-sub">We are preparing your Drivee Car Report<span id="pm-vin"></span>.</p>
+      <div class="pm-eta">
+        <div class="clock"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div><b>Arrives in 5-60 minutes</b><span>by email - you can close this page</span></div>
+      </div>
+      <ol class="pm-steps">
+        <li><span class="n">1</span><span><b>Where:</b> the email you entered at checkout<span id="pm-email-wrap" style="display:none"><span class="pm-mail" id="pm-email"></span></span></span></li>
+        <li><span class="n">2</span><span><b>From:</b> <span class="pm-mail">reports@drivee.ca</span>, subject "Your Drivee Car Report". A Stripe payment receipt comes separately.</span></li>
+        <li><span class="n">3</span><span><b>Not there after an hour?</b> Check Spam, Junk or Promotions, then write to us - we reply the same day.</span></li>
+      </ol>
+      <button class="pm-btn" type="button" onclick="closePayModal()">Got it</button>
+      <div class="pm-help">Questions about your order: <a href="mailto:drivee.canada@gmail.com">drivee.canada@gmail.com</a></div>
+    </div>
+  </div>
 
   <nav class="top">
     <a href="/" class="brand">Drivee<span class="dot">.</span></a>
@@ -608,7 +660,7 @@
 
       <div class="paid-banner" id="paid-banner">
         <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M20 6 9 17l-5-5"/></svg> Payment received - thank you!</b>
-        <p>Your full Drivee Report is being prepared. It will arrive in your email inbox (the one you used at checkout), usually <b>within a few hours</b>. Questions? <a href="mailto:drivee.canada@gmail.com" style="color:var(--blue-d);font-weight:700">drivee.canada@gmail.com</a></p>
+        <p>Your full Drivee Report is being prepared. It will arrive in your email inbox (the one you used at checkout) from <b>reports@drivee.ca</b>, usually <b>within 5-60 minutes</b>. Not there after an hour? Check Spam or Promotions. Questions? <a href="mailto:drivee.canada@gmail.com" style="color:var(--blue-d);font-weight:700">drivee.canada@gmail.com</a></p>
       </div>
 
       <!-- RESULTS -->
@@ -643,7 +695,7 @@
           <div class="unlock-bar">
             <div class="ub-head">
               <b>Unlock the full Drivee Report</b>
-              <p>We pull the complete history for your exact VIN - accidents, odometer readings, previous owners, theft records - and email it to you, usually within a few hours.</p>
+              <p>We pull the complete history for your exact VIN - accidents, odometer readings, previous owners, theft records - and email it to you, usually within 5-60 minutes.</p>
             </div>
             <div class="plans">
               <div class="plan">
@@ -670,7 +722,7 @@
                 <a class="p-btn" id="buy-lien" href="#" onclick="return buyReport('lien')">Get report + lien - $30</a>
               </div>
             </div>
-            <div class="ub-note">Secure payment via Stripe · One-time fee · Delivered to your email · No subscription. Your VIN is attached to the order automatically.</div>
+            <div class="ub-note">Secure payment via Stripe · One-time fee · No subscription. Your VIN is attached to the order automatically. Use an email you check - the Drivee Car Report is sent there from reports@drivee.ca within 5-60 minutes.</div>
             <a href="/mechanic.html" class="mech-addon">
               <span class="ma-dot"></span>
               <span class="ma-txt"><b>Add a mobile mechanic - pre-purchase inspection at the car.</b> Anywhere in the GTA, 24/7 on call · $100-150 per trip · +$50 outside the GTA</span>
@@ -1074,7 +1126,7 @@
         </details>
         <details>
           <summary>What does the full Drivee report include?</summary>
-          <div class="fa-body">The full report ($19 CAD) covers the specific vehicle's accident and damage history, odometer readings with a rollback check, previous owners and use type, and theft records. It is delivered to your email, usually within a few hours. For $30 it also includes an Ontario lien check.</div>
+          <div class="fa-body">The full report ($19 CAD) covers the specific vehicle's accident and damage history, odometer readings with a rollback check, previous owners and use type, and theft records. It is delivered to your email, usually within 5-60 minutes. For $30 it also includes an Ontario lien check.</div>
         </details>
         <details>
           <summary>How do I check for a lien on a used car in Ontario?</summary>
@@ -1092,6 +1144,22 @@
           <summary>What should I check in person before buying a used car?</summary>
           <div class="fa-body">Cold start and steady idle near 750 rpm, fresh oil leaks, exhaust smoke colour, transmission engagement under one second, rust on arches and rockers, and fluid condition - amber oil is fine, milky oil means walk away. See the illustrated checklist above.</div>
         </details>
+      </div>
+    </section>
+
+    <!-- BUYER GUIDES (internal links) -->
+    <section class="block" id="guides">
+      <div class="section-kicker">10 · BUYER GUIDES</div>
+      <h2 class="section-title">Read before you buy.</h2>
+      <div class="guide-grid">
+        <a class="guide-card" href="/blog/what-is-in-a-vehicle-history-report.html"><img src="/assets/img/blog/what-is-in-a-vehicle-history-report.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>What&rsquo;s in a vehicle history report, and how to read one</span></a>
+        <a class="guide-card" href="/blog/odometer-rollback-how-to-spot.html"><img src="/assets/img/blog/odometer-rollback-how-to-spot.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>Odometer rollback: how to spot it</span></a>
+        <a class="guide-card" href="/blog/salvage-rebuilt-title-canada-us.html"><img src="/assets/img/blog/salvage-rebuilt-title-canada-us.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>Salvage vs rebuilt title: what it means</span></a>
+        <a class="guide-card" href="/blog/check-car-lien-canada-us.html"><img src="/assets/img/blog/check-car-lien-canada-us.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>How to check if a car has a lien</span></a>
+        <a class="guide-card" href="/blog/flood-damaged-car-how-to-spot.html"><img src="/assets/img/blog/flood-damaged-car-how-to-spot.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>How to spot a flood-damaged car</span></a>
+        <a class="guide-card" href="/blog/used-car-scams-canada-us.html"><img src="/assets/img/blog/used-car-scams-canada-us.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>Used car scams and how to avoid them</span></a>
+        <a class="guide-card" href="/blog/import-car-from-us-to-canada.html"><img src="/assets/img/blog/import-car-from-us-to-canada.webp" width="320" height="180" loading="lazy" decoding="async" alt=""/><span>Importing a car from the US to Canada</span></a>
+        <a class="guide-card" href="/blog/free-vin-check-ontario.html"><div class="gc-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2D63F0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div><span>What a free VIN check tells you, and what it doesn&rsquo;t</span></a>
       </div>
     </section>
 
@@ -1140,11 +1208,42 @@
     return false;
   }
 
-  // After-payment confirmation (?paid=1)
+  // After-payment confirmation. Stripe Payment Links redirect here with
+  //   ?paid=1&session_id={CHECKOUT_SESSION_ID}
+  // (set under each Payment Link -> After payment -> Redirect). With a session id
+  // we look up the buyer's email and VIN so the window can say exactly where
+  // the report will land; without one the window still shows the generic copy.
+  function closePayModal(){
+    var m = document.getElementById('pay-modal');
+    m.classList.remove('open');
+    document.body.style.overflow = '';
+    var b = document.getElementById('paid-banner');
+    b.style.display = 'block';
+    b.scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
   (function(){
-    if (new URLSearchParams(location.search).get('paid') === '1') {
-      document.getElementById('paid-banner').style.display = 'block';
-      document.getElementById('paid-banner').scrollIntoView({behavior: 'smooth', block: 'center'});
+    var q = new URLSearchParams(location.search);
+    if (q.get('paid') !== '1') return;
+    var m = document.getElementById('pay-modal');
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    m.addEventListener('click', function(e){ if (e.target === m) closePayModal(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && m.classList.contains('open')) closePayModal(); });
+    if (window.dvTrack) dvTrack('report_paid_view', q.get('session_id') ? 'session' : 'no-session');
+    var sid = q.get('session_id') || '';
+    if (/^cs_[A-Za-z0-9_]+$/.test(sid)) {
+      fetch('/api/order-status?session_id=' + encodeURIComponent(sid)).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+        if (!d || !d.ok) return;
+        if (d.email) {
+          document.getElementById('pm-email').textContent = d.email;
+          document.getElementById('pm-email-wrap').style.display = 'block';
+        }
+        if (d.vin) document.getElementById('pm-vin').textContent = ' for VIN ' + d.vin;
+        if (d.paid === false) {
+          document.getElementById('pm-title').textContent = 'Almost done - payment is processing';
+          document.getElementById('pm-sub').firstChild.textContent = 'Your bank has not confirmed the payment yet. As soon as it clears we start your Drivee Car Report';
+        }
+      }).catch(function(){});
     }
   })();
 

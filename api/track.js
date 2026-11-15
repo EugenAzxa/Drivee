@@ -59,7 +59,7 @@ var ALLOWED_EVENTS = [
   'dispute_generated', 'true_cost_calc', 'expert_contact',
   'user_feedback', 'sign_scan', 'lawyer_lead',
   'page_view', 'vin_check', 'report_buy_click', 'mechanic_request',
-  'mechanic_apply', 'contact_sent',
+  'mechanic_apply', 'contact_sent', 'report_paid_view',
   // landing-page scan funnel
   'scan_start', 'scan_verdict', 'scan_error',
   'firms_shown', 'firm_opened', 'lead_form', 'scan_cta'
@@ -231,6 +231,32 @@ module.exports = async function handler(req, res) {
         });
       } catch (e) {}
     }
+  }
+
+  // Email the owner the moment someone opens report checkout. The Stripe webhook
+  // (api/stripe-webhook.js) follows up with PAID, DECLINED or NOT BOUGHT, so each
+  // order shows up in the inbox as a pair: started -> outcome.
+  if (event === 'report_buy_click' && process.env.RESEND_API_KEY) {
+    var parts = origMeta.split(' ');
+    var plan = parts[0] === 'lien' ? '$30 report + lien' : '$19 report';
+    var vin = parts[1] || 'no VIN entered';
+    try {
+      await httpsRequest('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + process.env.RESEND_API_KEY },
+        body: JSON.stringify({
+          from: 'Drivee Orders <reports@drivee.ca>',
+          to: [process.env.ORDER_ALERT_EMAIL || 'drivee.canada@gmail.com'],
+          subject: 'Checkout started - ' + plan + ' - VIN ' + vin,
+          html: '<div style="font-family:-apple-system,Segoe UI,sans-serif;color:#0E1B3D">' +
+            '<p style="margin:0 0 8px"><b>Someone opened Stripe checkout.</b> Not paid yet.</p>' +
+            '<p style="margin:0 0 8px">Plan: ' + plan + '<br/>VIN: <span style="font-family:Menlo,monospace">' + vin.replace(/[^A-Z0-9 -]/gi, '') + '</span><br/>' +
+            (city ? 'Location: ' + city.replace(/[<>&]/g, '') + '<br/>' : '') + 'Device: ' + ua.form + ' / ' + ua.os + ' / ' + ua.br + '</p>' +
+            '<p style="margin:0;color:#667;font-size:13px">If they pay you get a PAID email within a minute. If they leave, Stripe sends NOT BOUGHT when the checkout expires (24 hours).</p></div>'
+        }),
+        timeoutMs: 4000
+      });
+    } catch (e) {}
   }
 
   res.status(200).json({ ok: true });
