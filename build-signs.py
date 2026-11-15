@@ -112,7 +112,7 @@ PAGES = [
 {
  'slug': 'permit-parking',
  'sign': 'Permit Parking Only',
- 'title': 'Permit Parking Signs in Toronto - What "Except by Permit" Means - Drivee',
+ 'title': 'Permit Parking Signs in Toronto: "Except by Permit" - Drivee',
  'h1': 'Permit parking signs in Toronto, and what "except by permit" lets you do',
  'crumb': 'Permit parking',
  'desc': ('"No parking except by permit" means the block is reserved for residents holding a permit '
@@ -177,7 +177,7 @@ PAGES = [
 {
  'slug': 'time-limit',
  'sign': '3-Hour Parking (default citywide)',
- 'title': 'Time Limit Parking Signs in Toronto - The 3-Hour Rule Explained - Drivee',
+ 'title': 'Time Limit Parking Signs in Toronto: The 3-Hour Rule - Drivee',
  'h1': 'Time limit parking signs in Toronto, and the 3-hour rule behind them',
  'crumb': 'Time limits',
  'desc': ('Toronto has an unsigned three-hour maximum on public roads. Posted signs override it in '
