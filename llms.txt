@@ -1,44 +1,89 @@
 # Drivee
 
-> Drivee is an independent, Toronto-built web app for drivers in Ontario, Canada. It does two things: (1) helps drivers handle parking and traffic tickets - scan a ticket with AI, get a plain-English verdict on whether to pay or dispute it, with deadline reminders and free guided dispute forms; (2) provides vehicle history: a free VIN check (specs, open recalls, market value estimate, known weak points by make) and a paid full vehicle history report.
+> Drivee (drivee.ca) is an independent, Toronto-built web app for drivers in Canada and the United States. It does two things: (1) vehicle history - a free VIN check for any North American VIN and the paid Drivee Car Report, a full vehicle history report emailed within 5-60 minutes; (2) tickets - scan an Ontario parking or traffic ticket with AI and get a plain-English verdict on whether to pay or fight it, with deadlines and free guided dispute forms.
 
 Key facts:
 - Website: https://www.drivee.ca
-- Service area: Toronto and Ontario, Canada (ticket tools are Toronto-specific; VIN check works for any North American VIN)
-- The free VIN check decodes any 17-character VIN using the NHTSA vPIC government database and shows open safety recalls, an estimated market value and the make's documented weak points. No sign-up required.
-- The full vehicle history report costs $19 CAD (accident and damage history, odometer readings with rollback check, previous owners, theft records) or $30 CAD including an Ontario lien check. Reports are delivered by email.
-- In Ontario, lien information is also available directly from ServiceOntario in the Used Vehicle Information Package (UVIP, about $20).
-- The ticket scanner reads Toronto parking and traffic tickets and explains options and deadlines in plain English; the Early Resolution guided wizard is free.
-- Drivee matches a scanned charge to vetted Ontario defence firms (X-Copper, Toronto Traffic Law, POINTTS, OTT Legal, HWY-LAW), all offering a free case review from $199. Drivee takes no commission and the driver's details go only to the single firm they choose.
-- Drivee is independent and not affiliated with CARFAX, NHTSA, the City of Toronto, MTO or any law firm.
+- Vehicle history works for any 17-character VIN from a car sold in Canada or the US. Ticket tools and the mobile mechanic are for Toronto / Ontario.
+- Free VIN check: decodes the VIN with the NHTSA vPIC government database and shows open safety recalls, an estimated market value and the make's documented weak points. No sign-up.
+- Drivee Car Report (paid): $19 CAD for the full vehicle history report (accident and damage history, odometer readings with a rollback check, previous owners and use type, title brands, theft records), or $30 CAD including an Ontario lien check. Paid by card through Stripe; the VIN is attached to the order automatically. The report is emailed from reports@drivee.ca, usually within 5-60 minutes of payment.
+- In Ontario, lien and registration history is also available from ServiceOntario in the Used Vehicle Information Package (UVIP, $20).
+- Mobile mechanic pre-purchase inspection: a mechanic meets the buyer at the seller's location anywhere in the Greater Toronto Area, 24/7 on call, $100-150 CAD per trip (+$50 outside the GTA).
+- Ticket scanner: reads Toronto parking and Ontario traffic tickets and explains options and deadlines in plain English; the Early Resolution guided wizard is free. Drivee matches a scanned charge to vetted Ontario defence firms (X-Copper, Toronto Traffic Law, POINTTS, OTT Legal, HWY-LAW), all offering a free case review. Drivee takes no commission.
+- Drivee is independent and not affiliated with CARFAX, NHTSA, ServiceOntario, the City of Toronto, MTO or any law firm.
 - Contact: drivee.canada@gmail.com
 
 ## Main pages
 
-- [Drivee](https://www.drivee.ca/): upload a ticket photo, get an instant plain-English verdict on whether to pay or fight it, see the exact cost of waiting, and get a matched shortlist of vetted Ontario paralegals offering a free case review
-- [Drivee app](https://www.drivee.ca/app.html): the full app - ticket scanner, enforcement hotspot map, deadline reminders, legal verdicts
-- [Free VIN check & vehicle history report](https://www.drivee.ca/report.html): free VIN lookup, sample report (mileage graph, owners, service records, cost of ownership, depreciation), buyer's checklist with what to inspect before buying a used car, FAQ
-- [Mobile mechanic - pre-purchase inspection](https://www.drivee.ca/mechanic.html): a mobile mechanic meets the buyer at the seller's location anywhere in the GTA, 24/7 on call. $100-150 CAD per inspection trip, +$50 outside the GTA (OBD scan, cold start, leaks, rust, brakes, test drive). Mechanics can apply on the same page - paid $100-150 per trip as independent contractors, optional 24/7 on-call status.
-- [Parking signs guide](https://www.drivee.ca/parking-signs/): how to read Toronto parking signs
+- [Drivee](https://www.drivee.ca/): upload a ticket photo, get an instant plain-English verdict on whether to pay or fight it, the exact cost of waiting, and a matched shortlist of vetted Ontario paralegals offering a free case review
+- [Free VIN check and Drivee Car Report](https://www.drivee.ca/report.html): free VIN lookup for any Canadian or US car, sample report, buyer's checklist, and the paid full vehicle history report ($19 CAD, or $30 CAD with an Ontario lien check), emailed within 5-60 minutes
+- [Drivee app](https://www.drivee.ca/app.html): ticket scanner, enforcement hotspot map, deadline reminders, legal verdicts
+- [Mobile mechanic - pre-purchase inspection](https://www.drivee.ca/mechanic.html): a mechanic checks the car at the seller's location anywhere in the GTA, $100-150 CAD per trip
+- [Toronto parking signs guide](https://www.drivee.ca/parking-signs/): how to read every Toronto parking sign, with deep pages on No Standing, permit parking and time limits
 - [Contact](https://www.drivee.ca/contact.html): contact form; email drivee.canada@gmail.com; replies usually same day
 
-## Blog
+## Guides (blog)
 
-- [How to dispute a parking ticket in Toronto](https://www.drivee.ca/blog/how-to-dispute-parking-ticket-toronto.html)
-- [Toronto parking signs explained](https://www.drivee.ca/blog/toronto-parking-signs-explained.html)
-- [Car towed in Toronto - what to do](https://www.drivee.ca/blog/car-towed-toronto-what-to-do.html)
-- [Green P parking rates 2026](https://www.drivee.ca/blog/green-p-parking-rates-2026.html)
-- [Toronto parking ticket late fees](https://www.drivee.ca/blog/toronto-parking-ticket-late-fees.html)
-- [Car accident in Toronto - what to do](https://www.drivee.ca/blog/car-accident-toronto-what-to-do.html)
-- [Careless driving ticket in Ontario](https://www.drivee.ca/blog/careless-driving-ticket-ontario.html)
-- [Will a car accident raise my insurance in Ontario](https://www.drivee.ca/blog/car-accident-insurance-ontario.html)
-- [Free VIN check in Ontario - what it tells you](https://www.drivee.ca/blog/free-vin-check-ontario.html)
-- [Buying a used car privately in Ontario - checklist](https://www.drivee.ca/blog/buying-used-car-ontario-checklist.html)
-- [Red light camera ticket in Toronto](https://www.drivee.ca/blog/red-light-camera-ticket-toronto.html)
-- [Speeding ticket in Ontario - fines and demerit points](https://www.drivee.ca/blog/speeding-ticket-ontario-demerit-points.html)
+### Buying
+
+- [How to check if a car has a lien (Canada and US) before you buy](https://www.drivee.ca/blog/check-car-lien-canada-us.html): How to check if a car has a lien in Canada and the US: title and DMV checks, provincial registry searches and fees, and how to buy a car with a loan safely.
+- [How to spot a flood-damaged car before you buy (Canada and US)](https://www.drivee.ca/blog/flood-damaged-car-how-to-spot.html): How to spot a flood-damaged car before you buy in Canada or the US: the physical signs, why flood titles get lost, free NICB and IBC checks, and your recourse.
+- [How to import a car from the US to Canada: the 2026 step-by-step guide](https://www.drivee.ca/blog/import-car-from-us-to-canada.html): How to import a car from the US to Canada in 2026: admissibility, the 72-hour export rule, Form 1, the RIV fee and inspection, duty, the 25% surtax and GST.
+- [Odometer rollback: how to spot it and what to do](https://www.drivee.ca/blog/odometer-rollback-how-to-spot.html): How odometer rollback works on digital dashboards, the wear and paperwork signs that give it away, km vs miles traps, and your recourse in Canada and the US.
+- [Salvage vs rebuilt title: what it means before you buy (Canada and US)](https://www.drivee.ca/blog/salvage-rebuilt-title-canada-us.html): Salvage vs rebuilt title explained for Canada and the US: what each brand means, flood and junk brands, provincial rules, title washing, and how to check a VIN.
+- [Used car scams in Canada and the US: curbsiders, VIN cloning, fake deposits](https://www.drivee.ca/blog/used-car-scams-canada-us.html): Used car scams in Canada and the US: how curbsiders, VIN cloning, title washing, odometer rollbacks and fake deposits work, and where to report fraud.
+- [What’s in a vehicle history report? How to read one before you buy](https://www.drivee.ca/blog/what-is-in-a-vehicle-history-report.html): What a vehicle history report shows (accidents, odometer, title brands, theft, liens), how to read one before you buy, the red flags, and the official checks in Canada and the US.
+- [Buying a used car privately in Ontario: the step-by-step checklist](https://www.drivee.ca/blog/buying-used-car-ontario-checklist.html): A step-by-step checklist for buying a used car from a private seller in Ontario: the UVIP, safety standards certificate, lien and VIN checks, test drive, inspection, and registering at ServiceOntario with 13% RST.
+- [How to check a used car’s VIN in Ontario for free, and what it won’t tell you](https://www.drivee.ca/blog/free-vin-check-ontario.html): How to check a used car's VIN in Ontario for free: where to find it, what a free decode and recall check show, what they miss, and when you need the $20 UVIP, a lien search or a paid history report.
+
+### Tickets
+
+- [Distracted driving fines by province and state: texting and driving penalties in Canada and the US](https://www.drivee.ca/blog/distracted-driving-fines-canada-us.html): Distracted driving fines by province and state: handheld phone penalties and demerit points across Canada, how many US states ban handheld use, rules at red lights, new drivers, insurance and your options.
+- [Speed camera tickets: do they add points or raise insurance? (Canada and US)](https://www.drivee.ca/blog/speed-camera-ticket-canada-us.html): Does a speed camera ticket add demerit points or raise insurance? How camera tickets work in Ontario, BC, Alberta, Quebec and US states, how to dispute one, and what happens if you ignore it.
+- [Red light camera ticket in Toronto: what it costs, and how to dispute it](https://www.drivee.ca/blog/red-light-camera-ticket-toronto.html): A Toronto red light camera penalty is $328.25, goes to the vehicle owner, and carries no demerit points. Since January 20, 2025 it runs through the city's Administrative Penalty System: the 30-day deadline, screening and hearing reviews, and what happens if you ignore it.
+- [Speeding ticket in Ontario: fines, demerit points, and when it becomes stunt driving](https://www.drivee.ca/blog/speeding-ticket-ontario-demerit-points.html): Ontario speeding fines by km/h over, the demerit points for each band, when speeding becomes stunt driving (40, 50 and 150 km/h), what it means for insurance, and your options in the 15-day window.
+- [Careless driving ticket in Ontario: what it really costs, and whether to fight it](https://www.drivee.ca/blog/careless-driving-ticket-ontario.html): A careless driving ticket in Ontario means 6 demerit points, a $400 set fine ($490 total payable on most tickets), and years of higher insurance. What the charge means, your three options, and when fighting it pays off.
+
+### Signs
+
+- [Toronto parking signs explained - every colour, arrow, and time window](https://www.drivee.ca/blog/toronto-parking-signs-explained.html): No-stopping, no-standing, no-parking, permit, snow-route, rush-hour. Toronto's parking signs all look similar and mean very different things. A practical guide for drivers.
+
+### Insurance
+
+- [Will a car accident raise my insurance in Ontario?](https://www.drivee.ca/blog/car-accident-insurance-ontario.html): How Ontario decides who was at fault, how long an at-fault accident affects your premium, the minor-accident rule that protects your rate, and what the July 2026 accident benefits changes mean for you.
+
+### Accidents
+
+- [Car accident in Toronto? Here’s what to do, step by step.](https://www.drivee.ca/blog/car-accident-toronto-what-to-do.html): Had a car accident in Toronto? What to do at the scene, when you must call police (the threshold is now $5,000), where the collision reporting centres are, and the insurance deadlines you can’t miss.
+
+### Towing
+
+- [Your car got towed in Toronto. Here's exactly what to do next.](https://www.drivee.ca/blog/car-towed-toronto-what-to-do.html): Step-by-step: how to find your towed car in Toronto, what the pound charges, what documents you need, and how to dispute the tow if it was wrong.
+
+### Rates
+
+- [Green P parking rates 2026 - where it's cheap, where it's free, and what changed](https://www.drivee.ca/blog/green-p-parking-rates-2026.html): Green P parking rates across downtown, midtown, and east-end Toronto. Free-evening lots, after-hours flat rates, and where to actually save money parking in 2026.
+
+### Penalties
+
+- [What happens if you ignore a Toronto parking ticket?](https://www.drivee.ca/blog/toronto-parking-ticket-late-fees.html): The full Toronto parking-ticket late-fee schedule, the licence-plate denial trigger, and the one window where ignoring a ticket actually doesn't make it worse.
+
+### Disputes
+
+- [How to fight a parking ticket in Toronto (2026 dispute guide)](https://www.drivee.ca/blog/how-to-dispute-parking-ticket-toronto.html): You have 15 days to fight a Toronto parking ticket, and paying it cancels your right to dispute. The full APS walkthrough: screening review vs hearing, and the grounds that actually win. Written for drivers, not lawyers.
+
+### Safety
+
+- [Winter tire laws in Canada and the US: where they're required, and where they're not](https://www.drivee.ca/blog/winter-tire-laws-canada-us.html): Winter tire laws in Canada and the US: Quebec's Dec 1 to Mar 15 rule, BC highway signs, Ontario's insurance discount, US chain laws and studded tire dates.
 
 ## Frequently cited answers
 
 - Toronto parking ticket late fees: day 16 adds a $15.39 address search fee, day 31 adds a $32.10 late payment fee, day 60 adds a $32.10 plate denial fee.
 - Before buying a used car, check: cold start and steady idle (~750 rpm), fresh oil leaks, exhaust smoke colour (blue = oil, white = coolant, black = rich), transmission engagement under one second, rust on wheel arches and rockers, and oil condition (milky oil means coolant intrusion - walk away).
 - A VIN is 17 characters and never contains the letters I, O or Q.
+- A Drivee Car Report arrives by email from reports@drivee.ca, usually within 5-60 minutes of payment. If it has not arrived after an hour, check Spam or Promotions, then email drivee.canada@gmail.com.
+
+## Optional
+
+- [Full text of every guide](https://www.drivee.ca/llms-full.txt): all guides and page FAQs as Markdown in one file
+- [Sitemap](https://www.drivee.ca/sitemap.xml)

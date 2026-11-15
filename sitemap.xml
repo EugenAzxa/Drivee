@@ -1,158 +1,245 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
   <url>
     <loc>https://www.drivee.ca/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://www.drivee.ca/app.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://www.drivee.ca/report.html</loc>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://www.drivee.ca/report.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <loc>https://www.drivee.ca/app.html</loc>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/mechanic.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/parking-signs/</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/how-to-dispute-parking-ticket-toronto.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/toronto-parking-ticket-late-fees.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/toronto-parking-signs-explained.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/car-towed-toronto-what-to-do.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.drivee.ca/blog/green-p-parking-rates-2026.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/signs/no-standing/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/signs/permit-parking/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/signs/time-limit/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/contact.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
 
   <url>
     <loc>https://www.drivee.ca/privacy.html</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-14</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.2</priority>
   </url>
 
   <url>
-    <loc>https://www.drivee.ca/blog/car-accident-toronto-what-to-do.html</loc>
-    <lastmod>2026-10-08</lastmod>
+    <loc>https://www.drivee.ca/blog/check-car-lien-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/check-car-lien-canada-us.webp</image:loc></image:image>
   </url>
+
   <url>
-    <loc>https://www.drivee.ca/blog/careless-driving-ticket-ontario.html</loc>
-    <lastmod>2026-10-08</lastmod>
+    <loc>https://www.drivee.ca/blog/flood-damaged-car-how-to-spot.html</loc>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/flood-damaged-car-how-to-spot.webp</image:loc></image:image>
   </url>
+
   <url>
-    <loc>https://www.drivee.ca/blog/car-accident-insurance-ontario.html</loc>
-    <lastmod>2026-10-08</lastmod>
+    <loc>https://www.drivee.ca/blog/import-car-from-us-to-canada.html</loc>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/import-car-from-us-to-canada.webp</image:loc></image:image>
   </url>
+
   <url>
-    <loc>https://www.drivee.ca/blog/free-vin-check-ontario.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <loc>https://www.drivee.ca/blog/odometer-rollback-how-to-spot.html</loc>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/odometer-rollback-how-to-spot.webp</image:loc></image:image>
   </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/salvage-rebuilt-title-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/salvage-rebuilt-title-canada-us.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/used-car-scams-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/used-car-scams-canada-us.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/what-is-in-a-vehicle-history-report.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/what-is-in-a-vehicle-history-report.webp</image:loc></image:image>
+  </url>
+
   <url>
     <loc>https://www.drivee.ca/blog/buying-used-car-ontario-checklist.html</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/free-vin-check-ontario.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/distracted-driving-fines-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/distracted-driving-fines-canada-us.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/speed-camera-ticket-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/speed-camera-ticket-canada-us.webp</image:loc></image:image>
+  </url>
+
   <url>
     <loc>https://www.drivee.ca/blog/red-light-camera-ticket-toronto.html</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
+
   <url>
     <loc>https://www.drivee.ca/blog/speeding-ticket-ontario-demerit-points.html</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/careless-driving-ticket-ontario.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/toronto-parking-signs-explained.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/car-accident-insurance-ontario.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/car-accident-toronto-what-to-do.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/car-towed-toronto-what-to-do.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/green-p-parking-rates-2026.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/toronto-parking-ticket-late-fees.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/how-to-dispute-parking-ticket-toronto.html</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.drivee.ca/blog/winter-tire-laws-canada-us.html</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image><image:loc>https://www.drivee.ca/assets/img/blog/winter-tire-laws-canada-us.webp</image:loc></image:image>
+  </url>
+
 </urlset>

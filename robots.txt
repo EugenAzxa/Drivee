@@ -56,7 +56,8 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-# LLM-readable site summary
+# LLM-readable site summary and full text
 # https://www.drivee.ca/llms.txt
+# https://www.drivee.ca/llms-full.txt
 
 Sitemap: https://www.drivee.ca/sitemap.xml
