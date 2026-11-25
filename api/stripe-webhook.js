@@ -509,5 +509,8 @@ module.exports = async function handler(req, res) {
   }
 };
 
+// Email templates, reused by the admin "send test notifications" action.
+module.exports.templates = { ownerHtml: ownerHtml, buyerHtml: buyerHtml };
+
 // Ask the runtime not to parse the body (honoured by Vercel's Node runtime).
 module.exports.config = { api: { bodyParser: false } };
