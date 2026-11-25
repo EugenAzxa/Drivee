@@ -83,7 +83,8 @@ module.exports = async function handler(req, res) {
     var meta = s.metadata || {};
     var vin = String(meta.vin || s.client_reference_id || '').toUpperCase();
     var cleanVin = /^[A-HJ-NPR-Z0-9]{17}$/.test(vin) ? vin : '';
-    var token = cleanVin ? vinCore.signReportAccessToken(cleanVin, sid) : null;
+    // A report link only for a paid session.
+    var token = cleanVin && s.payment_status === 'paid' ? vinCore.signReportAccessToken(cleanVin, sid) : null;
     return res.status(200).json({
       ok: true,
       paid: s.payment_status === 'paid',

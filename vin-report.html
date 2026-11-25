@@ -2113,7 +2113,37 @@
   }
 
   var initialLoader = startPipelineLoader(vin);
+  var unlockStartedAt = Date.now();
+  var UNLOCK_MAX_WAIT_MS = 8 * 60 * 1000;
 
+  // Paid reports can take 1-3 minutes to compile. Tell the buyer they can wait
+  // here or close the page (the link is emailed when the report is ready).
+  function showWaitNote() {
+    var box = document.getElementById('pipeline-loader');
+    if (!box || document.getElementById('pl-wait-note') || isDemo) return;
+    var p = document.createElement('p');
+    p.id = 'pl-wait-note';
+    p.className = 'pl-sub';
+    p.style.cssText = 'margin-top:14px;padding:12px 14px;border-radius:12px;background:rgba(37,99,235,0.08);font-weight:600';
+    p.textContent = 'Compiling a full history usually takes 1-3 minutes. Keep this page open and the report will appear here automatically, or close it: we will email you the link as soon as it is ready.';
+    box.appendChild(p);
+  }
+  var waitNoteTimer = setTimeout(showWaitNote, 6000);
+
+  function retryOrGiveUp(fromError) {
+    showWaitNote();
+    // A pack credit may already have been spent by the failed request; don't
+    // resend the pack code without the access token it returned.
+    var packOnly = fromError && packCode && !accessToken && !sessionId;
+    if (packOnly || Date.now() - unlockStartedAt > UNLOCK_MAX_WAIT_MS) {
+      initialLoader.stop();
+      renderLocked('Your report is still being compiled. We will email you the link as soon as it is ready. You can also reload this page in a few minutes.');
+      return;
+    }
+    setTimeout(requestUnlock, 5000);
+  }
+
+  function requestUnlock() {
   fetch('/api/order-status?op=unlock', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -2127,6 +2157,13 @@
   })
     .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
     .then(function (res) {
+      // Another request (payment webhook, reload, other tab) is compiling this VIN.
+      if (res.status === 202 && res.data && res.data.pending) {
+        if (res.data.accessToken && !accessToken) accessToken = res.data.accessToken;
+        retryOrGiveUp();
+        return;
+      }
+      clearTimeout(waitNoteTimer);
       if (!res.data || !res.data.ok || !res.data.report) {
         initialLoader.stop();
         renderLocked((res.data && res.data.error) || 'Report locked.');
@@ -2151,9 +2188,11 @@
       });
     })
     .catch(function () {
-      initialLoader.stop();
-      renderLocked('Unable to reach /api/vin-unlock right now.');
+      // Network error or a timed-out compile: the build keeps going on the server.
+      retryOrGiveUp(true);
     });
+  }
+  requestUnlock();
 })();
 </script>
 </body>
