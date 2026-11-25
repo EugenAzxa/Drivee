@@ -21,6 +21,7 @@
 //   STRIPE_WEBHOOK_SECRET and redeploy.
 //
 // Env: STRIPE_WEBHOOK_SECRET (required), RESEND_API_KEY (required),
+//      STRIPE_SECRET_KEY (required to tell Drivee refunds/declines from other businesses on the account),
 //      ORDER_ALERT_EMAIL (optional, defaults to drivee.canada@gmail.com),
 //      TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (optional).
 
@@ -41,6 +42,7 @@ var PLAN_BY_AMOUNT = {
   3900: 'pack3',
   9900: 'pack10',
   1900: 'basic',
+  2900: 'lien',
   3000: 'lien',
 };
 var PLAN_LABEL = {
@@ -48,8 +50,46 @@ var PLAN_LABEL = {
   pack3: 'Buyer 3-Report Pack ($39 CAD)',
   pack10: 'Pro / Dealer 10-Pack ($99 CAD)',
   basic: 'Full report ($19 CAD)',
-  lien: 'Full report + Ontario lien check ($30 CAD)',
+  lien: 'Full report + Ontario lien check ($29 CAD)',
 };
+
+// The Stripe account is shared with other businesses, and a webhook endpoint
+// receives every event on the account. Only Drivee report orders are handled:
+// sessions created by /api/order-status?op=checkout (they carry metadata.tierId)
+// and the two legacy report Payment Links ($19 and $29 in report.html).
+var DRIVEE_PAYMENT_LINKS = [
+  'plink_1TpB6XRgnBQDnJBTz1szVm6Y', // Drivee Car Report no lien ($19)
+  'plink_1TpB8fRgnBQDnJBT2Qnitccz'  // Car report with lien ($29)
+];
+
+function isDriveeSession(s) {
+  if (!s || s.object !== 'checkout.session') return false;
+  if (s.metadata && s.metadata.tierId) return true;
+  var link = typeof s.payment_link === 'string' ? s.payment_link : (s.payment_link && s.payment_link.id) || '';
+  return DRIVEE_PAYMENT_LINKS.indexOf(link) >= 0;
+}
+
+// payment_intent.* and charge.* events don't say which checkout they came from,
+// so look the session up by its PaymentIntent. Throws on a Stripe error so the
+// handler answers 500 and Stripe retries later.
+async function sessionForPaymentIntent(pi) {
+  var key = process.env.STRIPE_SECRET_KEY;
+  if (!key || !pi) return null;
+  var r = await fetch('https://api.stripe.com/v1/checkout/sessions?limit=1&payment_intent=' + encodeURIComponent(pi), {
+    headers: { 'Authorization': 'Bearer ' + key }
+  });
+  if (r.status !== 200) throw new Error('Stripe session lookup ' + r.status);
+  var d = await r.json();
+  return (d.data && d.data[0]) || null;
+}
+
+async function isDriveeEvent(evt) {
+  var type = String(evt.type || ''), obj = (evt.data && evt.data.object) || {};
+  if (type.indexOf('checkout.session.') === 0) return isDriveeSession(obj);
+  if (type === 'payment_intent.payment_failed') return isDriveeSession(await sessionForPaymentIntent(obj.id));
+  if (type === 'charge.refunded') return isDriveeSession(await sessionForPaymentIntent(obj.payment_intent));
+  return false;
+}
 
 // Stripe retries on any non-2xx; remember what we already handled on this
 // instance so a retry after a slow response doesn't double-email the buyer.
@@ -435,6 +475,14 @@ module.exports = async function handler(req, res) {
   try { evt = JSON.parse(raw.toString('utf8')); } catch (e) { return res.status(400).json({ error: 'Bad JSON' }); }
 
   if (seen[evt.id]) return res.status(200).json({ ok: true, duplicate: true });
+
+  try {
+    if (!(await isDriveeEvent(evt))) return res.status(200).json({ ok: true, ignored: true });
+  } catch (filterErr) {
+    console.log('[stripe-webhook] could not classify event', evt.type, filterErr && filterErr.message);
+    return res.status(500).json({ error: 'Lookup failed' });
+  }
+
   if (typeof vinCore.claimWebhookEventAsync === 'function') {
     try {
       var claim = await vinCore.claimWebhookEventAsync(evt.id);
