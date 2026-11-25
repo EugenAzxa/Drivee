@@ -1296,3 +1296,71 @@ private mode also misses it, then it is a real code bug.
 
 
 
+
+
+SESSION 12 — 25 November 2026
+-----------------------------------
+
+WHAT WAS BUILT
+
+The paid VIN report business went live end to end. A contributor's PR with
+automated Canadian VIN reports was reviewed, configured and merged, and the
+post-payment flow was rebuilt so buyers get the report on the site and by
+email without the report ever being bought twice.
+
+1. VIN reports merged and live (PR 1). New tiers $17 single, $39 3-pack,
+   $99 10-pack (CAD), dynamic Stripe Checkout, vin-report.html dossier with
+   PDF, /vin-admin.html console, Supabase table vin_store_buckets (RLS on).
+   index.html got a "Buying a used car? Run a live VIN check first" block
+   with the new prices and a sample report link.
+2. Production setup. Vercel Production env: STRIPE_SECRET_KEY (live key from
+   the SayLavi Stripe account, which is where Drivee payments live),
+   STRIPE_WEBHOOK_SECRET, AUCTIONS_API_KEY, VIN_ACCESS_SECRET, VIN_ADMIN_USER
+   and VIN_ADMIN_PASSWORD, NEXT_PUBLIC_SITE_URL, VIN_ALLOW_FREE_PROMO=false,
+   VIN_AUTO_FULFILL=true. Local copies are in .env.local (git-ignored).
+3. Stripe webhook created for https://www.drivee.ca/api/stripe-webhook
+   (6 events). Because the Stripe account is shared with SayLavi/saylast,
+   the webhook now handles only Drivee orders and ignores everything else
+   (PR 2). The $29 lien link amount is recognised.
+4. Report-ready flow (PR 3). After payment the webhook starts the build,
+   the buyer sees "compiling, 1-3 minutes, you can close this page", the
+   report appears on the page, and the buyer gets a "Your Drivee Car Report
+   is ready" email with the link. Owners get PAID and DELIVERED emails.
+   A per-VIN lock plus cache reuse means one VIN is bought only once.
+   Session-ID unlock now needs a paid order for that exact VIN.
+5. Order alerts go to drivee.canada@gmail.com and 69apha@gmail.com, and an
+   admin action send_test_notifications sends [TEST] samples of every
+   order email to those two addresses (PR 4). Test send confirmed received.
+
+
+ISSUES TO CARRY FORWARD
+
+1. Legal risk, still open. Paid reports are CARFAX / AutoCheck reports
+   bought through auctionsapi.com and re-branded as "Drivee", with CARFAX
+   trademarks and copyright lines stripped (scrubToDriveeBranding in
+   lib/vin-core.js). Get legal advice before scaling sales.
+2. No real end-to-end purchase has been done yet. Do one $17 purchase and
+   refund it to confirm all four emails, the waiting page and the refund.
+3. Each automatic purchase spends about $4.50 of AuctionsAPI balance
+   ($60 at setup). Watch the balance in /vin-admin.html.
+4. Report access tokens never expire and are not revoked on refund.
+5. send_test_notifications has no button in /vin-admin.html yet (API only).
+6. VIN_ACCESS_SECRET must never change: pack codes depend on it.
+7. Local .claude/settings.json changes and the docs/ folder are not
+   committed (they were not part of this session's work).
+8. PRD.md does not mention VIN reports at all. It still describes Drivee
+   only as the parking and traffic fine app. The PRD needs a new section:
+   VIN report product, tiers and prices, payment flow, emails, admin.
+
+
+HOMEWORK SET THIS SESSION
+
+Check the buyer journey from the outside, without paying. See below.
+
+
+PLAN FOR NEXT SESSION
+
+1. Review the result of the real $17 test purchase and refund.
+2. Add the VIN report section to PRD.md.
+3. Add a "Send test emails" button to /vin-admin.html.
+4. Decide on the CARFAX re-branding question after legal advice.
