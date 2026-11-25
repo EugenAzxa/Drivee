@@ -144,6 +144,18 @@ module.exports = async function handler(req, res) {
   var byDevice = {};  // "Form factor / OS" → count
   var byBrowser = {};
   var funnel  = { app_open: 0, scan_ticket: 0, scan_success: 0, dispute_generated: 0 };
+  // Roll up VIN check funnel + CAD revenue alongside existing parking-ticket metrics
+  var vinFunnel = {
+    inquiries: 0,
+    buyClicks: 0,
+    paidOrders: 0,
+    pending: 0,
+    abandoned: 0,
+    declined: 0,
+    refunded: 0,
+    estimatedRevenueCad: 0,
+    byTier: { single: 0, pack3: 0, pack10: 0, legacy: 0 }
+  };
   var recent  = [];
 
   // Unique-user buckets (uid → first seen ts)
@@ -239,6 +251,26 @@ module.exports = async function handler(req, res) {
     if (dk in byDay) byDay[dk]++;
 
     if (funnel.hasOwnProperty(row.event)) funnel[row.event]++;
+
+    if (row.event === 'vin_check') vinFunnel.inquiries++;
+    if (row.event === 'report_buy_click') vinFunnel.buyClicks++;
+    if (row.event === 'report_pending') vinFunnel.pending++;
+    if (row.event === 'report_abandoned') vinFunnel.abandoned++;
+    if (row.event === 'report_declined') vinFunnel.declined++;
+    if (row.event === 'report_refunded') vinFunnel.refunded++;
+    if (row.event === 'report_paid') {
+      vinFunnel.paidOrders++;
+      var rawMeta = parseMeta(row.metaRaw);
+      var amtStr = String(rawMeta.amt || '');
+      var amtMatch = /([\d.]+)/.exec(amtStr);
+      if (amtMatch) vinFunnel.estimatedRevenueCad += Number(amtMatch[1]) || 0;
+      var tierToken = String((row.m || '').split(' ')[0] || '').toLowerCase();
+      if (tierToken === 'single' || tierToken === 'pack3' || tierToken === 'pack10') {
+        vinFunnel.byTier[tierToken]++;
+      } else {
+        vinFunnel.byTier.legacy++;
+      }
+    }
 
     // Session tracking
     if (row.sid) {
@@ -382,6 +414,7 @@ module.exports = async function handler(req, res) {
     sessions: sessionStats,
     dailyTrend: dailyTrend,
     funnel: funnel,
+    vinFunnel: vinFunnel,
     recent: recent
   });
 };

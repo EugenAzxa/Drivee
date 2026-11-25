@@ -1,0 +1,2975 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow, noarchive"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<title>Drivee · VIN Command Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #F2F5FA;
+    --bg2: #E7ECF5;
+    --paper: #FFFFFF;
+    --ink: #0B1430;
+    --ink2: #475269;
+    --ink3: #56637A;
+    --line: rgba(11, 20, 48, 0.085);
+    --line2: rgba(11, 20, 48, 0.14);
+    --blue: #1D4ED8;
+    --blue-d: #1E40AF;
+    --blue-soft: #EAF0FD;
+    --green: #0B7A43;
+    --green-soft: #ECFDF3;
+    --violet: #6D28D9;
+    --violet-soft: #F3EEFF;
+    --amber: #B45309;
+    --amber-soft: #FFFBEB;
+    --red: #DC2626;
+    --red-soft: #FEF2F2;
+    --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(940px 440px at 50% -60px, rgba(37, 99, 235, 0.11), transparent 72%),
+      radial-gradient(520px 300px at 84% 8%, rgba(15, 157, 88, 0.05), transparent 70%);
+    background-repeat: no-repeat;
+    color: var(--ink);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .tnum { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--mono); }
+
+  .drivee-card {
+    background: var(--paper);
+    border: 1px solid rgba(11, 20, 48, 0.085);
+    border-radius: 22px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 1px 2px rgba(11, 20, 48, 0.04),
+      0 14px 36px -6px rgba(11, 20, 48, 0.065);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+
+  /* ── Login Gate ──────────────────────────────────────────────────────── */
+  .login-gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 440px;
+    padding: 32px 30px 28px;
+  }
+  .login-badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .owner-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: var(--blue-d);
+    font: 800 10.5px var(--mono);
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+  }
+  .brand-link {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand-link span { color: var(--blue); }
+  .login-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    color: var(--ink);
+  }
+  .login-sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink2);
+    margin-bottom: 20px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font: 700 11px var(--mono);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--ink2);
+    margin-bottom: 6px;
+  }
+  .pw-wrap { position: relative; }
+  .field input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line2);
+    border-radius: 12px;
+    font: 600 14px var(--font);
+    color: var(--ink);
+    background: rgba(242, 245, 250, 0.55);
+    transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.16);
+  }
+  .pw-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font: 700 11px var(--mono);
+    color: var(--ink3);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+  .pw-toggle:hover { color: var(--ink); background: rgba(11, 20, 48, 0.05); }
+  .login-btn {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 6px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    background: var(--ink);
+    color: #fff;
+    font: 800 14px var(--font);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(11, 20, 48, 0.16);
+    transition: background-color 0.15s;
+  }
+  .login-btn:hover { background: var(--blue-d); }
+  .login-btn:disabled { opacity: 0.55; cursor: wait; }
+  .login-err {
+    display: none;
+    margin-bottom: 14px;
+    padding: 10px 13px;
+    border-radius: 12px;
+    background: rgba(220, 38, 38, 0.08);
+    border: 1px solid rgba(220, 38, 38, 0.28);
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .login-hint {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 13px;
+    border-radius: 12px;
+    background: var(--amber-soft);
+    border: 1px solid rgba(180, 83, 9, 0.25);
+    color: #92400E;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .login-foot {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--ink3);
+  }
+  .login-foot a { color: var(--blue-d); text-decoration: none; font-weight: 700; }
+  .login-foot a:hover { text-decoration: underline; }
+
+  /* ── Executive Dashboard Shell ───────────────────────────────────────── */
+  .admin-app { display: none; padding: 28px 18px 72px; }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+
+  .header-card { padding: 24px 28px; }
+  .header-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .status-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .cmd-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: var(--blue-d);
+    font: 800 10.5px var(--mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .chip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--bg2);
+    border: 1px solid var(--line);
+    color: var(--ink2);
+    font: 700 10.5px var(--mono);
+  }
+  .chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .user-email-label { font: 600 11px var(--mono); color: var(--ink3); }
+
+  .header-title {
+    margin-top: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .header-sub {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--ink2);
+  }
+
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .fx-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(11, 20, 48, 0.12);
+    background: rgba(242, 245, 250, 0.7);
+  }
+  .fx-pill button {
+    min-height: 30px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink2);
+    font: 800 11px var(--mono);
+    cursor: pointer;
+    transition: background-color 0.14s, color 0.14s;
+  }
+  .fx-pill button.active { background: var(--ink); color: #fff; }
+  .fx-pill button[data-cur="USD"].active { background: var(--blue); }
+  .fx-rate-lbl {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    font: 700 10.5px var(--mono);
+    color: var(--ink3);
+  }
+  .fx-rate-inp {
+    width: 56px;
+    padding: 4px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(11, 20, 48, 0.1);
+    background: #fff;
+    text-align: center;
+    font: 700 11px var(--mono);
+    color: var(--ink);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(11, 20, 48, 0.12);
+    background: #fff;
+    font: 700 12.5px var(--font);
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.14s, border-color 0.14s, color 0.14s;
+  }
+  .btn:hover { background: var(--bg); border-color: rgba(11, 20, 48, 0.22); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .btn.dark:hover { background: var(--blue-d); border-color: var(--blue-d); }
+  .btn.brand { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn.brand:hover { background: var(--blue-d); border-color: var(--blue-d); }
+  .btn.danger {
+    color: var(--red);
+    border-color: rgba(220, 38, 38, 0.26);
+    background: #fff;
+  }
+  .btn.danger:hover { background: var(--red-soft); }
+  .btn.good {
+    color: var(--green);
+    border-color: rgba(11, 122, 67, 0.26);
+    background: rgba(15, 157, 88, 0.1);
+  }
+  .btn.good:hover { background: #DCFCE7; }
+  .btn.sm { min-height: 30px; padding: 4px 9px; font-size: 11px; border-radius: 8px; }
+
+  /* ── Navigation Tablist Bar ──────────────────────────────────────────── */
+  .tab-bar {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(231, 236, 245, 0.65);
+    color: var(--ink2);
+    font: 800 12.5px var(--font);
+    cursor: pointer;
+    transition: background-color 0.14s, color 0.14s, box-shadow 0.14s;
+  }
+  .tab-btn:hover { color: var(--ink); background: var(--bg2); }
+  .tab-btn.active {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.24);
+  }
+
+  /* ── Notice & Status Banners ─────────────────────────────────────────── */
+  .warn-banner {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: rgba(217, 119, 6, 0.08);
+    border: 1px solid rgba(217, 119, 6, 0.28);
+    color: #92400E;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .warn-banner code {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    background: rgba(180, 83, 9, 0.12);
+    padding: 1px 6px;
+    border-radius: 6px;
+  }
+  .warn-banner.eph {
+    background: rgba(220, 38, 38, 0.07);
+    border-color: rgba(220, 38, 38, 0.26);
+    color: #991B1B;
+  }
+  .status-banner {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .status-banner.open { display: flex; }
+  .status-banner.ok {
+    background: rgba(15, 157, 88, 0.08);
+    border: 1px solid rgba(11, 122, 67, 0.28);
+    color: var(--green);
+  }
+  .status-banner.err {
+    background: rgba(220, 38, 38, 0.08);
+    border: 1px solid rgba(220, 38, 38, 0.28);
+    color: var(--red);
+  }
+  .banner-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .banner-close:hover { background: rgba(11, 20, 48, 0.06); }
+
+  /* ── Tab Panels ──────────────────────────────────────────────────────── */
+  .tab-panel { display: none; margin-top: 22px; }
+  .tab-panel.active { display: block; }
+  .stack-gap { display: flex; flex-direction: column; gap: 22px; }
+
+  /* ── KPI Grid ────────────────────────────────────────────────────────── */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .kpi-card { padding: 18px 20px; }
+  .k-lbl {
+    font: 700 10px var(--mono);
+    color: var(--ink3);
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+  }
+  .k-val {
+    margin-top: 6px;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+  }
+  .k-sub {
+    margin-top: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Section Heads & Segmented Toggles ───────────────────────────────── */
+  .card-pad { padding: 24px; }
+  .sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .kicker {
+    font: 800 10.5px var(--mono);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .sec-title {
+    margin-top: 2px;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.35px;
+    color: var(--ink);
+  }
+  .sec-sub {
+    margin-top: 2px;
+    font-size: 12.5px;
+    color: var(--ink2);
+  }
+
+  .seg {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px;
+    border-radius: 11px;
+    border: 1px solid rgba(11, 20, 48, 0.1);
+    background: var(--bg);
+    gap: 2px;
+  }
+  .seg button {
+    min-height: 28px;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink2);
+    font: 700 11px var(--mono);
+    cursor: pointer;
+    transition: background-color 0.14s, color 0.14s;
+  }
+  .seg button.active { background: var(--ink); color: #fff; }
+  .seg.brand-seg button.active { background: var(--blue); color: #fff; }
+
+  /* ── Heatmap & Charts ────────────────────────────────────────────────── */
+  .hm-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .hm-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--bg2);
+    font: 700 11px var(--mono);
+    color: var(--ink2);
+  }
+  .hm-pill strong { color: var(--ink); }
+  .hm-pill.brand { background: var(--blue-soft); color: var(--blue-d); }
+  .hm-pill.good { background: rgba(15, 157, 88, 0.12); color: var(--green); }
+  .hm-scroll { overflow-x: auto; margin-top: 14px; padding-bottom: 4px; }
+  .hm-svg { display: block; min-width: 820px; width: 100%; height: auto; }
+  .hm-cell { cursor: pointer; transition: opacity 0.12s, stroke 0.12s; }
+  .hm-cell:hover { stroke: var(--ink); stroke-width: 1.4; }
+  .hm-foot {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 11.5px;
+    color: var(--ink3);
+  }
+  .hm-legend { display: inline-flex; align-items: center; gap: 5px; font: 600 10.5px var(--mono); }
+  .hm-swatch { width: 11px; height: 11px; border-radius: 2.5px; border: 1px solid rgba(11, 20, 48, 0.08); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .chart-frame {
+    margin-top: 16px;
+    padding: 12px 12px 8px;
+    border-radius: 16px;
+    border: 1px solid rgba(11, 20, 48, 0.06);
+    background: rgba(242, 245, 250, 0.55);
+  }
+  .chart-svg { width: 100%; height: 220px; display: block; }
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 10px;
+    font: 700 11px var(--mono);
+    color: var(--ink2);
+  }
+  .leg-item { display: inline-flex; align-items: center; gap: 6px; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* ── Tooltip ─────────────────────────────────────────────────────────── */
+  .tip {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    display: none;
+    background: #0B1430;
+    color: #fff;
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    box-shadow: 0 12px 28px rgba(11, 20, 48, 0.28);
+    max-width: 280px;
+  }
+  .tip-date { font: 700 11px var(--mono); color: #93C5FD; margin-bottom: 3px; }
+  .tip-row { display: flex; justify-content: space-between; gap: 14px; }
+  .tip-val { font-family: var(--mono); font-weight: 700; }
+
+  /* ── Forms & Support Tools ───────────────────────────────────────────── */
+  .sec-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(15, 157, 88, 0.12);
+    color: var(--green);
+    font: 800 10px var(--mono);
+    white-space: nowrap;
+  }
+  .form-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .inp, .form-row input, .form-row select, .search-inp {
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid rgba(11, 20, 48, 0.12);
+    border-radius: 12px;
+    font: 600 13px var(--font);
+    color: var(--ink);
+    background: rgba(242, 245, 250, 0.55);
+    min-width: 0;
+    transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+  }
+  .inp:focus, .form-row input:focus, .form-row select:focus, .search-inp:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+  }
+  .code-reveal {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--green-soft);
+    border: 1px solid rgba(11, 122, 67, 0.28);
+  }
+  .code-reveal-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .code-reveal-lbl { font: 800 10.5px var(--mono); color: var(--green); text-transform: uppercase; letter-spacing: 0.6px; }
+  .code-reveal-val {
+    font: 800 13px var(--mono);
+    color: var(--ink);
+    word-break: break-all;
+    background: #fff;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid rgba(11, 122, 67, 0.22);
+  }
+  .code-reveal-note { font-size: 11.5px; color: #166534; margin-top: 7px; line-height: 1.45; }
+
+  .inspect-out {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--bg);
+    border: 1px solid var(--line2);
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  .inspect-out.bad {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.25);
+    color: var(--red);
+  }
+
+  /* ── Tables (Rounded Executive Frame Style) ──────────────────────────── */
+  .table-shell {
+    margin-top: 16px;
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 620px; }
+  thead { background: var(--bg); border-bottom: 1px solid var(--line); }
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    font: 700 10px var(--mono);
+    color: var(--ink3);
+    text-transform: uppercase;
+    letter-spacing: 0.65px;
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(11, 20, 48, 0.06);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(242, 245, 250, 0.45); }
+  .tr { text-align: right; }
+
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font: 800 10px var(--mono);
+    letter-spacing: 0.25px;
+  }
+  .pill.v2 { background: var(--blue-soft); color: var(--blue-d); }
+  .pill.v1 { background: var(--bg2); color: var(--ink3); }
+  .pill.ok { background: rgba(15, 157, 88, 0.12); color: var(--green); }
+  .pill.rev { background: rgba(220, 38, 38, 0.12); color: var(--red); }
+  .pill.comp { background: var(--blue-soft); color: var(--blue-d); }
+  .pill.empty { background: var(--bg2); color: var(--ink3); }
+  .pill.tier-single { background: var(--blue-soft); color: var(--blue-d); }
+  .pill.tier-pack3 { background: rgba(15, 157, 88, 0.12); color: var(--green); }
+  .pill.tier-pack10 { background: var(--violet-soft); color: var(--violet); }
+  .row-actions { display: inline-flex; gap: 6px; flex-wrap: nowrap; justify-content: flex-end; }
+  .vin-chip {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: var(--blue-soft);
+    color: var(--blue-d);
+    font: 700 10px var(--mono);
+    text-decoration: none;
+    margin: 2px 4px 2px 0;
+  }
+  .vin-chip:hover { background: rgba(29, 78, 216, 0.2); }
+  .purge-banner {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: rgba(217, 119, 6, 0.08);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+    color: #92400E;
+    font-size: 13px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .purge-banner.open { display: flex; }
+  .settings-3col { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+  .field-lbl {
+    display: block;
+    font: 700 10.5px var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink2);
+    margin-bottom: 5px;
+  }
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(242, 245, 250, 0.6);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .check-row input { width: 16px; height: 16px; accent-color: var(--blue); }
+
+  /* ── Executive Confirmation Modal ────────────────────────────────────── */
+  .confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(11, 20, 48, 0.48);
+    backdrop-filter: blur(4px);
+  }
+  .confirm-backdrop.open { display: flex; }
+  .confirm-card {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    border: 1px solid var(--line2);
+    border-radius: 22px;
+    padding: 24px 22px 20px;
+    box-shadow: 0 24px 64px rgba(11, 20, 48, 0.26);
+    animation: modalPop 0.14s ease-out;
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: translateY(6px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .confirm-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .confirm-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .confirm-icon.danger { background: var(--red-soft); color: var(--red); border: 1px solid rgba(220, 38, 38, 0.22); }
+  .confirm-icon.good { background: var(--green-soft); color: var(--green); border: 1px solid rgba(11, 122, 67, 0.24); }
+  .confirm-title { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--ink); }
+  .confirm-body { font-size: 13px; color: var(--ink2); line-height: 1.55; margin-top: 3px; }
+  .confirm-meta {
+    margin: 12px 0 18px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .confirm-meta .cm-row { display: flex; justify-content: space-between; gap: 10px; }
+  .confirm-meta .cm-k { color: var(--ink3); font-weight: 600; }
+  .confirm-meta .cm-v { font-family: var(--mono); font-weight: 700; text-align: right; word-break: break-all; }
+  .confirm-actions { display: flex; justify-content: flex-end; gap: 9px; }
+  .btn.danger-solid { background: var(--red); color: #fff; border-color: var(--red); }
+  .btn.danger-solid:hover { background: #B91C1C; border-color: #B91C1C; }
+  .btn.good-solid { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn.good-solid:hover { background: #096135; border-color: #096135; }
+
+  .kv-list {
+    margin-top: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(242, 245, 250, 0.55);
+    padding: 4px 16px;
+  }
+  .kv-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-k { color: var(--ink2); font-weight: 600; }
+  .kv-v { font: 700 12px var(--mono); color: var(--ink); text-align: right; }
+
+  @media (max-width: 1140px) {
+    .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 860px) {
+    .grid-2, .settings-3col { grid-template-columns: 1fr; }
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .header-card { padding: 20px; }
+  }
+  @media (max-width: 520px) {
+    .admin-app { padding: 16px 12px 52px; }
+    .card-pad { padding: 18px; }
+    .k-val { font-size: 19px; }
+    .header-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── ADMIN LOGIN GATE ── -->
+<div class="login-gate" id="login-gate">
+  <div class="drivee-card login-card">
+    <div class="login-badge-row">
+      <span class="owner-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>OWNER ACCESS ONLY</span>
+      </span>
+      <a class="brand-link" href="/report.html">Drivee<span>.</span></a>
+    </div>
+    <h1 class="login-title">Drivee Command Desk</h1>
+    <p class="login-sub">Sign in to manage CAD/USD sales, buyer email CRM, 52-week buy heatmaps, promo lifecycle, and 160-bit HMAC pack codes.</p>
+
+    <div class="login-err" id="login-err" role="alert"></div>
+
+    <form id="login-form" autocomplete="on">
+      <div class="field">
+        <label for="login-user">Admin Username</label>
+        <input id="login-user" name="username" type="text" autocomplete="username" value="admin" required/>
+      </div>
+      <div class="field">
+        <label for="login-pass">Admin Password</label>
+        <div class="pw-wrap">
+          <input id="login-pass" name="password" type="password" autocomplete="current-password" placeholder="Enter admin password" required/>
+          <button class="pw-toggle" id="pw-toggle" type="button" aria-label="Toggle password visibility">Show</button>
+        </div>
+      </div>
+      <button class="login-btn" id="login-submit" type="submit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Sign In to Owner Dashboard</span>
+      </button>
+      <div class="login-hint" id="login-hint"></div>
+    </form>
+
+    <div class="login-foot">
+      <span>Signed HttpOnly Session · 5-try lockout</span>
+      <a href="/report.html">VIN Checker →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── AUTHENTICATED EXECUTIVE COMMAND DESK ── -->
+<div class="admin-app" id="admin-app">
+  <div class="wrap">
+    <!-- Executive Header & Tab Bar -->
+    <div class="drivee-card header-card">
+      <div class="header-top">
+        <div>
+          <div class="status-pills">
+            <span class="cmd-pill">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span>DRIVEE OWNER COMMAND DESK</span>
+            </span>
+            <span class="chip-pill" id="storage-chip" style="display:none">
+              <span class="chip-dot" id="storage-dot"></span>
+              <span id="storage-label">Local JSON</span>
+            </span>
+            <span class="chip-pill" id="stripe-chip" style="display:none">
+              <span class="chip-dot" id="stripe-dot"></span>
+              <span id="stripe-label">Stripe Sandbox</span>
+            </span>
+            <span class="chip-pill" id="balance-chip" style="display:none">
+              <span id="balance-label">Upstream</span>
+            </span>
+            <span class="chip-pill" id="signed-in-chip">
+              <span class="chip-dot"></span>
+              <span id="signed-in-user">admin</span>
+            </span>
+            <span class="user-email-label" id="session-method-label"></span>
+          </div>
+          <h1 class="header-title">Operations, Revenue, CRM &amp; Canadian VIN Control</h1>
+          <p class="header-sub">CAD/USD analytics, hardened 160-bit HMAC pack ledger, promo controls, buyer LTV database &amp; live VIN inquiries.</p>
+        </div>
+
+        <div class="header-actions">
+          <div class="fx-pill" title="Convert revenue, costs, margins, charts & buyer totals between CAD and USD">
+            <div id="currency-seg" role="group" aria-label="Display currency" style="display:inline-flex;gap:2px">
+              <button type="button" class="active" data-cur="CAD">CAD</button>
+              <button type="button" data-cur="USD">USD</button>
+            </div>
+            <label class="fx-rate-lbl" for="fx-rate-input" title="CAD to USD conversion rate">
+              <span>1 CAD=</span>
+              <input class="fx-rate-inp" id="fx-rate-input" type="number" step="0.01" min="0.2" max="2" value="0.72"/>
+            </label>
+          </div>
+
+          <a class="btn" href="/report.html">VIN Checker</a>
+          <button class="btn" id="refresh-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            <span>Refresh</span>
+          </button>
+          <button class="btn dark" id="logout-btn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar" id="admin-tablist" role="tablist" aria-label="Admin dashboard sections">
+        <button id="admin-tab-overview" role="tab" type="button" class="tab-btn active" data-tab="overview" aria-selected="true" aria-controls="panel-overview" tabindex="0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+          <span>Sales Analytics</span>
+        </button>
+        <button id="admin-tab-orders" role="tab" type="button" class="tab-btn" data-tab="orders" aria-selected="false" aria-controls="panel-orders" tabindex="-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span id="tab-lbl-orders">Orders, Packs &amp; Promos</span>
+        </button>
+        <button id="admin-tab-buyers" role="tab" type="button" class="tab-btn" data-tab="buyers" aria-selected="false" aria-controls="panel-buyers" tabindex="-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span id="tab-lbl-buyers">Buyer CRM</span>
+        </button>
+        <button id="admin-tab-comp" role="tab" type="button" class="tab-btn" data-tab="comp" aria-selected="false" aria-controls="panel-comp" tabindex="-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          <span>Instant Comp Desk</span>
+        </button>
+        <button id="admin-tab-inquiries" role="tab" type="button" class="tab-btn" data-tab="inquiries" aria-selected="false" aria-controls="panel-inquiries" tabindex="-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span id="tab-lbl-inquiries">Recent Lookups</span>
+        </button>
+        <button id="admin-tab-settings" role="tab" type="button" class="tab-btn" data-tab="settings" aria-selected="false" aria-controls="panel-settings" tabindex="-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Settings &amp; Sandbox</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="warn-banner" id="local-creds-banner">
+      <strong>Local dev password active:</strong> Running on localhost with default admin credentials. Before deploying to production, set <code>VIN_ADMIN_USER</code>, <code>VIN_ADMIN_PASSWORD</code>, and <code>VIN_ACCESS_SECRET</code> in Vercel Environment Variables.
+    </div>
+
+    <div class="warn-banner eph" id="ephemeral-store-banner">
+      <strong>Ephemeral Vercel <code>/tmp</code> storage active:</strong> Orders, pack credit balances, and revoked promos reset on cold starts. Run <code>tools/vin-supabase-schema.sql</code> in Supabase SQL Editor and set <code>SUPABASE_SERVICE_ROLE_KEY</code> in Vercel Environment Variables for durable persistence.
+    </div>
+
+    <div class="purge-banner" id="sandbox-purge-banner">
+      <span style="font-weight:700" id="sandbox-purge-text">Sandbox test orders are visible in your analytics. Purge test records before production while keeping paid Stripe orders and promos intact.</span>
+      <button type="button" class="btn danger sm" id="banner-purge-sandbox-btn">Purge Sandbox Orders</button>
+    </div>
+
+    <div class="status-banner" id="status-banner" role="status" aria-live="polite">
+      <span id="status-banner-text"></span>
+      <button type="button" class="banner-close" id="status-banner-close" aria-label="Dismiss status message">✕</button>
+    </div>
+
+    <!-- ════════════ TAB 1: SALES ANALYTICS ════════════ -->
+    <section id="panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" class="tab-panel active">
+      <div class="stack-gap">
+        <!-- 6-Card Executive KPI Strip -->
+        <div class="kpis" id="kpis"></div>
+
+        <!-- 52-Week GitHub-Style Activity Heatmap -->
+        <div class="drivee-card card-pad" id="heatmap-card">
+          <div class="sec-head">
+            <div>
+              <p class="kicker">52-WEEK ACTIVITY CALENDAR</p>
+              <h2 class="sec-title">Buys, Revenue &amp; Inquiries Heatmap</h2>
+              <p class="sec-sub">GitHub-style daily contribution calendar across all paid VIN orders, inquiries, and converted revenue.</p>
+            </div>
+            <div class="seg" id="hm-mode-seg" role="group" aria-label="Heatmap metric">
+              <button type="button" class="active" data-hm-mode="buys">Buys</button>
+              <button type="button" data-hm-mode="revenue" id="hm-rev-tab">Revenue CAD</button>
+              <button type="button" data-hm-mode="inquiries">Inquiries</button>
+            </div>
+          </div>
+          <div class="hm-stats" id="hm-stats"></div>
+          <div class="hm-scroll">
+            <svg class="hm-svg" id="heatmap-svg" viewBox="0 0 976 150" role="img" aria-label="GitHub-style daily VIN buys heatmap"></svg>
+          </div>
+          <div class="hm-foot">
+            <span>Hover any square for exact daily buys, tier breakdown, inquiries, and converted revenue.</span>
+            <div class="hm-legend" id="hm-legend"></div>
+          </div>
+        </div>
+
+        <!-- Daily Velocity & 12-Week Stacked Package Breakdown -->
+        <div class="grid-2" id="charts-grid">
+          <div class="drivee-card card-pad">
+            <div class="sec-head">
+              <div>
+                <p class="kicker">DAILY SALES &amp; VELOCITY</p>
+                <h2 class="sec-title">Daily Buys &amp; Velocity</h2>
+                <p class="sec-sub" id="daily-sub">Last 30 days · paid buys vs VIN inquiries</p>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <div class="seg" id="daily-range-seg">
+                  <button type="button" data-days="14">14D</button>
+                  <button type="button" class="active" data-days="30">30D</button>
+                </div>
+                <div class="seg brand-seg" id="daily-metric-seg">
+                  <button type="button" class="active" data-dmetric="buys">Buys</button>
+                  <button type="button" data-dmetric="revenue" id="daily-cur-tab">CAD</button>
+                </div>
+              </div>
+            </div>
+            <div class="chart-frame">
+              <svg class="chart-svg" id="daily-chart-svg" viewBox="0 0 540 220" role="img" aria-label="Daily buys chart"></svg>
+            </div>
+            <div class="chart-legend" id="daily-legend"></div>
+          </div>
+
+          <div class="drivee-card card-pad">
+            <div class="sec-head">
+              <div>
+                <p class="kicker">12-WEEK PACKAGE MIX</p>
+                <h2 class="sec-title">Weekly Buys by Package</h2>
+                <p class="sec-sub" id="weekly-sub">Stacked weekly orders ($17 Single · $39 3-Pack · $99 10-Pack CAD)</p>
+              </div>
+            </div>
+            <div class="chart-frame">
+              <svg class="chart-svg" id="weekly-chart-svg" viewBox="0 0 540 220" role="img" aria-label="Weekly buys stacked bar chart"></svg>
+            </div>
+            <div class="chart-legend">
+              <span class="leg-item"><span class="leg-dot" style="background:#1D4ED8"></span>Single</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#0B7A43"></span>3-Pack</span>
+              <span class="leg-item"><span class="leg-dot" style="background:#6D28D9"></span>10-Pack</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ TAB 2: ORDERS, PACKS & PROMOS ════════════ -->
+    <section id="panel-orders" role="tabpanel" aria-labelledby="admin-tab-orders" class="tab-panel">
+      <div class="stack-gap">
+        <!-- Customer Orders Ledger -->
+        <div class="drivee-card card-pad">
+          <div class="sec-head">
+            <div>
+              <p class="kicker">CHECKOUT &amp; REFUND LEDGER</p>
+              <h2 class="sec-title">Paid, Sandbox &amp; Refunded Orders</h2>
+              <p class="sec-sub">Filter by order #, VIN, or email. Refunding an order excludes it from net revenue and revokes any linked pack key.</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+              <input class="search-inp" id="order-search" placeholder="Filter VIN, email, or order #..." style="width:220px"/>
+              <div class="seg" id="order-status-seg">
+                <button type="button" class="active" data-ostatus="all">All</button>
+                <button type="button" data-ostatus="paid">Paid</button>
+                <button type="button" data-ostatus="comp">Comp</button>
+                <button type="button" data-ostatus="sandbox_paid">Sandbox</button>
+                <button type="button" data-ostatus="refunded">Refunded</button>
+              </div>
+              <a class="btn dark" id="csv-link" href="/api/order-status?op=admin&amp;format=csv">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export Orders CSV</span>
+              </a>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>VIN</th>
+                  <th>Package</th>
+                  <th id="ord-amt-th" class="tr">Amount (CAD)</th>
+                  <th class="tr">Cost</th>
+                  <th class="tr">Margin</th>
+                  <th>Buyer</th>
+                  <th>Pack (Masked)</th>
+                  <th class="tr">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="orders-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3-Column Support & Operations Row -->
+        <div class="grid-3">
+          <div class="drivee-card card-pad">
+            <div class="sec-head" style="margin-bottom:4px">
+              <div>
+                <p class="kicker">PACK KEY GENERATOR</p>
+                <h2 class="sec-title" style="font-size:17px">Issue Hardened Pack Key</h2>
+                <p class="sec-sub">Unforgeable 3-Pack &amp; 10-Pack credits.</p>
+              </div>
+              <span class="sec-badge">120-bit CSPRNG + 40-bit HMAC</span>
+            </div>
+            <div class="form-row">
+              <select id="pack-tier" style="width:100%">
+                <option value="pack3">3-Report Pack ($39 CAD)</option>
+                <option value="pack10">10-Report Pack ($99 CAD)</option>
+              </select>
+              <input id="pack-email" placeholder="buyer@example.com" style="flex:1 1 150px"/>
+              <button class="btn brand" id="issue-pack-btn" type="button">Issue Key</button>
+            </div>
+            <div class="code-reveal" id="pack-reveal">
+              <div class="code-reveal-top">
+                <span class="code-reveal-lbl" id="pack-reveal-lbl">Issued Hardened Key (Shown Once)</span>
+                <button class="btn sm" id="copy-pack-btn" type="button">Copy Key</button>
+              </div>
+              <div class="code-reveal-val" id="pack-reveal-val"></div>
+              <div class="code-reveal-note">Stored only as an HMAC-SHA256 hash on the server. When the buyer redeems it once, it auto-saves in their browser cache.</div>
+            </div>
+          </div>
+
+          <div class="drivee-card card-pad">
+            <div class="sec-head" style="margin-bottom:4px">
+              <div>
+                <p class="kicker">SUPPORT VERIFICATION</p>
+                <h2 class="sec-title" style="font-size:17px">Support Pack Key Inspector</h2>
+                <p class="sec-sub">Verify HMAC tag, remaining balance &amp; VIN redemptions.</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <input id="inspect-pack-inp" placeholder="Paste DRV3-... or DRV10-... key" style="flex:1 1 170px;font-family:var(--mono);text-transform:uppercase"/>
+              <button class="btn dark" id="inspect-pack-btn" type="button">Inspect</button>
+            </div>
+            <div class="inspect-out" id="inspect-out"></div>
+          </div>
+
+          <div class="drivee-card card-pad">
+            <div class="sec-head" style="margin-bottom:4px">
+              <div>
+                <p class="kicker">CHECKOUT DISCOUNTS</p>
+                <h2 class="sec-title" style="font-size:17px">Promo Code Manager</h2>
+                <p class="sec-sub">Create, revoke, restore, or remove promo codes.</p>
+              </div>
+            </div>
+            <div class="form-row">
+              <input id="promo-code" placeholder="CODE (e.g. TORONTO20)" style="text-transform:uppercase;flex:1 1 115px"/>
+              <input id="promo-pct" type="number" min="1" max="100" value="20" style="width:66px" title="Discount %"/>
+              <input id="promo-max" type="number" min="1" placeholder="Cap" style="width:64px" title="Optional max uses"/>
+              <button class="btn dark" id="create-promo-btn" type="button">Create</button>
+            </div>
+            <div id="promo-msg" style="margin-top:8px;font-size:12px;color:var(--green);font-weight:700;min-height:16px"></div>
+            <div class="table-shell" style="margin-top:8px;max-height:200px;overflow-y:auto">
+              <table style="min-width:300px;font-size:12px">
+                <thead><tr><th>Code</th><th>Off</th><th>Uses</th><th>Status</th><th class="tr">Action</th></tr></thead>
+                <tbody id="promos-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hardened Pack Credit Ledger -->
+        <div class="drivee-card card-pad">
+          <div class="sec-head">
+            <div>
+              <p class="kicker">PACK CREDIT LEDGER</p>
+              <h2 class="sec-title">Hardened Pack Credit Ledger</h2>
+              <p class="sec-sub">Hashed at rest. Grant +1 courtesy credit for support or revoke any compromised key instantly.</p>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table style="min-width:540px">
+              <thead><tr><th>Masked Key &amp; Buyer</th><th>Security</th><th>Credits</th><th>Status</th><th class="tr">Action</th></tr></thead>
+              <tbody id="packs-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ TAB 3: BUYER CRM ════════════ -->
+    <section id="panel-buyers" role="tabpanel" aria-labelledby="admin-tab-buyers" class="tab-panel">
+      <div class="drivee-card card-pad" id="customers-card">
+        <div class="sec-head">
+          <div>
+            <p class="kicker">BUYER CRM &amp; LIFETIME VALUE</p>
+            <h2 class="sec-title">Customer Email Database &amp; Lifetime Spend</h2>
+            <p class="sec-sub">Every unique purchasing buyer with total spend, order count, pack credits, and VINs checked.</p>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <input class="search-inp" id="customer-search" placeholder="Search email, name, or VIN..." style="width:220px"/>
+            <button class="btn" id="copy-emails-btn" type="button">Copy All Emails</button>
+            <a class="btn dark" id="customers-csv-link" href="/api/order-status?op=admin&amp;format=customers_csv">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export Buyers CSV</span>
+            </a>
+          </div>
+        </div>
+        <div class="hm-stats" id="customers-stats"></div>
+        <div class="table-shell">
+          <table style="min-width:780px">
+            <thead>
+              <tr>
+                <th>Buyer Email</th>
+                <th>Orders</th>
+                <th>Tier Mix</th>
+                <th id="cust-spent-th" class="tr">Total Spent (CAD)</th>
+                <th id="cust-avg-th" class="tr">Avg Order</th>
+                <th class="tr">Credits</th>
+                <th class="tr">Active Packs</th>
+                <th>VINs Checked</th>
+                <th>Last Purchase</th>
+              </tr>
+            </thead>
+            <tbody id="customers-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ TAB 4: INSTANT COMP DESK ════════════ -->
+    <section id="panel-comp" role="tabpanel" aria-labelledby="admin-tab-comp" class="tab-panel">
+      <div class="drivee-card card-pad" style="max-width:780px">
+        <p class="kicker">OWNER COMP GENERATOR · $0 CHECKOUT BYPASS</p>
+        <h2 class="sec-title" style="font-size:22px;margin-top:4px">Pull any Canadian / North American VIN Report Instantly</h2>
+        <p class="sec-sub" style="margin-top:6px">Generates a signed buyer link for VIP support comps, partner previews, or your own vehicle research without running a Stripe payment or counting a sandbox sale.</p>
+
+        <form id="comp-form" style="margin-top:16px">
+          <div class="form-row">
+            <input id="comp-vin" class="mono" maxlength="17" required placeholder="17-char VIN (e.g. 2C4RDGBGXGR217456)" style="flex:1 1 220px;text-transform:uppercase;font-weight:700"/>
+            <input id="comp-email" type="email" placeholder="Recipient email note (optional)" style="flex:1 1 220px"/>
+          </div>
+          <div class="form-row" style="margin-top:14px">
+            <button class="btn brand" id="comp-generate-btn" type="submit">Generate Signed Report Link ($0)</button>
+            <button class="btn dark" id="comp-live-btn" type="button">Pull Live History Report (Uses 1 Credit if Uncached)</button>
+          </div>
+        </form>
+
+        <div class="code-reveal" id="comp-result">
+          <div class="code-reveal-top">
+            <span class="code-reveal-lbl" id="comp-result-lbl">Signed Access URL Ready</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="btn sm" id="copy-comp-url-btn" type="button">Copy Full URL</button>
+              <a class="btn sm dark" id="open-comp-url-link" href="/report.html" target="_blank">Open Report →</a>
+            </div>
+          </div>
+          <div class="code-reveal-val" id="comp-result-url"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ TAB 5: RECENT LOOKUPS ════════════ -->
+    <section id="panel-inquiries" role="tabpanel" aria-labelledby="admin-tab-inquiries" class="tab-panel">
+      <div class="drivee-card card-pad">
+        <div class="sec-head">
+          <div>
+            <p class="kicker">VISITOR FUNNEL ACTIVITY</p>
+            <h2 class="sec-title">Recent Free VIN Inquiries</h2>
+            <p class="sec-sub">Latest free NHTSA spec, safety recall, and Canadian valuation lookups performed on Drivee.</p>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <input class="search-inp" id="inquiry-search" placeholder="Filter VIN, vehicle, or province..." style="width:230px"/>
+          </div>
+        </div>
+        <div class="table-shell">
+          <table style="min-width:600px">
+            <thead>
+              <tr>
+                <th>VIN</th>
+                <th>Vehicle</th>
+                <th>Province</th>
+                <th class="tr">Records Found</th>
+                <th>Timestamp</th>
+                <th class="tr">Quick Action</th>
+              </tr>
+            </thead>
+            <tbody id="inquiries-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ TAB 6: SETTINGS, UPSTREAM & SANDBOX ════════════ -->
+    <section id="panel-settings" role="tabpanel" aria-labelledby="admin-tab-settings" class="tab-panel">
+      <div class="stack-gap">
+        <div class="drivee-card card-pad" style="max-width:820px">
+          <div class="sec-head">
+            <div>
+              <p class="kicker">RETAIL CAD PRICING &amp; CHECKOUT CONTROLS</p>
+              <h2 class="sec-title">Live Pricing &amp; Sandbox Guardrails</h2>
+              <p class="sec-sub">Keep $17 / $39 / $99 CAD defaults or override retail CAD pricing across /report.html and Stripe Checkout without redeploying.</p>
+            </div>
+          </div>
+          <form id="settings-form">
+            <div class="settings-3col">
+              <div>
+                <label class="field-lbl" for="set-single-cad">Single Report (CAD $)</label>
+                <input class="inp mono tnum" id="set-single-cad" type="number" step="0.01" min="1" max="999" value="17" style="width:100%"/>
+              </div>
+              <div>
+                <label class="field-lbl" for="set-pack3-cad">3-Report Pack (CAD $)</label>
+                <input class="inp mono tnum" id="set-pack3-cad" type="number" step="0.01" min="1" max="999" value="39" style="width:100%"/>
+              </div>
+              <div>
+                <label class="field-lbl" for="set-pack10-cad">10-Report Pack (CAD $)</label>
+                <input class="inp mono tnum" id="set-pack10-cad" type="number" step="0.01" min="1" max="999" value="99" style="width:100%"/>
+              </div>
+            </div>
+            <label class="check-row" for="set-allow-sandbox">
+              <input id="set-allow-sandbox" type="checkbox" checked/>
+              <span>Allow instant localhost sandbox fallback when Stripe keys are not set</span>
+            </label>
+            <div class="form-row" style="margin-top:16px">
+              <button class="btn brand" id="save-settings-btn" type="submit">Save Configuration</button>
+              <button class="btn" id="reset-settings-btn" type="button">Reset to $17 / $39 / $99 Defaults</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="grid-2">
+          <div class="drivee-card card-pad">
+            <div class="sec-head">
+              <div>
+                <p class="kicker">SANDBOX FULFILLMENT &amp; CLEANUP</p>
+                <h2 class="sec-title">Simulate Order or Purge Test Data</h2>
+                <p class="sec-sub">Create test sandbox orders locally or purge test records cleanly before launch.</p>
+              </div>
+            </div>
+            <form id="sim-form" style="margin-top:14px">
+              <div class="form-row">
+                <input id="sim-vin" value="KNAF55AC3L5071117" maxlength="17" placeholder="17-character VIN" style="flex:1 1 180px;font-family:var(--mono);text-transform:uppercase"/>
+                <select id="sim-tier" style="min-width:165px">
+                  <option value="single">Single Report ($17 CAD)</option>
+                  <option value="pack3" selected>3-Pack ($39 CAD)</option>
+                  <option value="pack10">10-Pack ($99 CAD)</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <input id="sim-email" type="email" placeholder="test-buyer@drivee.ca (optional)" style="flex:1 1 200px"/>
+                <input id="sim-days-ago" type="number" min="0" max="180" value="0" placeholder="Days ago" title="Optional backfill days ago (0-180)" style="width:105px"/>
+              </div>
+              <div class="form-row" style="margin-top:14px">
+                <button class="btn dark" id="sim-custom-btn" type="submit">Create Simulated Order</button>
+                <button class="btn brand" id="sim-btn" type="button">+ Simulate $39 Order</button>
+                <button class="btn danger" id="purge-sandbox-btn" type="button">Purge Sandbox Orders</button>
+              </div>
+            </form>
+            <div class="code-reveal" id="sim-result"></div>
+          </div>
+
+          <div class="drivee-card card-pad">
+            <div class="sec-head">
+              <div>
+                <p class="kicker">UPSTREAM HEALTH &amp; RUNTIME</p>
+                <h2 class="sec-title">API Connection &amp; Status</h2>
+                <p class="sec-sub">Live balance check against AuctionsAPI plus session and storage diagnostics.</p>
+              </div>
+              <button class="btn" id="test-upstream-btn" type="button">Test Connection</button>
+            </div>
+            <div class="inspect-out" id="upstream-test-out"></div>
+            <div class="kv-list" id="runtime-kv"></div>
+            <div class="form-row" style="margin-top:16px">
+              <a class="btn" href="/report.html">Open VIN Checker</a>
+              <a class="btn brand" href="/vin-report.html?vin=2C4RDGBGXGR217456&amp;demo=1" target="_blank">Preview Sample Dossier →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Shared Floating Tooltip -->
+<div class="tip" id="chart-tip"></div>
+
+<!-- Executive Confirmation Modal -->
+<div class="confirm-backdrop" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="confirm-card">
+    <div class="confirm-head">
+      <div class="confirm-icon danger" id="confirm-icon">!</div>
+      <div>
+        <div class="confirm-title" id="confirm-title">Confirm Action</div>
+        <div class="confirm-body" id="confirm-body"></div>
+      </div>
+    </div>
+    <div class="confirm-meta" id="confirm-meta"></div>
+    <div class="confirm-actions">
+      <button class="btn" id="confirm-cancel-btn" type="button">Cancel</button>
+      <button class="btn danger-solid" id="confirm-ok-btn" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var savedCur = 'CAD';
+  var savedFx = 0.72;
+  var savedTab = 'overview';
+  try {
+    var c0 = localStorage.getItem('drivee_admin_cur');
+    if (c0 === 'USD' || c0 === 'CAD') savedCur = c0;
+    var f0 = Number(localStorage.getItem('drivee_admin_fx'));
+    if (f0 > 0.2 && f0 < 2.0) savedFx = f0;
+    var t0 = sessionStorage.getItem('drivee_admin_tab');
+    if (t0 === 'tools') t0 = 'settings';
+    if (t0 === 'overview' || t0 === 'orders' || t0 === 'buyers' || t0 === 'comp' || t0 === 'inquiries' || t0 === 'settings') savedTab = t0;
+  } catch (e) {}
+
+  var state = {
+    data: null,
+    tab: savedTab,
+    currency: savedCur,
+    cadToUsd: savedFx,
+    hmMode: 'buys',
+    dailyDays: 30,
+    dailyMetric: 'buys',
+    orderFilter: 'all',
+    orderQuery: '',
+    customerQuery: '',
+    inquiryQuery: '',
+    lastIssuedCode: '',
+    lastCompUrl: '',
+  };
+
+  var HEAT_PALETTES = {
+    buys: ['#E7ECF5', '#DBEAFE', '#93C5FD', '#3B82F6', '#1D4ED8'],
+    revenue: ['#E7ECF5', '#DCFCE7', '#86EFAC', '#22C55E', '#0B7A43'],
+    inquiries: ['#E7ECF5', '#E0E7FF', '#A5B4FC', '#6366F1', '#4338CA'],
+  };
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+
+  function convCad(cadAmount) {
+    var n = Number(cadAmount || 0);
+    return state.currency === 'USD' ? n * state.cadToUsd : n;
+  }
+
+  function fmtMoney(cadAmount) {
+    var val = convCad(cadAmount);
+    var prefix = state.currency === 'USD' ? 'US$' : '$';
+    return prefix + val.toFixed(2);
+  }
+
+  function curCode() {
+    return state.currency;
+  }
+
+  // ── Status Banner ─────────────────────────────────────────────────────
+  var bannerTimer = null;
+  function showStatusBanner(tone, msg) {
+    var el = document.getElementById('status-banner');
+    var txt = document.getElementById('status-banner-text');
+    if (!el || !txt) return;
+    txt.textContent = msg;
+    el.className = 'status-banner open ' + (tone === 'err' ? 'err' : 'ok');
+    if (bannerTimer) clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(function () {
+      el.classList.remove('open');
+    }, 6500);
+  }
+  document.getElementById('status-banner-close').addEventListener('click', function () {
+    document.getElementById('status-banner').classList.remove('open');
+  });
+
+  // ── Tab Switching (ARIA & Keyboard Accessible) ────────────────────────
+  var TAB_IDS = ['overview', 'orders', 'buyers', 'comp', 'inquiries', 'settings'];
+  function setActiveTab(nextTab, focusBtn) {
+    if (nextTab === 'tools') nextTab = 'settings';
+    if (TAB_IDS.indexOf(nextTab) === -1) nextTab = 'overview';
+    state.tab = nextTab;
+    try { sessionStorage.setItem('drivee_admin_tab', nextTab); } catch (e) {}
+    for (var i = 0; i < TAB_IDS.length; i++) {
+      var id = TAB_IDS[i];
+      var isAct = id === nextTab;
+      var btn = document.getElementById('admin-tab-' + id);
+      var pnl = document.getElementById('panel-' + id);
+      if (btn) {
+        btn.classList.toggle('active', isAct);
+        btn.setAttribute('aria-selected', isAct ? 'true' : 'false');
+        btn.setAttribute('tabindex', isAct ? '0' : '-1');
+        if (isAct && focusBtn) btn.focus();
+      }
+      if (pnl) {
+        pnl.classList.toggle('active', isAct);
+      }
+    }
+  }
+
+  var tablistEl = document.getElementById('admin-tablist');
+  tablistEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-tab]');
+    if (!btn) return;
+    setActiveTab(btn.getAttribute('data-tab'), false);
+  });
+  tablistEl.addEventListener('keydown', function (e) {
+    var curIdx = TAB_IDS.indexOf(state.tab);
+    var nextIdx = -1;
+    if (e.key === 'ArrowRight') nextIdx = (curIdx + 1) % TAB_IDS.length;
+    else if (e.key === 'ArrowLeft') nextIdx = (curIdx - 1 + TAB_IDS.length) % TAB_IDS.length;
+    else if (e.key === 'Home') nextIdx = 0;
+    else if (e.key === 'End') nextIdx = TAB_IDS.length - 1;
+    if (nextIdx !== -1) {
+      e.preventDefault();
+      setActiveTab(TAB_IDS[nextIdx], true);
+    }
+  });
+  setActiveTab(state.tab, false);
+
+  // ── Tooltip Helper ────────────────────────────────────────────────────
+  var tipEl = document.getElementById('chart-tip');
+  function showTip(evt, html) {
+    tipEl.innerHTML = html;
+    tipEl.style.display = 'block';
+    moveTip(evt);
+  }
+  function moveTip(evt) {
+    var pad = 14;
+    var w = tipEl.offsetWidth || 210;
+    var h = tipEl.offsetHeight || 75;
+    var x = evt.clientX + pad;
+    var y = evt.clientY - h - 10;
+    if (x + w > window.innerWidth - 10) x = evt.clientX - w - pad;
+    if (y < 10) y = evt.clientY + pad;
+    tipEl.style.left = Math.max(8, x) + 'px';
+    tipEl.style.top = Math.max(8, y) + 'px';
+  }
+  function hideTip() { tipEl.style.display = 'none'; }
+
+  // ── Confirmation Modal Helper ─────────────────────────────────────────
+  var pendingConfirmAction = null;
+  var confirmModal = document.getElementById('confirm-modal');
+  var confirmOkBtn = document.getElementById('confirm-ok-btn');
+  var confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+
+  function closeConfirmModal() {
+    pendingConfirmAction = null;
+    confirmModal.classList.remove('open');
+  }
+
+  function askConfirm(opts) {
+    document.getElementById('confirm-title').textContent = opts.title || 'Confirm Action';
+    document.getElementById('confirm-body').textContent = opts.body || '';
+    var iconEl = document.getElementById('confirm-icon');
+    var tone = opts.tone || 'danger';
+    iconEl.className = 'confirm-icon ' + tone;
+    iconEl.textContent = tone === 'good' ? '+' : '!';
+
+    var metaEl = document.getElementById('confirm-meta');
+    if (opts.details && opts.details.length) {
+      metaEl.innerHTML = opts.details.map(function (row) {
+        return '<div class="cm-row"><span class="cm-k">' + esc(row[0]) + '</span><span class="cm-v">' + esc(row[1]) + '</span></div>';
+      }).join('');
+      metaEl.style.display = 'block';
+    } else {
+      metaEl.style.display = 'none';
+    }
+
+    confirmOkBtn.textContent = opts.confirmLabel || 'Confirm';
+    confirmOkBtn.className = tone === 'good' ? 'btn good-solid' : 'btn danger-solid';
+    pendingConfirmAction = opts.onConfirm || null;
+    confirmModal.classList.add('open');
+    confirmCancelBtn.focus();
+  }
+
+  confirmCancelBtn.addEventListener('click', closeConfirmModal);
+  confirmModal.addEventListener('click', function (e) {
+    if (e.target === confirmModal) closeConfirmModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && confirmModal.classList.contains('open')) closeConfirmModal();
+  });
+  confirmOkBtn.addEventListener('click', function () {
+    var fn = pendingConfirmAction;
+    closeConfirmModal();
+    if (typeof fn === 'function') fn();
+  });
+
+  function syncCurrencyUi() {
+    var fxInp = document.getElementById('fx-rate-input');
+    if (fxInp) fxInp.value = state.cadToUsd.toFixed(2);
+    var btns = document.querySelectorAll('#currency-seg button');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-cur') === state.currency);
+    }
+    var hmTab = document.getElementById('hm-rev-tab');
+    if (hmTab) hmTab.textContent = 'Revenue ' + curCode();
+    var dTab = document.getElementById('daily-cur-tab');
+    if (dTab) dTab.textContent = curCode();
+    var ordTh = document.getElementById('ord-amt-th');
+    if (ordTh) ordTh.textContent = 'Amount (' + curCode() + ')';
+    var cTh = document.getElementById('cust-spent-th');
+    if (cTh) cTh.textContent = 'Total Spent (' + curCode() + ')';
+    var csvLink = document.getElementById('csv-link');
+    if (csvLink) csvLink.href = '/api/order-status?op=admin&format=csv&fx=' + encodeURIComponent(state.cadToUsd.toFixed(4));
+    var cCsvLink = document.getElementById('customers-csv-link');
+    if (cCsvLink) cCsvLink.href = '/api/order-status?op=admin&format=customers_csv&fx=' + encodeURIComponent(state.cadToUsd.toFixed(4));
+  }
+
+  function showLoginGate(meta) {
+    document.getElementById('admin-app').style.display = 'none';
+    document.getElementById('login-gate').style.display = 'flex';
+    var hintEl = document.getElementById('login-hint');
+    if (meta && meta.usingDefaultLocalCreds) {
+      hintEl.innerHTML = '<strong>Localhost Dev Login:</strong> username <code class="mono">admin</code> · password <code class="mono">drivee-admin</code>. Set <code class="mono">VIN_ADMIN_PASSWORD</code> in Vercel before deploying.';
+      hintEl.style.display = 'block';
+    } else if (meta && meta.configured === false) {
+      hintEl.innerHTML = '<strong>Server Configuration Required:</strong> Set <code class="mono">VIN_ADMIN_USER</code> and <code class="mono">VIN_ADMIN_PASSWORD</code> in Vercel Environment Variables.';
+      hintEl.style.display = 'block';
+    } else {
+      hintEl.style.display = 'none';
+    }
+  }
+
+  function showDashboard() {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+  }
+
+  // ── 52-Week Activity Heatmap ──────────────────────────────────────────
+  function renderHeatmap() {
+    var d = state.data;
+    if (!d || !d.analytics || !d.analytics.heatmap) return;
+    var hm = d.analytics.heatmap;
+    var mode = state.hmMode;
+    var palette = HEAT_PALETTES[mode] || HEAT_PALETTES.buys;
+
+    var peakStr = hm.peakBuyDay
+      ? hm.peakBuyDay.buys + ' buy' + (hm.peakBuyDay.buys === 1 ? '' : 's') + ' (' + hm.peakBuyDay.date.slice(5) + ')'
+      : '—';
+    document.getElementById('hm-stats').innerHTML =
+      '<span class="hm-pill">52w Buys <strong class="tnum">' + hm.totalBuys + '</strong></span>' +
+      '<span class="hm-pill brand">52w Revenue <strong class="tnum">' + fmtMoney(hm.totalRevenueCad) + ' ' + curCode() + '</strong></span>' +
+      '<span class="hm-pill">Active Buy Days <strong class="tnum">' + hm.activeBuyDays + ' / ' + hm.windowDays + '</strong></span>' +
+      '<span class="hm-pill good">Streak <strong class="tnum">' + hm.currentBuyStreak + 'd (Best ' + (hm.longestBuyStreak || 0) + 'd)</strong></span>' +
+      '<span class="hm-pill">Best Day <strong class="tnum">' + esc(peakStr) + '</strong></span>';
+
+    var cell = 14, gap = 4, step = cell + gap, leftPad = 34, topPad = 20;
+    var weeksCount = hm.weeksCount || 52;
+    var svgW = leftPad + weeksCount * step + 6;
+    var svgH = topPad + 7 * step + 4;
+
+    var svg = document.getElementById('heatmap-svg');
+    svg.setAttribute('viewBox', '0 0 ' + svgW + ' ' + svgH);
+
+    var parts = [];
+    var lastMonth = '';
+    var lastLabelWeek = -99;
+    for (var i = 0; i < hm.days.length; i++) {
+      var day = hm.days[i];
+      if (day.dow === 0 || i === 0) {
+        if (day.month !== lastMonth) {
+          lastMonth = day.month;
+          if (day.weekIdx - lastLabelWeek >= 2) {
+            lastLabelWeek = day.weekIdx;
+            var mx = leftPad + day.weekIdx * step;
+            parts.push('<text x="' + mx + '" y="12" fill="#56637A" font-size="10" font-weight="700" font-family="JetBrains Mono, monospace">' + esc(day.month) + '</text>');
+          }
+        }
+      }
+    }
+
+    var dowLabels = [{ row: 1, text: 'Mon' }, { row: 3, text: 'Wed' }, { row: 5, text: 'Fri' }];
+    for (var r = 0; r < dowLabels.length; r++) {
+      var dl = dowLabels[r];
+      parts.push('<text x="0" y="' + (topPad + dl.row * step + 10.5) + '" fill="#56637A" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace">' + dl.text + '</text>');
+    }
+
+    for (var j = 0; j < hm.days.length; j++) {
+      var c = hm.days[j];
+      var lvl = mode === 'revenue' ? c.levelRevenue : mode === 'inquiries' ? c.levelInquiries : c.levelBuys;
+      var fill = palette[lvl] || palette[0];
+      var x = leftPad + c.weekIdx * step;
+      var y = topPad + c.dow * step;
+      parts.push(
+        '<rect class="hm-cell" data-hm-idx="' + j + '" x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell +
+        '" rx="3.2" ry="3.2" fill="' + fill + '" stroke="rgba(11,20,48,0.06)" stroke-width="0.9"/>'
+      );
+    }
+
+    svg.innerHTML = parts.join('');
+
+    var cells = svg.querySelectorAll('.hm-cell');
+    for (var k = 0; k < cells.length; k++) {
+      (function (el) {
+        el.addEventListener('mouseenter', function (e) {
+          var c = hm.days[Number(el.getAttribute('data-hm-idx'))];
+          if (!c) return;
+          var tierLine = c.buys > 0
+            ? '<div style="margin-top:4px;font-size:11px;color:#CBD5E1">1pk:' + c.single + ' · 3pk:' + c.pack3 + ' · 10pk:' + c.pack10 + '</div>'
+            : '';
+          showTip(
+            e,
+            '<div class="tip-date">' + esc(c.label) + '</div>' +
+            '<div class="tip-row"><span>Paid Buys</span><span class="tip-val">' + c.buys + '</span></div>' +
+            '<div class="tip-row"><span>Revenue</span><span class="tip-val">' + fmtMoney(c.revenueCad) + ' ' + curCode() + '</span></div>' +
+            '<div class="tip-row"><span>VIN Inquiries</span><span class="tip-val">' + c.inquiries + '</span></div>' +
+            tierLine
+          );
+        });
+        el.addEventListener('mousemove', moveTip);
+        el.addEventListener('mouseleave', hideTip);
+      })(cells[k]);
+    }
+
+    document.getElementById('hm-legend').innerHTML =
+      '<span>Less</span>' +
+      palette.map(function (col) { return '<span class="hm-swatch" style="background:' + col + '"></span>'; }).join('') +
+      '<span>More</span>';
+  }
+
+  // ── Daily Buys & Velocity SVG Chart ───────────────────────────────────
+  function renderDailyChart() {
+    var d = state.data;
+    if (!d || !d.analytics || !d.analytics.dailySeries) return;
+    var all = d.analytics.dailySeries;
+    var series = state.dailyDays === 14 ? all.slice(-14) : all;
+    var metric = state.dailyMetric;
+    var wt = d.analytics.windowTotals || {};
+
+    document.getElementById('daily-sub').textContent =
+      'Last ' + series.length + ' days · 7d: ' + (wt.buys7d || 0) + ' buys (' + fmtMoney(wt.revenue7dCad || 0) + ' ' + curCode() + ')';
+
+    var W = 540, H = 220, padL = 48, padR = 12, padT = 16, padB = 30;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var maxVal = 1;
+    for (var i = 0; i < series.length; i++) {
+      var v = metric === 'revenue'
+        ? convCad(series[i].revenueCad)
+        : Math.max(series[i].buys, series[i].inquiries);
+      if (v > maxVal) maxVal = v;
+    }
+    var niceMax = metric === 'revenue'
+      ? Math.max(40, Math.ceil(maxVal / 20) * 20)
+      : Math.max(4, Math.ceil(maxVal));
+
+    var parts = [];
+    for (var t = 0; t <= 4; t++) {
+      var frac = t / 4;
+      var gy = padT + plotH - frac * plotH;
+      var tickVal = niceMax * frac;
+      var tickLabel = metric === 'revenue'
+        ? (state.currency === 'USD' ? 'US$' : '$') + Math.round(tickVal)
+        : String(Math.round(tickVal));
+      parts.push('<line x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(11,20,48,0.08)" stroke-dasharray="' + (t === 0 ? '0' : '3 3') + '"/>');
+      parts.push('<text x="' + (padL - 7) + '" y="' + (gy + 3.5).toFixed(1) + '" text-anchor="end" fill="#56637A" font-size="9.5" font-family="JetBrains Mono, monospace">' + tickLabel + '</text>');
+    }
+
+    var slotW = plotW / series.length;
+    var labelEvery = series.length <= 14 ? 2 : 5;
+    var inqPoints = [];
+
+    for (var j = 0; j < series.length; j++) {
+      var pt = series[j];
+      var cx = padL + j * slotW + slotW / 2;
+      var mainVal = metric === 'revenue' ? convCad(pt.revenueCad) : pt.buys;
+      var barH = Math.max(mainVal > 0 ? 4 : 0, (mainVal / niceMax) * plotH);
+      var barW = Math.max(5, Math.min(20, slotW * 0.56));
+      var bx = cx - barW / 2;
+      var by = padT + plotH - barH;
+      var fillCol = metric === 'revenue' ? '#0B7A43' : '#1D4ED8';
+
+      if (barH > 0) {
+        parts.push('<rect x="' + bx.toFixed(1) + '" y="' + by.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3.5" fill="' + fillCol + '"/>');
+      } else {
+        parts.push('<rect x="' + bx.toFixed(1) + '" y="' + (padT + plotH - 2) + '" width="' + barW.toFixed(1) + '" height="2" rx="1" fill="rgba(11,20,48,0.08)"/>');
+      }
+
+      if (metric === 'buys') {
+        var iy = padT + plotH - (pt.inquiries / niceMax) * plotH;
+        inqPoints.push(cx.toFixed(1) + ',' + iy.toFixed(1));
+      }
+
+      if (j % labelEvery === 0 || j === series.length - 1) {
+        parts.push('<text x="' + cx.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#56637A" font-size="9.5" font-family="JetBrains Mono, monospace">' + esc(pt.label) + '</text>');
+      }
+
+      parts.push('<rect class="daily-hit" data-d-idx="' + j + '" x="' + (padL + j * slotW).toFixed(1) + '" y="' + padT + '" width="' + slotW.toFixed(1) + '" height="' + plotH + '" fill="transparent" style="cursor:pointer"/>');
+    }
+
+    if (metric === 'buys' && inqPoints.length > 1) {
+      parts.push('<polyline fill="none" stroke="#64748B" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + inqPoints.join(' ') + '"/>');
+      for (var p = 0; p < series.length; p++) {
+        if (series[p].inquiries > 0) {
+          var pcx = padL + p * slotW + slotW / 2;
+          var piy = padT + plotH - (series[p].inquiries / niceMax) * plotH;
+          parts.push('<circle cx="' + pcx.toFixed(1) + '" cy="' + piy.toFixed(1) + '" r="3" fill="#fff" stroke="#64748B" stroke-width="2"/>');
+        }
+      }
+    }
+
+    var svg = document.getElementById('daily-chart-svg');
+    svg.innerHTML = parts.join('');
+
+    var hits = svg.querySelectorAll('.daily-hit');
+    for (var h = 0; h < hits.length; h++) {
+      (function (el) {
+        el.addEventListener('mouseenter', function (e) {
+          el.setAttribute('fill', 'rgba(29,78,216,0.06)');
+          var row = series[Number(el.getAttribute('data-d-idx'))];
+          if (!row) return;
+          showTip(
+            e,
+            '<div class="tip-date">' + esc(row.label) + ' (' + esc(row.date) + ')</div>' +
+            '<div class="tip-row"><span>Paid Buys</span><span class="tip-val">' + row.buys + '</span></div>' +
+            '<div class="tip-row"><span>Revenue</span><span class="tip-val">' + fmtMoney(row.revenueCad) + ' ' + curCode() + '</span></div>' +
+            '<div class="tip-row"><span>VIN Inquiries</span><span class="tip-val">' + row.inquiries + '</span></div>'
+          );
+        });
+        el.addEventListener('mousemove', moveTip);
+        el.addEventListener('mouseleave', function () { el.setAttribute('fill', 'transparent'); hideTip(); });
+      })(hits[h]);
+    }
+
+    document.getElementById('daily-legend').innerHTML = metric === 'revenue'
+      ? '<span class="leg-item"><span class="leg-dot" style="background:#0B7A43"></span>Daily Gross Revenue (' + curCode() + ')</span>'
+      : '<span class="leg-item"><span class="leg-dot" style="background:#1D4ED8"></span>Paid Buys (Bars)</span>' +
+        '<span class="leg-item"><span class="leg-dot" style="background:#64748B"></span>VIN Inquiries (Line)</span>';
+  }
+
+  // ── Weekly Buys Stacked Bar Chart (12 Weeks) ──────────────────────────
+  function renderWeeklyChart() {
+    var d = state.data;
+    if (!d || !d.analytics || !d.analytics.weeklySeries) return;
+    var series = d.analytics.weeklySeries;
+
+    var W = 540, H = 220, padL = 36, padR = 12, padT = 16, padB = 30;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var maxBuys = 1;
+    for (var i = 0; i < series.length; i++) {
+      if (series[i].buys > maxBuys) maxBuys = series[i].buys;
+    }
+    var niceMax = Math.max(4, Math.ceil(maxBuys));
+
+    var parts = [];
+    for (var t = 0; t <= 4; t++) {
+      var frac = t / 4;
+      var gy = padT + plotH - frac * plotH;
+      parts.push('<line x1="' + padL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - padR) + '" y2="' + gy.toFixed(1) + '" stroke="rgba(11,20,48,0.08)" stroke-dasharray="' + (t === 0 ? '0' : '3 3') + '"/>');
+      parts.push('<text x="' + (padL - 6) + '" y="' + (gy + 3.5).toFixed(1) + '" text-anchor="end" fill="#56637A" font-size="10" font-family="JetBrains Mono, monospace">' + Math.round(niceMax * frac) + '</text>');
+    }
+
+    var slotW = plotW / series.length;
+    var barW = Math.min(26, slotW * 0.58);
+
+    for (var j = 0; j < series.length; j++) {
+      var wk = series[j];
+      var cx = padL + j * slotW + slotW / 2;
+      var bx = cx - barW / 2;
+      var curY = padT + plotH;
+
+      var segs = [
+        { count: wk.single, color: '#1D4ED8' },
+        { count: wk.pack3, color: '#0B7A43' },
+        { count: wk.pack10, color: '#6D28D9' },
+      ];
+      if (wk.buys === 0) {
+        parts.push('<rect x="' + bx.toFixed(1) + '" y="' + (padT + plotH - 2) + '" width="' + barW.toFixed(1) + '" height="2" rx="1" fill="rgba(11,20,48,0.08)"/>');
+      } else {
+        for (var s = 0; s < segs.length; s++) {
+          if (!segs[s].count) continue;
+          var sh = Math.max(4, (segs[s].count / niceMax) * plotH);
+          curY -= sh;
+          parts.push('<rect x="' + bx.toFixed(1) + '" y="' + curY.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + sh.toFixed(1) + '" rx="2.5" fill="' + segs[s].color + '"/>');
+        }
+        parts.push('<text x="' + cx.toFixed(1) + '" y="' + (curY - 5).toFixed(1) + '" text-anchor="middle" fill="#0B1430" font-size="9.5" font-weight="700" font-family="JetBrains Mono, monospace">' + wk.buys + '</text>');
+      }
+
+      if (j % 2 === 0 || j === series.length - 1) {
+        parts.push('<text x="' + cx.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#56637A" font-size="9.5" font-family="JetBrains Mono, monospace">' + esc(wk.label) + '</text>');
+      }
+
+      parts.push('<rect class="weekly-hit" data-w-idx="' + j + '" x="' + (padL + j * slotW).toFixed(1) + '" y="' + padT + '" width="' + slotW.toFixed(1) + '" height="' + plotH + '" fill="transparent" style="cursor:pointer"/>');
+    }
+
+    var svg = document.getElementById('weekly-chart-svg');
+    svg.innerHTML = parts.join('');
+
+    var hits = svg.querySelectorAll('.weekly-hit');
+    for (var h = 0; h < hits.length; h++) {
+      (function (el) {
+        el.addEventListener('mouseenter', function (e) {
+          el.setAttribute('fill', 'rgba(29,78,216,0.06)');
+          var wk = series[Number(el.getAttribute('data-w-idx'))];
+          if (!wk) return;
+          showTip(
+            e,
+            '<div class="tip-date">Week of ' + esc(wk.label) + '</div>' +
+            '<div class="tip-row"><span>Total Buys</span><span class="tip-val">' + wk.buys + '</span></div>' +
+            '<div class="tip-row"><span>Revenue</span><span class="tip-val">' + fmtMoney(wk.revenueCad) + ' ' + curCode() + '</span></div>' +
+            '<div class="tip-row"><span>Single / 3pk / 10pk</span><span class="tip-val">' + wk.single + ' / ' + wk.pack3 + ' / ' + wk.pack10 + '</span></div>' +
+            '<div class="tip-row"><span>VIN Inquiries</span><span class="tip-val">' + wk.inquiries + '</span></div>'
+          );
+        });
+        el.addEventListener('mousemove', moveTip);
+        el.addEventListener('mouseleave', function () { el.setAttribute('fill', 'transparent'); hideTip(); });
+      })(hits[h]);
+    }
+  }
+
+  // ── Tables & Ledgers ──────────────────────────────────────────────────
+  function renderCustomersTable() {
+    var d = state.data;
+    if (!d) return;
+    var all = d.customers || [];
+    var q = state.customerQuery.trim().toLowerCase();
+    var filtered = q
+      ? all.filter(function (c) {
+          return (
+            String(c.email || '').toLowerCase().indexOf(q) !== -1 ||
+            String(c.name || '').toLowerCase().indexOf(q) !== -1 ||
+            (c.vins || []).some(function (v) { return String(v).toLowerCase().indexOf(q) !== -1; })
+          );
+        })
+      : all;
+
+    var totalLtvCad = all.reduce(function (s, c) { return s + Number(c.totalSpentCad || 0); }, 0);
+    var avgLtvCad = all.length ? totalLtvCad / all.length : 0;
+    var repeats = all.filter(function (c) { return c.isRepeatBuyer; }).length;
+    document.getElementById('customers-stats').innerHTML =
+      '<span class="hm-pill">Unique Buyers <strong class="tnum">' + all.length + '</strong></span>' +
+      '<span class="hm-pill good">Repeat Buyers <strong class="tnum">' + repeats + ' (' + (all.length ? Math.round((repeats / all.length) * 100) : 0) + '%)</strong></span>' +
+      '<span class="hm-pill brand">Avg Buyer LTV <strong class="tnum">' + fmtMoney(avgLtvCad) + ' ' + curCode() + '</strong></span>' +
+      '<span class="hm-pill">Showing <strong class="tnum">' + filtered.length + '</strong></span>';
+
+    document.getElementById('customers-body').innerHTML = filtered.length
+      ? filtered.map(function (c) {
+          var tb = c.tiersBought || {};
+          var vinsHtml = (c.vins || []).slice(0, 2).map(function (v) {
+            return '<button type="button" class="vin-chip crm-vin-chip" data-vin="' + esc(v) + '" title="Open in Instant Comp Desk">' + esc(v) + '</button>';
+          }).join('') + ((c.vins || []).length > 2 ? '<div style="font-size:10.5px;color:var(--ink3)">+' + (c.vins.length - 2) + ' more</div>' : '');
+          return '<tr>' +
+            '<td><strong>' + esc(c.email) + '</strong>' + (c.name ? '<div style="font-size:11px;color:var(--ink3)">' + esc(c.name) + '</div>' : '') + '</td>' +
+            '<td class="mono tnum"><strong>' + c.paidOrdersCount + '</strong>' + (c.isRepeatBuyer ? ' <span class="pill ok">Repeat</span>' : '') + (c.refundedCount ? '<div style="font-size:10.5px;color:var(--red)">' + c.refundedCount + ' refunded</div>' : '') + '</td>' +
+            '<td class="mono tnum" style="font-size:11px">1pk:' + (tb.single || 0) + ' · 3pk:' + (tb.pack3 || 0) + ' · 10pk:' + (tb.pack10 || 0) + '</td>' +
+            '<td class="mono tnum tr" style="font-weight:800;color:var(--green)">' + fmtMoney(c.totalSpentCad) + '</td>' +
+            '<td class="mono tnum tr">' + fmtMoney(c.avgOrderCad) + '</td>' +
+            '<td class="mono tnum tr">' + (c.totalCreditsPurchased || 0) + '</td>' +
+            '<td class="mono tnum tr">' + (c.activePackCodesCount || 0) + '</td>' +
+            '<td>' + (vinsHtml || '<span style="color:var(--ink3)">—</span>') + '</td>' +
+            '<td class="mono tnum" style="font-size:11px;color:var(--ink3)">' + esc(String(c.lastPurchaseAt || '').slice(0, 10) || '—') + '</td>' +
+            '</tr>';
+        }).join('')
+      : '<tr><td colspan="9" style="color:var(--ink3);padding:18px;text-align:center">No buyer emails recorded matching this filter yet.</td></tr>';
+
+    document.querySelectorAll('.crm-vin-chip').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openVinInCompDesk(this.getAttribute('data-vin'));
+      });
+    });
+  }
+
+  function renderOrdersTable() {
+    var d = state.data;
+    if (!d) return;
+    var orders = d.recentOrders || [];
+    var q = state.orderQuery.trim().toLowerCase();
+    var filtered = orders.filter(function (o) {
+      if (state.orderFilter !== 'all' && o.status !== state.orderFilter) return false;
+      if (!q) return true;
+      return (
+        String(o.orderNumber || '').toLowerCase().indexOf(q) !== -1 ||
+        String(o.vin || '').toLowerCase().indexOf(q) !== -1 ||
+        String(o.customerEmail || '').toLowerCase().indexOf(q) !== -1 ||
+        String(o.tierId || '').toLowerCase().indexOf(q) !== -1
+      );
+    });
+
+    document.getElementById('orders-body').innerHTML = filtered.length
+      ? filtered.map(function (o) {
+          var openHref = o.vin && o.accessToken
+            ? '/vin-report.html?vin=' + encodeURIComponent(o.vin) + '&access=' + encodeURIComponent(o.accessToken)
+            : '';
+          var tierCls = o.tierId === 'pack10' ? 'tier-pack10' : o.tierId === 'pack3' ? 'tier-pack3' : 'tier-single';
+          var isRef = o.status === 'refunded';
+          var isComp = o.status === 'comp';
+          var statusBadge = isRef
+            ? '<span class="pill rev">refunded</span>'
+            : isComp
+            ? '<span class="pill comp">comp</span> <span style="font-size:10.5px;color:var(--ink3)">' + esc(String(o.createdAt || '').slice(0, 10)) + '</span>'
+            : '<span style="font-size:10.5px;color:var(--ink3)">' + esc(o.status) + ' · ' + esc(String(o.createdAt || '').slice(0, 10)) + '</span>';
+          var refundBtn = !isRef
+            ? '<button class="btn danger sm refund-order-btn" data-order="' + esc(o.orderNumber) + '" type="button" title="Mark refunded and revoke linked pack key">Refund</button>'
+            : '';
+          return '<tr style="' + (isRef ? 'opacity:0.65' : '') + '">' +
+            '<td class="mono tnum"><strong>' + esc(o.orderNumber) + '</strong><div>' + statusBadge + '</div></td>' +
+            '<td class="mono">' + esc(o.vin || '—') + '</td>' +
+            '<td><span class="pill ' + tierCls + '">' + esc(o.tierId) + '</span></td>' +
+            '<td class="mono tnum tr" style="' + (isRef ? 'text-decoration:line-through;color:var(--red)' : 'font-weight:700') + '">' + fmtMoney(o.amountCad) + '</td>' +
+            '<td class="mono tnum tr">' + fmtMoney(o.upstreamCostCad) + '</td>' +
+            '<td class="mono tnum tr" style="color:' + (isRef ? 'var(--red)' : 'var(--green)') + ';font-weight:800">' + fmtMoney(isRef ? 0 : o.netProfitCad) + '</td>' +
+            '<td>' + esc(o.customerEmail || '—') + '</td>' +
+            '<td class="mono" style="font-size:11px;color:var(--ink2)">' + esc(o.packCode || '—') + '</td>' +
+            '<td class="tr"><div class="row-actions">' + (openHref ? '<a class="btn sm" href="' + openHref + '" target="_blank">Open →</a>' : '') + refundBtn + '</div></td>' +
+            '</tr>';
+        }).join('')
+      : '<tr><td colspan="9" style="color:var(--ink3);padding:18px;text-align:center">No orders match this filter.</td></tr>';
+
+    var refBtns = document.querySelectorAll('.refund-order-btn');
+    for (var i = 0; i < refBtns.length; i++) {
+      refBtns[i].addEventListener('click', function () {
+        var ordNum = this.getAttribute('data-order');
+        if (!ordNum) return;
+        var ordObj = orders.find(function (x) { return x.orderNumber === ordNum; }) || {};
+        askConfirm({
+          tone: 'danger',
+          title: 'Mark Order as Refunded?',
+          body: 'This excludes the order from net revenue and automatically revokes any linked 3-Pack or 10-Pack credit key so it can no longer be redeemed.',
+          details: [
+            ['Order #', ordNum],
+            ['Amount', fmtMoney(ordObj.amountCad || 0) + ' ' + curCode()],
+            ['Buyer', ordObj.customerEmail || '—'],
+            ['VIN', ordObj.vin || '—'],
+            ['Linked Pack', ordObj.packCode || 'None'],
+          ],
+          confirmLabel: 'Yes, Refund & Revoke',
+          onConfirm: function () {
+            postAction({ action: 'mark_refunded', orderNumber: ordNum, revokePack: true }, function (res) {
+              if (res && res.ok) {
+                showStatusBanner('ok', 'Order ' + ordNum + ' marked refunded' + (ordObj.packCode ? ' and linked pack revoked.' : '.'));
+              } else {
+                showStatusBanner('err', (res && res.error) || 'Failed to refund order.');
+              }
+            });
+          },
+        });
+      });
+    }
+  }
+
+  function renderInquiriesTable() {
+    var d = state.data;
+    if (!d) return;
+    var inqs = d.recentInquiries || [];
+    var q = state.inquiryQuery.trim().toLowerCase();
+    var filtered = q
+      ? inqs.filter(function (i) {
+          return (
+            String(i.vin || '').toLowerCase().indexOf(q) !== -1 ||
+            String(i.vehicleTitle || '').toLowerCase().indexOf(q) !== -1 ||
+            String(i.provinceHint || '').toLowerCase().indexOf(q) !== -1
+          );
+        })
+      : inqs;
+
+    document.getElementById('inquiries-body').innerHTML = filtered.length
+      ? filtered.map(function (i) {
+          var checkHref = i.vin ? '/report.html?vin=' + encodeURIComponent(i.vin) : '/report.html';
+          var compBtn = i.vin
+            ? '<button type="button" class="btn brand sm inq-comp-btn" data-vin="' + esc(i.vin) + '">Comp →</button>'
+            : '';
+          return '<tr>' +
+            '<td class="mono"><strong>' + esc(i.vin || '—') + '</strong></td>' +
+            '<td>' + esc(i.vehicleTitle || '—') + '</td>' +
+            '<td class="mono">' + esc(i.provinceHint || '—') + '</td>' +
+            '<td class="mono tnum tr">' + (i.recordsFound || 0) + '</td>' +
+            '<td class="mono tnum" style="font-size:11px;color:var(--ink3)">' + esc(String(i.createdAt || '').slice(0, 16).replace('T', ' ')) + '</td>' +
+            '<td class="tr"><div class="row-actions">' + compBtn + '<a class="btn sm" href="' + checkHref + '" target="_blank">Check</a></div></td>' +
+            '</tr>';
+        }).join('')
+      : '<tr><td colspan="6" style="color:var(--ink3);padding:18px;text-align:center">No VIN lookups match this filter.</td></tr>';
+
+    document.querySelectorAll('.inq-comp-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openVinInCompDesk(this.getAttribute('data-vin'));
+      });
+    });
+  }
+
+  function renderRuntimeStatus() {
+    var d = state.data;
+    if (!d) return;
+    var u = d.user || {};
+    var rt = d.runtime || {};
+    var fx = d.fx || {};
+    var up = d.upstreamStatus || {};
+    var bal = up.reportBalance;
+    var cfg = d.settings || { singlePriceCad: 17, pack3PriceCad: 39, pack10PriceCad: 99, allowLocalSandboxFallback: true };
+    var storageStr = rt.storageBackend === 'supabase'
+      ? 'Supabase Postgres (Durable)'
+      : rt.storageBackend === 'ephemeral-tmp'
+      ? 'Vercel /tmp (Ephemeral)'
+      : 'Local JSON (.vin-data)';
+
+    var rows = [
+      ['Storage Backend', storageStr],
+      ['Stripe Checkout Mode', rt.stripeConfigured ? 'Live / Key Configured' : 'Local Sandbox Mode'],
+      ['AuctionsAPI Balance', bal ? '$' + Number(bal.balanceUsd || 0).toFixed(2) + ' ' + (bal.currency || 'USD') + ' (' + (bal.balance || 0) + ' reports)' : (up.configured ? 'Configured (check failed/empty)' : 'Not configured in env')],
+      ['Signed-In Admin', (u.username || 'admin') + ' (' + (u.method || 'cookie') + ')'],
+      ['Session Expires', u.expiresAt ? String(u.expiresAt).slice(0, 19).replace('T', ' ') + ' UTC' : '24h HttpOnly Cookie'],
+      ['Active CAD Tiers', '$' + cfg.singlePriceCad + ' Single · $' + cfg.pack3PriceCad + ' 3-Pack · $' + cfg.pack10PriceCad + ' 10-Pack'],
+      ['Live FX Rate (CAD → USD)', '1 CAD = ' + Number(state.cadToUsd || fx.usdRate || 0.72).toFixed(4) + ' USD'],
+      ['Active Pricing Promos', (d.promoCodes || []).filter(function (p) { return p.active; }).length + ' active / ' + (d.promoCodes || []).length + ' total'],
+      ['Auth Lockout Protection', '5 failed login tries / 15-min IP block'],
+    ];
+
+    document.getElementById('runtime-kv').innerHTML = rows.map(function (row) {
+      return '<div class="kv-row"><span class="kv-k">' + esc(row[0]) + '</span><span class="kv-v tnum">' + esc(row[1]) + '</span></div>';
+    }).join('');
+  }
+
+  function renderAll(d) {
+    state.data = d;
+    var hasStoredFx = false;
+    try { hasStoredFx = Boolean(localStorage.getItem('drivee_admin_fx')); } catch (e) {}
+    if (d.fx && d.fx.cadToUsd && !hasStoredFx) {
+      state.cadToUsd = Number(d.fx.cadToUsd) || 0.72;
+    }
+    showDashboard();
+    syncCurrencyUi();
+
+    var u = d.user || {};
+    var rt = d.runtime || {};
+    document.getElementById('signed-in-user').textContent = u.username || 'admin';
+    var methEl = document.getElementById('session-method-label');
+    if (methEl) methEl.textContent = u.usingDefaultLocalCreds ? 'dev-session' : (u.method || 'signed-cookie');
+
+    document.getElementById('local-creds-banner').style.display = u.usingDefaultLocalCreds ? 'block' : 'none';
+    var ephBanner = document.getElementById('ephemeral-store-banner');
+    if (ephBanner) {
+      ephBanner.style.display = rt.isVercel && !rt.storageDurable ? 'block' : 'none';
+    }
+    var stChip = document.getElementById('storage-chip');
+    var stDot = document.getElementById('storage-dot');
+    var stLabel = document.getElementById('storage-label');
+    if (stChip && stDot && stLabel && rt.storageBackend) {
+      stChip.style.display = 'inline-flex';
+      if (rt.storageBackend === 'supabase') {
+        stLabel.textContent = 'Supabase Postgres · Durable';
+        stDot.style.background = '#0B7A43';
+        stChip.style.background = 'rgba(15,157,88,.12)';
+        stChip.style.color = '#0B7A43';
+        stChip.style.borderColor = 'rgba(15,157,88,.24)';
+      } else if (rt.storageBackend === 'ephemeral-tmp') {
+        stLabel.textContent = 'Ephemeral /tmp · Configure Supabase';
+        stDot.style.background = '#DC2626';
+        stChip.style.background = 'rgba(220,38,38,.10)';
+        stChip.style.color = '#B91C1C';
+        stChip.style.borderColor = 'rgba(220,38,38,.24)';
+      } else {
+        stLabel.textContent = 'Local JSON (.vin-data)';
+        stDot.style.background = '#1D4ED8';
+        stChip.style.background = 'rgba(29,78,216,.10)';
+        stChip.style.color = '#1E40AF';
+        stChip.style.borderColor = 'rgba(29,78,216,.22)';
+      }
+    }
+
+    var ordersCount = (d.recentOrders || []).length;
+    var custCount = (d.customers || []).length;
+    var inqCount = (d.recentInquiries || []).length;
+    document.getElementById('tab-lbl-orders').textContent = 'Orders, Packs & Promos (' + ordersCount + ')';
+    document.getElementById('tab-lbl-buyers').textContent = 'Buyer CRM (' + custCount + ')';
+    document.getElementById('tab-lbl-inquiries').textContent = 'Recent Lookups (' + inqCount + ')';
+
+    // Stripe Live/Sandbox pill + AuctionsAPI balance pill
+    var stripeChip = document.getElementById('stripe-chip');
+    var stripeDot = document.getElementById('stripe-dot');
+    var stripeLabel = document.getElementById('stripe-label');
+    if (stripeChip && stripeDot && stripeLabel) {
+      stripeChip.style.display = 'inline-flex';
+      if (rt.stripeConfigured) {
+        stripeLabel.textContent = 'Stripe Configured';
+        stripeDot.style.background = '#0B7A43';
+        stripeChip.style.background = 'rgba(15,157,88,.12)';
+        stripeChip.style.color = '#0B7A43';
+      } else {
+        stripeLabel.textContent = 'Stripe Sandbox';
+        stripeDot.style.background = '#56637A';
+        stripeChip.style.background = 'var(--bg2)';
+        stripeChip.style.color = 'var(--ink2)';
+      }
+    }
+    var balChip = document.getElementById('balance-chip');
+    var balLabel = document.getElementById('balance-label');
+    var up = d.upstreamStatus || {};
+    if (balChip && balLabel) {
+      balChip.style.display = 'inline-flex';
+      if (up.reportBalance) {
+        balLabel.textContent = 'Balance $' + Number(up.reportBalance.balanceUsd || 0).toFixed(2) + ' (' + (up.reportBalance.balance || 0) + ' Reports)';
+        balChip.style.background = 'var(--blue-soft)';
+        balChip.style.color = 'var(--blue-d)';
+      } else if (up.configured) {
+        balLabel.textContent = 'Upstream Key Ready';
+        balChip.style.background = 'var(--blue-soft)';
+        balChip.style.color = 'var(--blue-d)';
+      } else {
+        balLabel.textContent = 'Upstream Key Unset';
+        balChip.style.background = 'var(--bg2)';
+        balChip.style.color = 'var(--ink3)';
+      }
+    }
+
+    var s = d.summary || {};
+    var sandboxCount = Number(s.sandboxOrdersCount || 0);
+    var purgeBanner = document.getElementById('sandbox-purge-banner');
+    if (purgeBanner) {
+      purgeBanner.classList.toggle('open', sandboxCount > 0);
+      var purgeTxt = document.getElementById('sandbox-purge-text');
+      if (purgeTxt) purgeTxt.textContent = sandboxCount + ' sandbox test order' + (sandboxCount === 1 ? '' : 's') + ' present. Purge test records before production while keeping paid Stripe orders and promos intact.';
+      var purgeBtn = document.getElementById('banner-purge-sandbox-btn');
+      if (purgeBtn) purgeBtn.textContent = 'Purge Sandbox (' + sandboxCount + ')';
+    }
+
+    // Hydrate Retail CAD Settings & sync dropdown labels
+    var cfg = d.settings || { singlePriceCad: 17, pack3PriceCad: 39, pack10PriceCad: 99, allowLocalSandboxFallback: true };
+    var setSingleInp = document.getElementById('set-single-cad');
+    var setPack3Inp = document.getElementById('set-pack3-cad');
+    var setPack10Inp = document.getElementById('set-pack10-cad');
+    var setAllowSb = document.getElementById('set-allow-sandbox');
+    if (setSingleInp && document.activeElement !== setSingleInp) setSingleInp.value = cfg.singlePriceCad;
+    if (setPack3Inp && document.activeElement !== setPack3Inp) setPack3Inp.value = cfg.pack3PriceCad;
+    if (setPack10Inp && document.activeElement !== setPack10Inp) setPack10Inp.value = cfg.pack10PriceCad;
+    if (setAllowSb && document.activeElement !== setAllowSb) setAllowSb.checked = cfg.allowLocalSandboxFallback !== false;
+
+    var weekSubEl = document.getElementById('weekly-sub');
+    if (weekSubEl) weekSubEl.textContent = 'Stacked weekly orders ($' + cfg.singlePriceCad + ' Single · $' + cfg.pack3PriceCad + ' 3-Pack · $' + cfg.pack10PriceCad + ' 10-Pack CAD)';
+    var packSel = document.getElementById('pack-tier');
+    if (packSel && packSel.options.length >= 2) {
+      packSel.options[0].textContent = '3-Report Pack ($' + cfg.pack3PriceCad + ' CAD)';
+      packSel.options[1].textContent = '10-Report Pack ($' + cfg.pack10PriceCad + ' CAD)';
+    }
+    var simSel = document.getElementById('sim-tier');
+    if (simSel && simSel.options.length >= 3) {
+      simSel.options[0].textContent = 'Single Report ($' + cfg.singlePriceCad + ' CAD)';
+      simSel.options[1].textContent = '3-Pack ($' + cfg.pack3PriceCad + ' CAD)';
+      simSel.options[2].textContent = '10-Pack ($' + cfg.pack10PriceCad + ' CAD)';
+    }
+    var simQuickBtn = document.getElementById('sim-btn');
+    if (simQuickBtn) simQuickBtn.textContent = '+ Simulate $' + cfg.pack3PriceCad + ' Order';
+
+    var wt = (d.analytics && d.analytics.windowTotals) || {};
+    var byTier = s.byTier || {};
+    document.getElementById('kpis').innerHTML =
+      '<div class="drivee-card kpi-card"><div class="k-lbl">VIN Inquiries</div><div class="k-val tnum">' + (s.totalInquiries || 0) + '</div><div class="k-sub tnum">' + (s.uniqueInquiredVins || 0) + ' unique · ' + (wt.inquiries30d || 0) + ' in 30d</div></div>' +
+      '<div class="drivee-card kpi-card"><div class="k-lbl">Paid Orders</div><div class="k-val tnum">' + (s.totalPaidOrders || 0) + '</div><div class="k-sub tnum">' + (wt.buys7d || 0) + ' in 7d · ' + (s.uniqueBuyersCount || 0) + ' buyers</div></div>' +
+      '<div class="drivee-card kpi-card"><div class="k-lbl">Gross Revenue (' + curCode() + ')</div><div class="k-val tnum">' + fmtMoney(s.totalRevenueCad || 0) + '</div><div class="k-sub tnum">AOV ' + fmtMoney(s.avgOrderValueCad || 0) + ' · 1pk:' + (byTier.single || 0) + ' 3pk:' + (byTier.pack3 || 0) + ' 10pk:' + (byTier.pack10 || 0) + '</div></div>' +
+      '<div class="drivee-card kpi-card"><div class="k-lbl">Upstream COGS</div><div class="k-val tnum">' + fmtMoney(s.totalUpstreamCostCad || 0) + '</div><div class="k-sub tnum">API cost (' + curCode() + ')' + (s.refundedOrdersCount ? ' · ' + s.refundedOrdersCount + ' ref' : '') + '</div></div>' +
+      '<div class="drivee-card kpi-card"><div class="k-lbl">Net Margin (' + curCode() + ')</div><div class="k-val tnum" style="color:var(--green)">' + fmtMoney(s.netProfitCad || 0) + '</div><div class="k-sub tnum">' + (s.conversionPct || 0) + '% conv · ' + (s.repeatBuyerPct || 0) + '% repeat</div></div>' +
+      '<div class="drivee-card kpi-card"><div class="k-lbl">Active Packs</div><div class="k-val tnum" style="color:var(--blue)">' + (s.activePackCodes || 0) + '</div><div class="k-sub">160-bit HMAC-SHA256</div></div>';
+
+    renderHeatmap();
+    renderDailyChart();
+    renderWeeklyChart();
+    renderCustomersTable();
+    renderOrdersTable();
+    renderInquiriesTable();
+    renderRuntimeStatus();
+
+    // Promos table with Revoke / Restore / Delete
+    var promos = d.promoCodes || [];
+    document.getElementById('promos-body').innerHTML = promos.length
+      ? promos.map(function (pr) {
+          var isAct = Boolean(pr.active);
+          var capStr = pr.maxUses != null ? (pr.usesCount || 0) + '/' + pr.maxUses : String(pr.usesCount || 0);
+          var toggleBtn = isAct
+            ? '<button class="btn danger sm promo-revoke-btn" data-code="' + esc(pr.code) + '" type="button">Revoke</button>'
+            : '<button class="btn good sm promo-restore-btn" data-code="' + esc(pr.code) + '" type="button">Restore</button>';
+          var delBtn = '<button class="btn sm promo-del-btn" data-code="' + esc(pr.code) + '" type="button" title="Delete promo">✕</button>';
+          return '<tr>' +
+            '<td class="mono" style="font-weight:800">' + esc(pr.code) + '</td>' +
+            '<td class="mono tnum">' + pr.discountPct + '%</td>' +
+            '<td class="mono tnum">' + capStr + '</td>' +
+            '<td>' + (isAct ? '<span class="pill ok">Active</span>' : '<span class="pill rev">Revoked</span>') + '</td>' +
+            '<td class="tr"><div class="row-actions">' + toggleBtn + delBtn + '</div></td>' +
+            '</tr>';
+        }).join('')
+      : '<tr><td colspan="5" style="color:var(--ink3);padding:12px;text-align:center">No promo codes configured.</td></tr>';
+
+    document.querySelectorAll('.promo-revoke-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = this.getAttribute('data-code');
+        var prObj = promos.find(function (x) { return x.code === code; }) || {};
+        askConfirm({
+          tone: 'danger',
+          title: 'Revoke Promo Code ' + code + '?',
+          body: 'Buyers will immediately be blocked from applying this promo code at checkout. You can restore it later if needed.',
+          details: [
+            ['Promo Code', code],
+            ['Discount', (prObj.discountPct || 0) + '% off'],
+            ['Recorded Uses', String(prObj.usesCount || 0)],
+          ],
+          confirmLabel: 'Revoke Promo',
+          onConfirm: function () {
+            postAction({ action: 'revoke_promo', code: code }, function (res) {
+              if (res && res.ok) showStatusBanner('ok', 'Promo ' + code + ' revoked.');
+              else showStatusBanner('err', (res && res.error) || 'Failed to revoke promo.');
+            });
+          },
+        });
+      });
+    });
+    document.querySelectorAll('.promo-restore-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = this.getAttribute('data-code');
+        var prObj = promos.find(function (x) { return x.code === code; }) || {};
+        askConfirm({
+          tone: 'good',
+          title: 'Restore Promo Code ' + code + '?',
+          body: 'This will immediately re-enable the promo code for checkout.',
+          details: [
+            ['Promo Code', code],
+            ['Discount', (prObj.discountPct || 0) + '% off'],
+          ],
+          confirmLabel: 'Restore Promo',
+          onConfirm: function () {
+            postAction({ action: 'restore_promo', code: code }, function (res) {
+              if (res && res.ok) showStatusBanner('ok', 'Promo ' + code + ' restored.');
+              else showStatusBanner('err', (res && res.error) || 'Failed to restore promo.');
+            });
+          },
+        });
+      });
+    });
+    document.querySelectorAll('.promo-del-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var code = this.getAttribute('data-code');
+        var prObj = promos.find(function (x) { return x.code === code; }) || {};
+        askConfirm({
+          tone: 'danger',
+          title: 'Permanently Delete Promo ' + code + '?',
+          body: 'This removes the promo code from the manager and stops all future checkouts from using it.',
+          details: [
+            ['Promo Code', code],
+            ['Discount', (prObj.discountPct || 0) + '% off'],
+            ['Uses', String(prObj.usesCount || 0)],
+          ],
+          confirmLabel: 'Delete Permanently',
+          onConfirm: function () {
+            postAction({ action: 'delete_promo', code: code }, function (res) {
+              if (res && res.ok) showStatusBanner('ok', 'Promo ' + code + ' deleted.');
+              else showStatusBanner('err', (res && res.error) || 'Failed to delete promo.');
+            });
+          },
+        });
+      });
+    });
+
+    // Hardened pack codes table (+1 credit top-up & revoke)
+    var packs = d.packCodes || [];
+    document.getElementById('packs-body').innerHTML = packs.length
+      ? packs.map(function (p) {
+          var secPill = p.securityVersion >= 2
+            ? '<span class="pill v2">v2 HMAC</span>'
+            : '<span class="pill v1">v1 legacy</span>';
+          var stPill = p.revoked
+            ? '<span class="pill rev">Revoked</span>'
+            : p.remainingCredits > 0
+              ? '<span class="pill ok">Active</span>'
+              : '<span class="pill empty">Used</span>';
+          var actionsHtml = (!p.revoked && p.codeHash)
+            ? '<div class="row-actions">' +
+                '<button class="btn good sm topup-pack-btn" data-hash="' + esc(p.codeHash) + '" type="button" title="Grant +1 courtesy credit">+1</button>' +
+                '<button class="btn danger sm revoke-pack-btn" data-hash="' + esc(p.codeHash) + '" type="button">Revoke</button>' +
+              '</div>'
+            : '<span style="color:var(--ink3);font-size:11px">—</span>';
+          return '<tr>' +
+            '<td class="mono" style="font-weight:700;font-size:11.5px">' + esc(p.code) + '<div style="font-size:10.5px;color:var(--ink3);font-weight:500">' + esc(p.customerEmail || p.tierId) + '</div></td>' +
+            '<td>' + secPill + '</td>' +
+            '<td class="mono tnum">' + p.remainingCredits + ' / ' + p.totalCredits + '</td>' +
+            '<td>' + stPill + '</td>' +
+            '<td class="tr">' + actionsHtml + '</td>' +
+            '</tr>';
+        }).join('')
+      : '<tr><td colspan="5" style="color:var(--ink3);padding:18px;text-align:center">No pack codes issued yet.</td></tr>';
+
+    document.querySelectorAll('.topup-pack-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var h = this.getAttribute('data-hash');
+        var pkObj = packs.find(function (x) { return x.codeHash === h; }) || {};
+        var curRem = Number(pkObj.remainingCredits || 0);
+        var curTot = Number(pkObj.totalCredits || 0);
+        askConfirm({
+          tone: 'good',
+          title: 'Grant +1 Courtesy Credit?',
+          body: 'Adds 1 extra VIN report credit to this buyer pack key immediately.',
+          details: [
+            ['Masked Key', pkObj.code || '—'],
+            ['Buyer', pkObj.customerEmail || '—'],
+            ['Credits Change', curRem + ' / ' + curTot + ' -> ' + (curRem + 1) + ' / ' + Math.max(curTot, curRem + 1)],
+          ],
+          confirmLabel: 'Add +1 Credit',
+          onConfirm: function () {
+            postAction({ action: 'adjust_pack_credits', codeHash: h, delta: 1 }, function (res) {
+              if (res && res.ok) showStatusBanner('ok', 'Granted +1 courtesy credit to ' + (pkObj.code || 'pack') + '.');
+              else showStatusBanner('err', (res && res.error) || 'Failed to adjust pack credits.');
+            });
+          },
+        });
+      });
+    });
+    document.querySelectorAll('.revoke-pack-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var h = this.getAttribute('data-hash');
+        var pkObj = packs.find(function (x) { return x.codeHash === h; }) || {};
+        askConfirm({
+          tone: 'danger',
+          title: 'Permanently Revoke Pack Key?',
+          body: 'The buyer will immediately be blocked from redeeming any remaining credits on this pack key. This action cannot be undone.',
+          details: [
+            ['Masked Key', pkObj.code || '—'],
+            ['Buyer', pkObj.customerEmail || '—'],
+            ['Remaining Credits', (pkObj.remainingCredits || 0) + ' / ' + (pkObj.totalCredits || 0)],
+          ],
+          confirmLabel: 'Yes, Revoke Key',
+          onConfirm: function () {
+            postAction({ action: 'revoke_pack', codeHash: h }, function (res) {
+              if (res && res.ok) showStatusBanner('ok', 'Pack key ' + (pkObj.code || '') + ' revoked.');
+              else showStatusBanner('err', (res && res.error) || 'Failed to revoke pack key.');
+            });
+          },
+        });
+      });
+    });
+  }
+
+  function load() {
+    fetch('/api/order-status?op=admin', { credentials: 'same-origin' })
+      .then(function (r) {
+        return r.json().then(function (d) { return { status: r.status, data: d }; });
+      })
+      .then(function (res) {
+        if (res.status === 401 || !res.data || !res.data.ok) {
+          showLoginGate(res.data || {});
+          return;
+        }
+        renderAll(res.data);
+      })
+      .catch(function () { showLoginGate({}); });
+  }
+
+  function postAction(payload, onDone, skipReload) {
+    fetch('/api/order-status?op=admin', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(function (r) {
+        return r.json().then(function (d) { return { status: r.status, data: d }; });
+      })
+      .then(function (res) {
+        if (res.status === 401) { showLoginGate(res.data || {}); return; }
+        if (onDone) onDone(res.data);
+        if (!skipReload) load();
+      })
+      .catch(function () {
+        showStatusBanner('err', 'Network error reaching /api/order-status?op=admin.');
+      });
+  }
+
+  // ── Login Form Wiring ─────────────────────────────────────────────────
+  document.getElementById('pw-toggle').addEventListener('click', function () {
+    var inp = document.getElementById('login-pass');
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    this.textContent = show ? 'Hide' : 'Show';
+  });
+
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var errEl = document.getElementById('login-err');
+    var btn = document.getElementById('login-submit');
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Verifying...';
+
+    fetch('/api/order-status?op=admin', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'login',
+        username: document.getElementById('login-user').value,
+        password: document.getElementById('login-pass').value,
+      }),
+    })
+      .then(function (r) {
+        return r.json().then(function (d) { return { status: r.status, data: d }; });
+      })
+      .then(function (res) {
+        btn.disabled = false;
+        btn.textContent = 'Sign In to Owner Dashboard';
+        if (res.status === 200 && res.data && res.data.ok) {
+          document.getElementById('login-pass').value = '';
+          load();
+        } else {
+          errEl.textContent = (res.data && res.data.error) || 'Sign-in failed.';
+          errEl.style.display = 'block';
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = 'Sign In to Owner Dashboard';
+        errEl.textContent = 'Network error reaching /api/order-status?op=admin.';
+        errEl.style.display = 'block';
+      });
+  });
+
+  // ── Currency & FX Rate Controls ───────────────────────────────────────
+  document.getElementById('currency-seg').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-cur]');
+    if (!btn) return;
+    state.currency = btn.getAttribute('data-cur') === 'USD' ? 'USD' : 'CAD';
+    try { localStorage.setItem('drivee_admin_cur', state.currency); } catch (err) {}
+    if (state.data) renderAll(state.data);
+  });
+
+  document.getElementById('fx-rate-input').addEventListener('change', function () {
+    var v = Number(this.value);
+    if (Number.isFinite(v) && v > 0.2 && v < 2.0) {
+      state.cadToUsd = v;
+      try { localStorage.setItem('drivee_admin_fx', String(v)); } catch (err) {}
+      if (state.data) renderAll(state.data);
+    } else {
+      this.value = state.cadToUsd.toFixed(2);
+    }
+  });
+
+  // ── Dashboard Action Controls ─────────────────────────────────────────
+  document.getElementById('logout-btn').addEventListener('click', function () {
+    fetch('/api/order-status?op=admin', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'logout' }),
+    }).then(function () {
+      state.data = null;
+      load();
+    });
+  });
+
+  document.getElementById('refresh-btn').addEventListener('click', load);
+
+  function runSimulateOrder(opts) {
+    postAction(
+      {
+        action: 'simulate_order',
+        vin: opts.vin || 'KNAF55AC3L5071117',
+        tierId: opts.tierId || 'pack3',
+        email: opts.email || undefined,
+        daysAgo: opts.daysAgo || undefined,
+      },
+      function (d) {
+        var box = document.getElementById('sim-result');
+        if (d && d.ok && d.order) {
+          var o = d.order;
+          var repUrl = o.vin && o.accessToken
+            ? '/vin-report.html?vin=' + encodeURIComponent(o.vin) + '&access=' + encodeURIComponent(o.accessToken)
+            : '';
+          showStatusBanner('ok', 'Simulated order ' + (o.orderNumber || '') + ' created for VIN ' + (o.vin || '') + '.');
+          if (box) {
+            box.style.display = 'block';
+            box.innerHTML =
+              '<div class="code-reveal-top">' +
+                '<span class="code-reveal-lbl">Simulated Order ' + esc(o.orderNumber || '') + '</span>' +
+                (repUrl ? '<a class="btn sm" href="' + repUrl + '" target="_blank">Open Report →</a>' : '') +
+              '</div>' +
+              '<div class="code-reveal-val">' +
+                'VIN: ' + esc(o.vin || '') + ' · Tier: ' + esc(o.tierId || '') +
+                (o.packCode ? '<br/>Pack Key: ' + esc(o.packCode) : '') +
+              '</div>';
+          }
+        } else {
+          showStatusBanner('err', (d && d.error) || 'Failed to create simulated order.');
+        }
+      }
+    );
+  }
+
+  function openVinInCompDesk(vin) {
+    var inp = document.getElementById('comp-vin');
+    if (inp && vin) inp.value = String(vin).trim().toUpperCase();
+    setActiveTab('comp', true);
+    if (inp) inp.focus();
+  }
+
+  function showCompResult(url, label) {
+    state.lastCompUrl = url;
+    var box = document.getElementById('comp-result');
+    var lblEl = document.getElementById('comp-result-lbl');
+    var urlEl = document.getElementById('comp-result-url');
+    var openEl = document.getElementById('open-comp-url-link');
+    if (lblEl && label) lblEl.textContent = label;
+    if (urlEl) urlEl.textContent = url;
+    if (openEl) openEl.href = url;
+    if (box) box.style.display = 'block';
+  }
+
+  document.getElementById('comp-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var vin = (document.getElementById('comp-vin').value || '').trim().toUpperCase();
+    var email = (document.getElementById('comp-email').value || '').trim();
+    if (!vin) return;
+    postAction(
+      { action: 'generate_comp_report', vin: vin, email: email },
+      function (d) {
+        if (d && d.ok && d.reportUrl) {
+          showCompResult(d.reportUrl, 'Signed $0 Comp URL Ready (' + (d.vin || vin) + ')');
+          showStatusBanner('ok', 'Generated signed $0 comp link for VIN ' + (d.vin || vin) + '.');
+        } else {
+          showStatusBanner('err', (d && d.error) || 'Failed to generate comp link.');
+        }
+      }
+    );
+  });
+
+  document.getElementById('comp-live-btn').addEventListener('click', function () {
+    var vin = (document.getElementById('comp-vin').value || '').trim().toUpperCase();
+    if (!vin) {
+      showStatusBanner('err', 'Enter a 17-character VIN first.');
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Pulling Live Report...';
+    postAction(
+      { action: 'generate_live_dossier', vin: vin },
+      function (d) {
+        btn.disabled = false;
+        btn.textContent = 'Pull Live History Report (Uses 1 Credit if Uncached)';
+        if (d && d.ok && d.reportUrl) {
+          showCompResult(d.reportUrl, 'Live Report (' + (d.mode || 'ok') + ' · ' + (d.recordsCount || 0) + ' events)');
+          showStatusBanner('ok', 'Prepared dossier for ' + (d.vin || vin) + ' (' + (d.mode || 'ready') + ').');
+        } else {
+          showStatusBanner('err', (d && d.error) || 'Failed to pull live dossier.');
+        }
+      },
+      true
+    );
+  });
+
+  document.getElementById('copy-comp-url-btn').addEventListener('click', function () {
+    if (!state.lastCompUrl) return;
+    var btn = this;
+    var full = window.location.origin + state.lastCompUrl;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(function () {
+        btn.textContent = 'Copied URL ✓';
+        setTimeout(function () { btn.textContent = 'Copy Full URL'; }, 1800);
+      });
+    }
+  });
+
+  function triggerPurgeSandbox() {
+    var cnt = Number((state.data && state.data.summary && state.data.summary.sandboxOrdersCount) || 0);
+    askConfirm({
+      tone: 'danger',
+      title: 'Purge All Sandbox Test Orders?',
+      body: 'Removes simulated / localhost sandbox test orders and their linked sandbox pack codes. Real Stripe paid orders, comp links, and all promo codes stay untouched.',
+      details: [
+        ['Sandbox Orders Found', String(cnt)],
+        ['Live Paid Orders', String((state.data && state.data.summary && state.data.summary.totalPaidOrders) || 0)],
+      ],
+      confirmLabel: 'Confirm Purge',
+      onConfirm: function () {
+        postAction({ action: 'purge_sandbox_orders' }, function (res) {
+          if (res && res.ok) {
+            showStatusBanner('ok', 'Purged ' + (res.purgedOrdersCount || 0) + ' sandbox orders (' + (res.purgedPacksCount || 0) + ' packs).');
+          } else {
+            showStatusBanner('err', (res && res.error) || 'Failed to purge sandbox orders.');
+          }
+        });
+      },
+    });
+  }
+
+  document.getElementById('banner-purge-sandbox-btn').addEventListener('click', triggerPurgeSandbox);
+  document.getElementById('purge-sandbox-btn').addEventListener('click', triggerPurgeSandbox);
+
+  document.getElementById('test-upstream-btn').addEventListener('click', function () {
+    var out = document.getElementById('upstream-test-out');
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    postAction(
+      { action: 'test_upstream' },
+      function (d) {
+        btn.disabled = false;
+        btn.textContent = 'Test Connection';
+        var up = (d && d.upstream) || {};
+        out.style.display = 'block';
+        if (d && d.ok) {
+          out.className = 'inspect-out';
+          out.innerHTML = '<strong>Upstream Connected ✓</strong> (HTTP ' + esc(up.status || 200) + ' · ' + esc(up.durationMs || 0) + ' ms)' +
+            '<div style="margin-top:4px">Balance: <strong class="mono tnum">$' + Number(up.balanceUsd || 0).toFixed(2) + ' ' + esc(up.currency || 'USD') + '</strong> (' + esc(up.balance || 0) + ' reports)</div>';
+          showStatusBanner('ok', 'AuctionsAPI connected (' + (up.durationMs || 0) + ' ms).');
+        } else {
+          out.className = 'inspect-out bad';
+          out.textContent = (up.error || (d && d.error) || 'Upstream check failed.');
+          showStatusBanner('err', up.error || (d && d.error) || 'Upstream check failed.');
+        }
+      },
+      true
+    );
+  });
+
+  document.getElementById('settings-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    postAction(
+      {
+        action: 'update_settings',
+        singlePriceCad: Number(document.getElementById('set-single-cad').value),
+        pack3PriceCad: Number(document.getElementById('set-pack3-cad').value),
+        pack10PriceCad: Number(document.getElementById('set-pack10-cad').value),
+        allowLocalSandboxFallback: Boolean(document.getElementById('set-allow-sandbox').checked),
+      },
+      function (res) {
+        if (res && res.ok) {
+          showStatusBanner('ok', 'Saved CAD pricing & sandbox settings.');
+        } else {
+          showStatusBanner('err', (res && res.error) || 'Failed to save configuration.');
+        }
+      }
+    );
+  });
+
+  document.getElementById('reset-settings-btn').addEventListener('click', function () {
+    postAction(
+      {
+        action: 'update_settings',
+        singlePriceCad: 17,
+        pack3PriceCad: 39,
+        pack10PriceCad: 99,
+        allowLocalSandboxFallback: true,
+      },
+      function (res) {
+        if (res && res.ok) {
+          document.getElementById('set-single-cad').value = '17';
+          document.getElementById('set-pack3-cad').value = '39';
+          document.getElementById('set-pack10-cad').value = '99';
+          document.getElementById('set-allow-sandbox').checked = true;
+          showStatusBanner('ok', 'Restored default $17 / $39 / $99 CAD pricing.');
+        } else {
+          showStatusBanner('err', (res && res.error) || 'Failed to reset defaults.');
+        }
+      }
+    );
+  });
+
+  document.getElementById('sim-btn').addEventListener('click', function () {
+    runSimulateOrder({ vin: 'KNAF55AC3L5071117', tierId: 'pack3' });
+  });
+
+  document.getElementById('sim-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    runSimulateOrder({
+      vin: (document.getElementById('sim-vin').value || 'KNAF55AC3L5071117').trim().toUpperCase(),
+      tierId: document.getElementById('sim-tier').value || 'pack3',
+      email: (document.getElementById('sim-email').value || '').trim(),
+      daysAgo: Number(document.getElementById('sim-days-ago').value || 0),
+    });
+  });
+
+  document.getElementById('issue-pack-btn').addEventListener('click', function () {
+    postAction(
+      {
+        action: 'issue_pack',
+        tierId: document.getElementById('pack-tier').value,
+        email: document.getElementById('pack-email').value,
+      },
+      function (d) {
+        if (d && d.ok && d.pack && d.pack.code) {
+          state.lastIssuedCode = d.pack.code;
+          document.getElementById('pack-reveal-lbl').textContent =
+            'Issued ' + d.pack.totalCredits + '-Credit Hardened Key (Shown Once)';
+          document.getElementById('pack-reveal-val').textContent = d.pack.code;
+          document.getElementById('pack-reveal').style.display = 'block';
+          showStatusBanner('ok', 'Issued hardened ' + d.pack.totalCredits + '-credit pack key (copy now; shown once).');
+        } else if (d && d.error) {
+          showStatusBanner('err', d.error);
+        }
+      }
+    );
+  });
+
+  document.getElementById('copy-pack-btn').addEventListener('click', function () {
+    if (!state.lastIssuedCode) return;
+    var btn = this;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(state.lastIssuedCode).then(function () {
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = 'Copy Key'; }, 1800);
+      });
+    }
+  });
+
+  document.getElementById('create-promo-btn').addEventListener('click', function () {
+    postAction(
+      {
+        action: 'create_promo',
+        code: document.getElementById('promo-code').value,
+        discountPct: document.getElementById('promo-pct').value,
+        maxUses: document.getElementById('promo-max').value || undefined,
+      },
+      function (d) {
+        var el = document.getElementById('promo-msg');
+        if (d && d.ok && d.promo) {
+          el.style.color = 'var(--green)';
+          el.textContent = 'Created ' + d.promo.code + ' (' + d.promo.discountPct + '% off)';
+          document.getElementById('promo-code').value = '';
+          showStatusBanner('ok', 'Promo ' + d.promo.code + ' (-' + d.promo.discountPct + '%) saved.');
+        } else if (d && d.error) {
+          el.style.color = 'var(--red)';
+          el.textContent = d.error;
+          showStatusBanner('err', d.error);
+        }
+      }
+    );
+  });
+
+  document.getElementById('inspect-pack-btn').addEventListener('click', function () {
+    var code = (document.getElementById('inspect-pack-inp').value || '').trim();
+    var out = document.getElementById('inspect-out');
+    if (!code) return;
+    postAction(
+      { action: 'inspect_pack', code: code },
+      function (d) {
+        out.style.display = 'block';
+        if (!d || !d.ok || !d.inspection) {
+          out.className = 'inspect-out bad';
+          out.textContent = (d && d.error) || 'Inspection failed.';
+          return;
+        }
+        var ins = d.inspection;
+        if (!ins.found) {
+          out.className = 'inspect-out bad';
+          out.innerHTML = '<strong>Invalid / Not Found</strong><br/>' + esc(ins.reason);
+          return;
+        }
+        out.className = 'inspect-out';
+        var redList = (ins.redemptions || []).length
+          ? '<div style="margin-top:6px"><strong>Redeemed VINs:</strong> ' +
+            ins.redemptions.map(function (r) { return '<span class="mono">' + esc(r.vin) + '</span>'; }).join(', ') +
+            '</div>'
+          : '<div style="margin-top:6px;color:var(--ink3)">No VINs redeemed yet.</div>';
+        out.innerHTML =
+          '<div><strong>HMAC Verified ✓</strong> · <span class="pill ' + (ins.revoked ? 'rev' : 'ok') + '">' + (ins.revoked ? 'Revoked' : 'Active') + '</span></div>' +
+          '<div style="margin-top:4px">Credits: <strong class="mono tnum">' + ins.remainingCredits + ' / ' + ins.totalCredits + '</strong> · Tier: <span class="mono">' + esc(ins.tierId) + '</span></div>' +
+          '<div>Buyer: <strong>' + esc(ins.customerEmail || '—') + '</strong>' + (ins.orderNumber ? ' · Order <span class="mono">' + esc(ins.orderNumber) + '</span>' : '') + '</div>' +
+          redList;
+      },
+      true
+    );
+  });
+
+  document.getElementById('copy-emails-btn').addEventListener('click', function () {
+    if (!state.data || !state.data.customers) return;
+    var emails = state.data.customers.map(function (c) { return c.email; }).join(', ');
+    if (!emails) return;
+    var btn = this;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(emails).then(function () {
+        btn.textContent = 'Copied ' + state.data.customers.length + ' Emails ✓';
+        setTimeout(function () { btn.textContent = 'Copy All Emails'; }, 1800);
+      });
+    }
+  });
+
+  document.getElementById('customer-search').addEventListener('input', function () {
+    state.customerQuery = this.value;
+    renderCustomersTable();
+  });
+
+  document.getElementById('order-search').addEventListener('input', function () {
+    state.orderQuery = this.value;
+    renderOrdersTable();
+  });
+
+  document.getElementById('inquiry-search').addEventListener('input', function () {
+    state.inquiryQuery = this.value;
+    renderInquiriesTable();
+  });
+
+  document.getElementById('order-status-seg').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-ostatus]');
+    if (!btn) return;
+    state.orderFilter = btn.getAttribute('data-ostatus');
+    this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+    renderOrdersTable();
+  });
+
+  document.getElementById('hm-mode-seg').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-hm-mode]');
+    if (!btn) return;
+    state.hmMode = btn.getAttribute('data-hm-mode');
+    this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+    renderHeatmap();
+  });
+
+  document.getElementById('daily-range-seg').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-days]');
+    if (!btn) return;
+    state.dailyDays = Number(btn.getAttribute('data-days')) || 30;
+    this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+    renderDailyChart();
+  });
+
+  document.getElementById('daily-metric-seg').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-dmetric]');
+    if (!btn) return;
+    state.dailyMetric = btn.getAttribute('data-dmetric');
+    this.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+    renderDailyChart();
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
