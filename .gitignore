@@ -24,3 +24,6 @@ videos/*/.tmp/
 videos/*/.hyperframes/artifacts/
 videos/*/.hyperframes/frame-packets/
 videos/*/node_modules/
+
+# Local VIN sandbox store (inquiries, orders, pack credits, cached reports)
+.vin-data/

@@ -1,0 +1,2160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<title>Drivee Car Report — Canadian Vehicle History Dossier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #EEF2FB;
+    --bg2: #E4EAF6;
+    --paper: #FFFFFF;
+    --ink: #0B1430;
+    --ink2: #475569;
+    --ink3: #64748B;
+    --line: #E2E8F0;
+    --line-soft: #F1F5F9;
+    --blue: #2563EB;
+    --blue-d: #1D4ED8;
+    --blue-50: #EFF6FF;
+    --blue-100: #DBEAFE;
+    --green: #16A34A;
+    --green-d: #15803D;
+    --green-100: #DCFCE7;
+    --amber: #D97706;
+    --amber-d: #B45309;
+    --amber-100: #FEF3C7;
+    --red: #DC2626;
+    --red-d: #B91C1C;
+    --red-100: #FEE2E2;
+    --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  html, body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; }
+  button { font-family: inherit; }
+
+  /* ── Top Site Nav ── */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 13px 28px; background: rgba(238,242,251,0.92);
+    backdrop-filter: blur(12px); border-bottom: 1px solid rgba(11,20,48,0.08);
+  }
+  nav.top .brand { font-size: 22px; font-weight: 800; letter-spacing: -1px; text-decoration: none; flex-shrink: 0; }
+  nav.top .brand .dot { color: var(--blue); }
+  nav.top .links { display: flex; gap: 22px; align-items: center; }
+  nav.top .links a { color: var(--ink2); font-size: 14px; font-weight: 600; text-decoration: none; }
+  nav.top .links a:hover { color: var(--ink); }
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+  .btn-pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 15px;
+    border-radius: 12px; border: 1px solid var(--line); background: var(--paper);
+    color: var(--ink); font: 700 12.5px var(--font); text-decoration: none; cursor: pointer;
+    transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+  }
+  .btn-pill:hover { border-color: rgba(37,99,235,0.45); }
+  .btn-pill.dark { background: var(--ink); color: #fff; border-color: var(--ink); border-radius: 999px; }
+  .btn-pill.primary { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 2px 6px rgba(37,99,235,0.22); }
+  .btn-pill.primary:hover { background: var(--blue-d); }
+  .btn-pill.icon-only { padding: 8px 10px; }
+  .nav-menu { display: none; }
+  @media (max-width: 820px) {
+    nav.top { padding: 12px 16px; }
+    nav.top .links { display: none; }
+    .nav-menu {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+      border: 1px solid var(--line); border-radius: 10px; background: #fff;
+      font: 700 13px var(--font); color: var(--ink); cursor: pointer;
+    }
+    html.nav-open nav.top .links {
+      display: flex; position: absolute; top: 100%; left: 12px; right: 12px;
+      flex-direction: column; align-items: stretch; gap: 2px; padding: 8px;
+      background: #fff; border: 1px solid var(--line); border-radius: 14px;
+      box-shadow: 0 20px 40px -18px rgba(11,20,48,0.3);
+    }
+    html.nav-open nav.top .links a { padding: 11px 12px; border-radius: 8px; }
+    html.nav-open nav.top .links a:hover { background: var(--bg2); }
+  }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 20px 80px; }
+  .mono { font-family: var(--mono); }
+  .tabnum { font-variant-numeric: tabular-nums; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: 0 1px 3px rgba(11,20,48,0.04); }
+
+  .banner {
+    display: none; margin-bottom: 16px; padding: 13px 18px; border-radius: 14px;
+    border: 1px solid rgba(22,163,74,0.28); background: rgba(22,163,74,0.10);
+    font-size: 13.5px; line-height: 1.5; color: var(--ink);
+  }
+  .banner.show { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+  .banner .code-pill {
+    font-family: var(--mono); font-weight: 800; font-size: 13.5px; padding: 3px 9px;
+    border-radius: 8px; background: #fff; border: 1px solid rgba(22,163,74,0.3);
+  }
+
+  /* ── 4-Step Pipeline Loader ── */
+  @keyframes drv-spin { to { transform: rotate(360deg); } }
+  @keyframes drv-pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.82); } }
+  .pipeline-loader {
+    max-width: 680px; margin: 28px auto; padding: 28px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 20px;
+    box-shadow: 0 18px 44px -18px rgba(11,20,48,0.12);
+  }
+  .pl-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+  .pl-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
+    background: var(--blue-50); border: 1px solid rgba(37,99,235,0.22);
+    font-family: var(--mono); font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--blue-d); text-transform: uppercase;
+  }
+  .pl-pill.done { background: rgba(22,163,74,0.10); border-color: rgba(22,163,74,0.28); color: var(--green); }
+  .pl-pill svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .pl-spin { animation: drv-spin 0.85s linear infinite; }
+  .pl-meta { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+  .pl-meta b { color: var(--ink); font-weight: 700; }
+  .pl-head { font-size: clamp(22px, 3vw, 27px); font-weight: 800; letter-spacing: -0.7px; color: var(--ink); }
+  .pl-sub { margin-top: 6px; font-size: 13.5px; color: var(--ink2); line-height: 1.55; }
+  .pl-bar-wrap { margin-top: 18px; }
+  .pl-bar-meta { display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--ink3); margin-bottom: 6px; }
+  .pl-bar-track { height: 7px; border-radius: 999px; background: var(--bg2); overflow: hidden; }
+  .pl-bar-fill { height: 100%; width: 14%; border-radius: 999px; background: linear-gradient(90deg, var(--blue), #4F83FF); transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1), background-color 250ms ease; }
+  .pl-bar-fill.done { background: var(--green); }
+  .pl-steps { display: grid; gap: 10px; margin-top: 18px; }
+  .pl-step {
+    display: flex; align-items: center; gap: 13px; padding: 13px 15px; border-radius: 14px;
+    border: 1px solid var(--line); background: #F8FAFF; transition: border-color 220ms ease, background-color 220ms ease;
+  }
+  .pl-step[data-state="active"] { border-color: rgba(37,99,235,0.42); background: var(--blue-50); box-shadow: 0 8px 20px -14px rgba(37,99,235,0.45); }
+  .pl-step[data-state="done"] { border-color: rgba(22,163,74,0.28); background: rgba(22,163,74,0.06); }
+  .pl-icon { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; }
+  .pl-icon-pending { width: 8px; height: 8px; border-radius: 50%; background: #CBD5E1; }
+  .pl-step[data-state="active"] .pl-icon { color: var(--blue); }
+  .pl-step[data-state="done"] .pl-icon { color: var(--green); }
+  .pl-copy { min-width: 0; flex: 1; }
+  .pl-title { font-size: 13.5px; font-weight: 700; color: var(--ink3); line-height: 1.3; }
+  .pl-step[data-state="active"] .pl-title, .pl-step[data-state="done"] .pl-title { color: var(--ink); }
+  .pl-desc { font-size: 12px; color: var(--ink3); margin-top: 2px; line-height: 1.35; }
+  .pl-step[data-state="active"] .pl-desc { color: var(--ink2); }
+  .pl-state { font-family: var(--mono); font-size: 10px; font-weight: 800; letter-spacing: 0.9px; padding: 4px 8px; border-radius: 999px; flex-shrink: 0; background: rgba(11,20,48,0.05); color: var(--ink3); }
+  .pl-step[data-state="active"] .pl-state { background: rgba(37,99,235,0.14); color: var(--blue-d); }
+  .pl-step[data-state="done"] .pl-state { background: rgba(22,163,74,0.14); color: var(--green); }
+  .pl-foot { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--ink3); }
+  .pl-foot-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); margin-right: 6px; animation: drv-pulse-dot 1.4s ease-in-out infinite; }
+
+  /* ── Lock Screen ── */
+  .lock-box { max-width: 780px; margin: 24px auto; }
+  .tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+  .tier { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: #F8FAFF; display: flex; flex-direction: column; gap: 8px; }
+  .tier.pop { border-color: var(--blue); background: #fff; box-shadow: 0 12px 26px rgba(37,99,235,0.12); }
+  .tier b { font-size: 26px; font-weight: 800; letter-spacing: -0.8px; }
+  .tier .t-btn { margin-top: auto; padding: 11px 14px; border-radius: 999px; border: 0; background: var(--ink); color: #fff; font: 800 13.5px var(--font); cursor: pointer; }
+  .tier.pop .t-btn { background: var(--blue); }
+
+  /* ── Dossier Executive Layout (VinBadge-style Drivee Light) ── */
+  .dossier-stack { display: flex; flex-direction: column; gap: 18px; }
+
+  /* Running Report Bar */
+  .run-bar {
+    position: sticky; top: 58px; z-index: 30;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 16px; border-radius: 16px; border: 1px solid var(--line);
+    background: rgba(255,255,255,0.96); backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px -8px rgba(11,20,48,0.09);
+  }
+  .run-brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .run-shield {
+    width: 34px; height: 34px; border-radius: 10px; background: var(--blue); color: #fff;
+    display: grid; place-items: center; flex-shrink: 0; box-shadow: 0 4px 10px -4px rgba(37,99,235,0.6);
+  }
+  .run-title-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .run-title-row b { font-size: 15.5px; font-weight: 800; letter-spacing: -0.4px; }
+  .run-title-row span { font-size: 10.5px; font-weight: 800; letter-spacing: 1px; color: var(--blue); text-transform: uppercase; }
+  .run-sub { font-family: var(--mono); font-size: 10.5px; color: var(--ink3); margin-top: 1px; }
+  .run-anchors { display: flex; flex-wrap: nowrap; align-items: center; gap: 1px; }
+  .run-anchors a {
+    font-size: 11.5px; font-weight: 600; color: var(--ink2); text-decoration: none; white-space: nowrap;
+    padding: 5px 7px; border-radius: 8px; transition: background-color 140ms ease, color 140ms ease;
+  }
+  .run-anchors a:hover { background: var(--line-soft); color: var(--ink); }
+  .run-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .unit-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; background: #F1F5F9; padding: 2px; }
+  .unit-toggle button { border: 0; background: transparent; padding: 5px 10px; border-radius: 8px; font: 800 11px var(--mono); color: var(--ink2); cursor: pointer; }
+  .unit-toggle button.on { background: var(--ink); color: #fff; }
+
+  /* 1. Hero Banner (Soft Sky Gradient) */
+  .hero-banner {
+    overflow: hidden; border-radius: 20px; border: 1px solid #CFE0FA;
+    background: linear-gradient(135deg, #D2E3FD 0%, #EBF2FE 50%, #F7FAFF 100%);
+    padding: 26px 28px;
+  }
+  .hero-banner.no-photo {
+    background: linear-gradient(135deg, #0B1938 0%, #153478 52%, #1D4ED8 100%);
+    border-color: #1D4ED8; color: #fff;
+  }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px; align-items: center; }
+  .hero-eyebrow { font-size: 11.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--blue); }
+  .hero-banner.no-photo .hero-eyebrow { color: #93C5FD; }
+  .hero-h1 { margin-top: 6px; font-size: clamp(28px, 3.6vw, 39px); line-height: 1.08; letter-spacing: -0.025em; }
+  .hero-h1 strong { font-weight: 800; color: var(--ink); }
+  .hero-h1 span { font-weight: 500; color: #334155; }
+  .hero-banner.no-photo .hero-h1 strong { color: #fff; }
+  .hero-banner.no-photo .hero-h1 span { color: rgba(255,255,255,0.82); }
+  .spec-pills { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .vin-copy-pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 11px;
+    border: 1px solid rgba(203,213,225,0.8); background: rgba(255,255,255,0.96);
+    font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink);
+    cursor: pointer; box-shadow: 0 1px 2px rgba(11,20,48,0.04);
+  }
+  .vin-copy-pill:hover { border-color: var(--blue); }
+  .spec-pill {
+    padding: 6px 12px; border-radius: 11px; border: 1px solid rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; color: #1E293B;
+  }
+  .hero-banner.no-photo .spec-pill, .hero-banner.no-photo .vin-copy-pill {
+    background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.18); color: #fff;
+  }
+  .hero-odo-row { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+  .hero-odo-val { font-size: clamp(28px, 3vw, 34px); font-weight: 800; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+  .hero-odo-sub { font-size: 12.5px; font-weight: 500; color: var(--ink2); }
+  .hero-banner.no-photo .hero-odo-sub { color: #BFDBFE; }
+  .hero-photo-frame {
+    overflow: hidden; border-radius: 16px; border: 1px solid #fff;
+    background: rgba(255,255,255,0.92); padding: 8px;
+    box-shadow: 0 12px 26px -14px rgba(11,20,48,0.28);
+  }
+  .hero-photo-frame img { width: 100%; height: 215px; object-fit: cover; border-radius: 11px; display: block; background: #F8FAFC; }
+  .hero-photo-cap { margin-top: 6px; text-align: right; font-size: 10.5px; color: var(--ink2); line-height: 1.35; }
+
+  /* Sandbox Alert Banner (only shown when live keys missing) */
+  .sandbox-alert {
+    padding: 14px 18px; border-radius: 14px; border: 1px solid #FDE68A; background: #FFFBEB;
+    display: flex; align-items: flex-start; gap: 12px; font-size: 13px; color: #78350F; line-height: 1.5;
+  }
+  .sandbox-alert strong { color: #92400E; }
+
+  /* Quick Verdict + 2x2 KPI Grid */
+  .overview-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+  .verdict-card { border-radius: 18px; border: 1px solid #DCE4F0; background: #F4F7FC; padding: 22px 24px; }
+  .verdict-kicker { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: var(--blue); text-transform: uppercase; }
+  .verdict-card h3 { margin-top: 6px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; color: var(--ink); }
+  .verdict-summary { margin-top: 6px; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .verdict-list { margin-top: 16px; border-top: 1px solid #DCE4F0; }
+  .verdict-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #DCE4F0; font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.42; }
+  .verdict-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .v-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .v-dot.good { background: var(--green); }
+  .v-dot.warn { background: #F59E0B; }
+  .v-dot.bad { background: #EF4444; }
+
+  .kpi-2x2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .kpi-tile {
+    border-radius: 18px; border: 1px solid var(--line); background: #fff; padding: 18px;
+    box-shadow: 0 1px 2px rgba(11,20,48,0.03); display: flex; flex-direction: column; justify-content: flex-start;
+  }
+  .kpi-ico {
+    width: 34px; height: 34px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .kpi-ico.good { background: var(--green-100); color: var(--green); }
+  .kpi-ico.warn { background: var(--amber-100); color: var(--amber); }
+  .kpi-ico.bad { background: var(--red-100); color: var(--red); }
+  .kpi-ico.info { background: var(--blue-100); color: var(--blue); }
+  .kpi-num { margin-top: 14px; font-size: 27px; font-weight: 800; line-height: 1; letter-spacing: -0.6px; font-variant-numeric: tabular-nums; }
+  .kpi-num.bad { color: var(--red); }
+  .kpi-lbl { margin-top: 6px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .kpi-sub { margin-top: 2px; font-size: 11.5px; color: var(--ink2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Section Header Utility */
+  .sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+  .sec-head h3 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; color: var(--ink); }
+  .sec-sub { font-size: 12.5px; color: var(--ink2); margin-top: 2px; }
+  .pill-badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 700; white-space: nowrap;
+  }
+  .pill-badge.info { background: var(--blue-100); color: var(--blue-d); }
+  .pill-badge.good { background: var(--green-100); color: var(--green-d); }
+  .pill-badge.warn { background: var(--amber-100); color: var(--amber-d); }
+  .pill-badge.bad { background: var(--red-100); color: var(--red-d); }
+  .pill-badge.neutral { background: var(--line-soft); color: var(--ink2); }
+
+  /* 2. Ownership Timeline */
+  .own-bar-track { display: flex; height: 14px; width: 100%; gap: 4px; border-radius: 999px; overflow: hidden; background: var(--line-soft); margin-top: 16px; }
+  .own-bar-seg { height: 100%; transition: opacity 150ms ease; }
+  .own-bar-seg:first-child { border-radius: 999px 0 0 999px; }
+  .own-bar-seg:last-child { border-radius: 0 999px 999px 0; }
+  .own-bar-seg:only-child { border-radius: 999px; }
+  .own-years { display: flex; justify-content: space-between; margin-top: 7px; font-family: var(--mono); font-size: 11px; color: var(--ink3); }
+  .own-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 16px; }
+  .own-card {
+    border: 1px solid var(--line); border-left-width: 4px; border-radius: 4px 12px 12px 4px;
+    background: #F8FAFC; padding: 14px 15px;
+  }
+  .own-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .own-card-top b { font-size: 14px; font-weight: 800; }
+  .own-card-meta { margin-top: 3px; font-size: 12px; font-weight: 500; color: var(--ink2); }
+  .own-card-dur { margin-top: 10px; font-size: 13px; font-weight: 800; color: var(--ink); }
+  .own-card-dur span { font-weight: 600; color: var(--ink2); }
+  .own-card-span { margin-top: 2px; font-size: 11.5px; color: var(--ink3); }
+
+  /* 3. Odometer History Chart */
+  .odo-box { margin-top: 16px; border-radius: 16px; border: 1px solid var(--line); background: #FCFDFE; padding: 16px; }
+  .odo-box svg { width: 100%; height: 220px; display: block; overflow: visible; }
+  .odo-readout {
+    margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+    border-radius: 11px; border: 1px solid var(--line); background: #fff; padding: 9px 14px; font-size: 12px;
+  }
+  .odo-readout.bad { border-color: #FECACA; background: #FEF2F2; color: var(--red-d); }
+  .odo-stats {
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+  }
+  .odo-stat-val { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; font-variant-numeric: tabular-nums; }
+  .odo-stat-val.good { color: var(--green-d); }
+  .odo-stat-val.bad { color: var(--red); }
+  .odo-stat-lbl { font-size: 11.5px; color: var(--ink2); margin-top: 2px; }
+
+  /* 4. Collision Blueprint (7) + Open Recalls (5) */
+  .col-recall-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 18px; align-items: start; }
+  .col-recall-grid.solo { grid-template-columns: 1fr; }
+  .col-inner { margin-top: 16px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+  .bp-wrap { border-radius: 16px; border: 1px solid var(--line); background: #F8FAFC; padding: 12px; }
+  .bp-wrap svg { width: 100%; height: 220px; display: block; margin: 0 auto; }
+  .ev-tabs { display: inline-flex; gap: 3px; border: 1px solid var(--line); background: #F8FAFC; padding: 3px; border-radius: 999px; margin-left: 8px; }
+  .ev-tabs button { border: 0; background: transparent; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--ink2); cursor: pointer; }
+  .ev-tabs button.on { background: #EF4444; color: #fff; }
+  .inc-date { font-size: 21px; font-weight: 800; letter-spacing: -0.4px; margin-top: 3px; }
+  .inc-sev { font-size: 13.5px; font-weight: 700; color: var(--red); margin-top: 2px; }
+  .inc-zone-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; font-size: 14px; font-weight: 800; line-height: 1.35; }
+  .inc-zone-sq { width: 12px; height: 12px; border-radius: 3px; background: #EF4444; margin-top: 3px; flex-shrink: 0; }
+  .inc-src { font-size: 12.5px; color: var(--ink2); margin-top: 4px; }
+  .insight-note {
+    margin-top: 12px; border-radius: 0 12px 12px 0; border-left: 3px solid var(--blue);
+    background: #F4F7FC; padding: 11px 14px; font-size: 12.5px; line-height: 1.5; color: #334155;
+  }
+  .safety-pills { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .safety-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink2); }
+
+  .recall-list { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .recall-card { border-radius: 13px; border: 1px solid #FDE68A; background: #FFFBEB; padding: 13px 14px; }
+  .recall-top { display: flex; align-items: flex-start; gap: 10px; }
+  .recall-ico { width: 24px; height: 24px; border-radius: 8px; background: var(--amber-100); color: var(--amber); display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .recall-date { font-size: 11px; font-weight: 700; color: #92400E; }
+  .recall-comp { font-size: 13.5px; font-weight: 800; color: var(--ink); margin-top: 2px; }
+  .recall-sum { font-size: 12px; color: var(--ink2); line-height: 1.5; margin-top: 4px; }
+  .recall-camp { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 6px; background: #fff; border: 1px solid #FDE68A; font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--amber-d); }
+
+  /* 5. Condition & Title Matrix */
+  .matrix-wrap { margin-top: 14px; overflow-x: auto; }
+  table.matrix { width: 100%; min-width: 540px; border-collapse: collapse; text-align: left; }
+  table.matrix th { padding: 10px 8px; border-bottom: 1px solid var(--line); font-size: 10.5px; font-weight: 800; letter-spacing: 0.9px; text-transform: uppercase; color: var(--ink3); }
+  table.matrix th:not(:first-child), table.matrix td:not(:first-child) { text-align: center; }
+  table.matrix td { padding: 12px 8px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  table.matrix tr:last-child td { border-bottom: none; }
+  .m-lbl { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .m-sub { font-size: 11.5px; color: var(--ink2); margin-top: 1px; }
+
+  /* 6. Service Snapshot Strip */
+  .svc-grid { margin-top: 14px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .svc-card {
+    border: 1px solid var(--line); border-top: 3px solid var(--green); border-radius: 6px 6px 12px 12px;
+    background: #F8FAFC; padding: 12px; display: flex; flex-direction: column;
+  }
+  .svc-yr { font-size: 13px; font-weight: 800; color: var(--ink); }
+  .svc-txt { margin-top: 5px; font-size: 11.5px; color: var(--ink2); line-height: 1.38; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .svc-odo { margin-top: auto; padding-top: 8px; font-size: 11.5px; font-weight: 700; color: var(--green-d); font-variant-numeric: tabular-nums; }
+
+  /* 7. Detailed History Feed */
+  .legend-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 14px; font-size: 11.5px; font-weight: 500; color: var(--ink2); }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-sq { width: 10px; height: 10px; border-radius: 3px; }
+  .filter-pills { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .f-pill {
+    border: 1px solid transparent; border-radius: 999px; padding: 6px 12px;
+    font-size: 11.5px; font-weight: 700; background: #F1F5F9; color: var(--ink2); cursor: pointer;
+  }
+  .f-pill:hover { color: var(--ink); }
+  .f-pill.on { background: var(--ink); color: #fff; }
+  .f-pill.outline { background: #F8FAFC; border-color: var(--line); color: var(--ink); }
+
+  .owner-grp { margin-top: 18px; }
+  .owner-grp-head {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 14px; border-radius: 12px; background: #F4F7FC; margin-bottom: 10px;
+  }
+  .owner-grp-left { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+  .owner-num-dot {
+    width: 24px; height: 24px; border-radius: 50%; color: #fff; font-size: 12px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .owner-grp-name { font-size: 14px; font-weight: 800; color: var(--ink); }
+  .owner-grp-sub { font-size: 12.5px; color: var(--ink2); font-weight: 500; }
+  .owner-grp-pace { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink2); }
+
+  .ev-table { border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
+  .ev-row {
+    display: grid; grid-template-columns: 118px 36px minmax(0, 1fr); gap: 12px; align-items: start;
+    padding: 13px 16px; border-bottom: 1px solid var(--line-soft); background: #fff;
+  }
+  .ev-row:last-child { border-bottom: none; }
+  .ev-row.alert { background: rgba(254,242,242,0.65); }
+  .ev-date { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); }
+  .ev-odo { font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--blue); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .ev-odo.empty { color: var(--ink3); }
+  .ev-odo.bad { color: var(--red); }
+  .ev-ico { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ev-ico.damage { background: var(--red-100); color: var(--red); }
+  .ev-ico.service { background: var(--green-100); color: var(--green); }
+  .ev-ico.inspection { background: #D1FAE5; color: #059669; }
+  .ev-ico.auction { background: #EDE9FE; color: #7C3AED; }
+  .ev-ico.listing { background: #E0F2FE; color: #0284C7; }
+  .ev-ico.title { background: var(--blue-100); color: var(--blue); }
+  .ev-headline { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+  .ev-loc { font-size: 12px; color: var(--ink2); margin-top: 2px; }
+  .ev-chips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .ev-chip { border-radius: 7px; background: #F1F5F9; padding: 3px 9px; font-size: 11px; font-weight: 500; color: #334155; }
+
+  /* 8. Before You Buy Checklist + Valuation + Glossary */
+  .checklist-card { border-radius: 18px; border: 1px solid #DBEAFE; background: #F4F8FF; padding: 24px; }
+  .val-strip { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .val-box { border-radius: 12px; border: 1px solid #DBEAFE; background: rgba(255,255,255,0.92); padding: 13px 15px; }
+  .val-lbl { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.7px; }
+  .val-num { margin-top: 4px; font-size: 19px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .check-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; border-radius: 13px; border: 1px solid #DBEAFE; background: rgba(255,255,255,0.9); padding: 14px; }
+  .check-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; }
+  .check-item b { font-size: 13.5px; font-weight: 800; color: var(--ink); display: block; }
+  .check-item p { margin-top: 4px; font-size: 12.5px; color: var(--ink2); line-height: 1.5; }
+  .gloss-grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .gloss-item { border-radius: 13px; background: #F8FAFC; padding: 14px; }
+  .gloss-item b { font-size: 13px; font-weight: 800; color: var(--ink); display: block; }
+  .gloss-item p { margin-top: 5px; font-size: 12px; color: var(--ink2); line-height: 1.5; }
+  .foot-bar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    border-radius: 16px; border: 1px solid var(--line); background: #F8FAFC; padding: 14px 18px;
+    font-size: 12px; color: var(--ink2);
+  }
+
+  /* Responsive Breakpoints (screen only — never collapse print/PDF grids!) */
+  @media screen and (max-width: 1080px) {
+    .run-anchors { display: none; }
+    .svc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media screen and (max-width: 900px) {
+    .hero-grid, .overview-split, .col-recall-grid, .col-inner, .check-grid, .gloss-grid, .val-strip, .tiers { grid-template-columns: 1fr; }
+    .odo-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media screen and (max-width: 600px) {
+    main { padding: 14px 12px 64px; }
+    .hero-banner, .card, .checklist-card { padding: 18px 16px; }
+    .run-bar { position: static; padding: 12px 14px; }
+    .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ev-row { grid-template-columns: 1fr; gap: 6px; padding: 12px; }
+    .ev-ico-col { display: none; }
+    .pipeline-loader { padding: 20px 16px; margin: 12px auto; }
+    .pl-step { padding: 11px 12px; gap: 10px; }
+    .pl-state { display: none; }
+  }
+
+  /* ── Dedicated Official Letter-Size Print / PDF Dossier ── */
+  .print-only { display: none; }
+
+  .pd-doc {
+    color: #0B1430; font-family: var(--font); font-size: 9.5pt; line-height: 1.38;
+    background: #FFFFFF;
+  }
+  .pd-sec { display: flex; flex-direction: column; gap: 10px; }
+  .pd-page-break { break-before: page; page-break-before: always; padding-top: 2px; }
+  .pd-avoid { break-inside: avoid; page-break-inside: avoid; }
+
+  .pd-header {
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1.5px solid #E2E8F0; padding-bottom: 8px;
+  }
+  .pd-brand { display: flex; align-items: center; gap: 8px; }
+  .pd-logo-box {
+    width: 24px; height: 24px; border-radius: 7px; background: #2563EB; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
+  }
+  .pd-brand-name { font-size: 15px; font-weight: 800; letter-spacing: -0.4px; color: #0B1430; }
+  .pd-brand-tag { margin-left: 6px; font-size: 9px; font-weight: 800; letter-spacing: 1.2px; color: #2563EB; text-transform: uppercase; }
+  .pd-cert { text-align: right; font-family: var(--mono); font-size: 8.5px; color: #64748B; line-height: 1.4; }
+  .pd-cert b { color: #0B1430; font-weight: 700; }
+
+  .pd-hero {
+    border-radius: 12px; border: 1px solid #CFE0FA;
+    background: linear-gradient(135deg, #D9E8FE 0%, #EDF4FF 55%, #F8FBFF 100%);
+    padding: 13px 15px; display: grid; grid-template-columns: minmax(0, 7.6fr) minmax(0, 4.4fr); gap: 14px; align-items: center;
+  }
+  .pd-hero.no-photo { grid-template-columns: 1fr; background: linear-gradient(135deg, #0B1938 0%, #153478 60%, #1D4ED8 100%); border-color: #1D4ED8; color: #fff; }
+  .pd-eyebrow { font-size: 8.5px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: #2563EB; }
+  .pd-hero.no-photo .pd-eyebrow { color: #93C5FD; }
+  .pd-h1 { margin-top: 3px; font-size: 21px; line-height: 1.1; letter-spacing: -0.4px; }
+  .pd-h1 strong { font-weight: 800; color: #0B1430; }
+  .pd-h1 span { font-weight: 500; color: #334155; }
+  .pd-hero.no-photo .pd-h1 strong { color: #fff; }
+  .pd-hero.no-photo .pd-h1 span { color: rgba(255,255,255,0.85); }
+  .pd-pills { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 5px; }
+  .pd-spec-pill {
+    padding: 2.5px 7.5px; border-radius: 7px; border: 1px solid rgba(203,213,225,0.8);
+    background: #fff; font-size: 8.5px; font-weight: 600; color: #1E293B;
+  }
+  .pd-hero.no-photo .pd-spec-pill { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.2); color: #fff; }
+  .pd-odo-line { margin-top: 9px; display: flex; align-items: baseline; gap: 8px; }
+  .pd-odo-big { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.4px; }
+  .pd-odo-sub { font-size: 8.5px; color: #475569; }
+  .pd-hero.no-photo .pd-odo-sub { color: #BFDBFE; }
+  .pd-photo-box { border-radius: 10px; border: 1px solid #fff; background: #fff; padding: 4px; box-shadow: 0 3px 10px rgba(11,20,48,0.10); }
+  .pd-photo-box img { width: 100%; height: 112px; object-fit: cover; border-radius: 7px; display: block; }
+
+  .pd-split-2 { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 10px; }
+  .pd-verdict { border-radius: 11px; border: 1px solid #DCE4F0; background: #F4F7FC; padding: 11px 13px; }
+  .pd-vkicker { font-size: 8px; font-weight: 800; letter-spacing: 1.3px; color: #2563EB; text-transform: uppercase; }
+  .pd-vhead { margin-top: 3px; font-size: 13px; font-weight: 800; color: #0B1430; }
+  .pd-vlist { margin-top: 7px; border-top: 1px solid #DCE4F0; }
+  .pd-vitem { display: flex; align-items: flex-start; gap: 6px; padding: 4.5px 0; border-bottom: 1px solid #DCE4F0; font-size: 8.8px; color: #1E293B; line-height: 1.35; }
+  .pd-vitem:last-child { border-bottom: none; padding-bottom: 0; }
+  .pd-vdot { width: 7px; height: 7px; border-radius: 50%; margin-top: 3.5px; flex-shrink: 0; }
+
+  .pd-kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .pd-kpi { border-radius: 11px; border: 1px solid #E2E8F0; background: #fff; padding: 10px 11px; }
+  .pd-kpi-val { font-size: 19px; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; color: #0B1430; }
+  .pd-kpi-val.bad { color: #DC2626; }
+  .pd-kpi-lbl { margin-top: 3px; font-size: 9.5px; font-weight: 700; color: #0B1430; }
+  .pd-kpi-sub { font-size: 8px; color: #64748B; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .pd-card { border-radius: 11px; border: 1px solid #E2E8F0; background: #fff; padding: 11px 13px; }
+  .pd-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .pd-card-head h4 { font-size: 12px; font-weight: 800; color: #0B1430; letter-spacing: -0.2px; }
+  .pd-pill { display: inline-flex; align-items: center; gap: 3px; border-radius: 999px; padding: 2px 7.5px; font-size: 8px; font-weight: 700; white-space: nowrap; }
+  .pd-pill.good { background: #DCFCE7; color: #15803D; }
+  .pd-pill.warn { background: #FEF3C7; color: #B45309; }
+  .pd-pill.bad { background: #FEE2E2; color: #B91C1C; }
+  .pd-pill.info { background: #DBEAFE; color: #1D4ED8; }
+  .pd-pill.neutral { background: #F1F5F9; color: #475569; }
+
+  .pd-own-bar { display: flex; height: 9px; gap: 3px; border-radius: 999px; overflow: hidden; background: #F1F5F9; }
+  .pd-own-years { display: flex; justify-content: space-between; margin-top: 4px; font-family: var(--mono); font-size: 8px; color: #64748B; }
+  .pd-own-cards { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 7px; }
+  .pd-own-card { border: 1px solid #E2E8F0; border-left-width: 3px; border-radius: 3px 8px 8px 3px; background: #F8FAFC; padding: 7px 9px; }
+  .pd-own-card b { font-size: 9.5px; font-weight: 800; display: block; }
+  .pd-own-card .m1 { font-size: 8px; color: #475569; margin-top: 1px; }
+  .pd-own-card .m2 { font-size: 8.5px; font-weight: 700; color: #0B1430; margin-top: 4px; }
+  .pd-own-card .m3 { font-size: 7.5px; color: #64748B; }
+
+  .pd-odo-wrap { border: 1px solid #E2E8F0; border-radius: 9px; background: #FCFDFE; padding: 6px 8px; }
+  .pd-odo-wrap svg { width: 100%; height: 118px; display: block; overflow: visible; }
+  .pd-odo-stats { margin-top: 7px; padding-top: 7px; border-top: 1px solid #E2E8F0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .pd-odo-stats b { font-size: 11.5px; font-weight: 800; display: block; font-variant-numeric: tabular-nums; }
+  .pd-odo-stats span { font-size: 7.8px; color: #64748B; }
+
+  .pd-col-grid { display: grid; grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr); gap: 12px; align-items: center; }
+  .pd-bp-box { border-radius: 10px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 6px; }
+  .pd-bp-box svg { width: 100%; height: 152px; display: block; margin: 0 auto; }
+  .pd-note { margin-top: 7px; border-left: 3px solid #2563EB; border-radius: 0 8px 8px 0; background: #F4F7FC; padding: 6px 9px; font-size: 8.5px; color: #334155; line-height: 1.4; }
+
+  table.pd-matrix { width: 100%; border-collapse: collapse; text-align: left; font-size: 8.5px; }
+  table.pd-matrix th { padding: 5px 6px; border-bottom: 1px solid #E2E8F0; font-size: 7.8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: #64748B; }
+  table.pd-matrix th:not(:first-child), table.pd-matrix td:not(:first-child) { text-align: center; }
+  table.pd-matrix td { padding: 5.5px 6px; border-bottom: 1px solid #F1F5F9; }
+  table.pd-matrix tr:last-child td { border-bottom: none; }
+
+  .pd-recalls-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .pd-recall { border-radius: 9px; border: 1px solid #FDE68A; background: #FFFBEB; padding: 7px 9px; font-size: 8.3px; }
+  .pd-recall b { font-size: 9px; color: #0B1430; display: block; }
+  .pd-recall p { margin-top: 2px; color: #475569; line-height: 1.35; }
+  .pd-recall .camp { display: inline-block; margin-top: 4px; font-family: var(--mono); font-size: 7.5px; font-weight: 700; color: #B45309; background: #fff; border: 1px solid #FDE68A; border-radius: 4px; padding: 1px 5px; }
+
+  .pd-val-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .pd-val-tile { border-radius: 9px; border: 1px solid #DBEAFE; background: #F4F8FF; padding: 7px 9px; }
+  .pd-val-tile span { font-family: var(--mono); font-size: 7.5px; font-weight: 700; color: #64748B; text-transform: uppercase; display: block; }
+  .pd-val-tile b { font-size: 12px; font-weight: 800; color: #0B1430; display: block; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .pd-chk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .pd-chk-item { border-radius: 8px; border: 1px solid #E2E8F0; background: #F8FAFC; padding: 7px 9px; font-size: 8.2px; color: #334155; line-height: 1.38; }
+  .pd-chk-item b { display: block; font-size: 8.8px; color: #0B1430; margin-bottom: 2px; }
+
+  .pd-own-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: 8px; background: #F4F7FC; padding: 6px 10px; margin-top: 9px; margin-bottom: 4px;
+    font-size: 9px; font-weight: 800; color: #0B1430; break-after: avoid; page-break-after: avoid;
+  }
+  .pd-own-dot { display: inline-flex; width: 16px; height: 16px; border-radius: 50%; color: #fff; font-size: 8.5px; font-weight: 800; align-items: center; justify-content: center; margin-right: 6px; }
+  .pd-ev-list { border: 1px solid #E2E8F0; border-radius: 9px; overflow: hidden; }
+  .pd-ev-row {
+    display: grid; grid-template-columns: 94px minmax(0, 1fr); gap: 8px; padding: 5.5px 10px;
+    border-bottom: 1px solid #F1F5F9; font-size: 8.3px; background: #fff;
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .pd-ev-row:last-child { border-bottom: none; }
+  .pd-ev-row.alert { background: #FEF2F2; }
+  .pd-ev-dt { font-family: var(--mono); font-weight: 700; color: #0B1430; }
+  .pd-ev-km { font-family: var(--mono); font-weight: 700; color: #2563EB; font-size: 7.8px; margin-top: 1px; }
+  .pd-ev-km.empty { color: #94A3B8; }
+  .pd-ev-title { font-weight: 800; color: #0B1430; }
+  .pd-ev-title span { font-weight: 500; color: #64748B; }
+  .pd-ev-tags { margin-top: 2px; color: #475569; font-size: 7.8px; line-height: 1.35; }
+
+  .pd-footer {
+    margin-top: 12px; padding-top: 8px; border-top: 1px solid #E2E8F0;
+    display: flex; justify-content: space-between; gap: 10px; font-size: 7.8px; color: #64748B;
+  }
+
+  /* Letter Page Setup & Exact Color Print Engine */
+  @page { size: letter portrait; margin: 0.36in 0.40in; }
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+    html, body { background: #FFFFFF !important; margin: 0 !important; padding: 0 !important; }
+    nav.top, .banner, .no-print { display: none !important; }
+    main { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+    .print-only { display: block !important; }
+  }
+
+  /* Optional inspection helper for previewing print sheet on screen */
+  body.pdf-preview-mode { background: #CBD5E1 !important; }
+  body.pdf-preview-mode nav.top, body.pdf-preview-mode .banner, body.pdf-preview-mode .no-print { display: none !important; }
+  body.pdf-preview-mode main { max-width: 816px !important; padding: 20px 0 40px !important; }
+  body.pdf-preview-mode .print-only { display: block !important; }
+  body.pdf-preview-mode .pd-doc { padding: 34px 38px; border-radius: 4px; box-shadow: 0 18px 44px rgba(11,20,48,0.22); }
+</style>
+</head>
+<body>
+  <nav class="top" id="topnav">
+    <a href="/" class="brand">Drivee<span class="dot">.</span></a>
+    <div class="links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/report.html">VIN Checker</a>
+      <a href="/vin-report.html?vin=2C4RDGBGXGR217456&demo=1">Sample Report</a>
+      <a href="/mechanic.html">Mechanic</a>
+      <a href="/blog/">Guides</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-menu" id="navMenu" type="button" aria-expanded="false" aria-controls="navLinks">Menu</button>
+      <a href="/report.html#check" class="btn-pill dark">Check another VIN</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="banner" id="pack-banner"></div>
+    <div id="app">
+      <div class="pipeline-loader" id="pipeline-loader" role="status" aria-live="polite">
+        <div class="pl-top">
+          <div class="pl-pill" id="pl-pill">
+            <svg class="pl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            <span id="pl-pill-text">Live report pipeline active</span>
+          </div>
+          <div class="pl-meta"><span id="pl-elapsed">0s elapsed</span> · VIN <b id="pl-vin">—</b></div>
+        </div>
+        <h2 class="pl-head">Compiling Verified Drivee Dossier…</h2>
+        <p class="pl-sub">Connecting to Canadian &amp; North American vehicle specifications, accident &amp; title registries, odometer logs, and CAD valuation feeds.</p>
+        <div class="pl-bar-wrap">
+          <div class="pl-bar-meta">
+            <span id="pl-stage-label">Step 1 of 4</span>
+            <span id="pl-pct">18%</span>
+          </div>
+          <div class="pl-bar-track"><div class="pl-bar-fill" id="pl-bar-fill"></div></div>
+        </div>
+        <div class="pl-steps" id="pl-steps"></div>
+        <div class="pl-foot">
+          <span><span class="pl-foot-dot"></span>Canadian km-first dossier · Print-ready PDF enabled</span>
+          <span class="mono">DRIVEE ENGINE · CAD</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script>
+(function () {
+  var btn = document.getElementById('navMenu'), links = document.getElementById('navLinks');
+  if (btn && links) {
+    function toggle(open) {
+      document.documentElement.classList.toggle('nav-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () { toggle(!document.documentElement.classList.contains('nav-open')); });
+    links.addEventListener('click', function (e) { if (e.target.closest('a')) toggle(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
+  }
+
+  var q = new URLSearchParams(location.search);
+  var vin = (q.get('vin') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  var accessToken = q.get('access') || '';
+  var sessionId = q.get('session_id') || '';
+  var packCode = q.get('pack') || '';
+  var isDemo = q.get('demo') === '1';
+  var isSandbox = q.get('sandbox') === '1';
+  var curUnit = 'km'; // Canadian default: kilometres (instant toggle to miles)
+  var activeReport = null;
+  var activeEventFilter = 'all';
+  var showAllEvents = false;
+  var selectedIncidentIdx = 0;
+  var activeOdoIdx = -1;
+
+  var OWNER_PALETTE = [
+    { solid: '#2563EB', soft: '#EFF6FF', band: '#DBEAFE', text: '#1D4ED8' },
+    { solid: '#16A34A', soft: '#F0FDF4', band: '#DCFCE7', text: '#15803D' },
+    { solid: '#F59E0B', soft: '#FFFBEB', band: '#FEF3C7', text: '#B45309' },
+    { solid: '#7C3AED', soft: '#F5F3FF', band: '#EDE9FE', text: '#6D28D9' },
+    { solid: '#0D9488', soft: '#F0FDFA', band: '#CCFBF1', text: '#0F766E' },
+  ];
+  function ownerColor(n) { return OWNER_PALETTE[Math.max(0, (n || 1) - 1) % OWNER_PALETTE.length]; }
+
+  var PIPELINE_STAGES = [
+    { num: '01', title: 'Verifying unlock pass & factory VIN specifications', desc: 'Decoding NHTSA vPIC build sheet, engine, drivetrain & Canadian assembly origin' },
+    { num: '02', title: 'Retrieving North American title, accident & owner history', desc: 'Checking collision claims, salvage/rebuilt/flood title brands & prior ownership' },
+    { num: '03', title: 'Auditing salvage auction archives & odometer progression', desc: 'Scanning pre-repair auction lots & chronological mileage continuity (km / mi)' },
+    { num: '04', title: 'Building Drivee CAD valuation, recalls & printable PDF', desc: 'Cross-checking safety recalls, Canadian private-sale range & report layout' },
+  ];
+
+  var ICON_SPIN = '<svg class="pl-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+  var ICON_CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5" fill="rgba(22,163,74,0.12)" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 12.4l2.3 2.3 4.8-5.1"/></svg>';
+  var ICON_DOT = '<span class="pl-icon-pending"></span>';
+
+  function cleanReportCopy(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/\b\d[\d,]*\s*Customer\s+Favorites?\b/gi, '')
+      .replace(/\bCustomer\s+Favorites?\b/gi, '')
+      .replace(/\b\d[\d,]*\s*(?:Verified\s+)?(?:Customer\s+)?Reviews?\b/gi, '')
+      .replace(/\b\d(?:\.\d)?\s*(?:\/|out\s+of)\s*5(?:\.0)?(?:\s*stars?)?\b/gi, '')
+      .replace(/\bTop[- ]Rated\s+(?:Dealer|Service\s+Center)(?:\s+\d{4})?\b/gi, '')
+      .replace(/\b([A-Za-z.'-]+(?:\s+[A-Za-z.'-]+){0,2}),\s*null(?=\s+\1,\s*[A-Z]{2}\b)/gi, '')
+      .replace(/(\b([A-Za-z.'-]+(?:\s+[A-Za-z.'-]+){0,2}),\s*[A-Z]{2})\s+\2,\s*null\b/gi, '$1')
+      .replace(/,\s*null\b/gi, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = cleanReportCopy(s);
+    return d.innerHTML;
+  }
+  function fmtNum(n) {
+    if (n == null || isNaN(n)) return '—';
+    return Math.round(Number(n)).toLocaleString('en-CA');
+  }
+  var MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  function parseIso(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || ''));
+    return m ? { y: Number(m[1]), m: Number(m[2]), d: Number(m[3]) } : null;
+  }
+  function fmtLongDate(s) {
+    var p = parseIso(s);
+    return p ? MONTHS_LONG[p.m - 1] + ' ' + p.d + ', ' + p.y : (s || 'Recorded');
+  }
+  function fmtShortMonth(s) {
+    var p = parseIso(s);
+    return p ? MONTHS_SHORT[p.m - 1] + ' ' + p.y : (s || '');
+  }
+  function fmtMmDdYyyy(s) {
+    var p = parseIso(s);
+    return p ? String(p.m).padStart(2, '0') + '/' + String(p.d).padStart(2, '0') + '/' + p.y : (s || '—');
+  }
+  function simplifyBody(b) {
+    var s = String(b || '').toLowerCase();
+    if (s.indexOf('sport utility') !== -1 || s.indexOf('suv') !== -1 || s.indexOf('multipurpose') !== -1) return 'SUV 4 DR';
+    if (s.indexOf('sedan') !== -1 || s.indexOf('saloon') !== -1) return 'SEDAN 4 DR';
+    if (s.indexOf('pickup') !== -1 || s.indexOf('truck') !== -1) return 'PICKUP TRUCK';
+    if (s.indexOf('minivan') !== -1 || s.indexOf('van') !== -1) return 'MINIVAN';
+    if (s.indexOf('coupe') !== -1) return 'COUPE 2 DR';
+    if (s.indexOf('hatchback') !== -1) return 'HATCHBACK';
+    if (s.indexOf('wagon') !== -1) return 'WAGON';
+    return (b || 'VEHICLE').toUpperCase();
+  }
+  function formatZonesText(zones) {
+    if (!zones || !zones.length) return 'impact area unspecified';
+    var map = {
+      front: 'front', left_front: 'left front', right_front: 'right front',
+      left_side: 'left side', right_side: 'right side', side: 'side panels',
+      left_rear: 'left rear', right_rear: 'right rear', rear: 'rear',
+      roof: 'roof / top', undercarriage: 'undercarriage', all_over: 'all exterior panels',
+    };
+    var uniq = [];
+    zones.forEach(function (z) {
+      var lbl = map[z] || String(z).replace(/_/g, ' ');
+      if (uniq.indexOf(lbl) === -1) uniq.push(lbl);
+    });
+    if (uniq.length === 1) return uniq[0];
+    if (uniq.length === 2) return uniq[0] + ' and ' + uniq[1];
+    return uniq.slice(0, -1).join(', ') + ', and ' + uniq[uniq.length - 1];
+  }
+
+  /* ── SVG Icons (Crisp Lucide-style stroke icons) ── */
+  var ICO = {
+    shieldCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+    shieldAlert: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    users: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>',
+    wrench: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    list: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M3 6l1 1 2-2"/><path d="M3 12l1 1 2-2"/><path d="M3 18l1 1 2-2"/></svg>',
+    file: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+    alertTri: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    alertCirc: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    checkSm: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M8.5 12.4l2.3 2.3 4.8-5.1"/></svg>',
+    copy: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    download: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    printer: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
+    gavel: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13l-8.5 8.5a2.12 2.12 0 0 1-3-3L11 10"/><path d="M16 16l6-6"/><path d="M8 8l6-6"/><path d="M9 7l8 8"/><path d="M21 11l-8-8"/></svg>',
+  };
+
+  function statusPill(tone, text) {
+    var ico = tone === 'good' ? ICO.checkSm : (tone === 'warn' || tone === 'bad') ? ICO.alertCirc : '';
+    return '<span class="pill-badge ' + esc(tone) + '">' + ico + '<span>' + esc(text) + '</span></span>';
+  }
+
+  /* ── 4-Step Pipeline Loader ── */
+  function startPipelineLoader(targetVin) {
+    var app = document.getElementById('app');
+    if (!document.getElementById('pipeline-loader')) {
+      app.innerHTML =
+        '<div class="pipeline-loader" id="pipeline-loader" role="status" aria-live="polite">' +
+          '<div class="pl-top">' +
+            '<div class="pl-pill" id="pl-pill">' +
+              '<svg class="pl-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>' +
+              '<span id="pl-pill-text">Live report pipeline active</span>' +
+            '</div>' +
+            '<div class="pl-meta"><span id="pl-elapsed">0s elapsed</span> · VIN <b id="pl-vin">' + esc(targetVin || '—') + '</b></div>' +
+          '</div>' +
+          '<h2 class="pl-head">Compiling Verified Drivee Dossier…</h2>' +
+          '<p class="pl-sub">Connecting to Canadian &amp; North American vehicle specifications, accident &amp; title registries, odometer logs, and CAD valuation feeds.</p>' +
+          '<div class="pl-bar-wrap">' +
+            '<div class="pl-bar-meta"><span id="pl-stage-label">Step 1 of 4</span><span id="pl-pct">18%</span></div>' +
+            '<div class="pl-bar-track"><div class="pl-bar-fill" id="pl-bar-fill"></div></div>' +
+          '</div>' +
+          '<div class="pl-steps" id="pl-steps"></div>' +
+          '<div class="pl-foot">' +
+            '<span><span class="pl-foot-dot"></span>Canadian km-first dossier · Print-ready PDF enabled</span>' +
+            '<span class="mono">DRIVEE ENGINE · CAD</span>' +
+          '</div>' +
+        '</div>';
+    }
+    var vinEl = document.getElementById('pl-vin');
+    if (vinEl) vinEl.textContent = targetVin || '—';
+
+    var currentIdx = 0;
+    var startedAt = Date.now();
+    var stopped = false;
+
+    function paint(activeIdx, allDone) {
+      var stepsEl = document.getElementById('pl-steps');
+      var barEl = document.getElementById('pl-bar-fill');
+      var pctEl = document.getElementById('pl-pct');
+      var lblEl = document.getElementById('pl-stage-label');
+      var pillEl = document.getElementById('pl-pill');
+      var pillTxt = document.getElementById('pl-pill-text');
+      if (!stepsEl) return;
+      stepsEl.innerHTML = PIPELINE_STAGES.map(function (st, idx) {
+        var state = allDone || idx < activeIdx ? 'done' : idx === activeIdx ? 'active' : 'pending';
+        var icon = state === 'done' ? ICON_CHECK : state === 'active' ? ICON_SPIN : ICON_DOT;
+        var tag = state === 'done' ? 'DONE' : state === 'active' ? 'RUNNING' : 'QUEUED';
+        return '<div class="pl-step" data-stage="' + idx + '" data-state="' + state + '">' +
+          '<div class="pl-icon">' + icon + '</div>' +
+          '<div class="pl-copy">' +
+            '<div class="pl-title"><span class="mono" style="margin-right:6px;opacity:0.65">' + st.num + '</span>' + esc(st.title) + '</div>' +
+            '<div class="pl-desc">' + esc(st.desc) + '</div>' +
+          '</div>' +
+          '<span class="pl-state">' + tag + '</span>' +
+        '</div>';
+      }).join('');
+      var pct = allDone ? 100 : [18, 46, 72, 91][Math.min(activeIdx, 3)];
+      if (barEl) { barEl.style.width = pct + '%'; barEl.classList.toggle('done', !!allDone); }
+      if (pctEl) pctEl.textContent = pct + '%';
+      if (lblEl) lblEl.textContent = allDone ? 'All 4 stages verified' : 'Step ' + (Math.min(activeIdx, 3) + 1) + ' of 4';
+      if (pillEl && allDone) {
+        pillEl.classList.add('done');
+        pillEl.innerHTML = ICON_CHECK + '<span>Dossier compiled</span>';
+      } else if (pillTxt && !allDone) {
+        pillTxt.textContent = 'Live report pipeline active';
+      }
+    }
+    paint(0, false);
+
+    var secTimer = setInterval(function () {
+      if (stopped) return;
+      var sec = Math.max(0, Math.floor((Date.now() - startedAt) / 1000));
+      var el = document.getElementById('pl-elapsed');
+      if (el) el.textContent = sec + 's elapsed';
+      var nextIdx = sec < 2 ? 0 : sec < 5 ? 1 : sec < 10 ? 2 : 3;
+      if (nextIdx > currentIdx) { currentIdx = nextIdx; paint(currentIdx, false); }
+    }, 350);
+
+    return {
+      stop: function () { stopped = true; clearInterval(secTimer); },
+      finishAndRun: function (cb) {
+        stopped = true; clearInterval(secTimer);
+        var stepThrough = function () {
+          if (currentIdx < PIPELINE_STAGES.length - 1) {
+            currentIdx += 1; paint(currentIdx, false); setTimeout(stepThrough, 210);
+          } else {
+            paint(PIPELINE_STAGES.length, true); setTimeout(cb, 190);
+          }
+        };
+        setTimeout(stepThrough, 160);
+      },
+    };
+  }
+
+  /* ── Contoured Top-Down Collision Vehicle Blueprint SVG (VinBadge geometry) ── */
+  function renderCollisionBlueprintSvg(bodyClass, zones, clipId) {
+    var b = String(bodyClass || '').toLowerCase();
+    var isTruck = b.indexOf('pickup') !== -1 || b.indexOf('truck') !== -1;
+    var isSuv = b.indexOf('suv') !== -1 || b.indexOf('utility') !== -1 || b.indexOf('multipurpose') !== -1 || b.indexOf('minivan') !== -1;
+    var zList = Array.isArray(zones) ? zones : [];
+    var all = zList.indexOf('all_over') !== -1;
+    var has = function (z) { return all || zList.indexOf(z) !== -1; };
+    var act = {
+      front: has('front'), left_front: has('left_front'), right_front: has('right_front'),
+      left_side: has('left_side') || zList.indexOf('side') !== -1,
+      right_side: has('right_side') || zList.indexOf('side') !== -1,
+      left_rear: has('left_rear'), right_rear: has('right_rear'), rear: has('rear'),
+      roof: has('roof'), undercarriage: zList.indexOf('undercarriage') !== -1,
+    };
+    var CAR_BODY = 'M 84 37 C 96 34 124 34 136 37 C 149 40 156 49 156 64 L 156 226 C 156 241 149 249 136 252 C 124 255 96 255 84 252 C 71 249 64 241 64 226 L 64 64 C 64 49 71 40 84 37 Z';
+    var halo = '#FCA5A5', fill = '#EF4444', stroke = '#1E293B';
+
+    var panels = '';
+    if (act.front) panels += '<path d="M 70 32 H 150 L 141 68 Q 110 61 79 68 Z" fill="' + halo + '" opacity="0.55"/>';
+    if (act.left_front) panels += '<path d="M 60 32 H 89 L 86 105 H 60 Z" fill="' + halo + '" opacity="0.55"/>';
+    if (act.right_front) panels += '<path d="M 131 32 H 160 V 105 H 134 Z" fill="' + halo + '" opacity="0.55"/>';
+    if (act.left_side) panels += '<rect x="60" y="99" width="26" height="96" fill="' + halo + '" opacity="0.55"/>';
+    if (act.right_side) panels += '<rect x="134" y="99" width="26" height="96" fill="' + halo + '" opacity="0.55"/>';
+    if (act.left_rear) panels += '<rect x="60" y="189" width="28" height="69" fill="' + halo + '" opacity="0.55"/>';
+    if (act.right_rear) panels += '<rect x="132" y="189" width="28" height="69" fill="' + halo + '" opacity="0.55"/>';
+    if (act.rear) panels += '<path d="M 79 221 Q 110 228 141 221 L 150 258 H 70 Z" fill="' + halo + '" opacity="0.55"/>';
+
+    if (act.left_front) panels += '<path d="M 64 34 H 86 L 83 102 H 64 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.right_front) panels += '<path d="M 134 34 H 156 V 102 H 137 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.front) panels += '<path d="M 74 34 H 146 L 138 64 Q 110 58 82 64 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.left_side) panels += '<rect x="64" y="102" width="19" height="90" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/><line x1="64" y1="147" x2="83" y2="147" stroke="' + stroke + '" stroke-width="1.1"/>';
+    if (act.right_side) panels += '<rect x="137" y="102" width="19" height="90" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/><line x1="137" y1="147" x2="156" y2="147" stroke="' + stroke + '" stroke-width="1.1"/>';
+    if (act.left_rear) panels += '<path d="M 64 192 H 83 L 86 256 H 64 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.right_rear) panels += '<path d="M 137 192 H 156 V 256 H 134 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.rear) panels += '<path d="M 82 224 Q 110 230 138 224 L 146 256 H 74 Z" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.25"/>';
+    if (act.undercarriage) panels += '<g stroke="' + fill + '" stroke-width="2.4" stroke-dasharray="5,4" opacity="0.9"><line x1="94" y1="74" x2="94" y2="214"/><line x1="126" y1="74" x2="126" y2="214"/></g>';
+
+    var cabin = isTruck
+      ? '<rect x="84" y="114" width="52" height="38" rx="5" fill="' + (act.roof ? fill : '#F1F5F9') + '" stroke="#1E293B" stroke-width="1.2"/>' +
+        '<path d="M 85 152 L 80 158 H 140 L 135 152 Z" fill="#CBD5E1" stroke="#1E293B" stroke-width="1.1"/>' +
+        '<rect x="78" y="162" width="64" height="72" rx="4" fill="#CBD5E1" stroke="#1E293B" stroke-width="1.2"/>' +
+        '<line x1="94" y1="168" x2="94" y2="228" stroke="#94A3B8" stroke-width="1.1"/><line x1="110" y1="168" x2="110" y2="228" stroke="#94A3B8" stroke-width="1.1"/><line x1="126" y1="168" x2="126" y2="228" stroke="#94A3B8" stroke-width="1.1"/>'
+      : isSuv
+      ? '<rect x="84" y="114" width="52" height="80" rx="6" fill="' + (act.roof ? fill : '#F1F5F9') + '" stroke="#1E293B" stroke-width="1.2"/>' +
+        '<path d="M 85 194 L 79 216 Q 110 222 141 216 L 135 194 Z" fill="#CBD5E1" stroke="#1E293B" stroke-width="1.2" stroke-linejoin="round"/>'
+      : '<rect x="84" y="114" width="52" height="62" rx="6" fill="' + (act.roof ? fill : '#F1F5F9') + '" stroke="#1E293B" stroke-width="1.2"/>' +
+        '<path d="M 84 176 Q 110 181 136 176 L 142 204 Q 110 212 78 204 Z" fill="#CBD5E1" stroke="#1E293B" stroke-width="1.2" stroke-linejoin="round"/>';
+
+    return '<svg viewBox="0 0 220 288" role="img" aria-label="Vehicle collision zone diagram">' +
+      '<defs><clipPath id="' + clipId + '"><path d="' + CAR_BODY + '"/></clipPath></defs>' +
+      '<text x="110" y="21" text-anchor="middle" font-size="9" font-weight="700" fill="#64748B" letter-spacing="1.2">FRONT</text>' +
+      '<text x="110" y="277" text-anchor="middle" font-size="9" font-weight="700" fill="#64748B" letter-spacing="1.2">REAR</text>' +
+      '<text x="26" y="148" text-anchor="middle" font-size="8.5" font-weight="700" fill="#64748B" letter-spacing="1">LEFT</text>' +
+      '<text x="194" y="148" text-anchor="middle" font-size="8.5" font-weight="700" fill="#64748B" letter-spacing="1">RIGHT</text>' +
+      '<rect x="60.5" y="64" width="6" height="28" rx="3" fill="#334155"/>' +
+      '<rect x="153.5" y="64" width="6" height="28" rx="3" fill="#334155"/>' +
+      '<rect x="60.5" y="196" width="6" height="28" rx="3" fill="#334155"/>' +
+      '<rect x="153.5" y="196" width="6" height="28" rx="3" fill="#334155"/>' +
+      '<path d="M64 102 L52 104 Q50 107 52 110 L64 108 Z" fill="#E8EEF7" stroke="#1E293B" stroke-width="1.35"/>' +
+      '<path d="M156 102 L168 104 Q170 107 168 110 L156 108 Z" fill="#E8EEF7" stroke="#1E293B" stroke-width="1.35"/>' +
+      '<path d="' + CAR_BODY + '" fill="#E8EEF7"/>' +
+      '<g clip-path="url(#' + clipId + ')">' + panels + '</g>' +
+      '<path d="M 73 43 Q 78 39 87 40" fill="none" stroke="#1E293B" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 147 43 Q 142 39 133 40" fill="none" stroke="#1E293B" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 82 64 Q 110 58 138 64" fill="none" stroke="#475569" stroke-width="0.9" stroke-linecap="round"/>' +
+      '<path d="M 76 244 Q 82 248 90 247" fill="none" stroke="#1E293B" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 144 244 Q 138 248 130 247" fill="none" stroke="#1E293B" stroke-width="1.2" stroke-linecap="round"/>' +
+      '<path d="M 78 96 Q 110 86 142 96 L 136 114 Q 110 108 84 114 Z" fill="#CBD5E1" stroke="#1E293B" stroke-width="1.2" stroke-linejoin="round"/>' +
+      cabin +
+      '<line x1="83" y1="102" x2="83" y2="192" stroke="#1E293B" stroke-width="1"/>' +
+      '<line x1="137" y1="102" x2="137" y2="192" stroke="#1E293B" stroke-width="1"/>' +
+      '<line x1="78" y1="96" x2="84" y2="114" stroke="#1E293B" stroke-width="1.1"/>' +
+      '<line x1="142" y1="96" x2="136" y2="114" stroke="#1E293B" stroke-width="1.1"/>' +
+      '<path d="' + CAR_BODY + '" fill="none" stroke="#1E293B" stroke-width="1.5" stroke-linejoin="round"/>' +
+    '</svg>';
+  }
+
+  /* ── Owner-Shaded Interactive Odometer Chart ── */
+  function buildOdometerSection(r) {
+    var readings = Array.isArray(r.odometerReadings) ? r.odometerReadings : [];
+    var lastOdo = curUnit === 'km' ? r.kpis.lastOdometerKm : r.kpis.lastOdometerMi;
+    var hasRollback = !!(r.brandFlags && r.brandFlags.odometerRollback);
+    var statusTone = !readings.length ? 'warn' : hasRollback ? 'bad' : 'good';
+    var statusTxt = !readings.length
+      ? (r.sourceMode === 'sandbox-preview' ? 'Needs live API key' : 'No readings logged')
+      : hasRollback
+      ? 'Odometer inconsistency flagged'
+      : fmtNum(lastOdo) + ' ' + curUnit + ' last reading';
+
+    if (!readings.length) {
+      return '<section id="odometer" class="card">' +
+        '<div class="sec-head"><div><h3>Odometer history</h3><p class="sec-sub">Shaded by ownership period · click or hover any reading to inspect</p></div>' + statusPill(statusTone, statusTxt) + '</div>' +
+        '<div class="insight-note" style="border-left-color:#F59E0B;background:#FFFBEB;color:#78350F;margin-top:14px">No numeric mileage entries were logged for this VIN yet. Cross-check the instrument cluster against pedal rubber, steering wheel wear, and paper maintenance invoices.</div>' +
+      '</section>';
+    }
+
+    if (activeOdoIdx < 0 || activeOdoIdx >= readings.length) activeOdoIdx = readings.length - 1;
+    var W = 720, H = 220, pL = 56, pR = 24, pT = 26, pB = 34;
+    var plotW = W - pL - pR, plotH = H - pT - pB;
+    var pts = readings.map(function (rd, idx) {
+      var v = curUnit === 'km' ? rd.km : rd.mi;
+      return { idx: idx, date: rd.date, val: Number(v || 0), t: Date.parse(rd.date) || idx, ownerNumber: rd.ownerNumber || 1, source: rd.source || 'Vehicle Registry', location: rd.location || '', bad: !!rd.flaggedRollback };
+    });
+    var tMin = pts[0].t, tMax = pts[pts.length - 1].t, tSpan = Math.max(1, tMax - tMin);
+    var maxRaw = Math.max(20000, Math.max.apply(null, pts.map(function (p) { return p.val; })));
+    var stepUnit = curUnit === 'km' ? 40000 : 25000;
+    var yCeil = Math.ceil(maxRaw / stepUnit) * stepUnit;
+    var coords = pts.map(function (p, i) {
+      var rx = pts.length <= 1 ? 0.5 : (0.65 * ((p.t - tMin) / tSpan) + 0.35 * (i / (pts.length - 1)));
+      return { x: pL + rx * plotW, y: H - pB - (p.val / yCeil) * plotH, p: p };
+    });
+
+    // Build owner bands from point ownerNumbers
+    var bands = [];
+    coords.forEach(function (c) {
+      var on = c.p.ownerNumber || 1;
+      var last = bands[bands.length - 1];
+      if (!last || last.ownerNumber !== on) {
+        bands.push({ ownerNumber: on, startX: c.x, endX: c.x });
+      } else {
+        last.endX = c.x;
+      }
+    });
+    var bandsSvg = '';
+    for (var bi = 0; bi < bands.length; bi++) {
+      var b = bands[bi];
+      var x1 = bi === 0 ? pL : (bands[bi - 1].endX + b.startX) / 2;
+      var x2 = bi === bands.length - 1 ? (W - pR) : (b.endX + bands[bi + 1].startX) / 2;
+      var bw = Math.max(14, x2 - x1);
+      var pal = ownerColor(b.ownerNumber);
+      bandsSvg += '<rect x="' + x1.toFixed(1) + '" y="' + pT + '" width="' + bw.toFixed(1) + '" height="' + plotH + '" fill="' + pal.band + '" fill-opacity="0.52"/>';
+      if (bw >= 42) {
+        bandsSvg += '<text x="' + (x1 + bw / 2).toFixed(1) + '" y="' + (pT - 8) + '" text-anchor="middle" font-size="9.5" font-weight="700" fill="' + pal.text + '">Owner ' + b.ownerNumber + '</text>';
+      }
+    }
+
+    var gridSvg = '';
+    [0, 0.33, 0.67, 1].forEach(function (st) {
+      var gy = H - pB - st * plotH;
+      var lbl = Math.round((st * yCeil) / 1000);
+      gridSvg += '<line x1="' + pL + '" y1="' + gy.toFixed(1) + '" x2="' + (W - pR) + '" y2="' + gy.toFixed(1) + '" stroke="#E2E8F0"' + (st === 0 ? '' : ' stroke-dasharray="4,4"') + '/>';
+      gridSvg += '<text x="' + (pL - 8) + '" y="' + (gy + 3.5).toFixed(1) + '" text-anchor="end" font-size="10" font-weight="600" fill="#64748B" font-family="JetBrains Mono,monospace">' + (lbl === 0 ? '0' : lbl + 'k') + '</text>';
+    });
+
+    var linesSvg = '';
+    for (var si = 1; si < coords.length; si++) {
+      var prev = coords[si - 1], cur = coords[si];
+      linesSvg += '<line x1="' + prev.x.toFixed(1) + '" y1="' + prev.y.toFixed(1) + '" x2="' + cur.x.toFixed(1) + '" y2="' + cur.y.toFixed(1) + '" stroke="' + (cur.p.bad ? '#EF4444' : '#2563EB') + '" stroke-width="2.5" stroke-linecap="round"' + (cur.p.bad ? ' stroke-dasharray="5,5"' : '') + '/>';
+    }
+
+    // Spaced X-axis labels (~64px minimum gap)
+    var lastLblX = -999;
+    var dotsSvg = coords.map(function (c, idx) {
+      var sel = idx === activeOdoIdx;
+      var showLbl = idx === 0 || idx === coords.length - 1 || (c.x - lastLblX >= 64 && (coords[coords.length - 1].x - c.x) >= 54);
+      if (showLbl) lastLblX = c.x;
+      return '<g class="odo-pt" data-odo-idx="' + idx + '" style="cursor:pointer">' +
+        '<circle cx="' + c.x.toFixed(1) + '" cy="' + c.y.toFixed(1) + '" r="' + (sel ? '6.5' : '4.2') + '" fill="' + (c.p.bad ? '#EF4444' : '#FFFFFF') + '" stroke="' + (c.p.bad ? '#991B1B' : '#2563EB') + '" stroke-width="2.3"/>' +
+        (showLbl ? '<text x="' + c.x.toFixed(1) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="9.5" font-weight="' + (sel ? '800' : '600') + '" fill="' + (sel ? '#0B1430' : '#64748B') + '" font-family="JetBrains Mono,monospace">' + esc(c.p.date.slice(0, 7)) + '</text>' : '') +
+      '</g>';
+    }).join('');
+
+    var selPt = coords[activeOdoIdx].p;
+    var avgPerYr = r.kpis.avgKmPerYear
+      ? (curUnit === 'km' ? '~' + fmtNum(r.kpis.avgKmPerYear) + ' km/yr' : '~' + fmtNum(r.kpis.avgKmPerYear / 1.60934) + ' mi/yr')
+      : 'Normal pace';
+    var rollbackCount = pts.filter(function (p) { return p.bad; }).length;
+    var longestOwner = (r.owners && r.owners.length)
+      ? (r.owners.map(function (o) { return o.durationLabel || o.period || ''; }).filter(Boolean)[0] || 'Recorded')
+      : 'Recorded';
+
+    return '<section id="odometer" class="card">' +
+      '<div class="sec-head"><div><h3>Odometer history</h3><p class="sec-sub">Shaded by ownership period · click or hover any reading to inspect</p></div>' + statusPill(statusTone, statusTxt) + '</div>' +
+      '<div class="odo-box">' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Owner-shaded odometer history chart">' +
+          bandsSvg + gridSvg + linesSvg + dotsSvg +
+        '</svg>' +
+        '<div class="odo-readout' + (selPt.bad ? ' bad' : '') + '" id="odo-readout">' +
+          '<span class="tabnum" style="font-weight:800">' + esc(selPt.date) + ' · ' + fmtNum(selPt.val) + ' ' + curUnit + '</span>' +
+          '<span style="color:var(--ink2)">' + esc(selPt.source) + (selPt.location && selPt.location !== selPt.source ? ' (' + esc(selPt.location) + ')' : '') + (selPt.bad ? ' — DROPPED BELOW PRIOR READING' : '') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="odo-stats">' +
+        '<div><div class="odo-stat-val">' + esc(avgPerYr) + '</div><div class="odo-stat-lbl">average since new</div></div>' +
+        '<div><div class="odo-stat-val">' + readings.length + '</div><div class="odo-stat-lbl">odometer readings</div></div>' +
+        '<div><div class="odo-stat-val ' + (rollbackCount ? 'bad' : 'good') + '">' + rollbackCount + '</div><div class="odo-stat-lbl">rollback signs</div></div>' +
+        '<div><div class="odo-stat-val">' + esc(longestOwner) + '</div><div class="odo-stat-lbl">longest single ownership</div></div>' +
+      '</div>' +
+    '</section>';
+  }
+
+  var PACK_STORAGE_KEY = 'drivee_vin_pack_v1';
+
+  function loadSavedPack() {
+    try {
+      var raw = localStorage.getItem(PACK_STORAGE_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || !parsed.code || String(parsed.code).indexOf('•') !== -1) return null;
+      return parsed;
+    } catch (e) { return null; }
+  }
+
+  function saveBrowserPackKey(code, meta) {
+    var clean = String(code || '').trim().toUpperCase();
+    if (!clean || clean.indexOf('•') !== -1 || !/^(DRV10|DRV3|DRV1)-/.test(clean)) return;
+    meta = meta || {};
+    var prev = loadSavedPack();
+    var entry = {
+      code: clean,
+      tierId: meta.tierId || (clean.indexOf('DRV10-') === 0 ? 'pack10' : 'pack3'),
+      remainingCredits: meta.remainingCredits != null ? Number(meta.remainingCredits) : (prev && prev.code === clean ? prev.remainingCredits : null),
+      totalCredits: meta.totalCredits != null ? Number(meta.totalCredits) : (clean.indexOf('DRV10-') === 0 ? 10 : 3),
+      savedAt: new Date().toISOString(),
+    };
+    try { localStorage.setItem(PACK_STORAGE_KEY, JSON.stringify(entry)); } catch (e) {}
+  }
+
+  function stripPackParamFromUrl() {
+    try {
+      var u = new URL(location.href);
+      if (u.searchParams.has('pack')) {
+        u.searchParams.delete('pack');
+        history.replaceState(null, '', u.pathname + (u.search ? u.search : '') + u.hash);
+      }
+    } catch (e) {}
+  }
+
+  function renderLocked(errMsg) {
+    var savedPack = loadSavedPack();
+    var hasSaved = savedPack && savedPack.code && (savedPack.remainingCredits == null || savedPack.remainingCredits > 0);
+    var savedBar = hasSaved
+      ? '<div style="margin-top:14px;padding:13px 15px;border-radius:12px;background:#ECFDF3;border:1px solid rgba(22,163,74,0.3);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">' +
+          '<div style="font-size:13px;color:#0B1430"><b>Saved Pack Key detected in this browser</b>' +
+            (savedPack.remainingCredits != null ? ' · <span style="color:#15803D;font-weight:700">' + savedPack.remainingCredits + ' credit(s) left</span>' : '') +
+          '</div>' +
+          '<button id="use-saved-pack-btn" class="btn-pill dark" style="background:#16A34A;border-color:#16A34A" type="button">Unlock with Saved Credit →</button>' +
+        '</div>'
+      : '';
+    var app = document.getElementById('app');
+    app.innerHTML =
+      '<div class="card lock-box">' +
+        '<div class="verdict-kicker">DRIVEE CAR REPORT · UNLOCK REQUIRED</div>' +
+        '<h1 style="font-size:28px;font-weight:800;letter-spacing:-0.8px;margin-top:6px">' + (vin ? 'Unlock report for VIN ' + esc(vin) : 'Enter a 17-character VIN') + '</h1>' +
+        '<p style="margin-top:8px;color:var(--ink2);font-size:14px">' + esc(errMsg || 'Choose a one-time CAD package or redeem an existing 3-Pack / 10-Pack code.') + '</p>' +
+        savedBar +
+        '<div class="tiers">' +
+          '<div class="tier"><span class="mono" style="font-size:10px;font-weight:800;color:var(--blue)">SAVE 75%</span><b>$17 <small style="font-size:13px">CAD</small></b><div style="font-size:13px;font-weight:700">Single Vehicle Report</div><p style="font-size:12px;color:var(--ink2)">1 complete Canadian history dossier + PDF.</p><button class="t-btn" data-tier="single">Get 1 Report — $17</button></div>' +
+          '<div class="tier pop"><span class="mono" style="font-size:10px;font-weight:800;color:var(--blue)">MOST POPULAR</span><b>$39 <small style="font-size:13px">CAD</small></b><div style="font-size:13px;font-weight:700">Buyer 3-Report Pack</div><p style="font-size:12px;color:var(--ink2)">$13.00 / report · compare up to 3 used cars.</p><button class="t-btn" data-tier="pack3">Get 3-Pack — $39</button></div>' +
+          '<div class="tier"><span class="mono" style="font-size:10px;font-weight:800;color:var(--blue)">BEST VALUE</span><b>$99 <small style="font-size:13px">CAD</small></b><div style="font-size:13px;font-weight:700">Dealer / Pro 10-Pack</div><p style="font-size:12px;color:var(--ink2)">$9.90 / report · credits never expire.</p><button class="t-btn" data-tier="pack10">Get 10-Pack — $99</button></div>' +
+        '</div>' +
+        '<div style="margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">' +
+          '<input id="pack-redeem-inp" value="' + (hasSaved ? esc(savedPack.code) : '') + '" placeholder="Have a pack code (e.g. DRV3-...)?" style="flex:1;min-width:220px;padding:11px 14px;border:1px solid var(--line);border-radius:10px;font:700 13px var(--mono);text-transform:uppercase"/>' +
+          '<button id="pack-redeem-btn" class="btn-pill dark" type="button">Redeem Pack Credit</button>' +
+          '<a class="btn-pill" href="/vin-report.html?vin=2C4RDGBGXGR217456&demo=1">Open Free Canadian Demo</a>' +
+        '</div>' +
+      '</div>';
+
+    app.querySelectorAll('.t-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!vin) { location.href = '/report.html#check'; return; }
+        b.disabled = true; b.textContent = 'Starting checkout…';
+        fetch('/api/order-status?op=checkout', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ vin: vin, tierId: b.getAttribute('data-tier') }),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d && d.ok && d.url) {
+              if (d.packCode) saveBrowserPackKey(d.packCode, { tierId: b.getAttribute('data-tier'), remainingCredits: d.remainingCredits, totalCredits: d.totalCredits });
+              location.href = d.url;
+            } else { alert((d && d.error) || 'Checkout failed'); b.disabled = false; }
+          })
+          .catch(function () { b.disabled = false; });
+      });
+    });
+
+    function runPackRedeem(code) {
+      if (!code || !vin) return;
+      var ldr = startPipelineLoader(vin);
+      fetch('/api/order-status?op=unlock', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vin: vin, packCode: code }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && d.ok && d.report) {
+            if (Number(d.remainingCredits || 0) > 0) {
+              saveBrowserPackKey(code, { tierId: d.tierId, remainingCredits: d.remainingCredits, totalCredits: d.totalCredits });
+            } else {
+              try { localStorage.removeItem(PACK_STORAGE_KEY); } catch (e) {}
+            }
+            ldr.finishAndRun(function () {
+              activeReport = d.report;
+              showPackBanner(code, d.remainingCredits);
+              renderReport(d.report);
+            });
+          } else { ldr.stop(); renderLocked((d && d.error) || 'Pack code failed'); }
+        })
+        .catch(function () { ldr.stop(); renderLocked('Unable to reach /api/vin-unlock right now.'); });
+    }
+
+    var rBtn = document.getElementById('pack-redeem-btn');
+    if (rBtn) {
+      rBtn.addEventListener('click', function () {
+        var code = (document.getElementById('pack-redeem-inp').value || '').trim().toUpperCase();
+        runPackRedeem(code);
+      });
+    }
+    var sBtn = document.getElementById('use-saved-pack-btn');
+    if (sBtn && hasSaved) {
+      sBtn.addEventListener('click', function () { runPackRedeem(savedPack.code); });
+    }
+  }
+
+  function showPackBanner(code, remaining) {
+    var b = document.getElementById('pack-banner');
+    if (!code && !isSandbox) return;
+    var parts = [];
+    if (isSandbox) parts.push('<b>Local Sandbox Mode:</b> Simulated CAD payment verified.');
+    if (code) {
+      var isFull = String(code).indexOf('•') === -1;
+      parts.push('<b>Pack Key Saved to Browser:</b> <span class="code-pill">' + esc(code) + '</span>' +
+        (remaining != null ? ' (' + remaining + ' credit(s) left — future checks on report.html unlock in 1 click)' : ' — cached in this browser for your next VIN check!') +
+        (isFull ? ' <button type="button" id="copy-banner-pack" style="margin-left:6px;padding:3px 9px;border-radius:7px;border:1px solid rgba(22,163,74,0.3);background:#fff;color:#15803D;font:700 11px var(--font);cursor:pointer">Copy Key</button>' : ''));
+    }
+    b.innerHTML = '<div>' + parts.join(' · ') + '</div>';
+    b.classList.add('show');
+    var cb = document.getElementById('copy-banner-pack');
+    if (cb && code) {
+      cb.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(function () {
+            cb.textContent = 'Copied ✓';
+            setTimeout(function () { cb.textContent = 'Copy Key'; }, 1600);
+          });
+        }
+      });
+    }
+  }
+
+  function renderReport(r) {
+    activeReport = r;
+    document.title = (r.vehicleTitle || r.vin) + ' — Drivee Car Report';
+    var isSandboxPreview = r.sourceMode === 'sandbox-preview';
+    var lastOdo = curUnit === 'km' ? r.kpis.lastOdometerKm : r.kpis.lastOdometerMi;
+    var readings = Array.isArray(r.odometerReadings) ? r.odometerReadings : [];
+    var latestReadingDate = readings.length ? fmtShortMonth(readings[readings.length - 1].date) : '';
+    var events = Array.isArray(r.events) ? r.events : [];
+    var owners = Array.isArray(r.owners) ? r.owners : [];
+    var incidents = Array.isArray(r.incidents) ? r.incidents : [];
+    var recalls = Array.isArray(r.recalls) ? r.recalls : [];
+    var heroPhoto = r.photos && r.photos[0] ? r.photos[0] : null;
+    var reportDateStr = fmtMmDdYyyy((r.generatedAt || new Date().toISOString()).slice(0, 10));
+
+    // Split Make bold + Model/Trim medium
+    var makeHead = r.make || (r.vehicleTitle || '').split(/\s+/)[1] || 'Vehicle';
+    var modelSub = [r.model, r.trim].filter(Boolean).join(' ') || (r.vehicleTitle || '').replace(/^\d{4}\s+\S+\s*/, '');
+    var eyebrow = [r.year, simplifyBody(r.bodyClass)].filter(Boolean).join(' · ');
+
+    // Spec pills
+    var specPills = [];
+    if (r.engineSummary && r.engineSummary !== 'Standard') specPills.push(r.engineSummary);
+    if (r.fuelType) specPills.push(r.fuelType);
+    if (r.driveType && r.driveType !== 'Standard') specPills.push(r.driveType);
+    if (r.lastProvince) specPills.push('Last owned in ' + r.lastProvince);
+    if (r.valuationCad && r.valuationCad.midCad) specPills.push('Est. $' + fmtNum(r.valuationCad.midCad) + ' CAD');
+
+    // Quick Verdict 4 Takeaway Bullets
+    var allZones = [];
+    incidents.forEach(function (inc) {
+      (inc.zones || []).forEach(function (z) { if (allZones.indexOf(z) === -1) allZones.push(z); });
+    });
+    var takeaways = [];
+    takeaways.push({
+      tone: r.brandFlags && r.brandFlags.cleanTitle ? 'good' : 'bad',
+      text: r.brandFlags && r.brandFlags.cleanTitle
+        ? 'Clean title — no salvage, rebuilt, flood, junk, or manufacturer lemon brands reported.'
+        : 'Title brand alert: ' + (r.brandFlags ? r.brandFlags.titleBrandSummary : 'Branded') + ' — verify provincial registration eligibility before buying.',
+    });
+    if (isSandboxPreview) {
+      takeaways.push({ tone: 'warn', text: 'Sandbox preview active — set AUCTIONS_API_KEY or NOTEDCAR_API_KEY in .env.local to pull full accident, owner, and odometer records.' });
+    } else if (incidents.length > 0) {
+      var inc0 = incidents[0];
+      takeaways.push({
+        tone: inc0.severity === 'severe' || inc0.structural || inc0.airbagDeployed ? 'bad' : 'warn',
+        text: incidents.length + ' accident/damage event' + (incidents.length === 1 ? '' : 's') + ' on record (' + fmtLongDate(inc0.date) + (allZones.length ? ', ' + formatZonesText(allZones) : '') + ') — inspect affected panels.',
+      });
+    } else {
+      takeaways.push({ tone: 'good', text: 'Zero accidents or insurance collision claims reported across North American registries.' });
+    }
+    if (readings.length >= 2) {
+      var firstVal = curUnit === 'km' ? readings[0].km : readings[0].mi;
+      var lastVal = curUnit === 'km' ? readings[readings.length - 1].km : readings[readings.length - 1].mi;
+      var pace = r.kpis.avgKmPerYear
+        ? (curUnit === 'km' ? '~' + fmtNum(r.kpis.avgKmPerYear) + ' km/yr' : '~' + fmtNum(r.kpis.avgKmPerYear / 1.60934) + ' mi/yr')
+        : '';
+      takeaways.push({
+        tone: r.brandFlags && r.brandFlags.odometerRollback ? 'bad' : 'good',
+        text: readings.length + (r.brandFlags && r.brandFlags.odometerRollback ? ' odometer readings with rollback anomaly detected.' : ' consistent odometer readings from ' + fmtNum(firstVal) + ' to ' + fmtNum(lastVal) + ' ' + curUnit + (pace ? ', ' + pace : '') + '.'),
+      });
+    }
+    if (recalls.length > 0) {
+      takeaways.push({
+        tone: 'warn',
+        text: recalls.length + ' open NHTSA safety recall' + (recalls.length === 1 ? '' : 's') + ' (#' + recalls[0].campaignNumber + ') — authorized Canadian dealers repair this free of charge.',
+      });
+    } else {
+      takeaways.push({ tone: 'good', text: 'No open NHTSA recall campaigns returned — also confirm with Transport Canada VRDB below.' });
+    }
+
+    // 2x2 KPI Tiles
+    var yearMin = events.length ? events[events.length - 1].date.slice(0, 4) : (r.year || '');
+    var yearMax = events.length ? events[0].date.slice(0, 4) : '';
+    var spanStr = yearMin && yearMax && yearMin !== yearMax ? (yearMin + '–' + yearMax) : (yearMin || 'Verified');
+    var firstOwnerUsage = owners[0] ? owners[0].usageType : 'Personal';
+    var kpi4 = [
+      {
+        tone: isSandboxPreview ? 'info' : r.kpis.accidents > 0 ? (r.brandFlags.structural || r.brandFlags.airbag ? 'bad' : 'warn') : 'good',
+        ico: ICO.shieldAlert,
+        val: isSandboxPreview ? '—' : String(r.kpis.accidents),
+        lbl: 'Accidents',
+        sub: isSandboxPreview ? 'Needs live API key' : allZones.length ? allZones.length + ' impact zone' + (allZones.length === 1 ? '' : 's') : (r.kpis.accidents ? 'See collision details' : 'No collisions reported'),
+      },
+      {
+        tone: 'info',
+        ico: ICO.users,
+        val: isSandboxPreview && !owners.length ? '—' : String(r.kpis.owners),
+        lbl: 'Owners',
+        sub: isSandboxPreview && !owners.length ? 'Needs live API key' : firstOwnerUsage + ' · ' + (r.lastProvince || 'Canada'),
+      },
+      {
+        tone: isSandboxPreview ? 'info' : 'good',
+        ico: ICO.wrench,
+        val: isSandboxPreview ? '—' : String(r.kpis.serviceRecords),
+        lbl: 'Service records',
+        sub: isSandboxPreview ? 'Needs live API key' : r.kpis.serviceRecords + ' logged visits',
+      },
+      {
+        tone: 'info',
+        ico: ICO.list,
+        val: isSandboxPreview ? ('$' + fmtNum(r.valuationCad.midCad)) : String(events.length),
+        lbl: isSandboxPreview ? 'Est. Value (CAD)' : 'Detailed records',
+        sub: isSandboxPreview ? ('$' + fmtNum(r.valuationCad.lowCad) + '–$' + fmtNum(r.valuationCad.highCad) + ' private') : spanStr,
+      },
+    ];
+
+    // Ownership Timeline Bar + Cards
+    var ownSectionHtml = '';
+    if (owners.length > 0) {
+      var weights = owners.map(function (o) {
+        if (o.firstDate && o.lastDate) {
+          var d = Math.max(60, (Date.parse(o.lastDate) - Date.parse(o.firstDate)) / 86400000);
+          return d;
+        }
+        var ym = /(\d+)\s*yr/i.exec(o.durationLabel || o.period || '');
+        var mm = /(\d+)\s*mo/i.exec(o.durationLabel || o.period || '');
+        var mos = (ym ? Number(ym[1]) * 12 : 0) + (mm ? Number(mm[1]) : 0);
+        return Math.max(4, mos || 12);
+      });
+      var wSum = weights.reduce(function (a, b) { return a + b; }, 0) || 1;
+      var yStart = Number((owners[0].firstDate || owners[0].purchasedYear || r.year || 2020).toString().slice(0, 4)) || 2020;
+      var yEnd = Number((owners[owners.length - 1].lastDate || new Date().toISOString()).slice(0, 4)) || new Date().getFullYear();
+      var yearTicks = [];
+      for (var y = yStart; y <= Math.max(yStart + 1, yEnd); y++) yearTicks.push(y);
+
+      ownSectionHtml =
+        '<section id="ownership" class="card">' +
+          '<div class="sec-head"><h3>Ownership timeline</h3><span class="pill-badge info">' + owners.length + ' owner' + (owners.length === 1 ? '' : 's') + '</span></div>' +
+          '<div class="own-bar-track">' +
+            owners.map(function (o, i) {
+              var pct = Math.max(8, (weights[i] / wSum) * 100);
+              return '<div class="own-bar-seg" style="width:' + pct.toFixed(1) + '%;background:' + ownerColor(o.ownerNumber).solid + '" title="' + esc((o.label || ('Owner ' + o.ownerNumber)) + ': ' + (o.durationLabel || o.period || '')) + '"></div>';
+            }).join('') +
+          '</div>' +
+          '<div class="own-years">' + yearTicks.map(function (yr) { return '<span>' + yr + '</span>'; }).join('') + '</div>' +
+          '<div class="own-cards">' +
+            owners.map(function (o) {
+              var pal = ownerColor(o.ownerNumber);
+              var paceStr = o.kmPerYear
+                ? (curUnit === 'km' ? fmtNum(o.kmPerYear) + ' km/yr' : fmtNum(o.miPerYear || Math.round(o.kmPerYear / 1.60934)) + ' mi/yr')
+                : '';
+              var spanLbl = o.firstDate && o.lastDate ? (fmtShortMonth(o.firstDate) + ' to ' + fmtShortMonth(o.lastDate)) : (o.period || '');
+              return '<div class="own-card" style="border-left-color:' + pal.solid + '">' +
+                '<div class="own-card-top"><b>' + esc(o.label || ('Owner ' + o.ownerNumber)) + '</b>' + (o.shortFlipWarning ? '<span class="pill-badge bad" style="font-size:10px;padding:2px 7px">Short hold</span>' : '') + '</div>' +
+                '<div class="own-card-meta">' + esc(o.usageType || 'Personal') + ' · ' + esc(o.province || r.lastProvince || 'Canada') + '</div>' +
+                '<div class="own-card-dur">' + esc(o.durationLabel || o.period || 'Recorded') + (paceStr ? ' <span>· ' + esc(paceStr) + '</span>' : '') + '</div>' +
+                '<div class="own-card-span">' + esc(spanLbl) + '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</section>';
+    }
+
+    // 4. Accident & Damage Blueprint + Open Recalls Split
+    var safeIncIdx = Math.min(selectedIncidentIdx, Math.max(0, incidents.length - 1));
+    var actInc = incidents[safeIncIdx] || null;
+    var collisionHtml = '';
+    if (!actInc) {
+      collisionHtml =
+        '<div class="card">' +
+          '<div class="sec-head"><h3>Accident &amp; damage</h3><span class="pill-badge ' + (isSandboxPreview ? 'neutral' : 'good') + '">' + (isSandboxPreview ? 'Sandbox' : '0 events') + '</span></div>' +
+          '<div class="col-inner">' +
+            '<div class="bp-wrap">' + renderCollisionBlueprintSvg(r.bodyClass, [], 'drv-bp-clean') + '</div>' +
+            '<div>' +
+              '<div style="border-radius:14px;border:1px solid #BBF7D0;background:#F0FDF4;padding:15px">' +
+                '<div style="font-size:15px;font-weight:800;color:#15803D">' + (isSandboxPreview ? 'Live collision lookup ready' : 'No accidents or structural damage reported') + '</div>' +
+                '<p style="margin-top:5px;font-size:13px;color:#334155;line-height:1.5">' + (isSandboxPreview ? 'Connect AUCTIONS_API_KEY or NOTEDCAR_API_KEY in .env.local to query police crash reports, insurer claims, and impact zones.' : 'Police crash databases, salvage feeds, and North American insurance damage registries returned zero reported collision events for this VIN.') + '</p>' +
+              '</div>' +
+              '<div class="safety-pills">' +
+                '<div class="safety-row">' + statusPill('good', 'No deployment reported') + '<span>Airbags</span></div>' +
+                '<div class="safety-row">' + statusPill('good', 'No issues') + '<span>Structural</span></div>' +
+                '<div class="safety-row">' + statusPill('good', 'No issues') + '<span>Total loss</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    } else {
+      var incZones = Array.isArray(actInc.zones) ? actInc.zones : [];
+      var sevLabel = actInc.severity === 'severe' ? 'Severe damage' : actInc.severity === 'moderate' ? 'Moderate severity' : actInc.severity === 'minor' ? 'Minor severity' : '';
+      var incHeadlineClean = (actInc.headline || 'Damage reported').replace(/:\s*(minor|moderate|severe)\s+damage$/i, '');
+      var incSubLine = sevLabel ? (incHeadlineClean + ' (' + sevLabel + ')') : incHeadlineClean;
+      var zoneDesc = incZones.length ? ('Damage to ' + formatZonesText(incZones)) : (actInc.headline || 'Damage reported — impact area not itemized');
+      var evTabs = incidents.length > 1
+        ? '<div class="ev-tabs">' + incidents.map(function (inc, i) {
+            return '<button type="button" data-inc-idx="' + i + '" class="' + (i === safeIncIdx ? 'on' : '') + '">Event ' + (i + 1) + '</button>';
+          }).join('') + '</div>'
+        : '';
+      collisionHtml =
+        '<div class="card">' +
+          '<div class="sec-head">' +
+            '<div style="display:flex;align-items:center;flex-wrap:wrap"><h3>Accident &amp; damage</h3>' + evTabs + '</div>' +
+            '<span class="pill-badge bad">' + incidents.length + ' event' + (incidents.length === 1 ? '' : 's') + '</span>' +
+          '</div>' +
+          '<div class="col-inner">' +
+            '<div class="bp-wrap">' + renderCollisionBlueprintSvg(r.bodyClass, incZones, 'drv-bp-' + safeIncIdx) + '</div>' +
+            '<div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--ink3)">Event ' + (safeIncIdx + 1) + (actInc.ownerNumber ? ' · Owner ' + actInc.ownerNumber : '') + '</div>' +
+              '<div class="inc-date">' + esc(fmtLongDate(actInc.date)) + '</div>' +
+              '<div class="inc-sev">' + esc(incSubLine) + '</div>' +
+              '<div class="inc-zone-row"><span class="inc-zone-sq"></span><span>' + esc(zoneDesc) + (actInc.claimAmount ? ' · ' + esc(actInc.claimAmount) : '') + '</span></div>' +
+              '<div class="inc-src">Source: ' + esc(actInc.sourceLabel || 'Police / Insurer Damage Report') + '</div>' +
+              '<div class="insight-note">Have a pre-purchase mechanic inspect ' + esc(incZones.length ? formatZonesText(incZones) : 'repaired exterior') + ' panels, panel gaps, paint depth, and alignment before finalizing your purchase.</div>' +
+              '<div class="safety-pills">' +
+                '<div class="safety-row">' + statusPill(actInc.airbagDeployed ? 'bad' : 'good', actInc.airbagDeployed ? 'Deployment reported' : 'No deployment') + '<span>Airbags</span></div>' +
+                '<div class="safety-row">' + statusPill(actInc.structural ? 'bad' : 'good', actInc.structural ? 'Structural flag' : 'No issues') + '<span>Structural</span></div>' +
+                '<div class="safety-row">' + statusPill(r.brandFlags.totalLoss ? 'bad' : 'good', r.brandFlags.totalLoss ? 'Total loss reported' : 'No issues') + '<span>Total loss</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    var recallsColHtml = recalls.length > 0
+      ? '<div class="card">' +
+          '<div class="sec-head"><h3>Open recalls</h3><span class="pill-badge warn">' + recalls.length + ' active</span></div>' +
+          '<div class="recall-list">' +
+            recalls.slice(0, 3).map(function (rc) {
+              return '<div class="recall-card"><div class="recall-top">' +
+                '<div class="recall-ico">' + ICO.alertTri + '</div>' +
+                '<div style="min-width:0;flex:1">' +
+                  (rc.reportDate ? '<div class="recall-date">' + esc(rc.reportDate) + '</div>' : '') +
+                  '<div class="recall-comp">' + esc(rc.component) + '</div>' +
+                  '<p class="recall-sum">' + esc((rc.summary || '').slice(0, 200)) + ((rc.summary || '').length > 200 ? '…' : '') + '</p>' +
+                  '<span class="recall-camp">Campaign #' + esc(rc.campaignNumber) + '</span>' +
+                '</div>' +
+              '</div></div>';
+            }).join('') +
+          '</div>' +
+          '<div class="insight-note" style="margin-top:12px">Authorized Canadian dealerships perform safety recall repairs <b>free of charge</b> regardless of warranty status. <a href="https://wwwapps.tc.gc.ca/Saf-Sec-Sur/7/VRDB-BDRV/search-recherche/menu.aspx?lang=eng" target="_blank" rel="noopener" style="color:var(--blue-d);font-weight:700">Verify on Transport Canada VRDB →</a></div>' +
+        '</div>'
+      : '';
+
+    // 5. Condition & Title Checks Matrix (by Owner)
+    var matrixCols = owners.length > 0 ? owners.slice(0, 4).map(function (o) { return { num: o.ownerNumber, label: o.label || ('Owner ' + o.ownerNumber) }; }) : [{ num: 1, label: 'Vehicle Status' }];
+    var matrixRows = [
+      { lbl: 'Title: damage brands', sub: 'Salvage, Junk, Rebuilt, Fire, Flood, Hail, Lemon', check: function () { return (r.brandFlags.salvage || r.brandFlags.rebuilt || r.brandFlags.flood) ? { t: 'bad', txt: r.brandFlags.titleBrandSummary } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Title: odometer brands', sub: 'Not Actual Mileage, Exceeds Mechanical Limits', check: function () { return r.brandFlags.odometerRollback ? { t: 'bad', txt: 'Flagged' } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Total loss', sub: 'Insurer total-loss declaration', check: function () { return r.brandFlags.totalLoss ? { t: 'bad', txt: 'Reported' } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Structural damage', sub: 'Frame or unibody structural alert', check: function () { return r.brandFlags.structural ? { t: 'bad', txt: 'Reported' } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Airbag deployment', sub: 'SRS airbag deployment in collision', check: function () { return r.brandFlags.airbag ? { t: 'bad', txt: 'Deployed' } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Accident / damage', sub: 'Police crash & insurer damage filings', check: function (col) {
+        var hit = incidents.some(function (inc) { return !inc.ownerNumber || inc.ownerNumber === col.num; });
+        return hit ? { t: 'warn', txt: 'Reported' } : { t: 'good', txt: 'Clean' };
+      } },
+      { lbl: 'Theft / stolen status', sub: 'CPIC & North American stolen vehicle registry', check: function () { return r.brandFlags.theft ? { t: 'bad', txt: 'Alert' } : { t: 'good', txt: 'Clean' }; } },
+      { lbl: 'Safety recalls', sub: 'Open NHTSA / Transport Canada campaigns', check: function (col, idx) {
+        return (recalls.length > 0 && idx === matrixCols.length - 1) ? { t: 'warn', txt: recalls.length + ' open' } : { t: 'good', txt: 'Clean' };
+      } },
+    ];
+    var matrixHtml =
+      '<section id="title-checks" class="card">' +
+        '<div class="sec-head"><h3>Condition &amp; title checks</h3><span style="font-size:12px;font-weight:600;color:var(--ink3)">' + (owners.length > 0 ? 'by owner' : 'summary') + '</span></div>' +
+        '<div class="matrix-wrap"><table class="matrix"><thead><tr><th>Check category</th>' +
+          matrixCols.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') +
+        '</tr></thead><tbody>' +
+          matrixRows.map(function (row) {
+            return '<tr><td><div class="m-lbl">' + esc(row.lbl) + '</div><div class="m-sub">' + esc(row.sub) + '</div></td>' +
+              matrixCols.map(function (col, ci) {
+                var res = isSandboxPreview && row.lbl !== 'Safety recalls' ? { t: 'neutral', txt: 'Pending key' } : row.check(col, ci);
+                return '<td>' + statusPill(res.t, res.txt) + '</td>';
+              }).join('') +
+            '</tr>';
+          }).join('') +
+        '</tbody></table></div>' +
+      '</section>';
+
+    // 6. Service Snapshot Strip (6 most recent service events)
+    var svcEvents = events.filter(function (e) { return e.category === 'service'; });
+    var svcSnapshotHtml = svcEvents.length > 0
+      ? '<section class="card">' +
+          '<div class="sec-head"><h3>Service snapshot</h3><span class="pill-badge good">' + r.kpis.serviceRecords + ' service visit' + (r.kpis.serviceRecords === 1 ? '' : 's') + '</span></div>' +
+          '<div class="svc-grid">' +
+            svcEvents.slice(0, 6).reverse().map(function (ev) {
+              var odoVal = curUnit === 'km' ? ev.km : ev.mi;
+              return '<div class="svc-card">' +
+                '<div class="svc-yr">' + esc(ev.date.slice(0, 4)) + '</div>' +
+                '<div class="svc-txt">' + esc(ev.location || ev.source) + (ev.headline ? ' — ' + esc(ev.headline) : '') + '</div>' +
+                '<div class="svc-odo">' + (odoVal ? fmtNum(odoVal) + ' ' + curUnit : 'Mileage unlogged') + '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</section>'
+      : '';
+
+    // 7. Detailed History Grouped by Colored Owner Sections
+    var catCounts = { all: events.length, damage: 0, auction: 0, service: 0, title: 0, listing: 0 };
+    events.forEach(function (ev) { if (catCounts[ev.category] !== undefined) catCounts[ev.category] += 1; });
+    var chronoEvents = events.slice().sort(function (a, b) { return a.date.localeCompare(b.date); });
+    var filteredEvents = activeEventFilter === 'all' ? chronoEvents : chronoEvents.filter(function (e) { return e.category === activeEventFilter; });
+    var displayEvents = (!showAllEvents && activeEventFilter === 'all' && filteredEvents.length > 30) ? filteredEvents.slice(0, 26) : filteredEvents;
+
+    var ownerGroupsMap = {};
+    var ownerGroupOrder = [];
+    displayEvents.forEach(function (ev) {
+      var on = ev.ownerNumber || 1;
+      if (!ownerGroupsMap[on]) { ownerGroupsMap[on] = []; ownerGroupOrder.push(on); }
+      ownerGroupsMap[on].push(ev);
+    });
+    ownerGroupOrder.sort(function (a, b) { return a - b; });
+
+    function iconForEvent(ev) {
+      if (ev.category === 'damage') return '<span class="ev-ico damage">' + ICO.alertCirc + '</span>';
+      if (ev.category === 'auction') return '<span class="ev-ico auction">' + ICO.gavel + '</span>';
+      if (ev.category === 'listing') return '<span class="ev-ico listing">' + ICO.list + '</span>';
+      if (ev.category === 'service') {
+        if (/inspect|emissions|smog|safety/i.test(ev.detail || '')) return '<span class="ev-ico inspection">' + ICO.shieldCheck + '</span>';
+        return '<span class="ev-ico service">' + ICO.wrench + '</span>';
+      }
+      return '<span class="ev-ico title">' + ICO.file + '</span>';
+    }
+
+    var filterBtns =
+      (filteredEvents.length > 30 && activeEventFilter === 'all'
+        ? '<button type="button" class="f-pill outline" id="toggle-all-ev">' + (showAllEvents ? 'Condensed View' : 'Show all ' + events.length) + '</button>'
+        : '') +
+      '<button type="button" class="f-pill' + (activeEventFilter === 'all' ? ' on' : '') + '" data-ev-filter="all">All (' + catCounts.all + ')</button>' +
+      ['damage','auction','service','title','listing'].filter(function (c) { return catCounts[c] > 0; }).map(function (c) {
+        return '<button type="button" class="f-pill' + (activeEventFilter === c ? ' on' : '') + '" data-ev-filter="' + c + '" style="text-transform:capitalize">' + c + ' (' + catCounts[c] + ')</button>';
+      }).join('');
+
+    var ownerGroupsHtml = ownerGroupOrder.map(function (on) {
+      var oMeta = owners.find(function (o) { return o.ownerNumber === on; }) || {};
+      var pal = ownerColor(on);
+      var sub = [oMeta.usageType || 'Personal', oMeta.province || r.lastProvince || 'Canada', oMeta.purchasedYear ? 'purchased ' + oMeta.purchasedYear : ''].filter(Boolean).join(' · ');
+      var pace = oMeta.kmPerYear
+        ? (curUnit === 'km' ? fmtNum(oMeta.kmPerYear) + ' km/yr' : fmtNum(oMeta.miPerYear || Math.round(oMeta.kmPerYear / 1.60934)) + ' mi/yr')
+        : '';
+      var lowMileage = oMeta.kmPerYear && oMeta.kmPerYear < 19000;
+      return '<div class="owner-grp">' +
+        '<div class="owner-grp-head">' +
+          '<div class="owner-grp-left">' +
+            '<span class="owner-num-dot" style="background:' + pal.solid + '">' + on + '</span>' +
+            '<span class="owner-grp-name">Owner ' + on + '</span>' +
+            '<span class="owner-grp-sub">' + esc(sub) + '</span>' +
+            (lowMileage ? '<span class="pill-badge good" style="font-size:10.5px;padding:3px 9px">Below-average yearly driving</span>' : '') +
+          '</div>' +
+          (pace ? '<span class="owner-grp-pace">' + esc(pace) + '</span>' : '') +
+        '</div>' +
+        '<div class="ev-table">' +
+          ownerGroupsMap[on].map(function (ev) {
+            var odoVal = curUnit === 'km' ? ev.km : ev.mi;
+            var chips = Array.isArray(ev.pills) && ev.pills.length ? ev.pills : (ev.detail ? [ev.detail] : []);
+            return '<div class="ev-row' + (ev.category === 'damage' ? ' alert' : '') + '">' +
+              '<div><div class="ev-date">' + esc(fmtMmDdYyyy(ev.date)) + '</div><div class="ev-odo' + (!odoVal ? ' empty' : '') + '">' + (odoVal ? fmtNum(odoVal) + ' ' + curUnit : '—') + '</div></div>' +
+              '<div class="ev-ico-col">' + iconForEvent(ev) + '</div>' +
+              '<div style="min-width:0">' +
+                '<div class="ev-headline">' + esc(ev.headline || ev.source || 'Registry event') + '</div>' +
+                '<div class="ev-loc">' + esc(ev.location || ev.source || '') + '</div>' +
+                (chips.length ? '<div class="ev-chips">' + chips.map(function (ch) { return '<span class="ev-chip">' + esc(ch) + '</span>'; }).join('') + '</div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    // 8. Before You Buy Canadian Checklist + CAD Market Valuation + Glossary
+    var checklistHtml =
+      '<section id="running-costs" class="checklist-card">' +
+        '<div class="sec-head">' +
+          '<h3>Before you buy: Drivee Canadian checklist</h3>' +
+          '<span class="mono" style="font-size:11.5px;font-weight:700;color:var(--blue)">EST. MARKET $' + Math.round(r.valuationCad.lowCad / 1000) + 'k–$' + Math.round(r.valuationCad.highCad / 1000) + 'k CAD · ' + esc(r.builtIn || 'VIN Verified') + '</span>' +
+        '</div>' +
+        '<div class="val-strip">' +
+          '<div class="val-box"><div class="val-lbl">Private Sale Range (CAD)</div><div class="val-num">$' + fmtNum(r.valuationCad.lowCad) + ' – $' + fmtNum(r.valuationCad.highCad) + '</div></div>' +
+          '<div class="val-box"><div class="val-lbl">Dealer Trade-In (CAD)</div><div class="val-num">$' + fmtNum(r.valuationCad.dealerTradeLowCad) + ' – $' + fmtNum(r.valuationCad.dealerTradeHighCad) + '</div></div>' +
+          '<div class="val-box"><div class="val-lbl">Factory Powertrain &amp; Origin</div><div class="val-num" style="font-size:15px;margin-top:6px">' + esc(r.engineSummary) + ' · ' + esc(r.driveType) + '</div></div>' +
+        '</div>' +
+        '<div class="check-grid">' +
+          '<div class="check-item"><span class="check-num">1</span><div><b>Confirm Ontario UVIP &amp; provincial lien clearance</b><p>Ask the private seller for the official ServiceOntario UVIP (or provincial PPSA lien search) to confirm zero registered bank loans before handing over cash.</p></div></div>' +
+          '<div class="check-item"><span class="check-num">2</span><div><b>Inspect salt-belt underside &amp; repair panels</b><p>' + (allZones.length ? 'Check ' + esc(formatZonesText(allZones)) + ' paint thickness and panel gaps, plus Canadian winter rust along rear wheel arches and rocker pinch welds.' : 'Check rear wheel arches, rocker pinch welds, brake lines, and subframe mounting points for Canadian winter road-salt corrosion.') + '</p></div></div>' +
+          '<div class="check-item"><span class="check-num">3</span><div><b>Book a cold-start pre-purchase inspection</b><p>Have a licensed mechanic scan all OBD-II modules, test cold idle, and inspect brakes and suspension. <a href="/mechanic.html" style="color:var(--blue-d);font-weight:700">Book Drivee GTA Mobile Mechanic →</a></p></div></div>' +
+          '<div class="check-item"><span class="check-num">4</span><div><b>Clear open recalls for free at the dealer</b><p>' + (recalls.length ? recalls.length + ' open safety recall campaign(s) are listed above — any franchised Canadian dealership must repair them at $0 cost.' : 'Verify the VIN in Transport Canada\'s VRDB portal once more prior to provincial safety certification.') + '</p></div></div>' +
+        '</div>' +
+      '</section>' +
+      '<section class="card">' +
+        '<div class="sec-head"><h3>Glossary</h3></div>' +
+        '<div class="gloss-grid">' +
+          '<div class="gloss-item"><b>Clean vs. Rebuilt Title</b><p>A Clean title has never been declared a salvage total loss. A Rebuilt brand means an insurer wrote the car off and it later passed a provincial structural inspection.</p></div>' +
+          '<div class="gloss-item"><b>Odometer Continuity</b><p>Drivee compares every inspection, service, and registration mileage log chronologically in both km and miles to spot sudden rollbacks or multi-year gaps.</p></div>' +
+          '<div class="gloss-item"><b>Canadian Lien / UVIP Check</b><p>In Ontario, private sellers are legally required to supply a Used Vehicle Information Package (UVIP) showing active PPSA liens and wholesale value.</p></div>' +
+        '</div>' +
+      '</section>' +
+      '<div class="foot-bar">' +
+        '<span style="font-weight:800;color:var(--blue)">drivee.ca</span>' +
+        '<span>Drivee Technologies Inc., Toronto, ON · Independent vehicle history aggregator (not affiliated with CARFAX, ServiceOntario, MTO, or Transport Canada). Report date ' + esc(reportDateStr) + '.</span>' +
+      '</div>';
+
+    // Build Dedicated Official Letter-Size Print/PDF Dossier (hidden on screen, exact on PDF/print)
+    var certId = 'DRV-' + r.vin.slice(-6) + '-' + (r.generatedAt || new Date().toISOString()).slice(0, 10).replace(/-/g, '');
+    function pdPill(tone, text) {
+      var prefix = tone === 'good' ? '✓ ' : (tone === 'warn' || tone === 'bad') ? '! ' : '– ';
+      return '<span class="pd-pill ' + esc(tone) + '">' + prefix + esc(text) + '</span>';
+    }
+
+    // Compact Owner-Shaded Odometer SVG specifically proportioned for Letter width (660x138)
+    var pdOdoHtml = '';
+    if (readings.length > 0) {
+      var pW = 660, pH = 138, ppL = 46, ppR = 18, ppT = 18, ppB = 24;
+      var pPlotW = pW - ppL - ppR, pPlotH = pH - ppT - ppB;
+      var pPts = readings.map(function (rd, idx) {
+        return { date: rd.date, val: Number((curUnit === 'km' ? rd.km : rd.mi) || 0), t: Date.parse(rd.date) || idx, on: rd.ownerNumber || 1, bad: !!rd.flaggedRollback };
+      });
+      var ptMin = pPts[0].t, ptMax = pPts[pPts.length - 1].t, ptSpan = Math.max(1, ptMax - ptMin);
+      var pMax = Math.max(20000, Math.max.apply(null, pPts.map(function (p) { return p.val; })));
+      var pStep = curUnit === 'km' ? 40000 : 25000;
+      var pCeil = Math.ceil(pMax / pStep) * pStep;
+      var pCoords = pPts.map(function (p, i) {
+        var rx = pPts.length <= 1 ? 0.5 : (0.65 * ((p.t - ptMin) / ptSpan) + 0.35 * (i / (pPts.length - 1)));
+        return { x: ppL + rx * pPlotW, y: pH - ppB - (p.val / pCeil) * pPlotH, p: p };
+      });
+      var pBands = [];
+      pCoords.forEach(function (c) {
+        var last = pBands[pBands.length - 1];
+        if (!last || last.on !== c.p.on) pBands.push({ on: c.p.on, sx: c.x, ex: c.x });
+        else last.ex = c.x;
+      });
+      var pBandsSvg = pBands.map(function (b, bi) {
+        var x1 = bi === 0 ? ppL : (pBands[bi - 1].ex + b.sx) / 2;
+        var x2 = bi === pBands.length - 1 ? (pW - ppR) : (b.ex + pBands[bi + 1].sx) / 2;
+        var bw = Math.max(12, x2 - x1);
+        var pal = ownerColor(b.on);
+        return '<rect x="' + x1.toFixed(1) + '" y="' + ppT + '" width="' + bw.toFixed(1) + '" height="' + pPlotH + '" fill="' + pal.band + '" fill-opacity="0.52"/>' +
+          (bw >= 42 ? '<text x="' + (x1 + bw / 2).toFixed(1) + '" y="' + (ppT - 5) + '" text-anchor="middle" font-size="8.5" font-weight="700" fill="' + pal.text + '">Owner ' + b.on + '</text>' : '');
+      }).join('');
+      var pGridSvg = [0, 0.33, 0.67, 1].map(function (st) {
+        var gy = pH - ppB - st * pPlotH;
+        var lbl = Math.round((st * pCeil) / 1000);
+        return '<line x1="' + ppL + '" y1="' + gy.toFixed(1) + '" x2="' + (pW - ppR) + '" y2="' + gy.toFixed(1) + '" stroke="#E2E8F0"' + (st === 0 ? '' : ' stroke-dasharray="3,3"') + '/>' +
+          '<text x="' + (ppL - 6) + '" y="' + (gy + 3).toFixed(1) + '" text-anchor="end" font-size="8.5" font-weight="600" fill="#64748B" font-family="JetBrains Mono,monospace">' + (lbl === 0 ? '0' : lbl + 'k') + '</text>';
+      }).join('');
+      var pLineSvg = pCoords.slice(1).map(function (c, i) {
+        var prev = pCoords[i];
+        return '<line x1="' + prev.x.toFixed(1) + '" y1="' + prev.y.toFixed(1) + '" x2="' + c.x.toFixed(1) + '" y2="' + c.y.toFixed(1) + '" stroke="' + (c.p.bad ? '#EF4444' : '#2563EB') + '" stroke-width="2.2" stroke-linecap="round"/>';
+      }).join('');
+      var pLastX = -999;
+      var pDotsSvg = pCoords.map(function (c, i) {
+        var showL = i === 0 || i === pCoords.length - 1 || (c.x - pLastX >= 60 && (pCoords[pCoords.length - 1].x - c.x) >= 50);
+        if (showL) pLastX = c.x;
+        return '<circle cx="' + c.x.toFixed(1) + '" cy="' + c.y.toFixed(1) + '" r="3.2" fill="' + (c.p.bad ? '#EF4444' : '#FFFFFF') + '" stroke="' + (c.p.bad ? '#991B1B' : '#2563EB') + '" stroke-width="1.9"/>' +
+          (showL ? '<text x="' + c.x.toFixed(1) + '" y="' + (pH - 7) + '" text-anchor="middle" font-size="8" font-weight="600" fill="#64748B" font-family="JetBrains Mono,monospace">' + esc(c.p.date.slice(0, 7)) + '</text>' : '');
+      }).join('');
+      var pAvgYr = r.kpis.avgKmPerYear
+        ? (curUnit === 'km' ? '~' + fmtNum(r.kpis.avgKmPerYear) + ' km/yr' : '~' + fmtNum(r.kpis.avgKmPerYear / 1.60934) + ' mi/yr')
+        : 'Normal pace';
+      var pRbCnt = pPts.filter(function (p) { return p.bad; }).length;
+      var pLongest = owners[0] ? (owners[0].durationLabel || owners[0].period || 'Recorded') : 'Recorded';
+
+      pdOdoHtml =
+        '<div class="pd-card pd-avoid">' +
+          '<div class="pd-card-head"><h4>Odometer history</h4>' + pdPill(r.brandFlags.odometerRollback ? 'bad' : 'good', fmtNum(lastOdo) + ' ' + curUnit + ' last reading') + '</div>' +
+          '<div class="pd-odo-wrap"><svg viewBox="0 0 ' + pW + ' ' + pH + '">' + pBandsSvg + pGridSvg + pLineSvg + pDotsSvg + '</svg></div>' +
+          '<div class="pd-odo-stats">' +
+            '<div><b>' + esc(pAvgYr) + '</b><span>average since new</span></div>' +
+            '<div><b>' + readings.length + '</b><span>odometer readings</span></div>' +
+            '<div><b style="color:' + (pRbCnt ? '#DC2626' : '#15803D') + '">' + pRbCnt + '</b><span>rollback signs</span></div>' +
+            '<div><b>' + esc(pLongest) + '</b><span>longest single ownership</span></div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    // Complete owner-grouped chronological ledger for PDF (ALL events, never truncated!)
+    var allOwnerMap = {}, allOwnerOrder = [];
+    chronoEvents.forEach(function (ev) {
+      var on = ev.ownerNumber || 1;
+      if (!allOwnerMap[on]) { allOwnerMap[on] = []; allOwnerOrder.push(on); }
+      allOwnerMap[on].push(ev);
+    });
+    allOwnerOrder.sort(function (a, b) { return a - b; });
+
+    var pdTimelineHtml = allOwnerOrder.map(function (on) {
+      var oMeta = owners.find(function (o) { return o.ownerNumber === on; }) || {};
+      var pal = ownerColor(on);
+      var sub = [oMeta.usageType || 'Personal', oMeta.province || r.lastProvince || 'Canada', oMeta.purchasedYear ? 'purchased ' + oMeta.purchasedYear : ''].filter(Boolean).join(' · ');
+      var pace = oMeta.kmPerYear ? (curUnit === 'km' ? fmtNum(oMeta.kmPerYear) + ' km/yr' : fmtNum(oMeta.miPerYear || Math.round(oMeta.kmPerYear / 1.60934)) + ' mi/yr') : '';
+      return '<div class="pd-own-hdr">' +
+          '<div><span class="pd-own-dot" style="background:' + pal.solid + '">' + on + '</span>Owner ' + on + ' <span style="font-weight:500;color:#475569">· ' + esc(sub) + '</span></div>' +
+          (pace ? '<span class="mono" style="font-size:8px;color:#475569">' + esc(pace) + '</span>' : '') +
+        '</div>' +
+        '<div class="pd-ev-list">' +
+          allOwnerMap[on].map(function (ev) {
+            var odoVal = curUnit === 'km' ? ev.km : ev.mi;
+            var chips = Array.isArray(ev.pills) && ev.pills.length ? ev.pills : (ev.detail ? [ev.detail] : []);
+            return '<div class="pd-ev-row' + (ev.category === 'damage' ? ' alert' : '') + '">' +
+              '<div><div class="pd-ev-dt">' + esc(fmtMmDdYyyy(ev.date)) + '</div><div class="pd-ev-km' + (!odoVal ? ' empty' : '') + '">' + (odoVal ? fmtNum(odoVal) + ' ' + curUnit : '—') + '</div></div>' +
+              '<div><div class="pd-ev-title">' + esc(ev.headline || ev.source || 'Registry event') + (ev.location ? ' <span>· ' + esc(ev.location) + '</span>' : '') + '</div>' +
+                (chips.length ? '<div class="pd-ev-tags">' + esc(chips.join(' · ')) + '</div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+    }).join('');
+
+    var pdOwnershipHtml = owners.length > 0 ? (function () {
+      var ws = owners.map(function (o) {
+        if (o.firstDate && o.lastDate) return Math.max(60, (Date.parse(o.lastDate) - Date.parse(o.firstDate)) / 86400000);
+        var ym = /(\d+)\s*yr/i.exec(o.durationLabel || o.period || '');
+        var mm = /(\d+)\s*mo/i.exec(o.durationLabel || o.period || '');
+        return Math.max(4, (ym ? Number(ym[1]) * 12 : 0) + (mm ? Number(mm[1]) : 0) || 12);
+      });
+      var sum = ws.reduce(function (a, b) { return a + b; }, 0) || 1;
+      var ys = Number((owners[0].firstDate || owners[0].purchasedYear || r.year || 2020).toString().slice(0, 4)) || 2020;
+      var ye = Number((owners[owners.length - 1].lastDate || new Date().toISOString()).slice(0, 4)) || new Date().getFullYear();
+      var ticks = [];
+      for (var yy = ys; yy <= Math.max(ys + 1, ye); yy++) ticks.push(yy);
+      return '<div class="pd-card pd-avoid">' +
+        '<div class="pd-card-head"><h4>Ownership timeline</h4><span class="pd-pill info">' + owners.length + ' owner' + (owners.length === 1 ? '' : 's') + '</span></div>' +
+        '<div class="pd-own-bar">' + owners.map(function (o, i) { return '<div style="width:' + Math.max(8, (ws[i] / sum) * 100).toFixed(1) + '%;background:' + ownerColor(o.ownerNumber).solid + '"></div>'; }).join('') + '</div>' +
+        '<div class="pd-own-years">' + ticks.map(function (t) { return '<span>' + t + '</span>'; }).join('') + '</div>' +
+        '<div class="pd-own-cards">' + owners.map(function (o) {
+          var pace = o.kmPerYear ? (curUnit === 'km' ? fmtNum(o.kmPerYear) + ' km/yr' : fmtNum(o.miPerYear || Math.round(o.kmPerYear / 1.60934)) + ' mi/yr') : '';
+          var sp = o.firstDate && o.lastDate ? (fmtShortMonth(o.firstDate) + ' to ' + fmtShortMonth(o.lastDate)) : (o.period || '');
+          return '<div class="pd-own-card" style="border-left-color:' + ownerColor(o.ownerNumber).solid + '">' +
+            '<b>' + esc(o.label || ('Owner ' + o.ownerNumber)) + '</b>' +
+            '<div class="m1">' + esc(o.usageType || 'Personal') + ' · ' + esc(o.province || r.lastProvince || 'Canada') + '</div>' +
+            '<div class="m2">' + esc(o.durationLabel || o.period || 'Recorded') + (pace ? ' · ' + esc(pace) : '') + '</div>' +
+            '<div class="m3">' + esc(sp) + '</div>' +
+          '</div>';
+        }).join('') + '</div>' +
+      '</div>';
+    })() : '';
+
+    var pdCollisionHtml =
+      '<div class="pd-card pd-avoid">' +
+        '<div class="pd-card-head"><h4>Accident &amp; damage</h4>' + pdPill(incidents.length ? 'bad' : 'good', incidents.length ? (incidents.length + ' event' + (incidents.length === 1 ? '' : 's')) : '0 events') + '</div>' +
+        '<div class="pd-col-grid">' +
+          '<div class="pd-bp-box">' + renderCollisionBlueprintSvg(r.bodyClass, actInc ? (actInc.zones || []) : [], 'drv-pdf-bp') + '</div>' +
+          '<div>' +
+            (actInc
+              ? '<div style="font-size:8.5px;font-weight:700;color:#64748B">Event 1' + (actInc.ownerNumber ? ' · Owner ' + actInc.ownerNumber : '') + '</div>' +
+                '<div style="font-size:15px;font-weight:800;color:#0B1430;margin-top:2px">' + esc(fmtLongDate(actInc.date)) + '</div>' +
+                '<div style="font-size:10px;font-weight:700;color:#DC2626;margin-top:1px">' + esc((actInc.headline || 'Damage reported').replace(/:\s*(minor|moderate|severe)\s+damage$/i, '')) + (actInc.severity && actInc.severity !== 'unspecified' ? ' (' + esc(actInc.severity.charAt(0).toUpperCase() + actInc.severity.slice(1)) + ' severity)' : '') + '</div>' +
+                '<div style="font-size:10.5px;font-weight:800;color:#0B1430;margin-top:6px"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#EF4444;margin-right:5px;vertical-align:middle"></span>' + esc((actInc.zones && actInc.zones.length) ? ('Damage to ' + formatZonesText(actInc.zones)) : (actInc.headline || 'Damage reported')) + '</div>' +
+                '<div style="font-size:8.5px;color:#475569;margin-top:2px">Source: ' + esc(actInc.sourceLabel || 'Police / Insurer Damage Report') + '</div>' +
+                '<div class="pd-note">Have a pre-purchase mechanic inspect ' + esc((actInc.zones && actInc.zones.length) ? formatZonesText(actInc.zones) : 'repaired exterior') + ' panels, panel gaps, paint depth, and alignment before purchasing.</div>' +
+                '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">' +
+                  pdPill(actInc.airbagDeployed ? 'bad' : 'good', 'Airbags: ' + (actInc.airbagDeployed ? 'Deployed' : 'No deployment')) +
+                  pdPill(actInc.structural ? 'bad' : 'good', 'Structural: ' + (actInc.structural ? 'Flagged' : 'No issues')) +
+                  pdPill(r.brandFlags.totalLoss ? 'bad' : 'good', 'Total loss: ' + (r.brandFlags.totalLoss ? 'Reported' : 'No issues')) +
+                '</div>'
+              : '<div style="border-radius:9px;border:1px solid #BBF7D0;background:#F0FDF4;padding:10px;font-size:9.5px;font-weight:700;color:#15803D">No accidents or structural damage reported across North American police and insurance crash registries.</div>' +
+                '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">' +
+                  pdPill('good', 'Airbags: No deployment') + pdPill('good', 'Structural: No issues') + pdPill('good', 'Total loss: No issues') +
+                '</div>') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    var pdMatrixHtml =
+      '<div class="pd-card pd-avoid">' +
+        '<div class="pd-card-head"><h4>Condition &amp; title checks</h4><span style="font-size:8.5px;color:#64748B">' + (owners.length ? 'by owner' : 'summary') + '</span></div>' +
+        '<table class="pd-matrix"><thead><tr><th>Check category</th>' + matrixCols.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          matrixRows.map(function (row) {
+            return '<tr><td><b>' + esc(row.lbl) + '</b> <span style="color:#64748B;font-weight:400">' + esc(row.sub) + '</span></td>' +
+              matrixCols.map(function (col, ci) {
+                var res = isSandboxPreview && row.lbl !== 'Safety recalls' ? { t: 'neutral', txt: 'Pending key' } : row.check(col, ci);
+                return '<td>' + pdPill(res.t, res.txt) + '</td>';
+              }).join('') +
+            '</tr>';
+          }).join('') +
+        '</tbody></table>' +
+      '</div>';
+
+    var pdRecallsHtml = recalls.length > 0
+      ? '<div class="pd-card pd-avoid">' +
+          '<div class="pd-card-head"><h4>Open safety recalls</h4>' + pdPill('warn', recalls.length + ' active') + '</div>' +
+          '<div class="pd-recalls-grid">' +
+            recalls.slice(0, 4).map(function (rc) {
+              return '<div class="pd-recall"><b>' + esc(rc.component) + '</b><p>' + esc((rc.summary || '').slice(0, 140)) + ((rc.summary || '').length > 140 ? '…' : '') + '</p><span class="camp">Campaign #' + esc(rc.campaignNumber) + '</span></div>';
+            }).join('') +
+          '</div>' +
+          '<div class="pd-note">Authorized Canadian dealerships complete safety recall repairs free of charge. Confirm live Transport Canada VRDB status at tc.gc.ca.</div>' +
+        '</div>'
+      : '';
+
+    var printDossierHtml =
+      '<div id="print-dossier" class="print-only"><div class="pd-doc">' +
+        /* PAGE 1: Executive Summary */
+        '<div class="pd-sec">' +
+          '<div class="pd-header">' +
+            '<div class="pd-brand"><span class="pd-logo-box">D</span><div><span class="pd-brand-name">Drivee</span><span class="pd-brand-tag">Vehicle History Report</span></div></div>' +
+            '<div class="pd-cert"><div><b>VIN ' + esc(r.vin) + '</b> · CERT #' + esc(certId) + '</div><div>Report date ' + esc(reportDateStr) + ' · Canada (' + curUnit.toUpperCase() + ' / CAD)</div></div>' +
+          '</div>' +
+          '<div class="pd-hero' + (heroPhoto ? '' : ' no-photo') + '">' +
+            '<div>' +
+              '<div class="pd-eyebrow">' + esc(eyebrow) + '</div>' +
+              '<div class="pd-h1"><strong>' + esc(makeHead) + '</strong> <span>' + esc(modelSub) + '</span></div>' +
+              '<div class="pd-pills">' + specPills.map(function (p) { return '<span class="pd-spec-pill">' + esc(p) + '</span>'; }).join('') + '</div>' +
+              '<div class="pd-odo-line"><span class="pd-odo-big">' + (lastOdo ? fmtNum(lastOdo) + ' ' + curUnit : ('$' + fmtNum(r.valuationCad.midCad) + ' CAD')) + '</span><span class="pd-odo-sub">' + (lastOdo ? ('last reported odometer' + (latestReadingDate ? ' · ' + latestReadingDate : '')) : 'estimated Canadian private value') + '</span></div>' +
+            '</div>' +
+            (heroPhoto ? '<div class="pd-photo-box"><img src="' + esc(heroPhoto.url) + '" alt="' + esc(r.vehicleTitle) + '"/></div>' : '') +
+          '</div>' +
+          '<div class="pd-split-2 pd-avoid">' +
+            '<div class="pd-verdict">' +
+              '<div class="pd-vkicker">DRIVEE QUICK VERDICT</div>' +
+              '<div class="pd-vhead">' + esc(r.verdict.headline) + '</div>' +
+              '<div class="pd-vlist">' +
+                takeaways.map(function (t) {
+                  var col = t.tone === 'bad' ? '#EF4444' : t.tone === 'warn' ? '#F59E0B' : '#16A34A';
+                  return '<div class="pd-vitem"><span class="pd-vdot" style="background:' + col + '"></span><span>' + esc(t.text) + '</span></div>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="pd-kpi-grid">' +
+              kpi4.map(function (k) {
+                return '<div class="pd-kpi"><div class="pd-kpi-val' + (k.tone === 'bad' ? ' bad' : '') + '">' + esc(k.val) + '</div><div class="pd-kpi-lbl">' + esc(k.lbl) + '</div><div class="pd-kpi-sub">' + esc(k.sub) + '</div></div>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          pdOwnershipHtml +
+          pdOdoHtml +
+        '</div>' +
+
+        /* PAGE 2: Collision Blueprint, Condition Matrix, Recalls & Canadian Valuation */
+        '<div class="pd-sec pd-page-break">' +
+          '<div class="pd-header">' +
+            '<div class="pd-brand"><span class="pd-logo-box">D</span><div><span class="pd-brand-name">Drivee</span><span class="pd-brand-tag">Safety, Damage &amp; Title Audit</span></div></div>' +
+            '<div class="pd-cert"><div><b>VIN ' + esc(r.vin) + '</b> · ' + esc(r.vehicleTitle) + '</div><div>Page 2 · CERT #' + esc(certId) + '</div></div>' +
+          '</div>' +
+          pdCollisionHtml +
+          pdMatrixHtml +
+          pdRecallsHtml +
+          '<div class="pd-card pd-avoid">' +
+            '<div class="pd-card-head"><h4>Canadian market valuation &amp; pre-purchase checklist</h4><span class="mono" style="font-size:8px;font-weight:700;color:#2563EB">CAD BENCHMARK</span></div>' +
+            '<div class="pd-val-grid">' +
+              '<div class="pd-val-tile"><span>Private Sale (CAD)</span><b>$' + fmtNum(r.valuationCad.lowCad) + ' – $' + fmtNum(r.valuationCad.highCad) + '</b></div>' +
+              '<div class="pd-val-tile"><span>Dealer Trade-In (CAD)</span><b>$' + fmtNum(r.valuationCad.dealerTradeLowCad) + ' – $' + fmtNum(r.valuationCad.dealerTradeHighCad) + '</b></div>' +
+              '<div class="pd-val-tile"><span>Factory Origin</span><b>' + esc(r.builtIn || 'Verified') + '</b></div>' +
+            '</div>' +
+            '<div class="pd-chk-grid">' +
+              '<div class="pd-chk-item"><b>1. Ontario UVIP &amp; PPSA Lien Check</b>Confirm zero registered bank loans via ServiceOntario UVIP or provincial PPSA search prior to payment.</div>' +
+              '<div class="pd-chk-item"><b>2. Salt-Belt &amp; Repair Inspection</b>Inspect rear wheel arches, rocker pinch welds, and ' + esc(allZones.length ? formatZonesText(allZones) : 'body panel') + ' paint thickness &amp; alignment.</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        /* PAGE 3+: Complete Chronological History */
+        '<div class="pd-sec pd-page-break">' +
+          '<div class="pd-header">' +
+            '<div class="pd-brand"><span class="pd-logo-box">D</span><div><span class="pd-brand-name">Drivee</span><span class="pd-brand-tag">Complete Chronological History</span></div></div>' +
+            '<div class="pd-cert"><div><b>VIN ' + esc(r.vin) + '</b> · ' + events.length + ' total event(s)</div><div>CERT #' + esc(certId) + ' · ' + esc(reportDateStr) + '</div></div>' +
+          '</div>' +
+          (pdTimelineHtml || '<p style="font-size:9pt;color:#64748B">No chronological history events indexed yet.</p>') +
+          '<div class="pd-footer">' +
+            '<span style="font-weight:800;color:#2563EB">drivee.ca</span>' +
+            '<span>Drivee Technologies Inc., Toronto, ON · Independent vehicle history aggregator (not affiliated with CARFAX, ServiceOntario, MTO, or Transport Canada).</span>' +
+          '</div>' +
+        '</div>' +
+      '</div></div>';
+
+    // Assemble Full Page (Interactive Web View + Dedicated Official Print/PDF Dossier)
+    document.getElementById('app').innerHTML =
+      '<div class="dossier-stack no-print">' +
+        /* Running Action Header */
+        '<div class="run-bar no-print">' +
+          '<div class="run-brand">' +
+            '<div class="run-shield">' + ICO.shieldCheck + '</div>' +
+            '<div>' +
+              '<div class="run-title-row"><b>Drivee</b><span>Vehicle History Report</span></div>' +
+              '<div class="run-sub">VIN ' + esc(r.vin) + ' · Report date ' + esc(reportDateStr) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="run-anchors">' +
+            '<a href="#overview">Overview</a>' +
+            (owners.length ? '<a href="#ownership">Owners</a>' : '') +
+            '<a href="#odometer">Odometer</a>' +
+            '<a href="#collision">Damage</a>' +
+            '<a href="#title-checks">Checks</a>' +
+            '<a href="#timeline">History</a>' +
+          '</div>' +
+          '<div class="run-tools">' +
+            '<div class="unit-toggle">' +
+              '<button id="u-km" type="button" class="' + (curUnit === 'km' ? 'on' : '') + '">KM</button>' +
+              '<button id="u-mi" type="button" class="' + (curUnit === 'mi' ? 'on' : '') + '">MI</button>' +
+            '</div>' +
+            (r.externalPdfUrl ? '<a class="btn-pill" href="' + esc(r.externalPdfUrl) + '" target="_blank" rel="noopener">Official PDF</a>' : '') +
+            '<button class="btn-pill primary" id="download-pdf-btn" type="button">' + ICO.download + '<span>Download PDF</span></button>' +
+            '<button class="btn-pill icon-only" id="print-pdf-btn" type="button" title="Print Dossier" aria-label="Print Dossier">' + ICO.printer + '</button>' +
+            '<button class="btn-pill icon-only" id="copy-link-btn" type="button" title="Copy Report Link" aria-label="Copy Report Link">' + ICO.copy + '</button>' +
+          '</div>' +
+        '</div>' +
+
+        (isSandboxPreview
+          ? '<div class="sandbox-alert"><span>⚠️</span><div><strong>Local Sandbox Preview:</strong> Live NHTSA specs, safety recalls, and CAD valuation are active, but <code>AUCTIONS_API_KEY</code> / <code>NOTEDCAR_API_KEY</code> is not set in <code>.env.local</code> yet.</div></div>'
+          : '') +
+
+        /* 1. Overview: Hero Card + Quick Verdict + 2x2 KPIs */
+        '<section id="overview" style="display:flex;flex-direction:column;gap:16px">' +
+          '<div class="hero-banner' + (heroPhoto ? '' : ' no-photo') + '">' +
+            '<div class="hero-grid"' + (heroPhoto ? '' : ' style="grid-template-columns:1fr"') + '>' +
+              '<div>' +
+                '<div class="hero-eyebrow">' + esc(eyebrow) + '</div>' +
+                '<h1 class="hero-h1"><strong>' + esc(makeHead) + '</strong> <span>' + esc(modelSub) + '</span></h1>' +
+                '<div class="spec-pills">' +
+                  '<button type="button" class="vin-copy-pill" id="hero-copy-vin"><span>VIN ' + esc(r.vin) + '</span>' + ICO.copy + '</button>' +
+                  specPills.map(function (p) { return '<span class="spec-pill">' + esc(p) + '</span>'; }).join('') +
+                '</div>' +
+                '<div class="hero-odo-row">' +
+                  '<span class="hero-odo-val">' + (lastOdo ? fmtNum(lastOdo) + ' ' + curUnit : ('$' + fmtNum(r.valuationCad.midCad) + ' CAD')) + '</span>' +
+                  '<span class="hero-odo-sub">' + (lastOdo ? ('last reported odometer' + (latestReadingDate ? ' · ' + latestReadingDate : '')) : 'estimated Canadian private market value') + '</span>' +
+                '</div>' +
+              '</div>' +
+              (heroPhoto
+                ? '<div><div class="hero-photo-frame"><img src="' + esc(heroPhoto.url) + '" alt="' + esc(r.vehicleTitle) + '"/></div>' +
+                  (heroPhoto.caption ? '<div class="hero-photo-cap">' + esc(heroPhoto.caption) + '</div>' : '') + '</div>'
+                : '') +
+            '</div>' +
+          '</div>' +
+
+          '<div class="overview-split">' +
+            '<div class="verdict-card">' +
+              '<div class="verdict-kicker">DRIVEE QUICK VERDICT</div>' +
+              '<h3>' + esc(r.verdict.headline) + '</h3>' +
+              '<p class="verdict-summary">' + esc(r.verdict.subheadline) + '</p>' +
+              '<div class="verdict-list">' +
+                takeaways.map(function (t) {
+                  return '<div class="verdict-item"><span class="v-dot ' + esc(t.tone) + '"></span><span>' + esc(t.text) + '</span></div>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="kpi-2x2">' +
+              kpi4.map(function (k) {
+                return '<div class="kpi-tile">' +
+                  '<div class="kpi-ico ' + esc(k.tone) + '">' + k.ico + '</div>' +
+                  '<div class="kpi-num' + (k.tone === 'bad' ? ' bad' : '') + '">' + esc(k.val) + '</div>' +
+                  '<div class="kpi-lbl">' + esc(k.lbl) + '</div>' +
+                  '<div class="kpi-sub">' + esc(k.sub) + '</div>' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+        '</section>' +
+
+        ownSectionHtml +
+        buildOdometerSection(r) +
+
+        /* 4. Collision Blueprint + Recalls */
+        '<section id="collision" class="col-recall-grid' + (recallsColHtml ? '' : ' solo') + '">' +
+          collisionHtml +
+          recallsColHtml +
+        '</section>' +
+
+        matrixHtml +
+        svcSnapshotHtml +
+
+        /* 7. Detailed History */
+        '<section id="timeline" class="card">' +
+          '<div class="sec-head">' +
+            '<div>' +
+              '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h3>Detailed history</h3><span class="pill-badge info">' + events.length + ' event' + (events.length === 1 ? '' : 's') + '</span></div>' +
+              '<div class="legend-row">' +
+                '<span class="legend-item"><span class="legend-sq" style="background:#2563EB"></span>Registration</span>' +
+                '<span class="legend-item"><span class="legend-sq" style="background:#10B981"></span>Inspection</span>' +
+                '<span class="legend-item"><span class="legend-sq" style="background:#16A34A"></span>Service</span>' +
+                '<span class="legend-item"><span class="legend-sq" style="background:#EF4444"></span>Accident / Alert</span>' +
+                '<span class="legend-item"><span class="legend-sq" style="background:#7C3AED"></span>Sale / Auction</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="filter-pills no-print">' + filterBtns + '</div>' +
+          '</div>' +
+          (ownerGroupsHtml || '<p style="margin-top:14px;font-size:13.5px;color:var(--ink2)">No granular timeline events returned yet.</p>') +
+        '</section>' +
+
+        checklistHtml +
+      '</div>' +
+      printDossierHtml;
+
+    // Bind interactive controls
+    document.getElementById('u-km').addEventListener('click', function () { curUnit = 'km'; renderReport(activeReport); });
+    document.getElementById('u-mi').addEventListener('click', function () { curUnit = 'mi'; renderReport(activeReport); });
+    document.getElementById('download-pdf-btn').addEventListener('click', function () {
+      var btnEl = this;
+      if (btnEl.disabled) return;
+      btnEl.disabled = true;
+      var span = btnEl.querySelector('span');
+      if (span) span.textContent = 'Generating PDF…';
+      fetch('/api/order-status?op=pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ report: activeReport, unit: curUnit }),
+      })
+        .then(function (resp) {
+          if (!resp.ok) throw new Error('HTTP ' + resp.status);
+          return resp.blob();
+        })
+        .then(function (blob) {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'Drivee-Dossier-' + r.vin + '.pdf';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 2500);
+        })
+        .catch(function () {
+          window.print();
+        })
+        .finally(function () {
+          btnEl.disabled = false;
+          if (span) span.textContent = 'Download PDF';
+        });
+    });
+
+    document.getElementById('print-pdf-btn').addEventListener('click', function () {
+      var origTitle = document.title;
+      document.title = 'Drivee-Report-' + r.vin;
+      var restore = function () { document.title = origTitle; window.removeEventListener('afterprint', restore); };
+      window.addEventListener('afterprint', restore);
+      // Ensure hero photo inside #print-dossier is decoded before opening Print/Save PDF dialog
+      var imgs = Array.prototype.slice.call(document.querySelectorAll('#print-dossier img'));
+      var pending = imgs.filter(function (im) { return !im.complete; });
+      if (pending.length) {
+        Promise.all(pending.map(function (im) {
+          return new Promise(function (resolve) { im.onload = im.onerror = resolve; setTimeout(resolve, 1500); });
+        })).then(function () { window.print(); setTimeout(restore, 2000); });
+      } else {
+        window.print();
+        setTimeout(restore, 2000);
+      }
+    });
+    document.getElementById('copy-link-btn').addEventListener('click', function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(location.href);
+      this.title = 'Link copied!';
+    });
+    var copyVinBtn = document.getElementById('hero-copy-vin');
+    if (copyVinBtn) {
+      copyVinBtn.addEventListener('click', function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(r.vin);
+        var span = this.querySelector('span');
+        if (span) { var orig = span.textContent; span.textContent = 'Copied ' + r.vin; setTimeout(function () { span.textContent = orig; }, 1600); }
+      });
+    }
+    document.querySelectorAll('[data-ev-filter]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        activeEventFilter = el.getAttribute('data-ev-filter') || 'all';
+        renderReport(activeReport);
+      });
+    });
+    var toggleAll = document.getElementById('toggle-all-ev');
+    if (toggleAll) {
+      toggleAll.addEventListener('click', function () {
+        showAllEvents = !showAllEvents;
+        renderReport(activeReport);
+      });
+    }
+    document.querySelectorAll('[data-inc-idx]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        selectedIncidentIdx = Number(el.getAttribute('data-inc-idx') || 0);
+        renderReport(activeReport);
+      });
+    });
+    document.querySelectorAll('.odo-pt').forEach(function (el) {
+      var pick = function () {
+        var idx = Number(el.getAttribute('data-odo-idx'));
+        if (!isNaN(idx) && idx !== activeOdoIdx) {
+          activeOdoIdx = idx;
+          renderReport(activeReport);
+        }
+      };
+      el.addEventListener('click', pick);
+      el.addEventListener('mouseenter', pick);
+    });
+  }
+
+  if (!vin) {
+    renderLocked('Enter a VIN on the Drivee VIN Checker or open our Canadian sample dossier.');
+    return;
+  }
+
+  var initialLoader = startPipelineLoader(vin);
+
+  fetch('/api/order-status?op=unlock', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      vin: vin,
+      accessToken: accessToken || undefined,
+      sessionId: sessionId || undefined,
+      packCode: packCode || undefined,
+      demo: isDemo || undefined,
+    }),
+  })
+    .then(function (r) { return r.json().then(function (d) { return { status: r.status, data: d }; }); })
+    .then(function (res) {
+      if (!res.data || !res.data.ok || !res.data.report) {
+        initialLoader.stop();
+        renderLocked((res.data && res.data.error) || 'Report locked.');
+        return;
+      }
+      initialLoader.finishAndRun(function () {
+        var effectivePack = (res.data.packCode && String(res.data.packCode).indexOf('•') === -1)
+          ? res.data.packCode
+          : (packCode || res.data.packCode);
+        if (effectivePack && String(effectivePack).indexOf('•') === -1) {
+          saveBrowserPackKey(effectivePack, {
+            tierId: res.data.tierId || q.get('tier'),
+            remainingCredits: res.data.remainingCredits,
+            totalCredits: res.data.totalCredits,
+          });
+          stripPackParamFromUrl();
+        }
+        if (effectivePack || isSandbox) {
+          showPackBanner(effectivePack, res.data.remainingCredits);
+        }
+        renderReport(res.data.report);
+      });
+    })
+    .catch(function () {
+      initialLoader.stop();
+      renderLocked('Unable to reach /api/vin-unlock right now.');
+    });
+})();
+</script>
+</body>
+</html>

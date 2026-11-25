@@ -25,18 +25,30 @@
 //      TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (optional).
 
 var crypto = require('crypto');
+var vinCore = require('../lib/vin-core');
+var reportBuilder = require('../lib/vin-report-builder');
 
 var OWNER_EMAIL = process.env.ORDER_ALERT_EMAIL || 'drivee.canada@gmail.com';
 var FROM_OWNER = 'Drivee Orders <reports@drivee.ca>';
 var FROM_BUYER = 'Drivee Car Report <reports@drivee.ca>';
 var SUPPORT_EMAIL = 'drivee.canada@gmail.com';
+var SITE_ORIGIN = String(process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || 'https://www.drivee.ca').replace(/\/+$/, '');
 var TOLERANCE_SEC = 300;
 
-// Prices in cents -> plan. Used when the payment link id is not recognised.
-var PLAN_BY_AMOUNT = { 1900: 'basic', 3000: 'lien' };
+// Prices in cents -> plan (supports current $17/$39/$99 CAD packages + legacy $19/$30 amounts).
+var PLAN_BY_AMOUNT = {
+  1700: 'single',
+  3900: 'pack3',
+  9900: 'pack10',
+  1900: 'basic',
+  3000: 'lien',
+};
 var PLAN_LABEL = {
+  single: 'Single Vehicle Report ($17 CAD)',
+  pack3: 'Buyer 3-Report Pack ($39 CAD)',
+  pack10: 'Pro / Dealer 10-Pack ($99 CAD)',
   basic: 'Full report ($19 CAD)',
-  lien: 'Full report + Ontario lien check ($30 CAD)'
+  lien: 'Full report + Ontario lien check ($30 CAD)',
 };
 
 // Stripe retries on any non-2xx; remember what we already handled on this
@@ -117,19 +129,26 @@ function cleanVin(v) {
 // Pull the order facts out of a Checkout Session.
 function fromSession(s) {
   var cd = s.customer_details || {};
-  var plan = PLAN_BY_AMOUNT[s.amount_total] || 'unknown';
+  var meta = s.metadata || {};
+  var plan = meta.tierId || PLAN_BY_AMOUNT[s.amount_total] || 'unknown';
+  var vin = cleanVin(meta.vin || s.client_reference_id);
   return {
     sessionId: s.id,
     paymentIntent: typeof s.payment_intent === 'string' ? s.payment_intent : (s.payment_intent && s.payment_intent.id) || '',
-    vin: cleanVin(s.client_reference_id),
-    rawRef: s.client_reference_id || '',
+    vin: vin,
+    rawRef: meta.vin || s.client_reference_id || '',
     email: cd.email || s.customer_email || '',
     name: cd.name || '',
     phone: cd.phone || '',
     country: (cd.address && cd.address.country) || '',
+    amountCents: s.amount_total,
+    amountCad: s.amount_total != null ? Number((s.amount_total / 100).toFixed(2)) : 0,
     amount: money(s.amount_total, s.currency),
     plan: plan,
     planLabel: PLAN_LABEL[plan] || money(s.amount_total, s.currency),
+    vehicleTitle: meta.vehicleTitle || '',
+    promoCode: meta.promoCode || '',
+    credits: Number(meta.credits || (plan === 'pack10' ? 10 : plan === 'pack3' ? 3 : 1)),
     created: torontoTime(s.created),
     livemode: !!s.livemode
   };
@@ -204,20 +223,36 @@ function ownerHtml(status, color, o, extra) {
   '</div>';
 }
 
-function buyerHtml(o) {
+function buyerHtml(o, extras) {
+  extras = extras || {};
   var vinLine = o.vin
     ? '<p style="margin:0 0 4px;font-size:13px;color:#667">VIN</p><p style="margin:0 0 16px;font-family:Menlo,monospace;font-size:17px;font-weight:700;letter-spacing:1px">' + esc(o.vin) + '</p>'
     : '<p style="margin:0 0 16px;padding:12px 14px;border-radius:10px;background:#FFF7ED;color:#9A3412;line-height:1.5"><b>We did not receive a VIN with your order.</b> Please reply to this email with the 17-character VIN of the car so we can prepare your report.</p>';
-  return '<div style="font-family:-apple-system,Segoe UI,sans-serif;max-width:560px;margin:0 auto;color:#0E1B3D;line-height:1.55">' +
-    '<p style="font-size:22px;font-weight:800;margin:0 0 4px">Drivee<span style="color:#2563EB">.</span></p>' +
-    '<h2 style="margin:18px 0 8px">Payment received - your report is on its way</h2>' +
-    '<p style="margin:0 0 18px">Thanks' + (o.name ? ', ' + esc(o.name.split(' ')[0]) : '') + '. We are preparing your <b>' + esc(o.planLabel) + '</b>.</p>' +
-    vinLine +
-    '<div style="padding:16px 18px;border-radius:12px;background:#EFF6FF;margin:0 0 18px">' +
+  var packBox = extras.packCode
+    ? '<div style="padding:14px 16px;border-radius:12px;background:#F0FDF4;border:1px solid #BBF7D0;margin:0 0 16px">' +
+      '<p style="margin:0 0 4px;font-weight:800;color:#15803D">Your Multi-Report Pack Code</p>' +
+      '<p style="margin:0 0 6px;font-family:Menlo,monospace;font-size:18px;font-weight:800;letter-spacing:1px;color:#0E1B3D">' + esc(extras.packCode) + '</p>' +
+      '<p style="margin:0;font-size:13px;color:#166534">Redeem remaining credits anytime at <a href="' + SITE_ORIGIN + '/report.html">' + SITE_ORIGIN + '/report.html</a>. Credits never expire.</p>' +
+      '</div>'
+    : '';
+  var reportBox = extras.reportUrl
+    ? '<div style="padding:16px 18px;border-radius:12px;background:#EFF6FF;margin:0 0 18px">' +
+      '<p style="margin:0 0 8px;font-weight:800">Your Drivee Car Report is ready</p>' +
+      '<p style="margin:0 0 12px"><a href="' + esc(extras.reportUrl) + '" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#0B1430;color:#fff;font-weight:800;text-decoration:none">Open Drivee Report &amp; Print PDF →</a></p>' +
+      (extras.externalPdfUrl ? '<p style="margin:0;font-size:13px"><a href="' + esc(extras.externalPdfUrl) + '">Download full Vehicle History PDF backup</a></p>' : '') +
+      '</div>'
+    : '<div style="padding:16px 18px;border-radius:12px;background:#EFF6FF;margin:0 0 18px">' +
       '<p style="margin:0 0 6px;font-weight:800">When and where it arrives</p>' +
       '<p style="margin:0">Your Drivee Car Report will be sent to <b>' + esc(o.email) + '</b> from <b>reports@drivee.ca</b>, usually <b>within 5-60 minutes</b>.</p>' +
-    '</div>' +
-    '<p style="margin:0 0 6px;font-weight:700">Not there after an hour?</p>' +
+      '</div>';
+  return '<div style="font-family:-apple-system,Segoe UI,sans-serif;max-width:560px;margin:0 auto;color:#0E1B3D;line-height:1.55">' +
+    '<p style="font-size:22px;font-weight:800;margin:0 0 4px">Drivee<span style="color:#2563EB">.</span></p>' +
+    '<h2 style="margin:18px 0 8px">Payment received - ' + (extras.reportUrl ? 'your report is ready' : 'your report is on its way') + '</h2>' +
+    '<p style="margin:0 0 18px">Thanks' + (o.name ? ', ' + esc(o.name.split(' ')[0]) : '') + '. Order confirmed for <b>' + esc(o.planLabel) + '</b>.</p>' +
+    vinLine +
+    packBox +
+    reportBox +
+    '<p style="margin:0 0 6px;font-weight:700">Need help?</p>' +
     '<ol style="margin:0 0 18px;padding-left:20px">' +
       '<li>Check your Spam, Junk or Promotions folder for "Drivee Car Report".</li>' +
       '<li>Reply to this email or write to <a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a> - we answer the same day.</li>' +
@@ -242,23 +277,74 @@ async function handle(evt) {
       await logEvent('report_pending', o);
       return;
     }
+
+    // Attempt automated report fulfillment only when VIN_AUTO_FULFILL=true
+    var autoReportUrl = '';
+    var externalPdfUrl = '';
+    var upstreamCostCad = 0;
+    if (process.env.VIN_AUTO_FULFILL === 'true' && o.vin && process.env.VIN_DRY_RUN !== 'true') {
+      try {
+        var built = await reportBuilder.buildLiveDriveeReport({ vin: o.vin, allowPaidFetch: true });
+        if (built && built.ok && built.report) {
+          upstreamCostCad = Number(built.costCad || 0);
+          externalPdfUrl = built.report.externalPdfUrl || '';
+          var tok = vinCore.signReportAccessToken(o.vin, o.sessionId || 'webhook');
+          autoReportUrl = SITE_ORIGIN + '/vin-report.html?vin=' + encodeURIComponent(o.vin) + '&access=' + encodeURIComponent(tok);
+        }
+      } catch (autoErr) {
+        console.log('[stripe-webhook] auto-fulfill fallback to manual', autoErr && autoErr.message);
+      }
+    }
+
+    var recordedOrder = await vinCore.recordVinOrderAsync({
+      sessionId: o.sessionId,
+      paymentIntent: o.paymentIntent,
+      vin: o.vin,
+      vehicleTitle: o.vehicleTitle || (o.vin ? 'VIN ' + o.vin : ''),
+      tierId: ['single', 'pack3', 'pack10'].indexOf(o.plan) >= 0 ? o.plan : 'single',
+      amountCad: o.amountCad || undefined,
+      upstreamCostCad: upstreamCostCad,
+      customerEmail: o.email,
+      customerName: o.name,
+      promoCode: o.promoCode || null,
+      creditsTotal: o.credits,
+      status: 'paid',
+      livemode: o.livemode,
+      source: 'stripe-webhook'
+    });
+
+    var ownerNote = autoReportUrl
+      ? 'Automated fulfillment succeeded (' + autoReportUrl + '). Buyer received the report link & pack code.'
+      : 'Pull the report and email it to the buyer. They were told it arrives within 5-60 minutes.' +
+        (recordedOrder.packCode ? ' Issued Pack Code: ' + recordedOrder.packCode : '');
+
     await sendEmail({
       from: FROM_OWNER, to: [OWNER_EMAIL], reply_to: o.email || undefined,
       subject: 'PAID ' + o.amount + ' - VIN ' + (o.vin || 'MISSING') + ' - ' + (o.email || 'no email'),
-      html: ownerHtml('PAID', '#16A34A', o, 'Pull the report and email it to the buyer. They were told it arrives within 5-60 minutes.')
+      html: ownerHtml('PAID', '#16A34A', o, ownerNote)
     });
     if (o.email) {
       try {
         await sendEmail({
           from: FROM_BUYER, to: [o.email], reply_to: SUPPORT_EMAIL,
-          subject: 'Your Drivee Car Report is being prepared' + (o.vin ? ' - VIN ' + o.vin : ''),
-          html: buyerHtml(o)
+          subject: (autoReportUrl ? 'Your Drivee Car Report is ready' : 'Your Drivee Car Report is being prepared') + (o.vin ? ' - VIN ' + o.vin : ''),
+          html: buyerHtml(o, {
+            reportUrl: autoReportUrl,
+            externalPdfUrl: externalPdfUrl,
+            packCode: recordedOrder.packCode
+          })
         });
       } catch (e) { console.log('[stripe-webhook] buyer email failed', e.message); }
     }
     await logEvent('report_paid', o);
-    await telegram('PAID ' + o.amount + '\n' + o.planLabel + '\nVIN ' + (o.vin || 'MISSING') + '\n' + (o.email || 'no email') + '\n' + o.created);
-    return;
+    await telegram('PAID ' + o.amount + '\n' + o.planLabel + '\nVIN ' + (o.vin || 'MISSING') + '\n' + (o.email || 'no email') + (recordedOrder.packCode ? '\nPack: ' + recordedOrder.packCode : '') + '\n' + o.created);
+    return {
+      orderNumber: recordedOrder.orderNumber,
+      packCode: recordedOrder.packCode || null,
+      reportUrl: autoReportUrl || (recordedOrder.accessToken && o.vin
+        ? SITE_ORIGIN + '/vin-report.html?vin=' + encodeURIComponent(o.vin) + '&access=' + encodeURIComponent(recordedOrder.accessToken)
+        : '')
+    };
   }
 
   if (type === 'checkout.session.async_payment_failed') {
@@ -302,16 +388,28 @@ async function handle(evt) {
   }
 
   if (type === 'charge.refunded') {
+    var refundSync = null;
+    if (obj.payment_intent && typeof vinCore.markOrderRefundedByPaymentIntentAsync === 'function') {
+      try {
+        refundSync = await vinCore.markOrderRefundedByPaymentIntentAsync(obj.payment_intent, true);
+      } catch (e) {
+        console.log('[stripe-webhook] refund sync failed', e && e.message);
+      }
+    }
     var r = {
-      vin: '', rawRef: 'see payment', email: obj.billing_details && obj.billing_details.email || obj.receipt_email || '',
+      vin: '', rawRef: (refundSync && refundSync.orderNumber) || 'see payment', email: obj.billing_details && obj.billing_details.email || obj.receipt_email || '',
       name: obj.billing_details && obj.billing_details.name || '', phone: '', country: '',
       amount: money(obj.amount_refunded, obj.currency), plan: '', planLabel: 'Refund issued',
       created: torontoTime(obj.created), paymentIntent: obj.payment_intent || '', livemode: !!obj.livemode
     };
+    var refundNote = refundSync && refundSync.matched
+      ? 'Ledger order <b>' + esc(refundSync.orderNumber) + '</b> marked refunded' +
+        (refundSync.revokedPackMasked ? ' and linked pack key <b>' + esc(refundSync.revokedPackMasked) + '</b> automatically revoked.' : '.')
+      : '';
     await sendEmail({
       from: FROM_OWNER, to: [OWNER_EMAIL],
       subject: 'REFUNDED ' + r.amount,
-      html: ownerHtml('REFUNDED', '#7C3AED', r, '')
+      html: ownerHtml('REFUNDED', '#7C3AED', r, refundNote)
     });
     await logEvent('report_refunded', r);
   }
@@ -337,12 +435,30 @@ module.exports = async function handler(req, res) {
   try { evt = JSON.parse(raw.toString('utf8')); } catch (e) { return res.status(400).json({ error: 'Bad JSON' }); }
 
   if (seen[evt.id]) return res.status(200).json({ ok: true, duplicate: true });
+  if (typeof vinCore.claimWebhookEventAsync === 'function') {
+    try {
+      var claim = await vinCore.claimWebhookEventAsync(evt.id);
+      if (claim && claim.duplicate) {
+        seen[evt.id] = Date.now();
+        return res.status(200).json({ ok: true, duplicate: true });
+      }
+    } catch (claimErr) {
+      console.log('[stripe-webhook] durable dedupe check failed', claimErr && claimErr.message);
+    }
+  }
 
   try {
-    await handle(evt);
+    var resultMeta = await handle(evt);
     seen[evt.id] = Date.now();
-    return res.status(200).json({ ok: true });
+    var out = { ok: true };
+    if (resultMeta && resultMeta.orderNumber) out.orderNumber = resultMeta.orderNumber;
+    if (resultMeta && resultMeta.packCode) out.packCode = resultMeta.packCode;
+    if (resultMeta && resultMeta.reportUrl) out.reportUrl = resultMeta.reportUrl;
+    return res.status(200).json(out);
   } catch (e) {
+    if (typeof vinCore.releaseWebhookEventAsync === 'function') {
+      await vinCore.releaseWebhookEventAsync(evt.id);
+    }
     // Owner alert failed: return 500 so Stripe retries (it retries for up to 3 days).
     console.log('[stripe-webhook] error', evt.type, e && e.message);
     return res.status(500).json({ error: 'Handler failed' });

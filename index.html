@@ -102,7 +102,7 @@
         { "@type": "Question", "name": "How much does it cost to fight a ticket in Ontario?",
           "acceptedAnswer": { "@type": "Answer", "text": "Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes - every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide." } },
         { "@type": "Question", "name": "What does Drivee cost?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full vehicle history report - $19 CAD, or $30 CAD with an Ontario lien check." } },
+          "acceptedAnswer": { "@type": "Answer", "text": "The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full Canadian vehicle history report - $17 CAD for a single VIN report ($39 CAD for a 3-pack, $99 CAD for a 10-pack)." } },
         { "@type": "Question", "name": "Does Drivee work outside Ontario?",
           "acceptedAnswer": { "@type": "Answer", "text": "No, and that is deliberate. The deadlines, demerit points, fee ladders and court process we work from are Ontario's, and every firm we match is licensed here. If you upload a ticket from another province or a US state we will still read it and show you what it says, but we will tell you plainly that we cannot advise on it rather than guess." } },
         { "@type": "Question", "name": "What happens to my ticket photo?",
@@ -1821,6 +1821,80 @@
     .strip .label { flex-basis: 100%; text-align: center; margin-bottom: 4px; }
     .strip .pill { font-size: 11px; padding: 5px 10px; }
   }
+
+  /* VIN Upgrade [2026-11-24]: prominent VIN Check buttons in header & hero + quick homepage VIN lookup bar */
+  .nav-cta-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  nav.top .cta-vin {
+    padding: 9px 14px; border-radius: 10px;
+    border: 1.5px solid rgba(46,100,255,0.34); background: rgba(234,240,253,0.92);
+    color: var(--blue-d, #1E4BD6); font-family: var(--font); font-size: 13px; font-weight: 700;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  nav.top .cta-vin:hover { background: #dbe6ff; border-color: var(--blue); transform: translateY(-1px); }
+  .nav-vin-pill {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.06em; padding: 2px 6px;
+    border-radius: 999px; background: #EAF0FD; color: #1E4BD6; margin-left: 5px; vertical-align: 1px;
+  }
+  nav.top .links a.nav-vin-mobile-only { display: none; }
+  .hero-vin-cta {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 7px 14px;
+    border-radius: 999px; background: rgba(15,23,42,0.72); border: 1px solid rgba(255,255,255,0.22);
+    color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 500; text-decoration: none;
+    backdrop-filter: blur(8px); transition: background 0.15s, border-color 0.15s;
+  }
+  .hero-vin-cta b { color: #93c5fd; font-weight: 700; }
+  .hero-vin-cta:hover { background: rgba(15,23,42,0.88); border-color: rgba(147,197,253,0.55); }
+  .vin-home-strip {
+    max-width: 1120px; margin: 18px auto 12px; padding: 0 24px;
+  }
+  .vin-home-card {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 22px; align-items: center;
+    padding: 24px 26px; border-radius: 22px; background: #ffffff;
+    border: 1px solid var(--line); box-shadow: 0 18px 42px rgba(11,20,48,0.06);
+  }
+  .vin-home-kicker {
+    font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--blue-d, #1E4BD6); margin-bottom: 6px;
+  }
+  .vin-home-card h3 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.7px; color: var(--ink); line-height: 1.15; }
+  .vin-home-card p { margin: 0; font-size: 14px; color: var(--ink2); line-height: 1.5; }
+  .vin-home-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .vin-home-badges span {
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    background: var(--bg2, #eef2fb); color: var(--ink);
+  }
+  .vin-home-badges span.hl { background: #EAF0FD; color: #1E4BD6; }
+  .vin-home-form {
+    display: flex; gap: 8px; padding: 7px; border-radius: 14px;
+    border: 1.5px solid var(--line); background: #f8faff;
+  }
+  .vin-home-form input {
+    flex: 1 1 auto; min-width: 0; border: none; background: transparent; outline: none;
+    padding: 10px 12px; font-family: var(--mono); font-size: 14px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink);
+  }
+  .vin-home-form button {
+    flex-shrink: 0; padding: 11px 16px; border: none; border-radius: 10px;
+    background: var(--blue, #2D63F0); color: #fff; font-family: var(--font);
+    font-size: 13.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .vin-home-links {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    margin-top: 9px; font-size: 12.5px; color: var(--ink2);
+  }
+  .vin-home-links a { color: var(--blue-d, #1E4BD6); font-weight: 700; text-decoration: none; }
+  .vin-home-links a:hover { text-decoration: underline; }
+  @media (max-width: 900px) {
+    .vin-home-card { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 20px; }
+  }
+  @media (max-width: 760px) {
+    nav.top .cta-vin { display: none; }
+    nav.top .links a.nav-vin-mobile-only { display: inline-flex; align-items: center; }
+    .vin-home-strip { padding: 0 16px; }
+    .vin-home-form { flex-direction: column; }
+    .vin-home-form button { width: 100%; }
+  }
 </style>
 <script>
   (function(){
@@ -1932,8 +2006,10 @@
 
   <nav class="top" id="topnav">
     <div class="brand">Drivee<span class="dot">.</span></div>
+    <!-- VIN Upgrade [2026-11-24]: exposed VIN Check link in drawer/nav and dedicated Check VIN button in top header -->
     <div class="links" id="navLinks">
       <a href="#scan">Scan a ticket</a>
+      <a href="/report.html" class="nav-vin-mobile-only" onclick="if(window.dvTrack)dvTrack('vin_cta','nav-link')">VIN Check <span class="nav-vin-pill">FREE</span></a>
       <a href="#legal">Find a lawyer</a>
       <a href="#features">Services</a>
       <a href="#hotspots">Map</a>
@@ -1944,7 +2020,10 @@
       Menu
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
-    <a href="#scan" class="cta" style="text-decoration: none;">Scan your ticket →</a>
+    <div class="nav-cta-group">
+      <a href="/report.html" class="cta-vin" onclick="if(window.dvTrack)dvTrack('vin_cta','header')">Check VIN</a>
+      <a href="#scan" class="cta" style="text-decoration: none;">Scan your ticket →</a>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -2011,6 +2090,12 @@
         </span>
         <svg class="hsb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
       </a>
+      <!-- VIN Upgrade [2026-11-24]: secondary above-the-fold CTA linking used-car buyers straight to the Canadian VIN checker -->
+      <div>
+        <a href="/report.html#check" class="hero-vin-cta anim a5" onclick="if(window.dvTrack)dvTrack('vin_cta','hero')">
+          Buying a used car in Canada? <b>Check any 17-digit VIN free →</b>
+        </a>
+      </div>
       <div class="hero-actions anim a5">
         <a class="appstore-badge" href="https://apps.apple.com/ca/app/drivee-canada/id6785311044" target="_blank" rel="noopener" aria-label="Download Drivee Canada on the App Store" onclick="if(window.dvTrack)dvTrack('app_open','appstore-hero')">
           <svg viewBox="0 0 168 54" width="168" height="54" role="img" xmlns="http://www.w3.org/2000/svg">
@@ -2088,6 +2173,32 @@
     <span class="pill">MTO Ontario</span>
     <span class="pill">407 ETR</span>
   </div>
+
+  <!-- VIN Upgrade [2026-11-24]: prominent homepage VIN Check card linking directly to Canadian VIN lookup & packs -->
+  <section class="vin-home-strip" id="vin-home-strip" aria-label="Canadian VIN Check">
+    <div class="vin-home-card">
+      <div>
+        <div class="vin-home-kicker">DRIVEE CANADIAN VIN CHECK · FREE SPEC &amp; RECALL RADAR</div>
+        <h3>Buying a used car? Run a live VIN check first.</h3>
+        <p>Decode any 17-character VIN free for specs, Transport Canada recalls &amp; CAD market value — then unlock Drivee's live Canadian history dossier in seconds.</p>
+        <div class="vin-home-badges">
+          <span class="hl">$17 CAD Single</span>
+          <span>$39 CAD 3-Pack ($13/ea)</span>
+          <span>$99 CAD 10-Pack ($9.90/ea)</span>
+        </div>
+      </div>
+      <div>
+        <form class="vin-home-form" action="/report.html#check" method="get" onsubmit="if(window.dvTrack)dvTrack('vin_cta','home-strip')">
+          <input name="vin" maxlength="17" autocomplete="off" spellcheck="false" placeholder="ENTER 17-CHAR VIN…" aria-label="17-character VIN"/>
+          <button type="submit">Check VIN Free →</button>
+        </form>
+        <div class="vin-home-links">
+          <span>Try sample: <a href="/report.html?vin=2C4RDGBGXGR217456#check">2016 Grand Caravan (2C4RDGBG…)</a></span>
+          <a href="/vin-report.html?vin=2C4RDGBGXGR217456&demo=1">Sample Full Report →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- FOUNDER STORY SECTION - "Why I built Drivee" -->
   <section class="block reveal" id="founder">
@@ -2570,9 +2681,10 @@
         <summary>How much does it cost to fight a ticket in Ontario?</summary>
         <div>Representation for a straightforward Highway Traffic Act matter such as speeding or a red light typically runs a few hundred dollars; careless driving runs higher, and a Criminal Code charge such as impaired driving runs into the thousands. Those are estimates, not quotes - every firm we match prices the case itself at a free consultation. A conviction can cost far more in insurance over three years than the fine and the representation combined, and Drivee shows you both numbers side by side before you decide.</div>
       </details>
+      <!-- VIN Upgrade [2026-11-24]: updated homepage pricing FAQ ($17 Single / $39 3-Pack / $99 10-Pack CAD) -->
       <details>
         <summary>What does Drivee cost?</summary>
-        <div>The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full vehicle history report - $19 CAD, or $30 CAD with an Ontario lien check.</div>
+        <div>The scan, the verdict, the cost breakdown, the deadline tracking and the firm matching are free, and we take no commission. The only paid product is the full Canadian vehicle history report - $17 CAD for a single VIN report ($39 CAD for a 3-pack, $99 CAD for a 10-pack).</div>
       </details>
       <details>
         <summary>Does Drivee work outside Ontario?</summary>
