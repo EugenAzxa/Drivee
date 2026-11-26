@@ -1,0 +1,661 @@
+diff --git a/404.html b/404.html
+index 9a29860..5ad5f48 100644
+--- a/404.html
++++ b/404.html
+@@ -21,6 +21,7 @@
+   .links a:hover { border-color: var(--blue); }
+   .links small { display: block; font-weight: 400; color: var(--ink2); font-size: 13px; margin-top: 2px; }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+   <main class="card">
+diff --git a/api/order-status.js b/api/order-status.js
+index e4a87f9..c1bd334 100644
+--- a/api/order-status.js
++++ b/api/order-status.js
+@@ -59,6 +59,8 @@ module.exports = async function handler(req, res) {
+       return res.status(200).json({
+         ok: true,
+         paid: localOrder.status === 'paid' || localOrder.status === 'sandbox_paid',
++        amount: localOrder.amountCad != null ? Number(localOrder.amountCad) : null,
++        currency: 'CAD',
+         email: localOrder.customerEmail || '',
+         vin: localOrder.vin || '',
+         tierId: localOrder.tierId || 'single',
+@@ -88,6 +90,8 @@ module.exports = async function handler(req, res) {
+     return res.status(200).json({
+       ok: true,
+       paid: s.payment_status === 'paid',
++      amount: typeof s.amount_total === 'number' ? s.amount_total / 100 : null,
++      currency: (s.currency || 'cad').toUpperCase(),
+       email: (s.customer_details && s.customer_details.email) || s.customer_email || '',
+       vin: cleanVin,
+       tierId: meta.tierId || (localOrder && localOrder.tierId) || 'single',
+diff --git a/assets/js/dv-analytics.js b/assets/js/dv-analytics.js
+new file mode 100644
+index 0000000..0fab159
+--- /dev/null
++++ b/assets/js/dv-analytics.js
+@@ -0,0 +1,105 @@
++/*
++ * Drivee — Google tag (GA4 + Google Ads) in one place.
++ *
++ * Fill in the IDs below and every page that includes this file starts
++ * reporting. While an ID is empty, that part stays off (no network calls).
++ *
++ *   GA4_ID              GA4 → Admin → Data streams → web stream → Measurement ID (G-XXXXXXXXXX)
++ *   ADS_ID              Google Ads → Goals → Conversions → tag setup → Conversion ID (AW-XXXXXXXXXX)
++ *   ADS_PURCHASE_LABEL  the same screen, the part after the slash in send_to 'AW-XXXX/<label>'
++ *
++ * Exposes:
++ *   dvGa(event, meta)        forward an internal dvTrack event to GA4 / Ads
++ *   dvAds.purchase({...})    fire the purchase conversion once per Stripe session
++ *   dvAds.clickIds()         {gclid, gbraid, wbraid} saved from the ad click (90 days)
++ */
++(function () {
++  var GA4_ID = 'G-JSWWRDD7SN';
++  var ADS_ID = '';
++  var ADS_PURCHASE_LABEL = '';
++
++  var CLICK_KEYS = ['gclid', 'gbraid', 'wbraid'];
++  var CLICK_TTL_MS = 90 * 24 * 60 * 60 * 1000;
++
++  function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
++  function load(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
++
++  // Remember the ad click id so the purchase (often a later visit) can be tied to the click.
++  try {
++    var q = new URLSearchParams(location.search);
++    CLICK_KEYS.forEach(function (k) {
++      var v = q.get(k);
++      if (v && /^[A-Za-z0-9_\-]{10,200}$/.test(v)) store('dv_' + k, JSON.stringify({ v: v, t: Date.now() }));
++    });
++  } catch (e) {}
++
++  function clickIds() {
++    var out = {};
++    CLICK_KEYS.forEach(function (k) {
++      try {
++        var o = JSON.parse(load('dv_' + k) || 'null');
++        if (o && o.v && Date.now() - o.t < CLICK_TTL_MS) out[k] = o.v;
++      } catch (e) {}
++    });
++    return out;
++  }
++
++  window.dataLayer = window.dataLayer || [];
++  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
++  var enabled = !!(GA4_ID || ADS_ID);
++
++  if (enabled) {
++    var s = document.createElement('script');
++    s.async = true;
++    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA4_ID || ADS_ID);
++    document.head.appendChild(s);
++    gtag('js', new Date());
++    if (GA4_ID) gtag('config', GA4_ID);
++    if (ADS_ID) gtag('config', ADS_ID);
++  }
++
++  // Internal event names → GA4 names. Anything not listed is sent as-is.
++  var GA_NAMES = { report_buy_click: 'begin_checkout' };
++  var SKIP = { page_view: 1, app_open: 1 }; // GA4 counts page views itself
++
++  window.dvGa = function (event, meta) {
++    if (!enabled || !event || SKIP[event]) return;
++    try {
++      var params = {};
++      if (meta) params.detail = String(meta).slice(0, 100);
++      gtag('event', GA_NAMES[event] || event, params);
++    } catch (e) {}
++  };
++
++  window.dvAds = {
++    clickIds: clickIds,
++    // o: { sessionId, value, currency, tierId }
++    purchase: function (o) {
++      if (!enabled || !o || !o.sessionId) return;
++      var key = 'dv_conv_' + o.sessionId;
++      if (load(key)) return; // already reported from this browser
++      store(key, '1');
++      var value = Number(o.value) || 0;
++      var currency = (o.currency || 'CAD').toUpperCase();
++      try {
++        if (GA4_ID) {
++          gtag('event', 'purchase', {
++            send_to: GA4_ID,
++            transaction_id: o.sessionId,
++            value: value,
++            currency: currency,
++            items: [{ item_id: o.tierId || 'single', item_name: 'Drivee VIN report', price: value, quantity: 1 }]
++          });
++        }
++        if (ADS_ID && ADS_PURCHASE_LABEL) {
++          gtag('event', 'conversion', {
++            send_to: ADS_ID + '/' + ADS_PURCHASE_LABEL,
++            transaction_id: o.sessionId,
++            value: value,
++            currency: currency
++          });
++        }
++      } catch (e) {}
++    }
++  };
++})();
+diff --git a/blog/buying-used-car-ontario-checklist.html b/blog/buying-used-car-ontario-checklist.html
+index 19eb18f..731165b 100644
+--- a/blog/buying-used-car-ontario-checklist.html
++++ b/blog/buying-used-car-ontario-checklist.html
+@@ -114,6 +114,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/car-accident-insurance-ontario.html b/blog/car-accident-insurance-ontario.html
+index 7751d91..0572570 100644
+--- a/blog/car-accident-insurance-ontario.html
++++ b/blog/car-accident-insurance-ontario.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/car-accident-toronto-what-to-do.html b/blog/car-accident-toronto-what-to-do.html
+index aebabf2..22feb0b 100644
+--- a/blog/car-accident-toronto-what-to-do.html
++++ b/blog/car-accident-toronto-what-to-do.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/car-towed-toronto-what-to-do.html b/blog/car-towed-toronto-what-to-do.html
+index 7d98e6b..d371717 100644
+--- a/blog/car-towed-toronto-what-to-do.html
++++ b/blog/car-towed-toronto-what-to-do.html
+@@ -77,6 +77,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/careless-driving-ticket-ontario.html b/blog/careless-driving-ticket-ontario.html
+index 310a4db..6ef212c 100644
+--- a/blog/careless-driving-ticket-ontario.html
++++ b/blog/careless-driving-ticket-ontario.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/check-car-lien-canada-us.html b/blog/check-car-lien-canada-us.html
+index ac6e303..2f8b31a 100644
+--- a/blog/check-car-lien-canada-us.html
++++ b/blog/check-car-lien-canada-us.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/distracted-driving-fines-canada-us.html b/blog/distracted-driving-fines-canada-us.html
+index 740e437..fc61a7b 100644
+--- a/blog/distracted-driving-fines-canada-us.html
++++ b/blog/distracted-driving-fines-canada-us.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/flood-damaged-car-how-to-spot.html b/blog/flood-damaged-car-how-to-spot.html
+index 504f7f3..283b525 100644
+--- a/blog/flood-damaged-car-how-to-spot.html
++++ b/blog/flood-damaged-car-how-to-spot.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/free-vin-check-ontario.html b/blog/free-vin-check-ontario.html
+index bd9bd6f..2c85987 100644
+--- a/blog/free-vin-check-ontario.html
++++ b/blog/free-vin-check-ontario.html
+@@ -114,6 +114,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/green-p-parking-rates-2026.html b/blog/green-p-parking-rates-2026.html
+index dd4064b..ff2df23 100644
+--- a/blog/green-p-parking-rates-2026.html
++++ b/blog/green-p-parking-rates-2026.html
+@@ -77,6 +77,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/how-to-dispute-parking-ticket-toronto.html b/blog/how-to-dispute-parking-ticket-toronto.html
+index 296ed50..c3d0757 100644
+--- a/blog/how-to-dispute-parking-ticket-toronto.html
++++ b/blog/how-to-dispute-parking-ticket-toronto.html
+@@ -114,6 +114,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/import-car-from-us-to-canada.html b/blog/import-car-from-us-to-canada.html
+index 2e5dfe6..27e766a 100644
+--- a/blog/import-car-from-us-to-canada.html
++++ b/blog/import-car-from-us-to-canada.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/index.html b/blog/index.html
+index 9bfdfc8..0a631c7 100644
+--- a/blog/index.html
++++ b/blog/index.html
+@@ -37,6 +37,7 @@
+   }
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/odometer-rollback-how-to-spot.html b/blog/odometer-rollback-how-to-spot.html
+index 829f54a..3a64d83 100644
+--- a/blog/odometer-rollback-how-to-spot.html
++++ b/blog/odometer-rollback-how-to-spot.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/red-light-camera-ticket-toronto.html b/blog/red-light-camera-ticket-toronto.html
+index 9e3d94e..cc9eced 100644
+--- a/blog/red-light-camera-ticket-toronto.html
++++ b/blog/red-light-camera-ticket-toronto.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/salvage-rebuilt-title-canada-us.html b/blog/salvage-rebuilt-title-canada-us.html
+index 9fa34e2..a2257c9 100644
+--- a/blog/salvage-rebuilt-title-canada-us.html
++++ b/blog/salvage-rebuilt-title-canada-us.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/speed-camera-ticket-canada-us.html b/blog/speed-camera-ticket-canada-us.html
+index 3e9a21f..4baf494 100644
+--- a/blog/speed-camera-ticket-canada-us.html
++++ b/blog/speed-camera-ticket-canada-us.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/speeding-ticket-ontario-demerit-points.html b/blog/speeding-ticket-ontario-demerit-points.html
+index 77b1428..fa9e61e 100644
+--- a/blog/speeding-ticket-ontario-demerit-points.html
++++ b/blog/speeding-ticket-ontario-demerit-points.html
+@@ -122,6 +122,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/toronto-parking-signs-explained.html b/blog/toronto-parking-signs-explained.html
+index 48998bf..7f0dc9e 100644
+--- a/blog/toronto-parking-signs-explained.html
++++ b/blog/toronto-parking-signs-explained.html
+@@ -77,6 +77,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/toronto-parking-ticket-late-fees.html b/blog/toronto-parking-ticket-late-fees.html
+index 044177d..c476c42 100644
+--- a/blog/toronto-parking-ticket-late-fees.html
++++ b/blog/toronto-parking-ticket-late-fees.html
+@@ -77,6 +77,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/used-car-scams-canada-us.html b/blog/used-car-scams-canada-us.html
+index df45b5e..fb7b9f6 100644
+--- a/blog/used-car-scams-canada-us.html
++++ b/blog/used-car-scams-canada-us.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/what-is-in-a-vehicle-history-report.html b/blog/what-is-in-a-vehicle-history-report.html
+index 2869f8d..fae8402 100644
+--- a/blog/what-is-in-a-vehicle-history-report.html
++++ b/blog/what-is-in-a-vehicle-history-report.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/blog/winter-tire-laws-canada-us.html b/blog/winter-tire-laws-canada-us.html
+index 6073385..887386f 100644
+--- a/blog/winter-tire-laws-canada-us.html
++++ b/blog/winter-tire-laws-canada-us.html
+@@ -130,6 +130,7 @@
+   ]
+ }
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/contact.html b/contact.html
+index 4d7903e..61ae523 100644
+--- a/contact.html
++++ b/contact.html
+@@ -116,6 +116,7 @@
+       var K='dv_sid', sid=localStorage.getItem(K);
+       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
+       window.dvTrack=function(event, meta){
++        if (window.dvGa) dvGa(event, meta);
+         try {
+           var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
+           // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
+@@ -130,6 +131,7 @@
+     } catch(e){ window.dvTrack=function(){}; }
+   })();
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/index.html b/index.html
+index d2526df..c9e930f 100644
+--- a/index.html
++++ b/index.html
+@@ -1902,6 +1902,7 @@
+       var K='dv_sid', sid=localStorage.getItem(K);
+       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
+       window.dvTrack=function(event, meta){
++        if (window.dvGa) dvGa(event, meta);
+         try {
+           var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
+           // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
+@@ -1916,6 +1917,7 @@
+     } catch(e){ window.dvTrack=function(){}; }
+   })();
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/lib/vin-api-checkout.js b/lib/vin-api-checkout.js
+index b15949c..8ca8336 100644
+--- a/lib/vin-api-checkout.js
++++ b/lib/vin-api-checkout.js
+@@ -175,6 +175,11 @@ module.exports = async function handler(req, res) {
+       form.append('metadata[credits]', String(tier.credits));
+       form.append('metadata[vehicleTitle]', vehicleTitle);
+       if (promo) form.append('metadata[promoCode]', promo.code);
++      // Google Ads click ids, kept for offline conversion import / attribution checks
++      ['gclid', 'gbraid', 'wbraid'].forEach((k) => {
++        const v = String(body[k] || '').trim();
++        if (/^[A-Za-z0-9_-]{10,200}$/.test(v)) form.append(`metadata[${k}]`, v);
++      });
+ 
+       const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+         method: 'POST',
+diff --git a/parking-signs/index.html b/parking-signs/index.html
+index 79bfba7..5c6a4c9 100644
+--- a/parking-signs/index.html
++++ b/parking-signs/index.html
+@@ -278,6 +278,7 @@
+     .signs-section h2 { font-size: 22px; }
+   }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/privacy.html b/privacy.html
+index ae302c6..613e17b 100644
+--- a/privacy.html
++++ b/privacy.html
+@@ -183,6 +183,7 @@
+     .wrap { padding: 32px 18px 60px; }
+   }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+@@ -199,7 +200,7 @@
+   <div class="kicker">PRIVACY · DRIVEE</div>
+   <h1>Your data stays yours.</h1>
+   <p class="lede">Drivee is built so the people who park in Toronto don't trade their privacy for help with a parking ticket. This page explains exactly what we keep, what we don't, and how to wipe everything.</p>
+-  <div class="updated">LAST UPDATED · 11 MAY 2026</div>
++  <div class="updated">LAST UPDATED · 26 NOV 2026</div>
+ 
+   <div class="tldr">
+     <h3>✓ THE SHORT VERSION</h3>
+@@ -226,7 +227,10 @@
+     <li><strong>An anonymous user ID and session ID</strong> - random strings (e.g. <span style="font-family:var(--mono)">u_x7k9q2pmh3z</span>) generated in your browser. They let us see things like "30 unique people opened the app this week" without ever needing your name. If you clear your browser storage, you become a new ID.</li>
+     <li><strong>Your email</strong> - but only on the specific event that records you giving us your email in the first place (the sign-in / reminder request). All other events stay completely anonymous.</li>
+   </ul>
+-  <p>None of this data is sold, traded for ads, or shared with anyone outside Drivee. The internal dashboard that reads these numbers is only used by the Drivee team to decide what to build next.</p>
++  <p>None of this data is sold or traded. The internal dashboard that reads these numbers is only used by the Drivee team to decide what to build next.</p>
++
++  <h3 class="subsection">Google Analytics and Google Ads</h3>
++  <p>Our website uses Google Analytics and the Google Ads tag to measure visits and to see which of our ads lead to a purchase. Google sets cookies for this and receives standard browser data: pages viewed, device and browser, approximate location, and - if you arrived from one of our ads - the ad click ID. When you buy a report, we tell Google the order ID, the price and the currency, never your name, email or VIN. You can opt out with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out add-on</a> or in your <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">Google ad settings</a>. Google's own use of this data is covered by <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">Google's privacy policy</a>.</p>
+ 
+   <h3 class="subsection">A note about Stripe</h3>
+   <p>If you ever use a paid feature (like the optional $0.99 "auto-apply" services), payment is processed entirely by <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe</a> on their own checkout page. We never see your card details. Stripe gives us back only a confirmation that the payment succeeded.</p>
+@@ -241,7 +245,7 @@
+   </ul>
+ 
+   <h2>Who else sees your data</h2>
+-  <p><strong>Nobody.</strong> We don't sell your data. We don't trade it for ad money. We don't share it with the City of Toronto, the MTO, the courts, or any law firm listed in the app.</p>
++  <p>We don't sell your data. We don't trade it for ad money. Apart from Google Analytics and Google Ads measurement on the website (described above) and Stripe for payments, we don't share it with anyone - not the City of Toronto, the MTO, the courts, or any law firm listed in the app.</p>
+   <p>The lawyers in our directory pay flat fees for placement - they don't get any visitor data from us. When you call or email a lawyer through the app, you do that directly with them; we don't sit in the middle.</p>
+ 
+   <h2>How to delete everything</h2>
+diff --git a/report.html b/report.html
+index 7ca69f5..be2a932 100644
+--- a/report.html
++++ b/report.html
+@@ -1346,6 +1346,7 @@
+       var K='dv_sid', sid=localStorage.getItem(K);
+       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
+       window.dvTrack=function(event, meta){
++        if (window.dvGa) dvGa(event, meta);
+         try {
+           var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
+           // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
+@@ -1360,6 +1361,7 @@
+     } catch(e){ window.dvTrack=function(){}; }
+   })();
+ </script>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+@@ -2730,7 +2732,10 @@
+         vin: vin,
+         tierId: tierId,
+         promoCode: activePromoCode,
+-        vehicleTitle: lastDecodedTitle || ('VIN ' + vin)
++        vehicleTitle: lastDecodedTitle || ('VIN ' + vin),
++        gclid: (window.dvAds && dvAds.clickIds().gclid) || undefined,
++        gbraid: (window.dvAds && dvAds.clickIds().gbraid) || undefined,
++        wbraid: (window.dvAds && dvAds.clickIds().wbraid) || undefined
+       })
+     })
+       .then(function(r){ return r.json(); })
+@@ -2779,6 +2784,10 @@
+     if (/^cs_[A-Za-z0-9_]+$/.test(sid)) {
+       fetch('/api/order-status?session_id=' + encodeURIComponent(sid)).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+         if (!d || !d.ok) return;
++        // Legacy Payment Link success → purchase conversion (live payments only, deduped per session in dvAds).
++        if (window.dvAds && d.paid && d.amount > 0 && /^cs_live_/.test(sid)) {
++          dvAds.purchase({ sessionId: sid, value: d.amount, currency: d.currency, tierId: d.tierId });
++        }
+         if (d.email) {
+           document.getElementById('pm-email').textContent = d.email;
+           document.getElementById('pm-email-wrap').style.display = 'block';
+diff --git a/signs/no-standing/index.html b/signs/no-standing/index.html
+index def034f..cbd4163 100644
+--- a/signs/no-standing/index.html
++++ b/signs/no-standing/index.html
+@@ -210,6 +210,7 @@
+     .sg-cta { margin-left: 20px; margin-right: 20px; }
+   }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/signs/permit-parking/index.html b/signs/permit-parking/index.html
+index 55a9802..46ee4aa 100644
+--- a/signs/permit-parking/index.html
++++ b/signs/permit-parking/index.html
+@@ -218,6 +218,7 @@
+     .sg-cta { margin-left: 20px; margin-right: 20px; }
+   }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/signs/time-limit/index.html b/signs/time-limit/index.html
+index a9c9814..a8a756d 100644
+--- a/signs/time-limit/index.html
++++ b/signs/time-limit/index.html
+@@ -210,6 +210,7 @@
+     .sg-cta { margin-left: 20px; margin-right: 20px; }
+   }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ 
+diff --git a/trailer.html b/trailer.html
+index 4ed882b..b038246 100644
+--- a/trailer.html
++++ b/trailer.html
+@@ -30,6 +30,7 @@
+   * { box-sizing: border-box; }
+   #stageRoot { width: 100vw; height: 100vh; }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+ <div id="stageRoot"></div>
+diff --git a/vin-report.html b/vin-report.html
+index 5466c1a..8535b78 100644
+--- a/vin-report.html
++++ b/vin-report.html
+@@ -623,6 +623,7 @@
+   body.pdf-preview-mode .print-only { display: block !important; }
+   body.pdf-preview-mode .pd-doc { padding: 34px 38px; border-radius: 4px; box-shadow: 0 18px 44px rgba(11,20,48,0.22); }
+ </style>
++<script src="/assets/js/dv-analytics.js"></script>
+ </head>
+ <body>
+   <nav class="top" id="topnav">
+@@ -686,6 +687,17 @@
+   var vin = (q.get('vin') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+   var accessToken = q.get('access') || '';
+   var sessionId = q.get('session_id') || '';
++  // Stripe success redirect → report the purchase to GA4 / Google Ads (live payments only, once per session).
++  if (/^cs_live_[A-Za-z0-9_]{10,200}$/.test(sessionId) && window.dvAds) {
++    fetch('/api/order-status?session_id=' + encodeURIComponent(sessionId))
++      .then(function (r) { return r.ok ? r.json() : null; })
++      .then(function (d) {
++        if (d && d.ok && d.paid && d.amount > 0) {
++          dvAds.purchase({ sessionId: sessionId, value: d.amount, currency: d.currency, tierId: d.tierId });
++        }
++      })
++      .catch(function () {});
++  }
+   var packCode = q.get('pack') || '';
+   var isDemo = q.get('demo') === '1';
+   var isSandbox = q.get('sandbox') === '1';
+@@ -1165,7 +1177,7 @@
+         b.disabled = true; b.textContent = 'Starting checkout…';
+         fetch('/api/order-status?op=checkout', {
+           method: 'POST', headers: { 'Content-Type': 'application/json' },
+-          body: JSON.stringify({ vin: vin, tierId: b.getAttribute('data-tier') }),
++          body: JSON.stringify(Object.assign({ vin: vin, tierId: b.getAttribute('data-tier') }, window.dvAds ? dvAds.clickIds() : {})),
+         })
+           .then(function (r) { return r.json(); })
+           .then(function (d) {

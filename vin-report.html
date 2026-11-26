@@ -623,6 +623,7 @@
   body.pdf-preview-mode .print-only { display: block !important; }
   body.pdf-preview-mode .pd-doc { padding: 34px 38px; border-radius: 4px; box-shadow: 0 18px 44px rgba(11,20,48,0.22); }
 </style>
+<script src="/assets/js/dv-analytics.js"></script>
 </head>
 <body>
   <nav class="top" id="topnav">
@@ -686,6 +687,17 @@
   var vin = (q.get('vin') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   var accessToken = q.get('access') || '';
   var sessionId = q.get('session_id') || '';
+  // Stripe success redirect → report the purchase to GA4 / Google Ads (live payments only, once per session).
+  if (/^cs_live_[A-Za-z0-9_]{10,200}$/.test(sessionId) && window.dvAds) {
+    fetch('/api/order-status?session_id=' + encodeURIComponent(sessionId))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (d && d.ok && d.paid && d.amount > 0) {
+          dvAds.purchase({ sessionId: sessionId, value: d.amount, currency: d.currency, tierId: d.tierId });
+        }
+      })
+      .catch(function () {});
+  }
   var packCode = q.get('pack') || '';
   var isDemo = q.get('demo') === '1';
   var isSandbox = q.get('sandbox') === '1';
@@ -1165,7 +1177,7 @@
         b.disabled = true; b.textContent = 'Starting checkout…';
         fetch('/api/order-status?op=checkout', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ vin: vin, tierId: b.getAttribute('data-tier') }),
+          body: JSON.stringify(Object.assign({ vin: vin, tierId: b.getAttribute('data-tier') }, window.dvAds ? dvAds.clickIds() : {})),
         })
           .then(function (r) { return r.json(); })
           .then(function (d) {
