@@ -1902,6 +1902,7 @@
       var K='dv_sid', sid=localStorage.getItem(K);
       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
       window.dvTrack=function(event, meta){
+        if (window.dvGa) dvGa(event, meta);
         try {
           var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
           // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
@@ -1916,6 +1917,7 @@
     } catch(e){ window.dvTrack=function(){}; }
   })();
 </script>
+<script src="/assets/js/dv-analytics.js"></script>
 </head>
 <body>
 

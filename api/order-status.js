@@ -59,6 +59,8 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         paid: localOrder.status === 'paid' || localOrder.status === 'sandbox_paid',
+        amount: localOrder.amountCad != null ? Number(localOrder.amountCad) : null,
+        currency: 'CAD',
         email: localOrder.customerEmail || '',
         vin: localOrder.vin || '',
         tierId: localOrder.tierId || 'single',
@@ -88,6 +90,8 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       paid: s.payment_status === 'paid',
+      amount: typeof s.amount_total === 'number' ? s.amount_total / 100 : null,
+      currency: (s.currency || 'cad').toUpperCase(),
       email: (s.customer_details && s.customer_details.email) || s.customer_email || '',
       vin: cleanVin,
       tierId: meta.tierId || (localOrder && localOrder.tierId) || 'single',

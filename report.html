@@ -1346,6 +1346,7 @@
       var K='dv_sid', sid=localStorage.getItem(K);
       if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem(K,sid); }
       window.dvTrack=function(event, meta){
+        if (window.dvGa) dvGa(event, meta);
         try {
           var payload = JSON.stringify({event:event,meta:meta||'',sid:sid,uid:'',auth:false});
           // sendBeacon survives page navigation (e.g. redirect to Stripe on buy click)
@@ -1360,6 +1361,7 @@
     } catch(e){ window.dvTrack=function(){}; }
   })();
 </script>
+<script src="/assets/js/dv-analytics.js"></script>
 </head>
 <body>
 
@@ -2730,7 +2732,10 @@
         vin: vin,
         tierId: tierId,
         promoCode: activePromoCode,
-        vehicleTitle: lastDecodedTitle || ('VIN ' + vin)
+        vehicleTitle: lastDecodedTitle || ('VIN ' + vin),
+        gclid: (window.dvAds && dvAds.clickIds().gclid) || undefined,
+        gbraid: (window.dvAds && dvAds.clickIds().gbraid) || undefined,
+        wbraid: (window.dvAds && dvAds.clickIds().wbraid) || undefined
       })
     })
       .then(function(r){ return r.json(); })
@@ -2779,6 +2784,10 @@
     if (/^cs_[A-Za-z0-9_]+$/.test(sid)) {
       fetch('/api/order-status?session_id=' + encodeURIComponent(sid)).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
         if (!d || !d.ok) return;
+        // Legacy Payment Link success → purchase conversion (live payments only, deduped per session in dvAds).
+        if (window.dvAds && d.paid && d.amount > 0 && /^cs_live_/.test(sid)) {
+          dvAds.purchase({ sessionId: sid, value: d.amount, currency: d.currency, tierId: d.tierId });
+        }
         if (d.email) {
           document.getElementById('pm-email').textContent = d.email;
           document.getElementById('pm-email-wrap').style.display = 'block';
