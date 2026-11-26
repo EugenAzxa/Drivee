@@ -32,16 +32,21 @@ Protected files untouched (0-byte diff): `app.html`, `account.html`, `mechanic.h
 | Google Analytics | New account **Drivee** (a417507223), property **drivee.ca** (p565952719), web stream `https://www.drivee.ca` (16421126876), Measurement ID **G-JSWWRDD7SN**. Canada, Toronto time, CAD, industry Automotive, event data retention 14 months. | GA Admin → Account settings → Move to trash |
 | Google Analytics ↔ Search Console | Linked Search Console domain property `drivee.ca` to the GA4 web stream. | GA Admin → Product links → Search Console links → remove |
 | Google Ads | New account **221-973-5358** "Drivee": billing country Canada, Toronto time, CAD, final URL `https://www.drivee.ca/report.html`. No campaign created. Did NOT link the AZXA YouTube channel, the unrelated business profile, or a phone number. | Ads → Admin → Account settings → Account status → Cancel account |
+| Google Ads ↔ Google tag | On the post-signup screen chose "Use the Google tag found on your site" (container GTM-TGMQFVNZ / G-JSWWRDD7SN) and published. | Ads → Admin → Google tag → unlink / remove Ads destination |
+| Google Ads ↔ GA4 | Linked GA4 property drivee.ca (565952719) to Ads; import of GA4 metrics and audiences on (defaults). GA4 is NOT used as a conversion source (avoids double counting). | Ads → Tools → Data manager → Google Analytics → unlink |
+| Google Ads conversion | Conversion action **VIN Report Purchase**: category Purchase, Primary, value from tag (default 1 CAD), count Every, click window 90 d, data-driven attribution, source Google tag. `send_to: AW-18597006360/-4bBCKaCgcAdEJiY36NF`. Enhanced conversions explicitly unchecked (no terms accepted). | Ads → Goals → Conversions → VIN Report Purchase → Remove |
 | Search Console | Already verified by DNS TXT before this work — no change. | — |
 
 ## Still to do (as of writing)
 
-- [ ] Card added to Google Ads 221-973-5358 (owner does this)
-- [ ] Conversion action "VIN Report Purchase" (Purchase, Primary, values from the tag, CAD, count Every) → put `AW-…` and label into `assets/js/dv-analytics.js`
-- [ ] Link Google Ads ↔ GA4, auto-tagging on
+- [x] Card added to Google Ads 221-973-5358 (owner)
+- [x] Conversion action "VIN Report Purchase" → `ADS_ID = 'AW-18597006360'`, `ADS_PURCHASE_LABEL = '-4bBCKaCgcAdEJiY36NF'` in `assets/js/dv-analytics.js` (second commit; undo = set both back to `''`)
+- [x] Link Google Ads ↔ GA4
+- [ ] Auto-tagging on (check Ads → Admin → Account settings)
 - [ ] Access for the partner account: Google Ads Standard, GA4 Editor, Search Console Full
 - [ ] Second empty Google Ads account "VinBadge" (billing Canada, USD), no campaign
-- [ ] Merge + production deploy, then check GA4 Realtime
+- [x] Merge + production deploy (PR #5, cb9c1c9)
+- [ ] Stripe: separate VinBadge account in the owner's Stripe organization, partner invited (Developer). SayLavi/Drivee accounts not touched.
 
 ## Not done on purpose
 

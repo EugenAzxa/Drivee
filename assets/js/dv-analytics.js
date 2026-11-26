@@ -15,8 +15,8 @@
  */
 (function () {
   var GA4_ID = 'G-JSWWRDD7SN';
-  var ADS_ID = '';
-  var ADS_PURCHASE_LABEL = '';
+  var ADS_ID = 'AW-18597006360';
+  var ADS_PURCHASE_LABEL = '-4bBCKaCgcAdEJiY36NF';
 
   var CLICK_KEYS = ['gclid', 'gbraid', 'wbraid'];
   var CLICK_TTL_MS = 90 * 24 * 60 * 60 * 1000;
